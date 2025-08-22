@@ -1,0 +1,24 @@
+:host {
+  border-right: 1px solid #ccc;
+}
+
+.explorer-list-content {
+  padding: var(--default-padding);
+}
+
+.explorer-list-heading {
+  padding-bottom: var(--default-padding);
+}
+
+.explorer-list-item {
+  list-style-type: none;
+  width: 150px;
+  height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-bottom: var(--default-padding);
+
+  div {
+    margin: 0.5rem;
+  }
+}

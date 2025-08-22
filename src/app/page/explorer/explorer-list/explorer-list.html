@@ -1,0 +1,12 @@
+<div class="explorer-list-content">
+  <div class="explorer-list-heading">ITEM LIST</div>
+  <ul class="explorer-list">
+    @for (item of items; track $index) {
+    <li class="explorer-list-item">
+      <div>
+        {{ item.name }}
+      </div>
+    </li>
+    }
+  </ul>
+</div>
