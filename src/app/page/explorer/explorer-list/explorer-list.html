@@ -1,12 +1,16 @@
-<div class="explorer-list-content">
-  <div class="explorer-list-heading">ITEM LIST</div>
-  <ul class="explorer-list">
-    @for (item of items; track $index) {
-    <li class="explorer-list-item">
-      <div>
-        {{ item.name }}
-      </div>
-    </li>
-    }
-  </ul>
+<div class="explorer-list-container">
+  <div class="explorer-list-heading">
+    <h3>{{ artTitle }}</h3>
+  </div>
+  @if (artData$ && artData$.length) {
+  <div class="explorer-list-content">
+    <ul class="explorer-list">
+      @for (art of artData$; track $index) {
+      <app-explorer-list-item [art]="art"></app-explorer-list-item>
+      }
+    </ul>
+  </div>
+  } @else {
+  <p>{{ noArt }}</p>
+  }
 </div>

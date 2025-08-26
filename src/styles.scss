@@ -1,11 +1,16 @@
 :root {
+  --default-text-color: #999;
+  --default-border-color: #ccc;
   --default-padding: 1rem;
+  --header-height: 125px;
+  --explorer-list-header-height: 50px;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 body {

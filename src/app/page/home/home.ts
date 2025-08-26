@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Explorer } from '../explorer/explorer';
+
 import { ExplorerList } from '../explorer/explorer-list/explorer-list';
 import { ExplorerItemDetail } from '../explorer/explorer-item-detail/explorer-item-detail';
 
@@ -10,4 +10,4 @@ import { ExplorerItemDetail } from '../explorer/explorer-item-detail/explorer-it
   styleUrl: './home.scss',
   standalone: true,
 })
-export class Home extends Explorer {}
+export class Home {}

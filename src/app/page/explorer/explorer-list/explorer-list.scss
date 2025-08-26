@@ -1,24 +1,27 @@
 :host {
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(default-border-color);
 }
 
-.explorer-list-content {
-  padding: var(--default-padding);
+.explorer-list-container {
+  height: calc(100vh - var(--header-height));
+  display: flex;
+  flex-direction: column;
 }
 
 .explorer-list-heading {
-  padding-bottom: var(--default-padding);
+  padding: var(--default-padding);
+  height: var(--explorer-list-header-height);
+  border-bottom: 1px solid var(default-border-color);
+
+  h3 {
+    color: var(--default-text-color);
+  }
 }
 
-.explorer-list-item {
-  list-style-type: none;
-  width: 150px;
-  height: 150px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  margin-bottom: var(--default-padding);
-
-  div {
-    margin: 0.5rem;
-  }
+.explorer-list-content {
+  flex: 1;
+  height: calc(100vh - var(--header-height) - var(--explorer-list-header-height));
+  padding: var(--default-padding);
+  overflow-x: hidden;
+  overflow-y: auto;
 }

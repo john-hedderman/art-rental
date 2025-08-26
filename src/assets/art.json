@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "url": "https://mymodernmet.com/wp/wp-content/uploads/2024/03/the-getty-8000-art-images-free-to-use-3.jpg",
+    "name": "Irises",
+    "artist": "Vincent Van Gogh"
+  },
+  {
+    "id": 2,
+    "url": "https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B1MjMzMTI4OC1pbWFnZS1rd3Z3a2V6eS5qcGc.jpg",
+    "name": "Pastel #1",
+    "artist": "Unknown"
+  },
+  {
+    "id": 3,
+    "url": "https://cdn12.picryl.com/photo/2016/12/31/art-modern-art-painting-ade4c6-1024.jpg",
+    "name": "Geometric #2",
+    "artist": "Unknown"
+  },
+  {
+    "id": 4,
+    "url": "https://www.publicdomainpictures.net/pictures/50000/velka/abstract-art-face.jpg",
+    "name": "Cubist Face #14",
+    "artist": "Unknown"
+  },
+  {
+    "id": 5,
+    "url": "https://artic-web.imgix.net/b502c5ca-bf49-4433-808b-8dd939d335c7/Hokusai_Great-Wave.jpg?rect=0%2C76%2C3600%2C2027&auto=format%2Ccompress&q=80&fit=crop&crop=faces%2Ccenter&w=1200&h=676?w=1200&h=675&fit=crop",
+    "name": "The Great Wave",
+    "artist": "Katsushika Hokusai"
+  }
+]

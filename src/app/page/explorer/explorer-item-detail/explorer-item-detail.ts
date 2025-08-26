@@ -6,4 +6,6 @@ import { Component } from '@angular/core';
   styleUrl: './explorer-item-detail.scss',
   standalone: true,
 })
-export class ExplorerItemDetail {}
+export class ExplorerItemDetail {
+  detailHeading = 'Item';
+}

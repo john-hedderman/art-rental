@@ -1,7 +1,16 @@
 :host {
-  border-bottom: 1px solid #ccc;
+  height: var(--header-height);
+  border-bottom: 1px solid var(--default-border-color);
+  background-color: #4444a7;
 }
 
 .header-content {
   padding: var(--default-padding);
+
+  h1 {
+    color: white;
+    text-align: center;
+    padding-top: 1rem;
+    font-size: 3rem;
+  }
 }

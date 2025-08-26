@@ -1,9 +1,14 @@
 import { Routes } from '@angular/router';
-import { Home } from './page/home/home';
+import { ArtPage } from './page/art-page/art-page';
 
 export const routes: Routes = [
   {
+    path: 'art',
+    component: ArtPage,
+  },
+  {
     path: '',
-    component: Home,
+    redirectTo: '/art',
+    pathMatch: 'full',
   },
 ];

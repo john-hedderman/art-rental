@@ -1,0 +1,17 @@
+.explorer-list-item {
+  list-style-type: none;
+  width: 150px;
+  padding-bottom: var(--default-padding);
+
+  img {
+    width: 150px;
+    height: 150px;
+    border: 1px solid var(--default-border-color);
+    border-radius: 3px;
+  }
+
+  p {
+    color: var(--default-text-color);
+    font-size: 1rem;
+  }
+}
