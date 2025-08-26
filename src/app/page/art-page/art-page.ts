@@ -11,6 +11,9 @@ import { Art } from '../../shared/models';
   templateUrl: './art-page.html',
   styleUrl: './art-page.scss',
   standalone: true,
+  host: {
+    class: 'row g-0',
+  },
 })
 export class ArtPage {
   listTitle = 'Art';

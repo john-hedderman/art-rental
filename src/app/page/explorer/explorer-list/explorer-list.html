@@ -4,11 +4,9 @@
   </div>
   @if (data && data.length) {
   <div class="explorer-list-content">
-    <ul class="explorer-list">
-      @for (item of data; track $index) {
-      <app-explorer-list-item [data]="item" [dataType]="dataType"></app-explorer-list-item>
-      }
-    </ul>
+    @for (item of data; track $index) {
+    <app-explorer-list-item [data]="item" [dataType]="dataType"></app-explorer-list-item>
+    }
   </div>
   } @else {
   <div class="explorer-list-content">
