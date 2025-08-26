@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
-import { ArtService } from '../../../service/art-service';
 import { ExplorerListItem } from './explorer-list-item/explorer-list-item';
 
 @Component({
@@ -10,16 +9,9 @@ import { ExplorerListItem } from './explorer-list-item/explorer-list-item';
   styleUrl: './explorer-list.scss',
   standalone: true,
 })
-export class ExplorerList implements OnInit {
-  artTitle = 'Art';
-  noArt = 'No art available';
-  artData$: any;
-
-  constructor(private artService: ArtService) {}
-
-  ngOnInit(): void {
-    this.artService.getArtData().subscribe((data) => {
-      this.artData$ = data;
-    });
-  }
+export class ExplorerList {
+  @Input() data: any;
+  @Input() title: string | undefined;
+  @Input() noTitle: string | undefined;
+  @Input() dataType: string | undefined;
 }

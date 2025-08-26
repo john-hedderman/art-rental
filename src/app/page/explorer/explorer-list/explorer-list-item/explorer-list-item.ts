@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { Art } from '../../../../shared/models';
 
 @Component({
   selector: 'app-explorer-list-item',
@@ -8,5 +7,6 @@ import { Art } from '../../../../shared/models';
   standalone: true,
 })
 export class ExplorerListItem {
-  @Input() art!: Art;
+  @Input() data: any;
+  @Input() dataType: string | undefined;
 }

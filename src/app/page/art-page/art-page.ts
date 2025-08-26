@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { ExplorerList } from '../explorer/explorer-list/explorer-list';
+import { ArtService } from '../../service/art-service';
+import { Art } from '../../shared/models';
 
 @Component({
   selector: 'app-art-page',
@@ -10,4 +12,14 @@ import { ExplorerList } from '../explorer/explorer-list/explorer-list';
   styleUrl: './art-page.scss',
   standalone: true,
 })
-export class ArtPage {}
+export class ArtPage {
+  listTitle = 'Art';
+  noListTitle = 'No art available';
+  data!: Art;
+
+  constructor(private artService: ArtService) {
+    this.artService.getArtData().subscribe((data) => {
+      this.data = data;
+    });
+  }
+}
