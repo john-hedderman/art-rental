@@ -8,5 +8,8 @@ import { ExplorerItemDetail } from './explorer-item-detail/explorer-item-detail'
   templateUrl: './explorer.html',
   styleUrl: './explorer.scss',
   standalone: true,
+  host: {
+    class: 'd-flex flex-grow-1',
+  },
 })
 export class Explorer {}

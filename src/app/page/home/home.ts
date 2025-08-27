@@ -9,5 +9,8 @@ import { ExplorerItemDetail } from '../explorer/explorer-item-detail/explorer-it
   templateUrl: './home.html',
   styleUrl: './home.scss',
   standalone: true,
+  host: {
+    class: 'd-flex flex-grow-1',
+  },
 })
 export class Home {}

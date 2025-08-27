@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-explorer-list-item',
+  imports: [],
   templateUrl: './explorer-list-item.html',
   styleUrl: './explorer-list-item.scss',
   standalone: true,

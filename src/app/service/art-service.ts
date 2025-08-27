@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
+import { Art } from '../shared/models';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +12,7 @@ export class ArtService {
 
   constructor(private http: HttpClient) {}
 
-  getArtData(): Observable<any> {
-    return this.http.get<any>(this.artDataUrl);
+  getArtData(): Observable<Art[]> {
+    return this.http.get<Art[]>(this.artDataUrl);
   }
 }

@@ -2,14 +2,10 @@
   <div class="explorer-list-heading">
     <h3>{{ title }}</h3>
   </div>
-  @if (data && data.length) {
+  @if (art && art.length) {
   <div class="explorer-list-content">
-    @for (item of data; track $index) {
-    <app-explorer-list-item
-      [data]="item"
-      [dataType]="dataType"
-      (click)="navigateToItemDetails($event)"
-    ></app-explorer-list-item>
+    @for (item of art; track $index) {
+    <app-art-list-item [data]="item" (click)="navigateToArtDetails(item.id)"></app-art-list-item>
     }
   </div>
   } @else {

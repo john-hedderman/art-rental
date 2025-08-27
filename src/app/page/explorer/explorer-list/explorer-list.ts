@@ -14,4 +14,8 @@ export class ExplorerList {
   @Input() title: string | undefined;
   @Input() noTitle: string | undefined;
   @Input() dataType: string | undefined;
+
+  navigateToItemDetails(evt: Event) {
+    console.log('Item selected, event:', evt);
+  }
 }
