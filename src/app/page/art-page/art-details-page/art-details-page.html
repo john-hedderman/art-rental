@@ -1,21 +1,19 @@
 <div class="art-details-page-container d-flex flex-column">
-  <div class="row mx-0 p-3">
-    <div class="art-details-page-image col-md-6 p-0 w-50">
-      @if (art) {
-      <img
-        class="w-100 h-100 object-fit-contain"
-        src="{{ art.url }}"
-        alt="{{ art.name }}"
-        title="{{ art.name }}"
-      />
-      } @else {
-      <p>No art found with ID {{ artworkId }}</p>
-      }
-    </div>
+  <div class="mx-0 p-3 d-flex">
+    @if (art) {
+    <img
+      class="h-100 object-fit-cover"
+      src="{{ art.url }}"
+      alt="{{ art.name }}"
+      title="{{ art.name }}"
+    />
+    } @else {
+    <p>No art found with ID {{ artworkId }}</p>
+    }
     <div class="art-details-page-info col-md-6 flex-grow-1">
       @if (art) {
       <h2 class="mb-0">{{ art.name }}</h2>
-      <h5>{{ art.artist }}</h5>
+      <h5 class="mb-0">{{ art.artist }}</h5>
       }
     </div>
   </div>

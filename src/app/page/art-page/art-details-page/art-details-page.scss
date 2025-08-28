@@ -1,11 +1,11 @@
 .art-details-page-container {
   height: calc(100vh - var(--header-height));
 
-  .art-details-page-image {
-    img {
-      border: 1px solid var(--default-border-color-dark);
-      border-radius: 3px;
-    }
+  img {
+    border: 1px solid var(--default-border-color-dark);
+    border-radius: 3px;
+    max-width: 250px;
+    max-height: 250px;
   }
 
   .art-details-page-info {

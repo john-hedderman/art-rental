@@ -8,6 +8,8 @@
   .art-list-heading {
     height: var(--explorer-list-header-height);
     border-bottom: 1px solid var(--default-border-color);
+    padding: 0.25rem 0 0 1rem;
+    background-color: #eee;
 
     h3 {
       color: var(--default-text-color);

@@ -16,7 +16,7 @@ import { ArtList } from './art-list/art-list';
   },
 })
 export class ArtPage {
-  listTitle = 'Art';
+  listTitle = 'OUR ART';
   noListTitle = 'No art available';
   art!: Art[];
 

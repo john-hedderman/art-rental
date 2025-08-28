@@ -1,6 +1,6 @@
 <div class="art-list-container d-flex flex-column">
-  <div class="art-list-heading p-3">
-    <h3>{{ title }}</h3>
+  <div class="art-list-heading">
+    <h6 class="pt-2">{{ title }}</h6>
   </div>
   <div class="art-list-content flex-grow-1 p-3 overflow-x-hidden overflow-y-auto">
     @if (art && art.length) { @for (item of art; track $index) {
