@@ -1,5 +1,47 @@
-@if (art) {
-<img src="{{ art.url }}" alt="{{ art.name }}" title="{{ art.name }}" />
-} @else {
-<p>No art found with ID {{ artworkId }}</p>
-}
+<div class="row mx-0 p-3">
+  <div class="art-details-page-image col-md-6 p-0">
+    @if (art) {
+    <img src="{{ art.url }}" alt="{{ art.name }}" title="{{ art.name }}" />
+    } @else {
+    <p>No art found with ID {{ artworkId }}</p>
+    }
+  </div>
+  <div class="art-details-page-info col-md-6">
+    @if (art) {
+    <h2>{{ art.name }}</h2>
+    <h4>{{ art.artist }}</h4>
+    }
+  </div>
+</div>
+<div class="row mx-0 p-3 pt-0">
+  <div class="art-details-page-detail col-md-6 p-0">
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sed malesuada purus. Nam
+      ullamcorper vulputate odio, nec scelerisque diam accumsan non. Ut elit ipsum, mollis a neque
+      sit amet, pharetra condimentum ante. Sed nec dui tincidunt, pharetra eros eget, aliquam nulla.
+      Donec vehicula nisi vel neque hendrerit laoreet. Pellentesque rutrum mi ut ex egestas laoreet.
+      Nullam lobortis placerat urna a mollis. Donec ac orci massa. Maecenas vitae gravida urna. In
+      auctor metus nisl, at faucibus sapien suscipit sodales. Duis eget lacus magna. Vivamus risus
+      arcu, aliquam id luctus ut, iaculis sit amet tellus.
+    </p>
+    <p>
+      Vestibulum porta commodo nulla, nec ultricies sapien venenatis eu. Vestibulum maximus
+      ullamcorper efficitur. Nam a nisl ex. Pellentesque nec ex nec turpis tristique pretium.
+      Phasellus in quam sed tellus facilisis ultrices aliquet et justo. Ut suscipit eleifend odio
+      mattis blandit. Nulla leo ante, bibendum sodales ligula facilisis, fringilla ultricies ipsum.
+      Morbi eget tortor eros. Vestibulum varius sem quam, at iaculis eros ullamcorper in.
+      Suspendisse suscipit porttitor congue. Vivamus vel neque vitae tellus dignissim tincidunt.
+      Morbi nec quam et ligula gravida laoreet sed id nibh. Suspendisse rhoncus enim ac est semper
+      scelerisque eu id nunc.
+    </p>
+    <p>
+      Vivamus congue neque eget leo bibendum, id cursus nisi bibendum. Phasellus aliquam vehicula
+      mollis. Nam ac sapien ac ipsum semper commodo. Pellentesque vel vulputate lectus. Nullam
+      condimentum, mauris vel porta lacinia, ligula risus sodales mauris, quis aliquet tortor felis
+      sed dolor. Suspendisse dolor justo, cursus at elit sed, rutrum gravida elit. Etiam in vehicula
+      nunc. Aenean lobortis, elit ac porttitor efficitur, orci arcu tincidunt dui, et finibus ante
+      tellus vel urna. Duis non est eu sapien egestas commodo. Nullam dapibus vel purus aliquam
+      consectetur. Quisque eget felis ullamcorper, mollis augue in, blandit ante.
+    </p>
+  </div>
+</div>

@@ -1,9 +1,9 @@
-.explorer-list-item {
+.art-list-item {
   list-style-type: none;
   padding-bottom: var(--default-padding);
 
   img {
-    border: 1px solid var(--default-border-color);
+    border: 1px solid var(--default-border-color-dark);
     border-radius: 3px;
     object-fit: contain;
     width: 100%;
