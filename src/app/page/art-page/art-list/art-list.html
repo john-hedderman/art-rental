@@ -1,16 +1,12 @@
-<div class="explorer-list-container">
-  <div class="explorer-list-heading">
+<div class="art-list-container d-flex flex-column">
+  <div class="art-list-heading p-3">
     <h3>{{ title }}</h3>
   </div>
-  @if (art && art.length) {
-  <div class="explorer-list-content">
-    @for (item of art; track $index) {
+  <div class="art-list-content flex-grow-1 p-3 overflow-x-hidden overflow-y-auto">
+    @if (art && art.length) { @for (item of art; track $index) {
     <app-art-list-item [data]="item" (click)="navigateToArtDetails(item.id)"></app-art-list-item>
+    } } @else {
+    <p>{{ noTitle }}</p>
     }
   </div>
-  } @else {
-  <div class="explorer-list-content">
-    <p>{{ noTitle }}</p>
-  </div>
-  }
 </div>

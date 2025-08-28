@@ -12,7 +12,7 @@ import { ArtService } from '../../../service/art-service';
   styleUrl: './art-details-page.scss',
   standalone: true,
   host: {
-    class: 'col d-none d-md-block',
+    class: 'd-none d-md-block',
   },
 })
 export class ArtDetailsPage implements OnInit, OnDestroy {

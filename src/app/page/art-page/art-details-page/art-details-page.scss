@@ -1,21 +1,22 @@
-.art-details-page-image {
-  img {
-    border: 1px solid var(--default-border-color-dark);
-    border-radius: 3px;
-    object-fit: contain;
-    width: 100%;
-    height: 100%;
+.art-details-page-container {
+  height: calc(100vh - var(--header-height));
+
+  .art-details-page-image {
+    img {
+      border: 1px solid var(--default-border-color-dark);
+      border-radius: 3px;
+    }
   }
-}
 
-.art-details-page-info {
-  padding: 0 0 0 var(--default-padding);
+  .art-details-page-info {
+    padding: 0 0 0 var(--default-padding);
 
-  h4 {
-    color: var(--default-text-color);
+    h4 {
+      color: var(--default-text-color);
+    }
   }
-}
 
-.art-details-page-detail {
-  padding: var(--default-padding);
+  .art-details-page-detail {
+    padding: var(--default-padding);
+  }
 }
