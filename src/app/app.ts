@@ -10,4 +10,6 @@ import { Header } from './page/header/header';
   styleUrl: './app.scss',
   standalone: true,
 })
-export class App {}
+export class App {
+  title = 'Art for Rent';
+}
