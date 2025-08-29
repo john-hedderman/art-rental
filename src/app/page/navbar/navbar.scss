@@ -1,23 +1,22 @@
 .ar-navbar {
-  height: var(--ar-header-height);
-  border-bottom: 1px solid var(--ar-border-color);
-  background-color: var(--ar-bg-header);
-  display: block;
+  // height: var(--ar-navbar-height);
+  background-color: var(--ar-navbar-bg);
 }
 
-.ar-navbar-text-color {
-  color: var(--ar-text-header);
+.ar-navbar-brand {
+  color: var(--ar-navbar-brand-color);
+  font-size: var(--ar-navbar-brand-font-size);
 }
 
-.ar-navbar-container {
-  height: inherit;
-  align-items: flex-end;
+.ar-navbar .ar-nav-link {
+  color: var(--ar-navlink-color);
 }
 
-.ar-navbar-nav .nav-link {
-  color: var(--ar-text-header);
+.ar-navbar-toggler {
+  background-color: var(--ar-navbar-toggler-color);
+  border: none;
 
-  &.disabled {
-    color: var(--ar-text-header-disabled);
+  &:focus {
+    box-shadow: 0 0 0 1px;
   }
 }

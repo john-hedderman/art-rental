@@ -3,7 +3,7 @@
 }
 
 .explorer-list-container {
-  height: calc(100vh - var(--header-height));
+  height: calc(100vh - var(--ar-navbar-height));
   display: flex;
   flex-direction: column;
 }
@@ -20,7 +20,7 @@
 
 .explorer-list-content {
   flex: 1;
-  height: calc(100vh - var(--header-height) - var(--explorer-list-header-height));
+  height: calc(100vh - var(--ar-navbar-height) - var(--explorer-list-header-height));
   padding: var(--default-padding);
   overflow-x: hidden;
   overflow-y: auto;
