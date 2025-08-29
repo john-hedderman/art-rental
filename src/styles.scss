@@ -1,7 +1,17 @@
 :root {
+  --ar-text-primary: #666;
+  --ar-text-header: #ededed;
+  --ar-text-header-disabled: #bebebe;
+  --ar-bg-header: #2777c5;
+  --ar-border-color: #ccc;
+  --ar-border-color-dark: #666;
+
+  --ar-header-height: 7.25rem;
+
   --default-text-color: #666;
   --default-border-color: #ccc;
   --default-border-color-dark: #666;
+  --bg-navbar: #c5276a;
   --default-padding: 1rem;
   --default-padding-half: 0.5rem;
   --header-height: 8rem;

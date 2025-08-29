@@ -1,0 +1,23 @@
+.ar-navbar {
+  height: var(--ar-header-height);
+  border-bottom: 1px solid var(--ar-border-color);
+  background-color: var(--ar-bg-header);
+  display: block;
+}
+
+.ar-navbar-text-color {
+  color: var(--ar-text-header);
+}
+
+.ar-navbar-container {
+  height: inherit;
+  align-items: flex-end;
+}
+
+.ar-navbar-nav .nav-link {
+  color: var(--ar-text-header);
+
+  &.disabled {
+    color: var(--ar-text-header-disabled);
+  }
+}
