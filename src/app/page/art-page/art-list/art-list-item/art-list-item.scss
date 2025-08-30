@@ -1,9 +1,9 @@
 .art-list-item {
   list-style-type: none;
-  padding-bottom: var(--default-padding);
+  padding-bottom: 1rem;
 
   img {
-    border: 1px solid var(--default-border-color-dark);
+    border: 1px solid var(--ar-border-color-dark);
     border-radius: 3px;
     object-fit: contain;
     width: 100%;
@@ -11,7 +11,7 @@
   }
 
   p {
-    color: var(--default-text-color);
+    color: var(--ar-text-color-primary);
     font-size: 0.875rem;
     margin-bottom: 0;
     margin-top: 0.25rem;

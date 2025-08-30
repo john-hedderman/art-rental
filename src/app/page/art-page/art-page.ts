@@ -18,7 +18,7 @@ import { ArtList } from './art-list/art-list';
 export class ArtPage {
   listTitle = 'OUR ART';
   noListTitle = 'No art available';
-  art!: Art[];
+  art: Art[] = [];
 
   constructor(private artService: ArtService) {
     this.artService.getArtData().subscribe((data: Art[]) => {

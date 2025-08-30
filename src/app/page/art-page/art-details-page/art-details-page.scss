@@ -2,21 +2,21 @@
   height: calc(100vh - var(--ar-navbar-height));
 
   img {
-    border: 1px solid var(--default-border-color-dark);
+    border: 1px solid var(--ar-border-color-dark);
     border-radius: 3px;
     max-width: 250px;
     max-height: 250px;
   }
 
   .art-details-page-info {
-    padding: 0 0 0 var(--default-padding);
+    padding: 0 0 0 1rem;
 
     h4 {
-      color: var(--default-text-color);
+      color: var(--ar-text-color-primary);
     }
   }
 
   .art-details-page-detail {
-    padding: var(--default-padding);
+    padding: 1rem;
   }
 }

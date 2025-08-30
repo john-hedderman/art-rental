@@ -1,12 +1,12 @@
 :host {
   height: var(--ar-navbar-height);
-  border-bottom: 1px solid var(--default-border-color);
+  border-bottom: 1px solid var(--ar-border-color);
   background-color: #c5276a;
   display: block;
 }
 
 .header-content {
-  padding: var(--default-padding);
+  padding: 1rem;
   height: 100%;
 
   h1 {
