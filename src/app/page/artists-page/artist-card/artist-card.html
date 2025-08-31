@@ -1,7 +1,12 @@
 <div class="artist-list-item">
   <div class="d-flex h-100">
     <div class="artist-photo" style="width: 100px">
-      <img src="{{ artist.photo }}" alt="{{ artist.name }}" title="{{ artist.name }}" />
+      <img
+        src="{{ artist.localPhoto }}"
+        alt="{{ artist.name }}"
+        title="{{ artist.name }}"
+        loading="lazy"
+      />
     </div>
     <div class="flex-grow-1 lh-1 p-2 d-flex">
       <div>{{ artist.name }}</div>

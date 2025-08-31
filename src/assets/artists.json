@@ -1,27 +1,32 @@
 [
   {
     "id": 1,
-    "photo": "https://images.pexels.com/photos/678783/pexels-photo-678783.jpeg",
-    "name": "Josie Willen"
+    "localPhoto": "images/artists/resized/pexels-photo-678783.jpeg",
+    "name": "Josie Willen",
+    "photo": "https://images.pexels.com/photos/678783/pexels-photo-678783.jpeg"
   },
   {
     "id": 2,
-    "photo": "https://images.pexels.com/photos/2589653/pexels-photo-2589653.jpeg",
-    "name": "Rick Larsen"
+    "localPhoto": "images/artists/resized/pexels-photo-2589653.jpeg",
+    "name": "Rick Larsen",
+    "photo": "https://images.pexels.com/photos/2589653/pexels-photo-2589653.jpeg"
   },
   {
     "id": 3,
-    "photo": "https://images.pexels.com/photos/1370750/pexels-photo-1370750.jpeg",
-    "name": "Lawrence Dennish"
+    "localPhoto": "images/artists/resized/pexels-photo-1370750.jpeg",
+    "name": "Lawrence Dennish",
+    "photo": "https://images.pexels.com/photos/1370750/pexels-photo-1370750.jpeg"
   },
   {
     "id": 4,
-    "photo": "https://images.pexels.com/photos/868113/pexels-photo-868113.jpeg",
-    "name": "Juan Morlan"
+    "localPhoto": "images/artists/resized/pexels-photo-868113.jpeg",
+    "name": "Juan Morlan",
+    "photo": "https://images.pexels.com/photos/868113/pexels-photo-868113.jpeg"
   },
   {
     "id": 5,
-    "photo": "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg",
-    "name": "Maria Jacorana"
+    "localPhoto": "images/artists/resized/pexels-photo-415829.jpeg",
+    "name": "Maria Jacorana",
+    "photo": "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg"
   }
 ]
