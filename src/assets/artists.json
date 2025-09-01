@@ -1,32 +1,38 @@
 [
   {
     "id": 1,
-    "localPhoto": "images/artists/resized/pexels-photo-678783.jpeg",
     "name": "Josie Willen",
-    "photo": "https://images.pexels.com/photos/678783/pexels-photo-678783.jpeg"
+    "photo": "images/artists/resized/pexels-photo-678783.jpeg",
+    "types": "abstract, pastel"
   },
   {
     "id": 2,
-    "localPhoto": "images/artists/resized/pexels-photo-2589653.jpeg",
     "name": "Rick Larsen",
-    "photo": "https://images.pexels.com/photos/2589653/pexels-photo-2589653.jpeg"
+    "photo": "images/artists/resized/pexels-photo-2589653.jpeg",
+    "types": "abstract, geometry, people"
   },
   {
     "id": 3,
-    "localPhoto": "images/artists/resized/pexels-photo-1370750.jpeg",
     "name": "Lawrence Dennish",
-    "photo": "https://images.pexels.com/photos/1370750/pexels-photo-1370750.jpeg"
+    "photo": "images/artists/resized/pexels-photo-1370750.jpeg",
+    "types": "pointillism"
   },
   {
     "id": 4,
-    "localPhoto": "images/artists/resized/pexels-photo-868113.jpeg",
     "name": "Juan Morlan",
-    "photo": "https://images.pexels.com/photos/868113/pexels-photo-868113.jpeg"
+    "photo": "images/artists/resized/pexels-photo-868113.jpeg",
+    "types": "nature, landscape"
   },
   {
     "id": 5,
-    "localPhoto": "images/artists/resized/pexels-photo-415829.jpeg",
     "name": "Maria Jacorana",
-    "photo": "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg"
+    "photo": "images/artists/resized/pexels-photo-415829.jpeg",
+    "types": "portrait, people"
+  },
+  {
+    "id": 6,
+    "name": "Ben Johnson",
+    "photo": "",
+    "types": "people, landscape"
   }
 ]

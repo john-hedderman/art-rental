@@ -1,26 +1,31 @@
 .artist-list-item {
   width: 300px;
   height: 100px;
-  border: 1px solid var(--ar-border-color-dark);
-  border-radius: 4px;
+  border: 1px solid var(--ar-border-color);
+  border-radius: 6px;
+  color: var(--ar-text-color-primary-light);
 
   img {
-    border-radius: 3px;
     object-fit: cover;
-    width: 100%;
+    width: 100px;
     height: 100%;
-  }
-
-  p {
-    color: var(--ar-text-color-primary);
-    font-size: 0.875rem;
-    margin-bottom: 0;
-    margin-top: 0.25rem;
-    line-height: 0.875rem;
   }
 }
 
 .artist-photo {
   width: 100px;
   border-right: 1px solid #ccc;
+}
+
+.artist-name {
+  padding-bottom: 0.5rem;
+  background-color: var(--ar-bg-color-primary-lightest);
+  border-bottom: 1px solid var(--ar-border-color);
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.artist-primary-work {
+  padding-top: 0.5rem;
+  font-style: italic;
 }
