@@ -1,12 +1,13 @@
 export interface Art {
   id: number;
-  url: string;
-  name: string;
   artist: string;
+  name: string;
+  url: string;
 }
 
 export interface Artist {
   id: number;
-  photo: string;
   name: string;
+  photo: string;
+  types: string;
 }

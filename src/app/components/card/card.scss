@@ -1,6 +1,5 @@
 .ar-card {
   width: 400px;
-  height: 150px;
   border: 1px solid var(--ar-border-color);
   border-radius: 6px;
   color: var(--ar-text-color-primary-light);
@@ -10,6 +9,10 @@
     width: 200px;
     height: 150px;
   }
+}
+
+.ar-card-image {
+  border-right: 1px solid #ccc;
 }
 
 .ar-card-title {

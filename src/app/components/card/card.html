@@ -1,14 +1,24 @@
 <div class="card ar-card mb-3">
   <div class="row g-0">
-    <div class="col-5">
+    <div class="col-5 ar-card-image">
+      @if (imageSource) {
       <img
         src="{{ imageSource }}"
         class="img-fluid rounded-start"
         alt="{{ imageAlt }}"
         title="{{ imageTitle }}"
+        loading="lazy"
       />
+      } @else {
+      <img
+        src="images/spacer.gif"
+        class="img-fluid rounded-start"
+        alt="{{ imageAlt }}"
+        title="{{ imageTitle }}"
+      />
+      }
     </div>
-    <div class="col-7">
+    <div class="col-7 lh-1">
       <div class="ar-card-title p-2">
         {{ cardTitle }}
       </div>
