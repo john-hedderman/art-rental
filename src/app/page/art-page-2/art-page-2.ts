@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Art } from '../../shared/models';
+import { Art } from '../../model/models';
 import { ArtService } from '../../service/art-service';
 import { Card } from '../../components/card/card';
 

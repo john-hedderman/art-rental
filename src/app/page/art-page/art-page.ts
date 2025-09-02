@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { ArtService } from '../../service/art-service';
-import { Art } from '../../shared/models';
+import { Art } from '../../model/models';
 import { ArtList } from './art-list/art-list';
 
 @Component({

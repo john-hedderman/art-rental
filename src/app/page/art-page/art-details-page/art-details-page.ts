@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EMPTY, filter, from, of, Subject, Subscription, switchMap, takeUntil, tap } from 'rxjs';
 
-import { Art } from '../../../shared/models';
+import { Art } from '../../../model/models';
 import { ArtService } from '../../../service/art-service';
 
 @Component({

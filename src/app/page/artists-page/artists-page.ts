@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { ArtistService } from '../../service/artist-service';
-import { Artist } from '../../shared/models';
+import { Artist } from '../../model/models';
 import { Card } from '../../components/card/card';
 
 @Component({
