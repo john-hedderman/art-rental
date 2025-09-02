@@ -1,28 +1,22 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 
-import { ArtService } from '../../service/art-service';
 import { Art } from '../../model/models';
-import { ArtList } from './art-list/art-list';
+import { ArtService } from '../../service/art-service';
+import { Card } from '../../components/card/card';
 
 @Component({
   selector: 'app-art-page',
-  imports: [ArtList, RouterOutlet],
+  imports: [Card],
   templateUrl: './art-page.html',
   styleUrl: './art-page.scss',
   standalone: true,
-  host: {
-    class: 'd-flex',
-  },
 })
 export class ArtPage {
-  listTitle = 'OUR ART';
-  noListTitle = 'No art available';
-  art: Art[] = [];
+  artwork: Art[] = [];
 
   constructor(private artService: ArtService) {
-    this.artService.getArtData().subscribe((data: Art[]) => {
-      this.art = data;
+    this.artService.getArtData().subscribe((data) => {
+      this.artwork = data;
     });
   }
 }
