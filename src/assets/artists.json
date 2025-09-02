@@ -2,31 +2,31 @@
   {
     "id": 1,
     "name": "Josie Willen",
-    "photo": "images/artists/resized/pexels-photo-678783.jpeg",
+    "photo": "images/artists/josie-willen.jpg",
     "types": "abstract, pastel"
   },
   {
     "id": 2,
     "name": "Rick Larsen",
-    "photo": "images/artists/resized/pexels-photo-2589653.jpeg",
+    "photo": "images/artists/rick-larsen.jpg",
     "types": "abstract, geometry, people"
   },
   {
     "id": 3,
     "name": "Lawrence Dennish",
-    "photo": "images/artists/resized/pexels-photo-1370750.jpeg",
+    "photo": "images/artists/lawrence-dennish.jpg",
     "types": "pointillism"
   },
   {
     "id": 4,
     "name": "Juan Morlan",
-    "photo": "images/artists/resized/pexels-photo-868113.jpeg",
+    "photo": "images/artists/juan-morlan.jpg",
     "types": "nature, landscape"
   },
   {
     "id": 5,
     "name": "Maria Jacorana",
-    "photo": "images/artists/resized/pexels-photo-415829.jpeg",
+    "photo": "images/artists/maria-jacorana.jpg",
     "types": "portrait, people"
   },
   {
