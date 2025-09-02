@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 
 import { Art } from '../../shared/models';
 import { ArtService } from '../../service/art-service';
-import { ArtCard } from './art-card/art-card';
+import { Card } from '../../components/card/card';
 
 @Component({
   selector: 'app-art-page-2',
-  imports: [ArtCard],
+  imports: [Card],
   templateUrl: './art-page-2.html',
   styleUrl: './art-page-2.scss',
   standalone: true,

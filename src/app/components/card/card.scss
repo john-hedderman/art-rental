@@ -1,0 +1,25 @@
+.ar-card {
+  width: 400px;
+  height: 150px;
+  border: 1px solid var(--ar-border-color);
+  border-radius: 6px;
+  color: var(--ar-text-color-primary-light);
+
+  img {
+    object-fit: cover;
+    width: 200px;
+    height: 150px;
+  }
+}
+
+.ar-card-title {
+  padding-bottom: 0.5rem;
+  background-color: var(--ar-bg-color-card-title);
+  border-bottom: 1px solid var(--ar-border-color);
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.ar-card-text {
+  padding-top: 0.5rem;
+}

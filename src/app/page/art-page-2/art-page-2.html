@@ -1,3 +1,10 @@
 @for (art of artwork; track $index) {
-<app-art-card [art]="art" class="d-inline-block mt-3 ms-3"></app-art-card>
+<app-card
+  [imageSource]="art.url"
+  [imageAlt]="art.name"
+  [imageTitle]="art.name"
+  [cardTitle]="art.name"
+  [cardText]="art.artist"
+  class="d-inline-block mt-3 ms-3"
+></app-card>
 }

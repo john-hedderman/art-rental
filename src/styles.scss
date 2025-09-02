@@ -1,11 +1,11 @@
 :root {
+  --ar-text-color-primary: #666;
+  --ar-text-color-primary-light: #666;
+
   --ar-bg-color-primary: #2777c5;
   --ar-bg-color-primary-light: #78a6d3;
   --ar-bg-color-primary-lighter: #a6c4e1;
   --ar-bg-color-primary-lightest: #d8e9f9;
-
-  --ar-text-color-primary: #666;
-  --ar-text-color-primary-light: #666;
 
   --ar-border-color: #ccc;
   --ar-border-color-dark: #666;
@@ -16,6 +16,8 @@
   --ar-navbar-brand-color: #ededed;
   --ar-navlink-color: #ededed;
   --ar-navbar-toggler-color: #ededed;
+
+  --ar-bg-color-card-title: #f1e4cf;
 
   --ar-list-header-height: 2.5rem;
 }
