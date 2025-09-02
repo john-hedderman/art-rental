@@ -1,0 +1,22 @@
+import { Component } from '@angular/core';
+
+import { Art } from '../../shared/models';
+import { ArtService } from '../../service/art-service';
+import { ArtCard } from './art-card/art-card';
+
+@Component({
+  selector: 'app-art-page-2',
+  imports: [ArtCard],
+  templateUrl: './art-page-2.html',
+  styleUrl: './art-page-2.scss',
+  standalone: true,
+})
+export class ArtPage2 {
+  artwork: Art[] = [];
+
+  constructor(private artService: ArtService) {
+    this.artService.getArtData().subscribe((data) => {
+      this.artwork = data;
+    });
+  }
+}
