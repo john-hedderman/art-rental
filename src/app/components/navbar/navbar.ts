@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -10,4 +10,15 @@ import { RouterLink } from '@angular/router';
 })
 export class Navbar {
   @Input() title: string | undefined;
+  @ViewChild('navbarToggler') navbarToggler: ElementRef | undefined;
+
+  navbarTogglerIsVisible() {
+    return this.navbarToggler!.nativeElement.offsetParent !== null;
+  }
+
+  collapseNav() {
+    if (this.navbarTogglerIsVisible()) {
+      this.navbarToggler?.nativeElement.click();
+    }
+  }
 }

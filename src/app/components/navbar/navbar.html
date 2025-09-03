@@ -2,6 +2,7 @@
   <div class="container-fluid px3">
     <a class="navbar-brand ar-navbar-brand" href="/">{{ title }}</a>
     <button
+      #navbarToggler
       class="navbar-toggler ar-navbar-toggler"
       type="button"
       data-bs-toggle="collapse"
@@ -17,30 +18,17 @@
         <li class="nav-item">
           <a
             class="nav-link active ar-nav-link"
-            data-bs-toggle="collapse"
-            data-bs-target="#arNavbarSupportedContent"
             aria-current="page"
             routerLink="/home"
+            (click)="collapseNav()"
             >Home</a
           >
         </li>
         <li class="nav-item">
-          <a
-            class="nav-link ar-nav-link"
-            routerLink="/art"
-            data-bs-toggle="collapse"
-            data-bs-target="#arNavbarSupportedContent"
-            >Art</a
-          >
+          <a class="nav-link ar-nav-link" routerLink="/art" (click)="collapseNav()">Art</a>
         </li>
         <li class="nav-item">
-          <a
-            class="nav-link ar-nav-link"
-            routerLink="/artists"
-            data-bs-toggle="collapse"
-            data-bs-target="#arNavbarSupportedContent"
-            >Artists</a
-          >
+          <a class="nav-link ar-nav-link" routerLink="/artists" (click)="collapseNav()">Artists</a>
         </li>
       </ul>
     </div>
