@@ -1,0 +1,33 @@
+<div class="card ar-card">
+  <div class="row g-0">
+    <div class="col-6 ar-img-container">
+      <img
+        src="{{ imageSource }}"
+        class="img-fluid ar-rounded-start h-100"
+        alt="{{ imageAlt }}"
+        title="{{ imageTitle }}"
+      />
+    </div>
+    <div class="col-6 ar-text-container overflow-y-auto">
+      <div class="card-body">
+        <h5 class="card-title">{{ cardTitle }}</h5>
+        <p class="card-text">
+          {{ cardText }}
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="row g-0">
+    <div class="card-footer">
+      <div class="form-check">
+        <input
+          type="checkbox"
+          id="card"
+          class="form-check-input ar-form-check-input"
+          name="selectCard"
+          value="true"
+        />
+      </div>
+    </div>
+  </div>
+</div>

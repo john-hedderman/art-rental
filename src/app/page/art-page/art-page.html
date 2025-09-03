@@ -1,10 +1,12 @@
-@for (art of artwork; track $index) {
-<app-card
-  [imageSource]="art.url"
-  [imageAlt]="art.name"
-  [imageTitle]="art.name"
-  [cardTitle]="art.name"
-  [cardText]="art.artist"
-  class="d-inline-block mt-3 ms-3"
-></app-card>
-}
+<div class="card-group">
+  @for (art of artwork; track $index) {
+  <app-select-card
+    [imageSource]="art.url"
+    [imageAlt]="art.name"
+    [imageTitle]="art.name"
+    [cardTitle]="art.name"
+    [cardText]="art.artist"
+    class="mt-3 ms-3"
+  ></app-select-card>
+  }
+</div>
