@@ -13,6 +13,8 @@ import { SelectCard } from '../../components/select-card/select-card';
 })
 export class ArtPage {
   artwork: Art[] = [];
+  headerText = 'Select the artwork you wish to rent';
+  addButtonText = 'Add selected to cart';
 
   constructor(private artService: ArtService) {
     this.artService.getArtData().subscribe((data) => {
