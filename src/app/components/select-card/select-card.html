@@ -24,6 +24,7 @@
           type="checkbox"
           id="card"
           class="form-check-input ar-form-check-input"
+          [ngClass]="{ 'd-none': !isSelectable }"
           name="selectCard"
           value="true"
         />
