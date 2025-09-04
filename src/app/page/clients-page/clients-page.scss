@@ -1,0 +1,16 @@
+.ar-clients-page-container {
+  --ar-clients-page-bg-color-header: #f3f3f3;
+  --ar-clients-page-header-height: 4.5rem;
+
+  height: calc(100vh - var(--ar-navbar-height));
+
+  .ar-clients-page-header {
+    height: var(--ar-clients-page-header-height);
+    border-bottom: 1px solid var(--ar-border-color);
+    background-color: var(--ar-clients-page-bg-color-header);
+
+    h3 {
+      color: var(--ar-text-color-primary);
+    }
+  }
+}
