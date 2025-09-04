@@ -33,3 +33,7 @@ body {
   height: 100vh;
   padding-top: var(--ar-navbar-height);
 }
+
+.ar-page-container {
+  height: calc(100vh - var(--ar-navbar-height));
+}

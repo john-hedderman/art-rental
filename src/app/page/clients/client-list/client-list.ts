@@ -10,6 +10,9 @@ import { ClientService } from '../../../service/client-service';
   templateUrl: './client-list.html',
   styleUrl: './client-list.scss',
   standalone: true,
+  host: {
+    class: 'overflow-y-auto',
+  },
 })
 export class ClientList {
   clients: Client[] = [];

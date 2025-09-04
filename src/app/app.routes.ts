@@ -34,6 +34,11 @@ export const routes: Routes = [
         component: AddClient,
       },
       {
+        path: '',
+        redirectTo: '/clients/list',
+        pathMatch: 'full',
+      },
+      {
         path: ':id',
         component: ClientDetail,
       },

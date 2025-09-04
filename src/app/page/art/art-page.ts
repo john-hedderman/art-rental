@@ -13,7 +13,7 @@ import { SelectCard } from '../../components/select-card/select-card';
 })
 export class ArtPage {
   artwork: Art[] = [];
-  headerText = 'Select the artwork you wish to rent';
+  headerTitle = 'Art';
   addButtonText = 'Add selected to cart';
 
   constructor(private artService: ArtService) {

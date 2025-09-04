@@ -1,0 +1,14 @@
+<div class="ar-page-header p-3">
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <h3 class="mb-0">{{ headerTitle }}</h3>
+    </div>
+    @if (headerButtonText) {
+    <div>
+      <button type="button" class="btn btn-primary" (click)="btnClickHandler()">
+        {{ headerButtonText }}
+      </button>
+    </div>
+    }
+  </div>
+</div>

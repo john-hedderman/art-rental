@@ -13,6 +13,7 @@ import { SelectCard } from '../../components/select-card/select-card';
 })
 export class ArtistsPage {
   artists: Artist[] = [];
+  headerTitle = 'Artists';
   primaryWork = 'Primary work: ';
 
   constructor(private artistService: ArtistService) {
