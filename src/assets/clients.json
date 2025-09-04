@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "name": "Craftopia",
+    "industry": "Arts & Crafts"
+  },
+  {
+    "id": 2,
+    "name": "Vibrance",
+    "industry": "Beauty"
+  },
+  {
+    "id": 3,
+    "name": "LearnNest",
+    "industry": "Education"
+  },
+  {
+    "id": 4,
+    "name": "Hearth and Home",
+    "industry": "Home"
+  },
+  {
+    "id": 5,
+    "name": "Grandeur",
+    "industry": "Luxury"
+  },
+  {
+    "id": 6,
+    "name": "Glamour Grove",
+    "industry": "Fashion"
+  },
+  {
+    "id": 7,
+    "name": "Brilliance",
+    "industry": "Jewelry"
+  },
+  {
+    "id": 8,
+    "name": "Creative Canvas Studio",
+    "industry": "Design"
+  },
+  {
+    "id": 9,
+    "name": "GamerNest",
+    "industry": "Gaming"
+  },
+  {
+    "id": 10,
+    "name": "Financial Freedom Network",
+    "industry": "Finance"
+  },
+  {
+    "id": 11,
+    "name": "Gleam",
+    "industry": "Cleaning"
+  },
+  {
+    "id": 12,
+    "name": "The Talk Exchange",
+    "industry": "Communication"
+  },
+  {
+    "id": 13,
+    "name": "Holistic",
+    "industry": "Health"
+  },
+  {
+    "id": 14,
+    "name": "Mouthwatering Meals",
+    "industry": "Food"
+  },
+  {
+    "id": 15,
+    "name": "Playful Minds Academy",
+    "industry": "Kids"
+  },
+  {
+    "id": 16,
+    "name": "Tranquil",
+    "industry": "Candles"
+  },
+  {
+    "id": 17,
+    "name": "Euphoria Events",
+    "industry": "Events"
+  },
+  {
+    "id": 18,
+    "name": "Urban Threads",
+    "industry": "Clothing"
+  },
+  {
+    "id": 19,
+    "name": "Floral Symphony",
+    "industry": "Garden"
+  },
+  {
+    "id": 20,
+    "name": "Flexi",
+    "industry": "Fitness"
+  }
+]

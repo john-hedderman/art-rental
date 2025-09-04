@@ -11,3 +11,9 @@ export interface Artist {
   photo: string;
   types: string;
 }
+
+export interface Client {
+  id: number;
+  name: string;
+  industry: string;
+}
