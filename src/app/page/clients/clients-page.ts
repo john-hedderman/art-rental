@@ -1,21 +1,14 @@
 import { Component } from '@angular/core';
-
-import { Client } from '../../model/models';
-import { ClientService } from '../../service/client-service';
+import { RouterOutlet, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-clients-page',
-  imports: [],
+  imports: [RouterOutlet, RouterLink],
   templateUrl: './clients-page.html',
   styleUrl: './clients-page.scss',
   standalone: true,
 })
 export class ClientsPage {
-  clients: Client[] = [];
-
-  constructor(private clientService: ClientService) {
-    this.clientService.getClientsData().subscribe((data) => {
-      this.clients = data;
-    });
-  }
+  headerText = 'Select a client to see details';
+  addButtonText = 'Create a new client';
 }

@@ -1,17 +1,13 @@
 <div class="ar-clients-page-container d-flex flex-column">
   <div class="ar-clients-page-header p-3">
-    <div class="d-flex justify-content-between">
-      <div>Select a client to see details</div>
+    <div class="d-flex justify-content-between align-items-center">
+      <div>{{ headerText }}</div>
+      <div class="nav-item">
+        <button type="button" class="btn btn-primary" routerLink="add">
+          {{ addButtonText }}
+        </button>
+      </div>
     </div>
   </div>
-  <div class="list-group p-3">
-    @for (client of clients; track $index) {
-    <a href="#" class="list-group-item list-group-item-action">
-      <div class="d-flex w-100 justify-content-between align-items-center">
-        <h5 class="mb-1">{{ client.name }}</h5>
-        <small class="text-body-secondary">{{ client.industry }}</small>
-      </div>
-    </a>
-    }
-  </div>
+  <router-outlet></router-outlet>
 </div>
