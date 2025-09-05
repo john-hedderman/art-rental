@@ -9,21 +9,21 @@
   {
     "id": 2,
     "url": "images/art/pastel.jpg",
-    "name": "Untitled",
-    "artist": "Unknown",
+    "name": "Ethereal Vortex Imagined",
+    "artist": "Kayla Johnson",
     "tags": "abstract, pastel"
   },
   {
     "id": 3,
     "url": "images/art/geometry.jpg",
-    "name": "Untitled",
-    "artist": "Unknown",
+    "name": "Meta Movement",
+    "artist": "Carl Brock",
     "tags": "abstract, geometry"
   },
   {
     "id": 4,
     "url": "images/art/face.jpg",
-    "name": "Untitled",
+    "name": "Mysterious Presence",
     "artist": "Archan Nair",
     "tags": "abstract, portrait, people"
   },
@@ -47,5 +47,12 @@
     "name": "Man with a Guitar",
     "artist": "Pablo Picasso",
     "tags": "cubism, geometry, people, music"
+  },
+  {
+    "id": 8,
+    "url": "images/art/harlequins-carnival.jpg",
+    "name": "The Harlequin's Carnival",
+    "artist": "Joan Miro",
+    "tags": "surrealism"
   }
 ]

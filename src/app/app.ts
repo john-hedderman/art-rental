@@ -11,5 +11,5 @@ import { Navbar } from './components/navbar/navbar';
   standalone: true,
 })
 export class App {
-  title = 'Art for Rent';
+  title = 'Camaraderie';
 }
