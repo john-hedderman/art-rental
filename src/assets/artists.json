@@ -1,37 +1,37 @@
 [
   {
     "id": 1,
-    "name": "Josie Willen",
-    "photo": "images/artists/josie-willen.jpg",
+    "name": "Kayla Johnson",
+    "photo": "images/artists/kayla-johnson.jpg",
     "types": "abstract, pastel"
   },
   {
     "id": 2,
-    "name": "Rick Larsen",
-    "photo": "images/artists/rick-larsen.jpg",
+    "name": "Carl Brock",
+    "photo": "images/artists/carl-brock.jpg",
     "types": "abstract, geometry, people"
   },
   {
     "id": 3,
-    "name": "Lawrence Dennish",
-    "photo": "images/artists/lawrence-dennish.jpg",
+    "name": "Aaron Smit",
+    "photo": "images/artists/aaron-smit.jpg",
     "types": "pointillism"
   },
   {
     "id": 4,
-    "name": "Juan Morlan",
-    "photo": "images/artists/juan-morlan.jpg",
+    "name": "Howard Sanchez",
+    "photo": "images/artists/howard-sanchez.jpg",
     "types": "nature, landscape"
   },
   {
     "id": 5,
-    "name": "Maria Jacorana",
-    "photo": "images/artists/maria-jacorana.jpg",
+    "name": "Linda Armstrong",
+    "photo": "images/artists/linda-armstrong.jpg",
     "types": "portrait, people"
   },
   {
     "id": 6,
-    "name": "Ben Johnson",
+    "name": "Bobby McLean",
     "photo": "",
     "types": "people, landscape"
   }
