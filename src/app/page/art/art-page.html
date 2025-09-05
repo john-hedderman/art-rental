@@ -11,7 +11,7 @@
   </div>
   <div class="card-group ar-art-page-content overflow-y-auto">
     @for (art of artwork; track $index) {
-    <app-select-card
+    <app-card
       [imageSource]="art.url"
       [imageAlt]="art.name"
       [imageTitle]="art.name"
@@ -19,7 +19,7 @@
       [cardText]="art.artist"
       [isSelectable]="true"
       class="mt-3 ms-3"
-    ></app-select-card>
+    ></app-card>
     }
   </div>
 </div>
