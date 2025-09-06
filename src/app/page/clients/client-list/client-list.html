@@ -1,6 +1,5 @@
 <div class="ar-page-container d-flex flex-column">
-  <app-page-header [headerTitle]="headerTitle" [headerButtons]="headerButtons"></app-page-header>
-  <div class="list-group p-3 overflow-y-auto">
+  <div class="list-group p-3">
     @for (client of clients; track $index) {
     <a
       class="list-group-item list-group-item-action ar-list-group-item"

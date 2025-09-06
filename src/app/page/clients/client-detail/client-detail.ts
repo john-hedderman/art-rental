@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
 import { HeaderButton } from '../../../model/models';
-import { PageHeader } from '../../../components/page-header/page-header';
+import { PageHeaderService } from '../../../service/page-header-service';
 
 @Component({
   selector: 'app-client-detail',
-  imports: [PageHeader],
+  imports: [],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
   standalone: true,
@@ -14,7 +14,7 @@ import { PageHeader } from '../../../components/page-header/page-header';
 export class ClientDetail implements OnInit {
   clientId: string | null = '';
 
-  headerTitle = '';
+  headerTitle = 'Client detail';
 
   navigateToClientList = () => {
     this.router.navigate(['/clients', 'list']);
@@ -29,12 +29,20 @@ export class ClientDetail implements OnInit {
     },
   ];
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private pageHeaderService: PageHeaderService
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.clientId = params.get('id');
       this.headerTitle = `Client ${this.clientId}`;
+    });
+    this.pageHeaderService.sendData({
+      headerTitle: this.headerTitle,
+      headerButtons: this.headerButtons,
     });
   }
 }

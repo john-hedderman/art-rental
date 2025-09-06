@@ -1,17 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { PageHeader } from '../../../components/page-header/page-header';
 import { Router } from '@angular/router';
 import { HeaderButton } from '../../../model/models';
+import { PageHeaderService } from '../../../service/page-header-service';
 
 @Component({
   selector: 'app-add-client',
-  imports: [PageHeader],
+  imports: [],
   templateUrl: './add-client.html',
   styleUrl: './add-client.scss',
   standalone: true,
 })
-export class AddClient {
+export class AddClient implements OnInit {
   headerTitle = 'Add Client';
 
   navigateToClientList = () => {
@@ -27,5 +27,12 @@ export class AddClient {
     },
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private pageHeaderService: PageHeaderService) {}
+
+  ngOnInit(): void {
+    this.pageHeaderService.sendData({
+      headerTitle: this.headerTitle,
+      headerButtons: this.headerButtons,
+    });
+  }
 }

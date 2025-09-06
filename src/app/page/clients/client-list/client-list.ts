@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Client, HeaderButton } from '../../../model/models';
 import { ClientService } from '../../../service/client-service';
-import { PageHeader } from '../../../components/page-header/page-header';
+import { PageHeaderService } from '../../../service/page-header-service';
 
 @Component({
   selector: 'app-client-list',
-  imports: [PageHeader],
+  imports: [],
   templateUrl: './client-list.html',
   styleUrl: './client-list.scss',
   standalone: true,
@@ -15,7 +15,7 @@ import { PageHeader } from '../../../components/page-header/page-header';
     class: 'overflow-y-auto',
   },
 })
-export class ClientList {
+export class ClientList implements OnInit {
   headerTitle = 'Clients';
 
   navigateToAddClient = () => {
@@ -33,7 +33,11 @@ export class ClientList {
 
   clients: Client[] = [];
 
-  constructor(private clientService: ClientService, private router: Router) {
+  constructor(
+    private clientService: ClientService,
+    private router: Router,
+    private pageHeaderService: PageHeaderService
+  ) {
     this.clientService.getClientsData().subscribe((data) => {
       this.clients = data;
     });
@@ -41,5 +45,12 @@ export class ClientList {
 
   navigateToClientDetail(id: number) {
     this.router.navigate(['/clients', id]);
+  }
+
+  ngOnInit(): void {
+    this.pageHeaderService.sendData({
+      headerTitle: this.headerTitle,
+      headerButtons: this.headerButtons,
+    });
   }
 }
