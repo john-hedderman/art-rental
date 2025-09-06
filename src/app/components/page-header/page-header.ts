@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 
+import { HeaderButton } from '../../model/models';
+
 @Component({
   selector: 'app-page-header',
   imports: [],
@@ -9,6 +11,5 @@ import { Component, Input } from '@angular/core';
 })
 export class PageHeader {
   @Input() headerTitle = '';
-  @Input() headerButtonText = '';
-  @Input() btnClickHandler: any;
+  @Input() headerButtons: HeaderButton[] = [];
 }

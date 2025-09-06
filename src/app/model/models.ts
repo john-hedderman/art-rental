@@ -17,3 +17,10 @@ export interface Client {
   name: string;
   industry: string;
 }
+
+export interface HeaderButton {
+  text: string;
+  type: string;
+  buttonClass: string;
+  clickHandler: any;
+}

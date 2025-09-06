@@ -34,13 +34,13 @@ export const routes: Routes = [
         component: AddClient,
       },
       {
-        path: '',
-        redirectTo: '/clients/list',
-        pathMatch: 'full',
-      },
-      {
         path: ':id',
         component: ClientDetail,
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full',
       },
     ],
   },

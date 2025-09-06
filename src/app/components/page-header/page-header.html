@@ -3,12 +3,16 @@
     <div>
       <h3 class="mb-0">{{ headerTitle }}</h3>
     </div>
-    @if (headerButtonText) {
     <div>
-      <button type="button" class="btn btn-primary" (click)="btnClickHandler()">
-        {{ headerButtonText }}
+      @for (headerButton of headerButtons; track $index) {
+      <button
+        type="{{ headerButton.type }}"
+        class="{{ headerButton.buttonClass }} ms-3"
+        (click)="headerButton.clickHandler()"
+      >
+        {{ headerButton.text }}
       </button>
+      }
     </div>
-    }
   </div>
 </div>

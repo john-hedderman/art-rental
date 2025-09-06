@@ -1,21 +1,11 @@
 import { Component } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
-
-import { PageHeader } from '../../components/page-header/page-header';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-clients-page',
-  imports: [RouterOutlet, PageHeader],
+  imports: [RouterOutlet],
   templateUrl: './clients-page.html',
   styleUrl: './clients-page.scss',
   standalone: true,
 })
-export class ClientsPage {
-  headerTitle = 'Clients';
-  headerButtonText = 'Add Client';
-  navigateToAddClient = () => {
-    this.router.navigate(['/clients', 'add']);
-  };
-
-  constructor(private router: Router) {}
-}
+export class ClientsPage {}
