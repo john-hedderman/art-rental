@@ -54,5 +54,12 @@
     "name": "The Harlequin's Carnival",
     "artist": "Joan Miro",
     "tags": "surrealism"
+  },
+  {
+    "id": 8,
+    "url": "images/art/sky-study.jpg",
+    "name": "Sky Study",
+    "artist": "James Ward",
+    "tags": "watercolor, study"
   }
 ]
