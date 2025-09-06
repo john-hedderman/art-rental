@@ -56,10 +56,24 @@
     "tags": "surrealism"
   },
   {
-    "id": 8,
+    "id": 9,
     "url": "images/art/sky-study.jpg",
     "name": "Sky Study",
     "artist": "James Ward",
     "tags": "watercolor, study"
+  },
+  {
+    "id": 10,
+    "url": "images/art/abstract-expressionism-1.jpg",
+    "name": "Abstract Expression #1",
+    "artist": "Jeffery Lewis",
+    "tags": "abstract, expressionism"
+  },
+  {
+    "id": 11,
+    "url": "images/art/abstract-expressionism-2.jpg",
+    "name": "Abstract Expression #2",
+    "artist": "Molly Owens",
+    "tags": "abstract, expressionism"
   }
 ]
