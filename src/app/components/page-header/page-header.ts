@@ -1,6 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
-import { HeaderButton } from '../../model/models';
 import { Subscription } from 'rxjs';
 import { PageHeaderService } from '../../service/page-header-service';
 

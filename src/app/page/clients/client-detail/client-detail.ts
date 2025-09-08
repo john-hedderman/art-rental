@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, Subject } from 'rxjs';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 
-import { HeaderButton } from '../../../model/models';
+import { Client, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
+import { ClientService } from '../../../service/client-service';
 
 @Component({
   selector: 'app-client-detail',
@@ -11,8 +14,10 @@ import { PageHeaderService } from '../../../service/page-header-service';
   styleUrl: './client-detail.scss',
   standalone: true,
 })
-export class ClientDetail implements OnInit {
-  clientId: string | null = '';
+export class ClientDetail implements OnInit, OnDestroy {
+  destroy$ = new Subject<void>();
+
+  clientData: Client = {} as Client;
 
   headerTitle = 'Client detail';
 
@@ -32,17 +37,38 @@ export class ClientDetail implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private pageHeaderService: PageHeaderService
+    private pageHeaderService: PageHeaderService,
+    private clientService: ClientService
   ) {}
 
+  getClientId(): Observable<string> {
+    return this.route.paramMap.pipe(
+      map((params) => {
+        const id = params.get('id');
+        return id !== null ? id : '';
+      })
+    );
+  }
+
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      this.clientId = params.get('id');
-      this.headerTitle = `Client ${this.clientId}`;
-    });
-    this.pageHeaderService.sendData({
-      headerTitle: this.headerTitle,
-      headerButtons: this.headerButtons,
-    });
+    this.getClientId()
+      .pipe(
+        switchMap((id) => {
+          return this.clientService.getClient(id);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((client) => {
+        this.clientData = client;
+        this.pageHeaderService.sendData({
+          headerTitle: client?.name,
+          headerButtons: this.headerButtons,
+        });
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

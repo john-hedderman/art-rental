@@ -31,14 +31,14 @@ export class ClientList implements OnInit {
     },
   ];
 
-  clients: Client[] = [];
+  clients: Client[] | null = [];
 
   constructor(
     private clientService: ClientService,
     private router: Router,
     private pageHeaderService: PageHeaderService
   ) {
-    this.clientService.getClientsData().subscribe((data) => {
+    this.clientService.getClients().subscribe((data) => {
       this.clients = data;
     });
   }
