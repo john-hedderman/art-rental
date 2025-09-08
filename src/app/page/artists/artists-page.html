@@ -1,21 +1,4 @@
-<div class="ar-artists-page-container d-flex flex-column">
-  <div class="ar-artists-page-header p-3">
-    <div class="d-flex justify-content-between">
-      <div>
-        <h3 class="mb-0">{{ headerTitle }}</h3>
-      </div>
-    </div>
-  </div>
-  <div class="card-group ar-art-page-content overflow-y-auto">
-    @for (artist of artists; track $index) {
-    <app-card
-      [imageSource]="artist.photo"
-      [imageAlt]="artist.name"
-      [imageTitle]="artist.name"
-      [cardTitle]="artist.name"
-      [cardText]="artist.types"
-      class="d-inline-block mt-3 ms-3"
-    ></app-card>
-    }
-  </div>
+<div class="ar-page-container d-flex flex-column">
+  <app-page-header></app-page-header>
+  <router-outlet></router-outlet>
 </div>

@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 
 import { ArtistService } from '../../service/artist-service';
 import { Artist } from '../../model/models';
-import { Card } from '../../components/card/card';
+import { PageHeader } from '../../components/page-header/page-header';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-artists-page',
-  imports: [Card],
+  imports: [PageHeader, RouterOutlet],
   templateUrl: './artists-page.html',
   styleUrl: './artists-page.scss',
   standalone: true,

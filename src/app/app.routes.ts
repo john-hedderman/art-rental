@@ -7,6 +7,7 @@ import { ClientsPage } from './page/clients/clients-page';
 import { ClientList } from './page/clients/client-list/client-list';
 import { AddClient } from './page/clients/add-client/add-client';
 import { ClientDetail } from './page/clients/client-detail/client-detail';
+import { ArtistList } from './page/artists/artist-list/artist-list';
 
 export const routes: Routes = [
   {
@@ -20,6 +21,17 @@ export const routes: Routes = [
   {
     path: 'artists',
     component: ArtistsPage,
+    children: [
+      {
+        path: 'list',
+        component: ArtistList,
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full',
+      },
+    ],
   },
   {
     path: 'clients',
