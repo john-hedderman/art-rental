@@ -1,25 +1,4 @@
-<div class="ar-art-page-container d-flex flex-column">
-  <div class="ar-art-page-header p-3">
-    <div class="d-flex justify-content-between align-items-center">
-      <div>
-        <h3 class="mb-0">{{ headerTitle }}</h3>
-      </div>
-      <div>
-        <button type="button" class="btn btn-primary">{{ addButtonText }}</button>
-      </div>
-    </div>
-  </div>
-  <div class="card-group ar-art-page-content overflow-y-auto">
-    @for (art of artwork; track $index) {
-    <app-card
-      [imageSource]="art.url"
-      [imageAlt]="art.name"
-      [imageTitle]="art.name"
-      [cardTitle]="art.name"
-      [cardText]="art.artist"
-      [isSelectable]="true"
-      class="mt-3 ms-3"
-    ></app-card>
-    }
-  </div>
+<div class="ar-page-container d-flex flex-column">
+  <app-page-header></app-page-header>
+  <router-outlet></router-outlet>
 </div>

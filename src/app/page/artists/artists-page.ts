@@ -14,8 +14,6 @@ import { RouterOutlet } from '@angular/router';
 })
 export class ArtistsPage {
   artists: Artist[] = [];
-  headerTitle = 'Artists';
-  primaryWork = 'Primary work: ';
 
   constructor(private artistService: ArtistService) {
     this.artistService.getArtistsData().subscribe((data) => {
