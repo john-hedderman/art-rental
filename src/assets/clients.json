@@ -2,101 +2,201 @@
   {
     "id": 1,
     "name": "Craftopia",
+    "address1": "",
+    "address2": "",
+    "city": "Greece",
+    "state": "NY",
+    "zipCode": "",
     "industry": "Arts & Crafts"
   },
   {
     "id": 2,
     "name": "Vibrance",
+    "address1": "",
+    "address2": "",
+    "city": "Irondiquoit",
+    "state": "NY",
+    "zipCode": "",
     "industry": "Beauty"
   },
   {
     "id": 3,
     "name": "LearnNest",
+    "address1": "",
+    "address2": "",
+    "city": "Henrietta",
+    "state": "NY",
+    "zipCode": "",
     "industry": "Education"
   },
   {
     "id": 4,
     "name": "Hearth and Home",
+    "address1": "",
+    "address2": "",
+    "city": "Rochester",
+    "state": "NY",
+    "zipCode": "",
     "industry": "Home"
   },
   {
     "id": 5,
     "name": "Grandeur",
+    "address1": "",
+    "address2": "",
+    "city": "Webster",
+    "state": "NY",
+    "zipCode": "",
     "industry": "Luxury"
   },
   {
     "id": 6,
     "name": "Glamour Grove",
+    "address1": "",
+    "address2": "",
+    "city": "Buffalo",
+    "state": "NY",
+    "zipCode": "",
     "industry": "Fashion"
   },
   {
     "id": 7,
     "name": "Brilliance",
+    "address1": "",
+    "address2": "",
+    "city": "Java",
+    "state": "NY",
+    "zipCode": "",
     "industry": "Jewelry"
   },
   {
     "id": 8,
     "name": "Creative Canvas Studio",
+    "address1": "",
+    "address2": "",
+    "city": "Geneva",
+    "state": "NY",
+    "zipCode": "",
     "industry": "Design"
   },
   {
     "id": 9,
     "name": "GamerNest",
+    "address1": "",
+    "address2": "",
+    "city": "Oswego",
+    "state": "NY",
+    "zipCode": "",
     "industry": "Gaming"
   },
   {
     "id": 10,
     "name": "Financial Freedom Network",
+    "address1": "",
+    "address2": "",
+    "city": "Victor",
+    "state": "NY",
+    "zipCode": "",
     "industry": "Finance"
   },
   {
     "id": 11,
     "name": "Gleam",
+    "address1": "",
+    "address2": "",
+    "city": "Macedon",
+    "state": "NY",
+    "zipCode": "",
     "industry": "Cleaning"
   },
   {
     "id": 12,
     "name": "The Talk Exchange",
+    "address1": "",
+    "address2": "",
+    "city": "Ontario",
+    "state": "NY",
+    "zipCode": "",
     "industry": "Communication"
   },
   {
     "id": 13,
     "name": "Holistic",
+    "address1": "",
+    "address2": "",
+    "city": "",
+    "state": "",
+    "zipCode": "",
     "industry": "Health"
   },
   {
     "id": 14,
     "name": "Mouthwatering Meals",
+    "address1": "",
+    "address2": "",
+    "city": "",
+    "state": "",
+    "zipCode": "",
     "industry": "Food"
   },
   {
     "id": 15,
     "name": "Playful Minds Academy",
+    "address1": "",
+    "address2": "",
+    "city": "",
+    "state": "",
+    "zipCode": "",
     "industry": "Kids"
   },
   {
     "id": 16,
     "name": "Tranquil",
+    "address1": "",
+    "address2": "",
+    "city": "",
+    "state": "",
+    "zipCode": "",
     "industry": "Candles"
   },
   {
     "id": 17,
     "name": "Euphoria Events",
+    "address1": "",
+    "address2": "",
+    "city": "",
+    "state": "",
+    "zipCode": "",
     "industry": "Events"
   },
   {
     "id": 18,
     "name": "Urban Threads",
+    "address1": "",
+    "address2": "",
+    "city": "",
+    "state": "",
+    "zipCode": "",
     "industry": "Clothing"
   },
   {
     "id": 19,
     "name": "Floral Symphony",
+    "address1": "",
+    "address2": "",
+    "city": "",
+    "state": "",
+    "zipCode": "",
     "industry": "Garden"
   },
   {
     "id": 20,
     "name": "Flexi",
+    "address1": "",
+    "address2": "",
+    "city": "",
+    "state": "",
+    "zipCode": "",
     "industry": "Fitness"
   }
 ]
