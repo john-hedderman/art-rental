@@ -11,6 +11,9 @@ import { Card } from '../../../components/card/card';
   templateUrl: './artist-list.html',
   styleUrl: './artist-list.scss',
   standalone: true,
+  host: {
+    class: 'overflow-y-auto',
+  },
 })
 export class ArtistList implements OnInit {
   artists: Artist[] = [];

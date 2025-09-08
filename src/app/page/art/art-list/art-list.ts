@@ -11,6 +11,9 @@ import { PageHeaderService } from '../../../service/page-header-service';
   templateUrl: './art-list.html',
   styleUrl: './art-list.scss',
   standalone: true,
+  host: {
+    class: 'overflow-y-auto',
+  },
 })
 export class ArtList implements OnInit {
   artwork: Art[] = [];
