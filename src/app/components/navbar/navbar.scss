@@ -7,16 +7,26 @@
   --ar-navlink-active-font-size: 1.25rem;
 
   background-color: var(--ar-navbar-bg);
+  height: var(--ar-navbar-height);
 
   .ar-navbar-brand {
     color: var(--ar-navbar-brand-color);
-    font-size: var(--ar-navbar-brand-font-size);
+    font-size: 1.75rem;
+
+    @media screen and (max-width: 425px) {
+      font-size: 1.5rem;
+    }
+
+    @media screen and (max-width: 320px) {
+      font-size: 1.125rem;
+    }
   }
 
   .ar-navbar-toggler {
     padding: 0.25rem 0.375rem;
     background-color: var(--ar-navbar-toggler-color);
     border: none;
+    font-size: inherit;
 
     &:focus {
       box-shadow: 0 0 0 1px;
