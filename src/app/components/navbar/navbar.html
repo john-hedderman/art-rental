@@ -1,6 +1,11 @@
 <nav class="navbar navbar-expand-lg ar-navbar fixed-top">
   <div class="container-fluid pe-3">
-    <a class="navbar-brand ar-navbar-brand" href="/">{{ title }}</a>
+    <a
+      class="navbar-brand ar-navbar-brand"
+      routerLink="/art/list"
+      (click)="onClickNavLink($event, true)"
+      >{{ title }}</a
+    >
     <button
       #navbarToggler
       class="navbar-toggler ar-navbar-toggler"

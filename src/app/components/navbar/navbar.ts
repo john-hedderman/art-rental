@@ -13,9 +13,8 @@ export class Navbar implements OnInit {
   @Input() title: string | undefined;
   @ViewChild('navbarToggler') navbarToggler: ElementRef | undefined;
 
-  onClickNavLink(event: PointerEvent) {
+  onClickNavLink(event: PointerEvent, fromBrand?: boolean) {
     // Force the expanded nav to collapse by clicking the toggle button
-    // Otherwise it is displayed already expanded at a larger breakpoint, relevant when rotating a tablet to landscape
     const toggler = this.navbarToggler?.nativeElement;
     if (toggler.checkVisibility()) {
       toggler.click();
@@ -27,9 +26,17 @@ export class Navbar implements OnInit {
       link.removeAttribute('aria-current');
       link.classList.remove('active');
     });
-    const target = event.target as HTMLElement;
-    target.setAttribute('aria-current', 'page');
-    target.classList.add('active');
+
+    // Mark the clicked link as active
+    let target;
+    if (fromBrand) {
+      const brandRouterLinkValue = (event.target as HTMLElement).getAttribute('routerLink');
+      target = document.querySelector(`.nav-link[routerLink="${brandRouterLinkValue}"]`);
+    } else {
+      target = event.target as HTMLElement;
+    }
+    target?.setAttribute('aria-current', 'page');
+    target?.classList.add('active');
   }
 
   constructor(private router: Router) {}
