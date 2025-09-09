@@ -9,7 +9,10 @@
   --ar-border-color: #ccc;
   --ar-border-color-dark: #666;
 
-  --ar-navbar-height: 4.75rem;
+  --ar-navbar-height: 4.25rem;
+  --ar-navbar-brand-font-size: 1.75rem;
+  --ar-navbar-brand-font-size-small: 1.5rem;
+  --ar-navbar-brand-font-size-smaller: 1.125rem;
 
   --ar-bg-color-card-title: #f1e4cf;
 
@@ -26,6 +29,29 @@
 body {
   height: 100vh;
   padding-top: var(--ar-navbar-height);
+
+  // at these breakpoints, the navbar brand font size is reduced
+  // so correspondingly reduce the top padding here, by the line-height times the delta
+
+  @media screen and (max-width: 425px) {
+    padding-top: calc(
+      var(--ar-navbar-height) -
+        (
+          var(--bs-body-line-height) *
+            (var(--ar-navbar-brand-font-size) - var(--ar-navbar-brand-font-size-small))
+        )
+    );
+  }
+
+  @media screen and (max-width: 375px) {
+    padding-top: calc(
+      var(--ar-navbar-height) -
+        (
+          var(--bs-body-line-height) *
+            (var(--ar-navbar-brand-font-size) - var(--ar-navbar-brand-font-size-smaller))
+        )
+    );
+  }
 }
 
 .ar-page-container {
