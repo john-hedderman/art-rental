@@ -16,22 +16,30 @@
     <div class="collapse navbar-collapse" id="arNavbarSupportedContent">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a
-            class="nav-link active ar-nav-link"
-            aria-current="page"
-            routerLink="/home"
-            (click)="collapseNav()"
+          <a class="nav-link ar-nav-link" routerLink="/home" (click)="onClickNavLink($event)"
             >Home</a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link ar-nav-link" routerLink="/art" (click)="collapseNav()">Art</a>
+          <a class="nav-link ar-nav-link" routerLink="/art/list" (click)="onClickNavLink($event)"
+            >Art</a
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link ar-nav-link" routerLink="/artists" (click)="collapseNav()">Artists</a>
+          <a
+            class="nav-link ar-nav-link"
+            routerLink="/artists/list"
+            (click)="onClickNavLink($event)"
+            >Artists</a
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link ar-nav-link" routerLink="/clients" (click)="collapseNav()">Clients</a>
+          <a
+            class="nav-link ar-nav-link"
+            routerLink="/clients/list"
+            (click)="onClickNavLink($event)"
+            >Clients</a
+          >
         </li>
       </ul>
     </div>

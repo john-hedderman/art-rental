@@ -10,6 +10,11 @@
 .ar-navbar .ar-nav-link {
   color: var(--ar-navlink-color);
   cursor: pointer;
+
+  &.active {
+    color: var(--ar-navlink-active-color);
+    font-weight: 700;
+  }
 }
 
 .ar-navbar-toggler {
