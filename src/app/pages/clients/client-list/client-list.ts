@@ -24,9 +24,11 @@ export class ClientList implements OnInit {
 
   headerButtons: HeaderButton[] = [
     {
+      id: 'addClientBtn',
       text: 'Add Client',
       type: 'button',
       buttonClass: 'btn btn-primary',
+      disabled: false,
       clickHandler: this.navigateToAddClient,
     },
   ];

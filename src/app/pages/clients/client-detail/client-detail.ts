@@ -27,9 +27,11 @@ export class ClientDetail implements OnInit, OnDestroy {
 
   headerButtons: HeaderButton[] = [
     {
+      id: 'returnToClientListBtn',
       text: 'Return to List',
       type: 'button',
       buttonClass: 'btn btn-primary',
+      disabled: false,
       clickHandler: this.navigateToClientList,
     },
   ];

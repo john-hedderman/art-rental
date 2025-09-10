@@ -22,11 +22,51 @@ export class ArtList implements OnInit {
 
   navigateToAddToCart = () => {};
 
+  navigateToAddArt = () => {};
+
+  setAddToCartButtonState = () => {
+    const addArtToCartBtn = document.getElementById('addArtToCartBtn');
+    if (!addArtToCartBtn) {
+      return;
+    }
+
+    const checkboxes = document.querySelectorAll<HTMLInputElement>(
+      'input.ar-form-check-input[type=checkbox]'
+    );
+    if (!checkboxes || checkboxes.length < 1) {
+      return;
+    }
+
+    let disabled = true;
+    for (const checkbox of checkboxes) {
+      if (checkbox.checked) {
+        disabled = false;
+        break;
+      }
+    }
+
+    if (disabled) {
+      addArtToCartBtn.setAttribute('disabled', '');
+    } else {
+      addArtToCartBtn.removeAttribute('disabled');
+    }
+  };
+
   headerButtons: HeaderButton[] = [
     {
+      id: 'addArtBtn',
+      text: 'Add Art',
+      type: 'button',
+      buttonClass: 'btn btn-secondary',
+      disabled: false,
+      clickHandler: this.navigateToAddArt,
+    },
+    {
+      id: 'addArtToCartBtn',
       text: 'Add Selected to Cart',
       type: 'button',
       buttonClass: 'btn btn-primary',
+      disabled: true,
       clickHandler: this.navigateToAddToCart,
     },
   ];

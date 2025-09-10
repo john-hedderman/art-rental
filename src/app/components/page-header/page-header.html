@@ -6,8 +6,10 @@
     <div>
       @for (headerButton of headerData?.headerButtons; track $index) {
       <button
+        id="{{ headerButton.id }}"
         type="{{ headerButton.type }}"
         class="{{ headerButton.buttonClass }} ms-3"
+        [disabled]="headerButton.disabled"
         (click)="headerButton.clickHandler()"
       >
         {{ headerButton.text }}

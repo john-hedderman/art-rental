@@ -15,4 +15,5 @@ export class Card {
   @Input() cardTitle = '';
   @Input() cardText = '';
   @Input() isSelectable = false;
+  @Input() changeHandler: any;
 }

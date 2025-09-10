@@ -27,6 +27,7 @@
           [ngClass]="{ 'd-none': !isSelectable }"
           name="card"
           value="true"
+          (change)="changeHandler($event)"
         />
       </div>
     </div>

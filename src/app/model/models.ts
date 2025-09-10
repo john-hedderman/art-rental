@@ -24,8 +24,10 @@ export interface Client {
 }
 
 export interface HeaderButton {
+  id: string;
   text: string;
   type: string;
   buttonClass: string;
+  disabled: boolean;
   clickHandler: any;
 }
