@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-import { PageHeader } from '../../components/page-header/page-header';
+import { PageHeader } from '../../shared/page-header/page-header';
 
 @Component({
   selector: 'app-clients-page',

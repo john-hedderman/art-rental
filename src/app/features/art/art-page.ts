@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { Art } from '../../model/models';
 import { ArtService } from '../../service/art-service';
-import { PageHeader } from '../../components/page-header/page-header';
+import { PageHeader } from '../../shared/page-header/page-header';
 import { RouterOutlet } from '@angular/router';
 
 @Component({

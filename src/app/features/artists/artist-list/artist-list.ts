@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Artist, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
 import { ArtistService } from '../../../service/artist-service';
-import { Card } from '../../../components/card/card';
+import { Card } from '../../../shared/card/card';
 
 @Component({
   selector: 'app-artist-list',
