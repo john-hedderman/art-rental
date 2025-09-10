@@ -45,7 +45,7 @@ export class Navbar implements OnInit {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        const activeLink = document.querySelector(`[routerLink="${event.url}"]`);
+        const activeLink = document.querySelector(`.ar-nav-link[routerLink="${event.url}"]`);
         activeLink?.setAttribute('aria-current', 'page');
         activeLink?.classList.add('active');
       });
