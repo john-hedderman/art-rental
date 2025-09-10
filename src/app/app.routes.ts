@@ -1,13 +1,13 @@
 import { Routes } from '@angular/router';
 
-import { ArtPage } from './page/art/art-page';
-import { ArtList } from './page/art/art-list/art-list';
-import { ArtistsPage } from './page/artists/artists-page';
-import { ArtistList } from './page/artists/artist-list/artist-list';
-import { ClientsPage } from './page/clients/clients-page';
-import { ClientList } from './page/clients/client-list/client-list';
-import { AddClient } from './page/clients/add-client/add-client';
-import { ClientDetail } from './page/clients/client-detail/client-detail';
+import { ArtPage } from './pages/art/art-page';
+import { ArtList } from './pages/art/art-list/art-list';
+import { ArtistsPage } from './pages/artists/artists-page';
+import { ArtistList } from './pages/artists/artist-list/artist-list';
+import { ClientsPage } from './pages/clients/clients-page';
+import { ClientList } from './pages/clients/client-list/client-list';
+import { AddClient } from './pages/clients/add-client/add-client';
+import { ClientDetail } from './pages/clients/client-detail/client-detail';
 
 export const routes: Routes = [
   {
