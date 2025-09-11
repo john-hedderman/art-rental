@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { Client, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
@@ -8,7 +10,7 @@ import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-client-list',
-  imports: [],
+  imports: [NgxDatatableModule],
   templateUrl: './client-list.html',
   styleUrl: './client-list.scss',
   standalone: true,
@@ -17,6 +19,8 @@ import { take } from 'rxjs/operators';
   },
 })
 export class ClientList implements OnInit {
+  @ViewChild('locationTemplate', { static: true }) locationTemplate!: TemplateRef<any>;
+
   headerTitle = 'Clients';
 
   navigateToAddClient = () => {
@@ -34,7 +38,8 @@ export class ClientList implements OnInit {
     },
   ];
 
-  clients: Client[] | null = [];
+  rows: Client[] = [];
+  columns: TableColumn[] = [];
 
   constructor(
     private dataService: DataService,
@@ -44,8 +49,8 @@ export class ClientList implements OnInit {
     this.dataService
       .load('clients')
       .pipe(take(1))
-      .subscribe((data) => {
-        this.clients = data;
+      .subscribe((clients) => {
+        this.rows = clients;
       });
   }
 
@@ -58,5 +63,10 @@ export class ClientList implements OnInit {
       headerTitle: this.headerTitle,
       headerButtons: this.headerButtons,
     });
+    this.columns = [
+      { prop: 'name', name: 'Name' },
+      { prop: 'location', name: 'Location', cellTemplate: this.locationTemplate },
+      { prop: 'industry', name: 'Business' },
+    ];
   }
 }

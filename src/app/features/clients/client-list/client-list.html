@@ -1,26 +1,15 @@
-<div class="ar-page-container d-flex flex-column container-fluid">
-  <div class="list-group p-3">
-    @for (client of clients; track $index) {
-    <a
-      class="list-group-item list-group-item-action ar-list-group-item"
-      (click)="navigateToClientDetail(client.id)"
-    >
-      <div class="row align-items-center">
-        <div class="col-md-6">
-          <h6 class="mb-0 fw-bold">{{ client.name }}</h6>
-        </div>
-        <div class="col-md-3">
-          <span class="text-body-secondary">
-            @if (client.city && client.state) {
-            {{ client.city }}, {{ client.state }}
-            }
-          </span>
-        </div>
-        <div class="col-md-3">
-          <span class="text-body-secondary">{{ client.industry }}</span>
-        </div>
-      </div>
-    </a>
-    }
-  </div>
-</div>
+<ngx-datatable
+  class="material"
+  [rows]="rows"
+  [columns]="columns"
+  [columnMode]="'force'"
+  [headerHeight]="50"
+  [rowHeight]="'auto'"
+>
+</ngx-datatable>
+
+<ng-template #locationTemplate let-value="value" let-row="row">
+  @if (row.city && row.state) {
+  {{ row.city }}, {{ row.state }}
+  }
+</ng-template>
