@@ -8,6 +8,7 @@ import { ClientsPage } from './features/clients/clients-page';
 import { ClientList } from './features/clients/client-list/client-list';
 import { AddClient } from './features/clients/add-client/add-client';
 import { ClientDetail } from './features/clients/client-detail/client-detail';
+import { Jobs } from './features/jobs/jobs';
 
 export const routes: Routes = [
   {
@@ -62,6 +63,10 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
     ],
+  },
+  {
+    path: 'jobs',
+    component: Jobs,
   },
   {
     path: '',
