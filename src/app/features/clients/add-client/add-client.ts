@@ -21,7 +21,7 @@ export class AddClient implements OnInit {
   headerButtons: HeaderButton[] = [
     {
       id: 'returnToClientListBtn',
-      text: 'Return to List',
+      label: '<i class="bi bi-arrow-left"></i> Back',
       type: 'button',
       buttonClass: 'btn btn-primary',
       disabled: false,

@@ -11,9 +11,8 @@
         class="{{ headerButton.buttonClass }} ms-3"
         [disabled]="headerButton.disabled"
         (click)="headerButton.clickHandler()"
-      >
-        {{ headerButton.text }}
-      </button>
+        [innerHTML]="headerButton.label"
+      ></button>
       }
     </div>
   </div>

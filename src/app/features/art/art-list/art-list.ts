@@ -55,7 +55,7 @@ export class ArtList implements OnInit {
   headerButtons: HeaderButton[] = [
     {
       id: 'addArtBtn',
-      text: 'Add Art',
+      label: 'Add Art',
       type: 'button',
       buttonClass: 'btn btn-secondary',
       disabled: false,
@@ -63,7 +63,7 @@ export class ArtList implements OnInit {
     },
     {
       id: 'addArtToCartBtn',
-      text: 'Add Selected to Cart',
+      label: 'Add Selected to Cart',
       type: 'button',
       buttonClass: 'btn btn-primary',
       disabled: true,

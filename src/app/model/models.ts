@@ -25,7 +25,7 @@ export interface Client {
 
 export interface HeaderButton {
   id: string;
-  text: string;
+  label: string;
   type: string;
   buttonClass: string;
   disabled: boolean;
