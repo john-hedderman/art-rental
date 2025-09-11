@@ -1,6 +1,7 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
@@ -9,7 +10,9 @@ import { filter } from 'rxjs/operators';
   styleUrl: './navbar.scss',
   standalone: true,
 })
-export class Navbar implements OnInit {
+export class Navbar implements OnInit, OnDestroy {
+  destroy$ = new Subject<void>();
+
   @Input() title: string | undefined;
   @ViewChild('navbarToggler') navbarToggler: ElementRef | undefined;
 
@@ -43,11 +46,19 @@ export class Navbar implements OnInit {
 
   ngOnInit(): void {
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.destroy$)
+      )
       .subscribe((event: NavigationEnd) => {
         const activeLink = document.querySelector(`.ar-nav-link[routerLink="${event.url}"]`);
         activeLink?.setAttribute('aria-current', 'page');
         activeLink?.classList.add('active');
       });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

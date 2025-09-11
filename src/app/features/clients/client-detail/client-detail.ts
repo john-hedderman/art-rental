@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, switchMap, take } from 'rxjs/operators';
 
 import { Client, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
@@ -14,9 +14,7 @@ import { ClientService } from '../../../service/client-service';
   styleUrl: './client-detail.scss',
   standalone: true,
 })
-export class ClientDetail implements OnInit, OnDestroy {
-  destroy$ = new Subject<void>();
-
+export class ClientDetail implements OnInit {
   clientData: Client = {} as Client;
 
   headerTitle = 'Client detail';
@@ -58,7 +56,7 @@ export class ClientDetail implements OnInit, OnDestroy {
         switchMap((id) => {
           return this.clientService.getClient(id);
         }),
-        takeUntil(this.destroy$)
+        take(1)
       )
       .subscribe((client) => {
         this.clientData = client;
@@ -67,10 +65,5 @@ export class ClientDetail implements OnInit, OnDestroy {
           headerButtons: this.headerButtons,
         });
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

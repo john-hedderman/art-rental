@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Client, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
 import { DataService } from '../../../service/data-service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-client-list',
@@ -40,9 +41,12 @@ export class ClientList implements OnInit {
     private router: Router,
     private pageHeaderService: PageHeaderService
   ) {
-    this.dataService.load('clients').subscribe((data) => {
-      this.clients = data;
-    });
+    this.dataService
+      .load('clients')
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.clients = data;
+      });
   }
 
   navigateToClientDetail(id: number) {

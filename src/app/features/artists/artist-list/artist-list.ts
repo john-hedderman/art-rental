@@ -4,6 +4,7 @@ import { Artist, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
 import { Card } from '../../../shared/card/card';
 import { DataService } from '../../../service/data-service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-artist-list',
@@ -23,9 +24,12 @@ export class ArtistList implements OnInit {
   headerButtons: HeaderButton[] = [];
 
   constructor(private pageHeaderService: PageHeaderService, private dataService: DataService) {
-    this.dataService.load('artists').subscribe((data) => {
-      this.artists = data;
-    });
+    this.dataService
+      .load('artists')
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.artists = data;
+      });
   }
 
   ngOnInit(): void {

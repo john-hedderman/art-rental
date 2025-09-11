@@ -4,6 +4,7 @@ import { Card } from '../../../shared/card/card';
 import { Art, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
 import { DataService } from '../../../service/data-service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-art-list',
@@ -72,9 +73,12 @@ export class ArtList implements OnInit {
   ];
 
   constructor(private dataService: DataService, private pageHeaderService: PageHeaderService) {
-    this.dataService.load('art').subscribe((data) => {
-      this.artwork = data;
-    });
+    this.dataService
+      .load('art')
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.artwork = data;
+      });
   }
 
   ngOnInit(): void {
