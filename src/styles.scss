@@ -1,3 +1,7 @@
+@import '../node_modules/@swimlane/ngx-datatable/index.css';
+@import '../node_modules/@swimlane/ngx-datatable/themes/material.scss'; /* Or dark.scss, bootstrap.scss */
+@import '../node_modules/@swimlane/ngx-datatable/assets/icons.css';
+
 :root {
   --ar-text-color-primary: #666;
   --ar-text-color-primary-light: #666;

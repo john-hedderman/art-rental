@@ -9,6 +9,7 @@ import { ClientList } from './features/clients/client-list/client-list';
 import { AddClient } from './features/clients/add-client/add-client';
 import { ClientDetail } from './features/clients/client-detail/client-detail';
 import { Jobs } from './features/jobs/jobs';
+import { TableTest } from './features/table-test/table-test';
 
 export const routes: Routes = [
   {
@@ -67,6 +68,10 @@ export const routes: Routes = [
   {
     path: 'jobs',
     component: Jobs,
+  },
+  {
+    path: 'table',
+    component: TableTest,
   },
   {
     path: '',
