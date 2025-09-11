@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Card } from '../../../shared/card/card';
-import { ArtService } from '../../../service/art-service';
 import { Art, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
+import { DataService } from '../../../service/data-service';
 
 @Component({
   selector: 'app-art-list',
@@ -71,8 +71,8 @@ export class ArtList implements OnInit {
     },
   ];
 
-  constructor(private artService: ArtService, private pageHeaderService: PageHeaderService) {
-    this.artService.getArtData().subscribe((data) => {
+  constructor(private dataService: DataService, private pageHeaderService: PageHeaderService) {
+    this.dataService.load('art').subscribe((data) => {
       this.artwork = data;
     });
   }

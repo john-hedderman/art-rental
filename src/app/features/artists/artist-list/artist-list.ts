@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { Artist, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
-import { ArtistService } from '../../../service/artist-service';
 import { Card } from '../../../shared/card/card';
+import { DataService } from '../../../service/data-service';
 
 @Component({
   selector: 'app-artist-list',
@@ -22,8 +22,8 @@ export class ArtistList implements OnInit {
 
   headerButtons: HeaderButton[] = [];
 
-  constructor(private pageHeaderService: PageHeaderService, private artistService: ArtistService) {
-    this.artistService.getArtistsData().subscribe((data) => {
+  constructor(private pageHeaderService: PageHeaderService, private dataService: DataService) {
+    this.dataService.load('artists').subscribe((data) => {
       this.artists = data;
     });
   }

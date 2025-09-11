@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Client, HeaderButton } from '../../../model/models';
-import { ClientService } from '../../../service/client-service';
 import { PageHeaderService } from '../../../service/page-header-service';
+import { DataService } from '../../../service/data-service';
 
 @Component({
   selector: 'app-client-list',
@@ -36,11 +36,11 @@ export class ClientList implements OnInit {
   clients: Client[] | null = [];
 
   constructor(
-    private clientService: ClientService,
+    private dataService: DataService,
     private router: Router,
     private pageHeaderService: PageHeaderService
   ) {
-    this.clientService.getClients().subscribe((data) => {
+    this.dataService.load('clients').subscribe((data) => {
       this.clients = data;
     });
   }
