@@ -9,7 +9,6 @@ import { ClientList } from './features/clients/client-list/client-list';
 import { AddClient } from './features/clients/add-client/add-client';
 import { ClientDetail } from './features/clients/client-detail/client-detail';
 import { JobsPage } from './features/jobs/jobs-page';
-import { TableTest } from './features/table-test/table-test';
 import { JobList } from './features/jobs/job-list/job-list';
 
 export const routes: Routes = [
@@ -80,10 +79,6 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
     ],
-  },
-  {
-    path: 'table',
-    component: TableTest,
   },
   {
     path: '',
