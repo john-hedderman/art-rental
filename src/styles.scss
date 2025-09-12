@@ -1,5 +1,11 @@
+/* Used the automatic migration tool for deprecated SASS @imports */
+/* https://sass-lang.com/documentation/breaking-changes/import/ */
+@use '../node_modules/@swimlane/ngx-datatable/themes/material.scss';
+@use '../node_modules/@swimlane/ngx-datatable/themes/dark.scss';
+@use '../node_modules/@swimlane/ngx-datatable/themes/bootstrap.scss';
+
 @import '../node_modules/@swimlane/ngx-datatable/index.css';
-@import '../node_modules/@swimlane/ngx-datatable/themes/material.scss'; /* Or dark.scss, bootstrap.scss */
+/* Or dark.scss, bootstrap.scss */
 @import '../node_modules/@swimlane/ngx-datatable/assets/icons.css';
 
 :root {
