@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+
+import { HeaderButton } from '../../model/models';
+import { PageHeaderService } from '../../service/page-header-service';
 
 @Component({
   selector: 'app-jobs',
@@ -7,4 +10,19 @@ import { Component } from '@angular/core';
   styleUrl: './jobs.scss',
   standalone: true,
 })
-export class Jobs {}
+export class Jobs implements OnInit {
+  jobs = [];
+
+  headerTitle = 'Jobs';
+
+  headerButtons: HeaderButton[] = [];
+
+  constructor(private pageHeaderService: PageHeaderService) {}
+
+  ngOnInit(): void {
+    this.pageHeaderService.sendData({
+      headerTitle: this.headerTitle,
+      headerButtons: this.headerButtons,
+    });
+  }
+}

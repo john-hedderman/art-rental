@@ -2,7 +2,7 @@
 /* https://sass-lang.com/documentation/breaking-changes/import/ */
 @use '../node_modules/@swimlane/ngx-datatable/themes/material.scss';
 @use '../node_modules/@swimlane/ngx-datatable/themes/dark.scss';
-@use '../node_modules/@swimlane/ngx-datatable/themes/bootstrap.scss';
+@import '../node_modules/@swimlane/ngx-datatable/themes/bootstrap.css';
 
 @import '../node_modules/@swimlane/ngx-datatable/index.css';
 /* Or dark.scss, bootstrap.scss */
@@ -26,7 +26,7 @@
 
   --ar-bg-color-card-title: #f1e4cf;
 
-  --ar-list-header-height: 2.5rem;
+  --ar-page-header-height: 4.5rem;
 }
 
 * {
@@ -65,5 +65,5 @@ body {
 }
 
 .ar-page-container {
-  height: calc(100vh - var(--ar-navbar-height));
+  height: calc(100vh - var(--ar-navbar-height) - var(--ar-page-header-height));
 }
