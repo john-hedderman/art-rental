@@ -1,7 +1,12 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
+import {
+  NgxDatatableModule,
+  TableColumn,
+  SelectionType,
+  SelectEvent,
+} from '@swimlane/ngx-datatable';
 
 import { Client, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
@@ -40,6 +45,8 @@ export class ClientList implements OnInit {
 
   rows: Client[] = [];
   columns: TableColumn[] = [];
+  selected: Client[] = [];
+  selectionType = SelectionType.single;
 
   constructor(
     private dataService: DataService,
@@ -56,6 +63,12 @@ export class ClientList implements OnInit {
 
   navigateToClientDetail(id: number) {
     this.router.navigate(['/clients', id]);
+  }
+
+  onSelect({ selected }: SelectEvent<Client>) {
+    this.selected.splice(0, this.selected.length);
+    this.selected.push(...selected);
+    this.navigateToClientDetail(selected[0].id);
   }
 
   ngOnInit(): void {

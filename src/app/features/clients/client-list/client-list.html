@@ -5,6 +5,9 @@
   [columnMode]="'force'"
   [headerHeight]="50"
   [rowHeight]="'auto'"
+  [selected]="selected"
+  [selectionType]="selectionType"
+  (select)="onSelect($event)"
 >
 </ngx-datatable>
 
