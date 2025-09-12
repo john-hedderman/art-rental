@@ -23,6 +23,11 @@ export interface Client {
   industry: string;
 }
 
+export interface Job {
+  id: number;
+  clientId: number;
+}
+
 export interface HeaderButton {
   id: string;
   label: string;

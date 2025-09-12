@@ -8,8 +8,9 @@ import { ClientsPage } from './features/clients/clients-page';
 import { ClientList } from './features/clients/client-list/client-list';
 import { AddClient } from './features/clients/add-client/add-client';
 import { ClientDetail } from './features/clients/client-detail/client-detail';
-import { Jobs } from './features/jobs/jobs';
+import { JobsPage } from './features/jobs/jobs-page';
 import { TableTest } from './features/table-test/table-test';
+import { JobList } from './features/jobs/job-list/job-list';
 
 export const routes: Routes = [
   {
@@ -67,7 +68,18 @@ export const routes: Routes = [
   },
   {
     path: 'jobs',
-    component: Jobs,
+    component: JobsPage,
+    children: [
+      {
+        path: 'list',
+        component: JobList,
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full',
+      },
+    ],
   },
   {
     path: 'table',
