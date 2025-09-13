@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { combineLatest, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import {
   NgxDatatableModule,
@@ -7,9 +9,8 @@ import {
   TableColumn,
 } from '@swimlane/ngx-datatable';
 
-import { HeaderButton, Job } from '../../../model/models';
+import { Client, HeaderButton, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
-import { Router } from '@angular/router';
 import { PageHeaderService } from '../../../service/page-header-service';
 
 @Component({
@@ -35,6 +36,13 @@ export class JobList implements OnInit {
     },
   ];
 
+  jobs$: Observable<Job[]>;
+  clients$: Observable<Client[]>;
+  data$: Observable<any[]>;
+
+  jobs: Job[] = [];
+  clients: Client[] = [];
+
   rows: Job[] = [];
   columns: TableColumn[] = [];
   selected: Job[] = [];
@@ -45,12 +53,19 @@ export class JobList implements OnInit {
     private router: Router,
     private pageHeaderService: PageHeaderService
   ) {
-    this.dataService
-      .load('jobs')
-      .pipe(take(1))
-      .subscribe((jobs) => {
-        this.rows = jobs;
+    this.jobs$ = this.dataService.load('jobs');
+    this.clients$ = this.dataService.load('clients');
+    this.data$ = combineLatest([this.jobs$, this.clients$]);
+
+    this.data$.subscribe(([jobs, clients]) => {
+      this.clients = clients;
+      this.jobs = jobs.map((job: Job) => {
+        const clients = this.clients.filter((client) => client.id === job.clientId);
+        const clientName = clients.length > 0 ? clients[0].name : '';
+        return { ...job, clientName: clientName };
       });
+      this.rows = [...this.jobs];
+    });
   }
 
   navigateToJobDetail(id: number) {
@@ -69,8 +84,8 @@ export class JobList implements OnInit {
       headerButtons: this.headerButtons,
     });
     this.columns = [
-      { prop: 'id', name: 'Job ID' },
-      { prop: 'clientId', name: 'Client ID' },
+      { prop: 'id', name: 'Job Number' },
+      { prop: 'clientName', name: 'Client' },
     ];
   }
 }
