@@ -18,11 +18,9 @@ export class ClientDetail implements OnInit {
   clientData: Client = {} as Client;
 
   headerTitle = 'Client detail';
-
   navigateToClientList = () => {
     this.router.navigate(['/clients', 'list']);
   };
-
   headerButtons: HeaderButton[] = [
     {
       id: 'returnToClientListBtn',
@@ -60,7 +58,7 @@ export class ClientDetail implements OnInit {
       )
       .subscribe((client) => {
         this.clientData = client;
-        this.pageHeaderService.sendData({
+        this.pageHeaderService.send({
           headerTitle: client?.name,
           headerButtons: this.headerButtons,
         });

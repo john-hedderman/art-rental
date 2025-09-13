@@ -20,10 +20,26 @@ export class ArtList implements OnInit {
   artwork: Art[] = [];
 
   headerTitle = 'Art';
-
   navigateToAddToCart = () => {};
-
   navigateToAddArt = () => {};
+  headerButtons: HeaderButton[] = [
+    {
+      id: 'addArtBtn',
+      label: 'Add Art',
+      type: 'button',
+      buttonClass: 'btn btn-secondary',
+      disabled: false,
+      clickHandler: this.navigateToAddArt,
+    },
+    {
+      id: 'addArtToCartBtn',
+      label: 'Add Selected to Cart',
+      type: 'button',
+      buttonClass: 'btn btn-primary',
+      disabled: true,
+      clickHandler: this.navigateToAddToCart,
+    },
+  ];
 
   setAddToCartButtonState = () => {
     const addArtToCartBtn = document.getElementById('addArtToCartBtn');
@@ -53,25 +69,6 @@ export class ArtList implements OnInit {
     }
   };
 
-  headerButtons: HeaderButton[] = [
-    {
-      id: 'addArtBtn',
-      label: 'Add Art',
-      type: 'button',
-      buttonClass: 'btn btn-secondary',
-      disabled: false,
-      clickHandler: this.navigateToAddArt,
-    },
-    {
-      id: 'addArtToCartBtn',
-      label: 'Add Selected to Cart',
-      type: 'button',
-      buttonClass: 'btn btn-primary',
-      disabled: true,
-      clickHandler: this.navigateToAddToCart,
-    },
-  ];
-
   constructor(private dataService: DataService, private pageHeaderService: PageHeaderService) {
     this.dataService
       .load('art')
@@ -82,7 +79,7 @@ export class ArtList implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pageHeaderService.sendData({
+    this.pageHeaderService.send({
       headerTitle: this.headerTitle,
       headerButtons: this.headerButtons,
     });

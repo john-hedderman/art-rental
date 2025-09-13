@@ -27,11 +27,9 @@ export class ClientList implements OnInit {
   @ViewChild('locationTemplate', { static: true }) locationTemplate!: TemplateRef<any>;
 
   headerTitle = 'Clients';
-
   navigateToAddClient = () => {
     this.router.navigate(['/clients', 'add']);
   };
-
   headerButtons: HeaderButton[] = [
     {
       id: 'addClientBtn',
@@ -72,7 +70,7 @@ export class ClientList implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pageHeaderService.sendData({
+    this.pageHeaderService.send({
       headerTitle: this.headerTitle,
       headerButtons: this.headerButtons,
     });

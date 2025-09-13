@@ -20,7 +20,6 @@ export class ArtistList implements OnInit {
   artists: Artist[] = [];
 
   headerTitle = 'Artists';
-
   headerButtons: HeaderButton[] = [];
 
   constructor(private pageHeaderService: PageHeaderService, private dataService: DataService) {
@@ -33,7 +32,7 @@ export class ArtistList implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pageHeaderService.sendData({
+    this.pageHeaderService.send({
       headerTitle: this.headerTitle,
       headerButtons: this.headerButtons,
     });

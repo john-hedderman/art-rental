@@ -13,11 +13,9 @@ import { PageHeaderService } from '../../../service/page-header-service';
 })
 export class AddClient implements OnInit {
   headerTitle = 'Add Client';
-
   navigateToClientList = () => {
     this.router.navigate(['/clients', 'list']);
   };
-
   headerButtons: HeaderButton[] = [
     {
       id: 'returnToClientListBtn',
@@ -32,7 +30,7 @@ export class AddClient implements OnInit {
   constructor(private router: Router, private pageHeaderService: PageHeaderService) {}
 
   ngOnInit(): void {
-    this.pageHeaderService.sendData({
+    this.pageHeaderService.send({
       headerTitle: this.headerTitle,
       headerButtons: this.headerButtons,
     });

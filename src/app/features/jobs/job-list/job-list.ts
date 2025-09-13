@@ -21,11 +21,9 @@ import { PageHeaderService } from '../../../service/page-header-service';
 })
 export class JobList implements OnInit {
   headerTitle = 'Jobs';
-
   navigateToAddJob = () => {
     this.router.navigate(['/jobs', 'add']);
   };
-
   headerButtons: HeaderButton[] = [
     {
       id: 'addJobBtn',
@@ -66,7 +64,7 @@ export class JobList implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pageHeaderService.sendData({
+    this.pageHeaderService.send({
       headerTitle: this.headerTitle,
       headerButtons: this.headerButtons,
     });

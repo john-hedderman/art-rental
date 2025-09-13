@@ -8,7 +8,7 @@ export class PageHeaderService {
   private headerDataSubject = new Subject<any>();
   data$ = this.headerDataSubject.asObservable();
 
-  sendData(data: any) {
+  send(data: any) {
     this.headerDataSubject.next(data);
   }
 }
