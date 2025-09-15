@@ -11,11 +11,11 @@
     color: var(--ar-navbar-brand-color);
     font-size: var(--ar-navbar-brand-font-size);
 
-    @media screen and (max-width: 425px) {
+    @media screen and (max-width: 440px) {
       font-size: var(--ar-navbar-brand-font-size-small);
     }
 
-    @media screen and (max-width: 375px) {
+    @media screen and (max-width: 385px) {
       font-size: var(--ar-navbar-brand-font-size-smaller);
     }
   }
@@ -28,6 +28,13 @@
 
     &:focus {
       box-shadow: 0 0 0 1px;
+    }
+
+    .ar-navbar-toggler-icon {
+      @media screen and (max-width: 385px) {
+        height: 1.25em;
+        width: 1.25em;
+      }
     }
   }
 

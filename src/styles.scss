@@ -22,7 +22,7 @@
   --ar-navbar-height: 4.25rem;
   --ar-navbar-brand-font-size: 1.75rem;
   --ar-navbar-brand-font-size-small: 1.5rem;
-  --ar-navbar-brand-font-size-smaller: 1.125rem;
+  --ar-navbar-brand-font-size-smaller: 1rem;
 
   --ar-bg-color-card-title: #f1e4cf;
 
@@ -43,7 +43,7 @@ body {
   // at these breakpoints, the navbar brand font size is reduced
   // so correspondingly reduce the top padding here, by the line-height times the delta
 
-  @media screen and (max-width: 425px) {
+  @media screen and (max-width: 440px) {
     padding-top: calc(
       var(--ar-navbar-height) -
         (
@@ -53,7 +53,7 @@ body {
     );
   }
 
-  @media screen and (max-width: 375px) {
+  @media screen and (max-width: 385px) {
     padding-top: calc(
       var(--ar-navbar-height) -
         (
