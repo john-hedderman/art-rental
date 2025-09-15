@@ -35,7 +35,7 @@ export class ClientList implements OnInit {
       id: 'addClientBtn',
       label: 'New Client',
       type: 'button',
-      buttonClass: 'btn btn-primary',
+      buttonClass: 'btn btn-primary btn-sm',
       disabled: false,
       clickHandler: this.navigateToAddClient,
     },

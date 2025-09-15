@@ -25,7 +25,7 @@ export class JobDetail {
       id: 'returnToJobListBtn',
       label: '<i class="bi bi-arrow-left"></i> Back',
       type: 'button',
-      buttonClass: 'btn btn-primary',
+      buttonClass: 'btn btn-primary btn-sm',
       disabled: false,
       clickHandler: this.navigateToJobList,
     },

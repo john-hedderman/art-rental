@@ -30,7 +30,7 @@ export class JobList implements OnInit {
       id: 'addJobBtn',
       label: 'New Job',
       type: 'button',
-      buttonClass: 'btn btn-primary',
+      buttonClass: 'btn btn-primary btn-sm',
       disabled: false,
       clickHandler: this.navigateToAddJob,
     },
