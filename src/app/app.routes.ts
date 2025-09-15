@@ -10,6 +10,8 @@ import { AddClient } from './features/clients/add-client/add-client';
 import { ClientDetail } from './features/clients/client-detail/client-detail';
 import { JobsPage } from './features/jobs/jobs-page';
 import { JobList } from './features/jobs/job-list/job-list';
+import { AddJob } from './features/jobs/add-job/add-job';
+import { JobDetail } from './features/jobs/job-detail/job-detail';
 
 export const routes: Routes = [
   {
@@ -72,6 +74,14 @@ export const routes: Routes = [
       {
         path: 'list',
         component: JobList,
+      },
+      {
+        path: 'add',
+        component: AddJob,
+      },
+      {
+        path: ':id',
+        component: JobDetail,
       },
       {
         path: '',

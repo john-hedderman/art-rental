@@ -28,7 +28,7 @@ export class JobList implements OnInit {
   headerButtons: HeaderButton[] = [
     {
       id: 'addJobBtn',
-      label: 'Add Job',
+      label: 'New Job',
       type: 'button',
       buttonClass: 'btn btn-primary',
       disabled: false,
@@ -61,7 +61,7 @@ export class JobList implements OnInit {
       this.clients = clients;
       this.jobs = jobs.map((job: Job) => {
         const clients = this.clients.filter((client) => client.id === job.clientId);
-        const clientName = clients.length > 0 ? clients[0].name : '';
+        const clientName = clients.length ? clients[0].name : '';
         return { ...job, clientName: clientName };
       });
       this.rows = [...this.jobs];

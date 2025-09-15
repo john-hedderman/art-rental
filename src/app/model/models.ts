@@ -26,6 +26,7 @@ export interface Client {
 export interface Job {
   id: number;
   clientId: number;
+  clientName?: string;
 }
 
 export interface HeaderButton {

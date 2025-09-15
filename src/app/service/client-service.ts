@@ -9,8 +9,6 @@ import { DataService } from './data-service';
   providedIn: 'root',
 })
 export class ClientService {
-  constructor(private dataService: DataService) {}
-
   getClient(clientId: string): Observable<Client> {
     return this.dataService.load('clients').pipe(
       map((clients) =>
@@ -23,4 +21,6 @@ export class ClientService {
       })
     );
   }
+
+  constructor(private dataService: DataService) {}
 }
