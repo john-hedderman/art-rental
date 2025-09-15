@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Artist, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
-import { Card } from '../../../shared/card/card';
+import { Card } from '../../../shared/components/card/card';
 import { DataService } from '../../../service/data-service';
 import { take } from 'rxjs/operators';
 

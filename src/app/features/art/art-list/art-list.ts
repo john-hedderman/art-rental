@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Card } from '../../../shared/card/card';
+import { Card } from '../../../shared/components/card/card';
 import { Art, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
 import { DataService } from '../../../service/data-service';

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 
-import { PageHeaderService } from '../../service/page-header-service';
+import { PageHeaderService } from '../../../service/page-header-service';
 
 @Component({
   selector: 'app-page-header',

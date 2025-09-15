@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-import { Navbar } from './shared/navbar/navbar';
-import { PageHeader } from './shared/page-header/page-header';
+import { Navbar } from './shared/components/navbar/navbar';
+import { PageHeader } from './shared/components/page-header/page-header';
 
 @Component({
   selector: 'app-root',
