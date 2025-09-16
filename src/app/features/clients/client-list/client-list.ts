@@ -11,7 +11,6 @@ import {
 import { Client, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
 import { DataService } from '../../../service/data-service';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-client-list',
@@ -51,12 +50,11 @@ export class ClientList implements OnInit {
     private router: Router,
     private pageHeaderService: PageHeaderService
   ) {
-    this.dataService
-      .load('clients')
-      .pipe(take(1))
-      .subscribe((clients) => {
-        this.rows = clients;
-      });
+    this.dataService.clients$.subscribe((clients) => {
+      if (clients) {
+        this.rows = [...clients];
+      }
+    });
   }
 
   navigateToClientDetail(id: number) {

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 
 import { Client } from '../model/models';
 import { DataService } from './data-service';
@@ -10,16 +9,16 @@ import { DataService } from './data-service';
 })
 export class ClientService {
   getClient(clientId: string): Observable<Client> {
-    return this.dataService.load('clients').pipe(
-      map((clients) =>
-        clients.filter((client) => {
+    let foundClient: Client = {} as Client;
+    this.dataService.clients$.subscribe((clients) => {
+      if (clients) {
+        const filteredClients = clients.filter((client: Client) => {
           return clientId === null ? false : client.id === +clientId;
-        })
-      ),
-      map((clients) => {
-        return clients.length ? clients[0] : ({} as Client);
-      })
-    );
+        });
+        foundClient = filteredClients.length ? filteredClients[0] : ({} as Client);
+      }
+    });
+    return of(foundClient);
   }
 
   constructor(private dataService: DataService) {}

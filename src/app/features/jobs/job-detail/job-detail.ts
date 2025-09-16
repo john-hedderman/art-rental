@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { map, take, takeUntil } from 'rxjs/operators';
+import { combineLatest, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Client, HeaderButton, Job } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
@@ -31,10 +31,7 @@ export class JobDetail {
     },
   ];
 
-  jobs$: Observable<Job[]>;
-  clients$: Observable<Client[]>;
-  jobId$: Observable<string>;
-  data$: Observable<any[]>;
+  jobId = '';
   job$: Observable<Job> | undefined;
 
   jobs: Job[] = [];
@@ -55,31 +52,26 @@ export class JobDetail {
     private route: ActivatedRoute,
     private dataService: DataService
   ) {
-    this.jobs$ = this.dataService.load('jobs');
-    this.clients$ = this.dataService.load('clients');
-    this.jobId$ = this.getJobId();
-    this.data$ = combineLatest([this.jobs$, this.clients$, this.jobId$]).pipe(take(1));
-
-    this.data$.subscribe(([jobs, clients, jobId]) => {
-      this.clients = clients;
-      // for the page header
-      let pageHeaderJob: Job = {} as Job;
-      // merge client names into job objects, noting the current job
-      this.jobs = jobs.map((job: Job) => {
-        const matchingClients = this.clients.filter((client) => client.id === job.clientId);
-        const clientName = matchingClients.length > 0 ? matchingClients[0].name : '';
-        const mergedJob = { ...job, clientName };
-        if (mergedJob.id === +jobId) {
-          this.job$ = of(mergedJob); // Observable is for page content
-          pageHeaderJob = mergedJob;
+    combineLatest([this.dataService.clients$, this.getJobId(), this.dataService.jobs$]).subscribe(
+      ([clients, jobId, jobs]) => {
+        if (clients && jobId && jobs) {
+          this.clients = clients;
+          this.jobId = jobId;
+          this.jobs = jobs.map((job: Job) => {
+            const clients = this.clients.filter((client) => client.id === job.clientId);
+            const clientName = clients.length ? clients[0].name : '';
+            const mergedJob = { ...job, clientName: clientName };
+            if (mergedJob.id === +this.jobId) {
+              this.job$ = of(mergedJob); // for template
+              this.pageHeaderService.send({
+                headerTitle: mergedJob.clientName,
+                headerButtons: this.headerButtons,
+              });
+            }
+            return mergedJob;
+          });
         }
-        return mergedJob;
-      });
-
-      this.pageHeaderService.send({
-        headerTitle: pageHeaderJob.clientName,
-        headerButtons: this.headerButtons,
-      });
-    });
+      }
+    );
   }
 }

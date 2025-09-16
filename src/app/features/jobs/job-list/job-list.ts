@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { combineLatest, Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
 import {
   NgxDatatableModule,
   SelectEvent,
@@ -36,10 +35,6 @@ export class JobList implements OnInit {
     },
   ];
 
-  jobs$: Observable<Job[]>;
-  clients$: Observable<Client[]>;
-  data$: Observable<any[]>;
-
   jobs: Job[] = [];
   clients: Client[] = [];
 
@@ -53,19 +48,19 @@ export class JobList implements OnInit {
     private router: Router,
     private pageHeaderService: PageHeaderService
   ) {
-    this.jobs$ = this.dataService.load('jobs');
-    this.clients$ = this.dataService.load('clients');
-    this.data$ = combineLatest([this.jobs$, this.clients$]);
-
-    this.data$.subscribe(([jobs, clients]) => {
-      this.clients = clients;
-      this.jobs = jobs.map((job: Job) => {
-        const clients = this.clients.filter((client) => client.id === job.clientId);
-        const clientName = clients.length ? clients[0].name : '';
-        return { ...job, clientName: clientName };
-      });
-      this.rows = [...this.jobs];
-    });
+    combineLatest([this.dataService.clients$, this.dataService.jobs$]).subscribe(
+      ([clients, jobs]) => {
+        if (clients && jobs) {
+          this.clients = clients;
+          this.jobs = jobs.map((job: Job) => {
+            const clients = this.clients.filter((client) => client.id === job.clientId);
+            const clientName = clients.length ? clients[0].name : '';
+            return { ...job, clientName: clientName };
+          });
+          this.rows = [...this.jobs];
+        }
+      }
+    );
   }
 
   navigateToJobDetail(id: number) {

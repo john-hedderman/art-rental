@@ -1,21 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map, switchMap, take } from 'rxjs/operators';
+import { combineLatest, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Client, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
-import { ClientService } from '../../../service/client-service';
+import { DataService } from '../../../service/data-service';
 
 @Component({
   selector: 'app-client-detail',
-  imports: [],
+  imports: [AsyncPipe],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
   standalone: true,
 })
-export class ClientDetail implements OnInit {
-  clientData: Client = {} as Client;
+export class ClientDetail {
+  client$: Observable<Client> | undefined;
 
   headerTitle = 'Client detail';
   navigateToClientList = () => {
@@ -32,13 +33,6 @@ export class ClientDetail implements OnInit {
     },
   ];
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private pageHeaderService: PageHeaderService,
-    private clientService: ClientService
-  ) {}
-
   getClientId(): Observable<string> {
     return this.route.paramMap.pipe(
       map((params) => {
@@ -48,20 +42,24 @@ export class ClientDetail implements OnInit {
     );
   }
 
-  ngOnInit(): void {
-    this.getClientId()
-      .pipe(
-        switchMap((id) => {
-          return this.clientService.getClient(id);
-        }),
-        take(1)
-      )
-      .subscribe((client) => {
-        this.clientData = client;
-        this.pageHeaderService.send({
-          headerTitle: client?.name,
-          headerButtons: this.headerButtons,
-        });
-      });
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private pageHeaderService: PageHeaderService,
+    private dataService: DataService
+  ) {
+    combineLatest([this.dataService.clients$, this.getClientId()]).subscribe(
+      ([clients, clientId]) => {
+        if (clients && clientId) {
+          const matchedClients = clients.filter((client: Client) => client.id === +clientId);
+          const matchedClient = matchedClients.length ? matchedClients[0] : ({} as Client);
+          this.client$ = of(matchedClient); // for template
+          this.pageHeaderService.send({
+            headerTitle: matchedClient?.name,
+            headerButtons: this.headerButtons,
+          });
+        }
+      }
+    );
   }
 }
