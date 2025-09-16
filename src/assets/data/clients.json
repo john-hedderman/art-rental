@@ -42,11 +42,11 @@
   {
     "id": 5,
     "name": "Grandeur",
-    "address1": "",
+    "address1": "123 Fake St",
     "address2": "",
     "city": "Webster",
     "state": "NY",
-    "zipCode": "",
+    "zipCode": "14580",
     "industry": "Luxury"
   },
   {
@@ -124,8 +124,8 @@
     "name": "Holistic",
     "address1": "",
     "address2": "",
-    "city": "",
-    "state": "",
+    "city": "Penn Yan",
+    "state": "NY",
     "zipCode": "",
     "industry": "Health"
   },
@@ -134,8 +134,8 @@
     "name": "Mouthwatering Meals",
     "address1": "",
     "address2": "",
-    "city": "",
-    "state": "",
+    "city": "Canandaigua",
+    "state": "NY",
     "zipCode": "",
     "industry": "Food"
   },
@@ -144,8 +144,8 @@
     "name": "Playful Minds Academy",
     "address1": "",
     "address2": "",
-    "city": "",
-    "state": "",
+    "city": "Syracuse",
+    "state": "NY",
     "zipCode": "",
     "industry": "Kids"
   },
@@ -154,8 +154,8 @@
     "name": "Tranquil",
     "address1": "",
     "address2": "",
-    "city": "",
-    "state": "",
+    "city": "Fulton",
+    "state": "NY",
     "zipCode": "",
     "industry": "Candles"
   },
@@ -164,8 +164,8 @@
     "name": "Euphoria Events",
     "address1": "",
     "address2": "",
-    "city": "",
-    "state": "",
+    "city": "Utica",
+    "state": "NY",
     "zipCode": "",
     "industry": "Events"
   },
@@ -174,8 +174,8 @@
     "name": "Urban Threads",
     "address1": "",
     "address2": "",
-    "city": "",
-    "state": "",
+    "city": "Rome",
+    "state": "NY",
     "zipCode": "",
     "industry": "Clothing"
   },
@@ -184,8 +184,8 @@
     "name": "Floral Symphony",
     "address1": "",
     "address2": "",
-    "city": "",
-    "state": "",
+    "city": "Honeoye Falls",
+    "state": "NY",
     "zipCode": "",
     "industry": "Garden"
   },
@@ -194,8 +194,8 @@
     "name": "Flexi",
     "address1": "",
     "address2": "",
-    "city": "",
-    "state": "",
+    "city": "Verona",
+    "state": "NY",
     "zipCode": "",
     "industry": "Fitness"
   }

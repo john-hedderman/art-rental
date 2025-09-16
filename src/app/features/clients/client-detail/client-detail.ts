@@ -14,6 +14,9 @@ import { DataService } from '../../../service/data-service';
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
   standalone: true,
+  host: {
+    class: 'h-100',
+  },
 })
 export class ClientDetail {
   client$: Observable<Client> | undefined;

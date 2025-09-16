@@ -1,10 +1,88 @@
-<div class="container-fluid pt-2">
-  <div class="row">
-    <div class="col">
-      @if (client$ | async; as clientData) {
-      {{ clientData.name }} <br />
-      {{ clientData.city }}, {{ clientData.state }}
+<div class="container-fluid p-3 h-100">
+  <div class="row h-100">
+    <div class="col h-100 overflow-auto">
+      <h4>Client</h4>
+      @if (client$ | async; as client) {
+      {{ client.name }} <br />
+      {{ client.address1 }} <br />
+      {{ client.city }}, {{ client.state }} {{ client.zipCode }} <br /><br />
       }
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras lorem purus, vehicula sit amet
+        consequat eleifend, sagittis sed diam. Quisque neque ligula, sollicitudin et turpis nec,
+        finibus gravida massa. Cras consequat aliquet turpis, at facilisis tortor tincidunt in. Sed
+        at purus mi. Praesent vulputate ut lacus eget malesuada. Mauris posuere ut eros sodales
+        dictum. In sit amet velit a felis malesuada pulvinar vitae quis ante. Nulla quis enim nec
+        urna maximus pharetra dictum ac ipsum. Fusce eu sem in urna tempus consectetur nec sit amet
+        turpis. In hac habitasse platea dictumst. Mauris eleifend mauris sed porta facilisis.
+      </p>
+      <p>
+        Donec posuere, mauris id ornare euismod, dolor neque pharetra neque, ac tincidunt tortor
+        eros quis mauris. Duis non egestas risus, vitae egestas lectus. Aliquam erat volutpat.
+        Integer vitae elementum mauris. Pellentesque tristique, elit in auctor sollicitudin, magna
+        orci ultricies metus, non cursus tellus velit ut nisl. Aenean sem ex, sodales at elit quis,
+        elementum vehicula urna. Curabitur facilisis nunc et scelerisque faucibus.
+      </p>
+      <p>
+        Curabitur rhoncus erat sem, nec dignissim nibh ornare ac. Suspendisse potenti. Sed ornare
+        molestie ligula eget tristique. Duis in erat massa. Ut ultricies varius metus, eget laoreet
+        lorem aliquet id. Morbi rutrum ex ac dapibus finibus. Class aptent taciti sociosqu ad litora
+        torquent per conubia nostra, per inceptos himenaeos. Ut eget libero odio. Ut convallis velit
+        in faucibus fermentum.
+      </p>
+      <p>
+        Suspendisse consectetur suscipit ex vitae ullamcorper. Nunc malesuada tortor et elit
+        malesuada, id imperdiet arcu ullamcorper. Curabitur vulputate tellus et dignissim gravida.
+        Suspendisse mauris arcu, sollicitudin ac gravida ac, vulputate in elit. Vivamus ac libero
+        vitae neque rhoncus iaculis. Vivamus vehicula purus ut efficitur semper. Integer tempor enim
+        quis facilisis vehicula. Sed pretium dapibus velit. Nulla sem magna, auctor vel volutpat at,
+        eleifend sed magna. Phasellus imperdiet quam eu massa vehicula molestie. Vestibulum pretium
+        lorem et elementum ultrices. Nulla sed nisl a ante ornare luctus. Aliquam ut turpis augue.
+        Vestibulum a tincidunt nulla. Donec sodales posuere gravida.
+      </p>
+    </div>
+    <div class="col h-100 overflow-auto">
+      <h4>Jobs</h4>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras lorem purus, vehicula sit amet
+        consequat eleifend, sagittis sed diam. Quisque neque ligula, sollicitudin et turpis nec,
+        finibus gravida massa. Cras consequat aliquet turpis, at facilisis tortor tincidunt in. Sed
+        at purus mi. Praesent vulputate ut lacus eget malesuada. Mauris posuere ut eros sodales
+        dictum. In sit amet velit a felis malesuada pulvinar vitae quis ante. Nulla quis enim nec
+        urna maximus pharetra dictum ac ipsum. Fusce eu sem in urna tempus consectetur nec sit amet
+        turpis. In hac habitasse platea dictumst. Mauris eleifend mauris sed porta facilisis.
+      </p>
+      <p>
+        Donec posuere, mauris id ornare euismod, dolor neque pharetra neque, ac tincidunt tortor
+        eros quis mauris. Duis non egestas risus, vitae egestas lectus. Aliquam erat volutpat.
+        Integer vitae elementum mauris. Pellentesque tristique, elit in auctor sollicitudin, magna
+        orci ultricies metus, non cursus tellus velit ut nisl. Aenean sem ex, sodales at elit quis,
+        elementum vehicula urna. Curabitur facilisis nunc et scelerisque faucibus.
+      </p>
+      <p>
+        Curabitur rhoncus erat sem, nec dignissim nibh ornare ac. Suspendisse potenti. Sed ornare
+        molestie ligula eget tristique. Duis in erat massa. Ut ultricies varius metus, eget laoreet
+        lorem aliquet id. Morbi rutrum ex ac dapibus finibus. Class aptent taciti sociosqu ad litora
+        torquent per conubia nostra, per inceptos himenaeos. Ut eget libero odio. Ut convallis velit
+        in faucibus fermentum.
+      </p>
+      <p>
+        Suspendisse consectetur suscipit ex vitae ullamcorper. Nunc malesuada tortor et elit
+        malesuada, id imperdiet arcu ullamcorper. Curabitur vulputate tellus et dignissim gravida.
+        Suspendisse mauris arcu, sollicitudin ac gravida ac, vulputate in elit. Vivamus ac libero
+        vitae neque rhoncus iaculis. Vivamus vehicula purus ut efficitur semper. Integer tempor enim
+        quis facilisis vehicula. Sed pretium dapibus velit. Nulla sem magna, auctor vel volutpat at,
+        eleifend sed magna. Phasellus imperdiet quam eu massa vehicula molestie. Vestibulum pretium
+        lorem et elementum ultrices. Nulla sed nisl a ante ornare luctus. Aliquam ut turpis augue.
+        Vestibulum a tincidunt nulla. Donec sodales posuere gravida.
+      </p>
+      <p>
+        Pellentesque elementum mattis ex, ut fermentum tortor facilisis sed. Curabitur facilisis
+        cursus elementum. Morbi non ligula dignissim, finibus erat eget, congue nunc. In nibh quam,
+        hendrerit et pharetra ut, pharetra vitae nisi. Curabitur iaculis mattis faucibus. In mollis
+        vestibulum ante sit amet ullamcorper. Donec malesuada semper sem quis eleifend. In iaculis
+        nisi sit amet lacus lacinia vestibulum.
+      </p>
     </div>
   </div>
 </div>
