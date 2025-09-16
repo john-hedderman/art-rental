@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { Artist, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
 import { Card } from '../../../shared/components/card/card';
 import { DataService } from '../../../service/data-service';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-artist-list',
@@ -16,25 +15,21 @@ import { take } from 'rxjs/operators';
     class: 'overflow-y-auto',
   },
 })
-export class ArtistList implements OnInit {
+export class ArtistList {
   artists: Artist[] = [];
 
   headerTitle = 'Artists';
   headerButtons: HeaderButton[] = [];
 
   constructor(private pageHeaderService: PageHeaderService, private dataService: DataService) {
-    this.dataService
-      .load('artists')
-      .pipe(take(1))
-      .subscribe((data) => {
-        this.artists = data;
-      });
-  }
-
-  ngOnInit(): void {
-    this.pageHeaderService.send({
-      headerTitle: this.headerTitle,
-      headerButtons: this.headerButtons,
+    this.dataService.artists$.subscribe((artists) => {
+      if (artists) {
+        this.artists = artists;
+        this.pageHeaderService.send({
+          headerTitle: this.headerTitle,
+          headerButtons: this.headerButtons,
+        });
+      }
     });
   }
 }

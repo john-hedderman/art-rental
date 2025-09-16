@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { Card } from '../../../shared/components/card/card';
 import { Art, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
 import { DataService } from '../../../service/data-service';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-art-list',
@@ -16,7 +15,7 @@ import { take } from 'rxjs/operators';
     class: 'overflow-y-auto',
   },
 })
-export class ArtList implements OnInit {
+export class ArtList {
   artwork: Art[] = [];
 
   headerTitle = 'Art';
@@ -70,18 +69,14 @@ export class ArtList implements OnInit {
   };
 
   constructor(private dataService: DataService, private pageHeaderService: PageHeaderService) {
-    this.dataService
-      .load('art')
-      .pipe(take(1))
-      .subscribe((data) => {
-        this.artwork = data;
-      });
-  }
-
-  ngOnInit(): void {
-    this.pageHeaderService.send({
-      headerTitle: this.headerTitle,
-      headerButtons: this.headerButtons,
+    this.dataService.art$.subscribe((artwork) => {
+      if (artwork) {
+        this.artwork = artwork;
+        this.pageHeaderService.send({
+          headerTitle: this.headerTitle,
+          headerButtons: this.headerButtons,
+        });
+      }
     });
   }
 }
