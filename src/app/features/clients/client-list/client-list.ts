@@ -67,6 +67,12 @@ export class ClientList implements OnInit {
     this.navigateToClientDetail(selected[0].id);
   }
 
+  locationComparator(rowA: any, rowB: any): number {
+    const locationA = `${rowA['city']}, ${rowA['state']}`;
+    const locationB = `${rowB['city']}, ${rowB['state']}`;
+    return locationA.localeCompare(locationB);
+  }
+
   ngOnInit(): void {
     this.pageHeaderService.send({
       headerTitle: this.headerTitle,
@@ -74,7 +80,12 @@ export class ClientList implements OnInit {
     });
     this.columns = [
       { prop: 'name', name: 'Name' },
-      { prop: 'location', name: 'Location', cellTemplate: this.locationTemplate },
+      {
+        prop: '',
+        name: 'Location',
+        cellTemplate: this.locationTemplate,
+        comparator: this.locationComparator,
+      },
       { prop: 'industry', name: 'Business' },
     ];
   }
