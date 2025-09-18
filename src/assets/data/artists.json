@@ -15,7 +15,7 @@
     "id": 3,
     "name": "Aaron Smit",
     "photo": "images/artists/aaron-smit.jpg",
-    "types": "pointillism"
+    "types": "illustration"
   },
   {
     "id": 4,
@@ -33,6 +33,18 @@
     "id": 6,
     "name": "Bobby McLean",
     "photo": "",
-    "types": "people, landscape"
+    "types": "vibrant"
+  },
+  {
+    "id": 7,
+    "name": "Jeffery Lewis",
+    "photo": "",
+    "types": "people"
+  },
+  {
+    "id": 8,
+    "name": "Molly Owens",
+    "photo": "",
+    "types": "landscape"
   }
 ]

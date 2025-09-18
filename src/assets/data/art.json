@@ -1,10 +1,10 @@
 [
   {
     "id": 1,
-    "url": "images/art/irises.jpg",
-    "name": "Irises",
-    "artist": "Vincent Van Gogh",
-    "tags": "impressionism, nature"
+    "url": "images/art/boots.jpg",
+    "name": "Boots",
+    "artist": "Aaron Smit",
+    "tags": "folk art, illustration"
   },
   {
     "id": 2,
@@ -22,57 +22,43 @@
   },
   {
     "id": 4,
-    "url": "images/art/face.jpg",
-    "name": "Mysterious Presence",
-    "artist": "Archan Nair",
+    "url": "images/art/light-of-memory.jpg",
+    "name": "Light of Memory",
+    "artist": "Linda Armstrong",
     "tags": "abstract, portrait, people"
   },
   {
     "id": 5,
-    "url": "images/art/the-great-wave.jpg",
-    "name": "The Great Wave",
-    "artist": "Katsushika Hokusai",
-    "tags": "woodblock, print, nature, landscape"
+    "url": "images/art/vibrant-purple-floral.jpg",
+    "name": "Vibrant Purple Floral",
+    "artist": "Bobby McLean",
+    "tags": "vibrant, organic"
   },
   {
     "id": 6,
-    "url": "images/art/two-women-by-the-shore.jpg",
-    "name": "Two Women by the Shore, Mediterranean",
-    "artist": "Henri-Edmond Cross",
-    "tags": "impressionism, pointillism, landscape, people"
+    "url": "images/art/surreal-echoes.jpg",
+    "name": "Surreal Echoes",
+    "artist": "Carl Brock",
+    "tags": "surrealism, geometry, vibrant"
   },
   {
     "id": 7,
-    "url": "images/art/man-with-a-guitar-1911.jpg",
-    "name": "Man with a Guitar",
-    "artist": "Pablo Picasso",
-    "tags": "cubism, geometry, people, music"
+    "url": "images/art/pulse-of-the-unseen.jpg",
+    "name": "Pulse of the Unseen",
+    "artist": "Carl Brock",
+    "tags": "abstract"
   },
   {
     "id": 8,
-    "url": "images/art/harlequins-carnival.jpg",
-    "name": "The Harlequin's Carnival",
-    "artist": "Joan Miro",
-    "tags": "surrealism"
-  },
-  {
-    "id": 9,
-    "url": "images/art/sky-study.jpg",
-    "name": "Sky Study",
-    "artist": "James Ward",
-    "tags": "watercolor, study"
-  },
-  {
-    "id": 10,
-    "url": "images/art/abstract-expressionism-1.jpg",
-    "name": "Abstract Expression #1",
+    "url": "images/art/genesis-in-metamorphosis.jpg",
+    "name": "Genesis in Metamorphosis",
     "artist": "Jeffery Lewis",
     "tags": "abstract, expressionism"
   },
   {
-    "id": 11,
-    "url": "images/art/abstract-expressionism-2.jpg",
-    "name": "Abstract Expression #2",
+    "id": 9,
+    "url": "images/art/infinite-evolution.jpg",
+    "name": "Infinite Evolution",
     "artist": "Molly Owens",
     "tags": "abstract, expressionism"
   }
