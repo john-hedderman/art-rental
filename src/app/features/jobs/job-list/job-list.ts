@@ -18,6 +18,9 @@ import { PageHeaderService } from '../../../service/page-header-service';
   templateUrl: './job-list.html',
   styleUrl: './job-list.scss',
   standalone: true,
+  host: {
+    class: 'd-flex flex-column h-100',
+  },
 })
 export class JobList implements OnInit {
   headerTitle = 'Jobs';

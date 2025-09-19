@@ -19,7 +19,7 @@ import { DataService } from '../../../service/data-service';
   styleUrl: './client-list.scss',
   standalone: true,
   host: {
-    class: 'overflow-y-auto',
+    class: 'd-flex flex-column h-100',
   },
 })
 export class ClientList implements OnInit {
