@@ -37,3 +37,8 @@ export interface HeaderButton {
   disabled: boolean;
   clickHandler: any;
 }
+
+export interface HeaderData {
+  headerTitle: string;
+  headerButtons: HeaderButton[];
+}

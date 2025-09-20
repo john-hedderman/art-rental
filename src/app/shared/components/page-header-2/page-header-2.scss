@@ -1,0 +1,11 @@
+.ar-page-header {
+  --ar-page-header-bg-color: #f3f3f3;
+
+  height: var(--ar-page-header-height);
+  background-color: var(--ar-page-header-bg-color);
+  border-bottom: 1px solid var(--ar-border-color);
+
+  h3 {
+    color: var(--ar-text-color-primary);
+  }
+}

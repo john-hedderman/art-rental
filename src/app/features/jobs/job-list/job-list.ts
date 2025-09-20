@@ -8,13 +8,13 @@ import {
   TableColumn,
 } from '@swimlane/ngx-datatable';
 
-import { Client, HeaderButton, Job } from '../../../model/models';
+import { Client, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
-import { PageHeaderService } from '../../../service/page-header-service';
+import { PageHeader2 } from '../../../shared/components/page-header-2/page-header-2';
 
 @Component({
   selector: 'app-job-list',
-  imports: [NgxDatatableModule],
+  imports: [NgxDatatableModule, PageHeader2],
   templateUrl: './job-list.html',
   styleUrl: './job-list.scss',
   standalone: true,
@@ -23,20 +23,22 @@ import { PageHeaderService } from '../../../service/page-header-service';
   },
 })
 export class JobList implements OnInit {
-  headerTitle = 'Jobs';
   navigateToAddJob = () => {
     this.router.navigate(['/jobs', 'add']);
   };
-  headerButtons: HeaderButton[] = [
-    {
-      id: 'addJobBtn',
-      label: 'New Job',
-      type: 'button',
-      buttonClass: 'btn btn-primary btn-sm',
-      disabled: false,
-      clickHandler: this.navigateToAddJob,
-    },
-  ];
+  headerData: HeaderData = {
+    headerTitle: 'Jobs',
+    headerButtons: [
+      {
+        id: 'addJobBtn',
+        label: 'New Job',
+        type: 'button',
+        buttonClass: 'btn btn-primary btn-sm',
+        disabled: false,
+        clickHandler: this.navigateToAddJob,
+      },
+    ],
+  };
 
   jobs: Job[] = [];
   clients: Client[] = [];
@@ -46,11 +48,17 @@ export class JobList implements OnInit {
   selected: Job[] = [];
   selectionType = SelectionType.single;
 
-  constructor(
-    private dataService: DataService,
-    private router: Router,
-    private pageHeaderService: PageHeaderService
-  ) {
+  navigateToJobDetail(id: number) {
+    this.router.navigate(['/jobs', id]);
+  }
+
+  onSelect({ selected }: SelectEvent<Job>) {
+    this.selected.splice(0, this.selected.length);
+    this.selected.push(...selected);
+    this.navigateToJobDetail(selected[0].id);
+  }
+
+  constructor(private dataService: DataService, private router: Router) {
     combineLatest([this.dataService.clients$, this.dataService.jobs$]).subscribe(
       ([clients, jobs]) => {
         if (clients && jobs) {
@@ -66,21 +74,7 @@ export class JobList implements OnInit {
     );
   }
 
-  navigateToJobDetail(id: number) {
-    this.router.navigate(['/jobs', id]);
-  }
-
-  onSelect({ selected }: SelectEvent<Job>) {
-    this.selected.splice(0, this.selected.length);
-    this.selected.push(...selected);
-    this.navigateToJobDetail(selected[0].id);
-  }
-
   ngOnInit(): void {
-    this.pageHeaderService.send({
-      headerTitle: this.headerTitle,
-      headerButtons: this.headerButtons,
-    });
     this.columns = [
       { prop: 'id', name: 'Job Number' },
       { prop: 'clientName', name: 'Client' },
