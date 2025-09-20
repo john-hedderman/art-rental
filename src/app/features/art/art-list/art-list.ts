@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 
 import { Card } from '../../../shared/components/card/card';
-import { Art, HeaderButton } from '../../../model/models';
-import { PageHeaderService } from '../../../service/page-header-service';
+import { Art, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
+import { PageHeader2 } from '../../../shared/components/page-header-2/page-header-2';
 
 @Component({
   selector: 'app-art-list',
-  imports: [Card],
+  imports: [Card, PageHeader2],
   templateUrl: './art-list.html',
   styleUrl: './art-list.scss',
   standalone: true,
@@ -18,27 +18,29 @@ import { DataService } from '../../../service/data-service';
 export class ArtList {
   artwork: Art[] = [];
 
-  headerTitle = 'Art';
   navigateToAddToCart = () => {};
   navigateToAddArt = () => {};
-  headerButtons: HeaderButton[] = [
-    {
-      id: 'addArtBtn',
-      label: 'Add Art',
-      type: 'button',
-      buttonClass: 'btn btn-secondary btn-sm',
-      disabled: false,
-      clickHandler: this.navigateToAddArt,
-    },
-    {
-      id: 'addArtToCartBtn',
-      label: 'Add Selected to Cart',
-      type: 'button',
-      buttonClass: 'btn btn-primary btn-sm',
-      disabled: true,
-      clickHandler: this.navigateToAddToCart,
-    },
-  ];
+  headerData: HeaderData = {
+    headerTitle: 'Add Art',
+    headerButtons: [
+      {
+        id: 'addArtBtn',
+        label: 'Add Art',
+        type: 'button',
+        buttonClass: 'btn btn-secondary btn-sm',
+        disabled: false,
+        clickHandler: this.navigateToAddArt,
+      },
+      {
+        id: 'addArtToCartBtn',
+        label: 'Add Selected to Cart',
+        type: 'button',
+        buttonClass: 'btn btn-primary btn-sm',
+        disabled: true,
+        clickHandler: this.navigateToAddToCart,
+      },
+    ],
+  };
 
   setAddToCartButtonState = () => {
     const addArtToCartBtn = document.getElementById('addArtToCartBtn');
@@ -68,14 +70,10 @@ export class ArtList {
     }
   };
 
-  constructor(private dataService: DataService, private pageHeaderService: PageHeaderService) {
+  constructor(private dataService: DataService) {
     this.dataService.art$.subscribe((artwork) => {
       if (artwork) {
         this.artwork = artwork;
-        this.pageHeaderService.send({
-          headerTitle: this.headerTitle,
-          headerButtons: this.headerButtons,
-        });
       }
     });
   }

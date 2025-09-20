@@ -3,33 +3,35 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Client, HeaderButton, Job } from '../../../model/models';
-import { PageHeaderService } from '../../../service/page-header-service';
+import { Client, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { AsyncPipe } from '@angular/common';
+import { PageHeader2 } from '../../../shared/components/page-header-2/page-header-2';
 
 @Component({
   selector: 'app-job-detail',
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, PageHeader2],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.scss',
   standalone: true,
 })
 export class JobDetail {
-  headerTitle = 'Job detail';
   navigateToJobList = () => {
     this.router.navigate(['/jobs', 'list']);
   };
-  headerButtons: HeaderButton[] = [
-    {
-      id: 'returnToJobListBtn',
-      label: '<i class="bi bi-arrow-left"></i> Back',
-      type: 'button',
-      buttonClass: 'btn btn-primary btn-sm',
-      disabled: false,
-      clickHandler: this.navigateToJobList,
-    },
-  ];
+  headerData: HeaderData = {
+    headerTitle: 'Job detail',
+    headerButtons: [
+      {
+        id: 'returnToJobListBtn',
+        label: '<i class="bi bi-arrow-left"></i> Back',
+        type: 'button',
+        buttonClass: 'btn btn-primary btn-sm',
+        disabled: false,
+        clickHandler: this.navigateToJobList,
+      },
+    ],
+  };
 
   jobId = '';
   job$: Observable<Job> | undefined;
@@ -48,7 +50,6 @@ export class JobDetail {
 
   constructor(
     private router: Router,
-    private pageHeaderService: PageHeaderService,
     private route: ActivatedRoute,
     private dataService: DataService
   ) {
@@ -63,10 +64,6 @@ export class JobDetail {
             const mergedJob = { ...job, clientName: clientName };
             if (mergedJob.id === +this.jobId) {
               this.job$ = of(mergedJob); // for template
-              this.pageHeaderService.send({
-                headerTitle: mergedJob.clientName,
-                headerButtons: this.headerButtons,
-              });
             }
             return mergedJob;
           });

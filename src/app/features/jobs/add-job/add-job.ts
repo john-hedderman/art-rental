@@ -1,38 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { HeaderButton } from '../../../model/models';
-import { PageHeaderService } from '../../../service/page-header-service';
+import { HeaderData } from '../../../model/models';
+import { PageHeader2 } from '../../../shared/components/page-header-2/page-header-2';
 
 @Component({
   selector: 'app-add-job',
-  imports: [],
+  imports: [PageHeader2],
   templateUrl: './add-job.html',
   styleUrl: './add-job.scss',
   standalone: true,
 })
-export class AddJob implements OnInit {
-  headerTitle = 'Add Job';
+export class AddJob {
   navigateToJobList = () => {
     this.router.navigate(['/jobs', 'list']);
   };
-  headerButtons: HeaderButton[] = [
-    {
-      id: 'returnToJobListBtn',
-      label: '<i class="bi bi-arrow-left"></i> Back',
-      type: 'button',
-      buttonClass: 'btn btn-primary btn-sm',
-      disabled: false,
-      clickHandler: this.navigateToJobList,
-    },
-  ];
+  headerData: HeaderData = {
+    headerTitle: 'Add Job',
+    headerButtons: [
+      {
+        id: 'returnToJobListBtn',
+        label: '<i class="bi bi-arrow-left"></i> Back',
+        type: 'button',
+        buttonClass: 'btn btn-primary btn-sm',
+        disabled: false,
+        clickHandler: this.navigateToJobList,
+      },
+    ],
+  };
 
-  constructor(private router: Router, private pageHeaderService: PageHeaderService) {}
-
-  ngOnInit(): void {
-    this.pageHeaderService.send({
-      headerTitle: this.headerTitle,
-      headerButtons: this.headerButtons,
-    });
-  }
+  constructor(private router: Router) {}
 }
