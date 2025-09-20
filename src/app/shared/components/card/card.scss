@@ -3,9 +3,9 @@
 }
 
 .ar-card {
-  --ar-card-width: 18rem;
-  --ar-card-height: calc(var(--ar-card-width) / 2);
+  --ar-card-width: 28rem;
   --ar-card-border-radius: 0.375rem;
+  --ar-card-side-length: 150px;
 
   width: var(--ar-card-width);
   border: 1px solid var(--ar-border-color);
@@ -13,7 +13,9 @@
   color: var(--ar-text-color-primary-light);
 
   .ar-img-container {
-    height: calc(var(--ar-card-height) - var(--bs-card-border-width));
+    width: var(--ar-card-side-length);
+    height: var(--ar-card-side-length);
+    border-right: 1px solid #ccc;
 
     img {
       object-fit: cover;
@@ -26,7 +28,7 @@
   }
 
   .ar-text-container {
-    height: calc(var(--ar-card-height) - var(--bs-card-border-width));
+    height: var(--ar-card-side-length);
   }
 
   .ar-form-check-input {

@@ -7,10 +7,11 @@ import { map } from 'rxjs/operators';
 import { Client, HeaderButton } from '../../../model/models';
 import { PageHeaderService } from '../../../service/page-header-service';
 import { DataService } from '../../../service/data-service';
+import { Card } from '../../../shared/components/card/card';
 
 @Component({
   selector: 'app-client-detail',
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, Card],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
   standalone: true,
