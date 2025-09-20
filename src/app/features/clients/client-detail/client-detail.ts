@@ -4,14 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Client, HeaderButton } from '../../../model/models';
-import { PageHeaderService } from '../../../service/page-header-service';
+import { Client, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Card } from '../../../shared/components/card/card';
+import { PageHeader2 } from '../../../shared/components/page-header-2/page-header-2';
 
 @Component({
   selector: 'app-client-detail',
-  imports: [AsyncPipe, Card],
+  imports: [AsyncPipe, Card, PageHeader2],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
   standalone: true,
@@ -22,20 +22,22 @@ import { Card } from '../../../shared/components/card/card';
 export class ClientDetail {
   client$: Observable<Client> | undefined;
 
-  headerTitle = 'Client detail';
   navigateToClientList = () => {
     this.router.navigate(['/clients', 'list']);
   };
-  headerButtons: HeaderButton[] = [
-    {
-      id: 'returnToClientListBtn',
-      label: '<i class="bi bi-arrow-left"></i> Back',
-      type: 'button',
-      buttonClass: 'btn btn-primary btn-sm',
-      disabled: false,
-      clickHandler: this.navigateToClientList,
-    },
-  ];
+  headerData: HeaderData = {
+    headerTitle: 'Client detail',
+    headerButtons: [
+      {
+        id: 'returnToClientListBtn',
+        label: '<i class="bi bi-arrow-left"></i> Back',
+        type: 'button',
+        buttonClass: 'btn btn-primary btn-sm',
+        disabled: false,
+        clickHandler: this.navigateToClientList,
+      },
+    ],
+  };
 
   getClientId(): Observable<string> {
     return this.route.paramMap.pipe(
@@ -49,7 +51,6 @@ export class ClientDetail {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private pageHeaderService: PageHeaderService,
     private dataService: DataService
   ) {
     combineLatest([this.dataService.clients$, this.getClientId()]).subscribe(
@@ -58,10 +59,6 @@ export class ClientDetail {
           const matchedClients = clients.filter((client: Client) => client.id === +clientId);
           const matchedClient = matchedClients.length ? matchedClients[0] : ({} as Client);
           this.client$ = of(matchedClient); // for template
-          this.pageHeaderService.send({
-            headerTitle: matchedClient?.name,
-            headerButtons: this.headerButtons,
-          });
         }
       }
     );

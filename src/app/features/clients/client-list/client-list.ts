@@ -8,13 +8,13 @@ import {
   SelectEvent,
 } from '@swimlane/ngx-datatable';
 
-import { Client, HeaderButton } from '../../../model/models';
-import { PageHeaderService } from '../../../service/page-header-service';
+import { Client, HeaderButton, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
+import { PageHeader2 } from '../../../shared/components/page-header-2/page-header-2';
 
 @Component({
   selector: 'app-client-list',
-  imports: [NgxDatatableModule],
+  imports: [NgxDatatableModule, PageHeader2],
   templateUrl: './client-list.html',
   styleUrl: './client-list.scss',
   standalone: true,
@@ -25,31 +25,29 @@ import { DataService } from '../../../service/data-service';
 export class ClientList implements OnInit {
   @ViewChild('locationTemplate', { static: true }) locationTemplate!: TemplateRef<any>;
 
-  headerTitle = 'Clients';
   navigateToAddClient = () => {
     this.router.navigate(['/clients', 'add']);
   };
-  headerButtons: HeaderButton[] = [
-    {
-      id: 'addClientBtn',
-      label: 'New Client',
-      type: 'button',
-      buttonClass: 'btn btn-primary btn-sm',
-      disabled: false,
-      clickHandler: this.navigateToAddClient,
-    },
-  ];
+  headerData: HeaderData = {
+    headerTitle: 'Clients',
+    headerButtons: [
+      {
+        id: 'addClientBtn',
+        label: 'New Client',
+        type: 'button',
+        buttonClass: 'btn btn-primary btn-sm',
+        disabled: false,
+        clickHandler: this.navigateToAddClient,
+      },
+    ],
+  };
 
   rows: Client[] = [];
   columns: TableColumn[] = [];
   selected: Client[] = [];
   selectionType = SelectionType.single;
 
-  constructor(
-    private dataService: DataService,
-    private router: Router,
-    private pageHeaderService: PageHeaderService
-  ) {
+  constructor(private dataService: DataService, private router: Router) {
     this.dataService.clients$.subscribe((clients) => {
       if (clients) {
         this.rows = [...clients];
@@ -74,10 +72,6 @@ export class ClientList implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pageHeaderService.send({
-      headerTitle: this.headerTitle,
-      headerButtons: this.headerButtons,
-    });
     this.columns = [
       { prop: 'name', name: 'Name' },
       {

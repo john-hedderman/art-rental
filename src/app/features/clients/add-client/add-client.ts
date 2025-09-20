@@ -1,38 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { Router } from '@angular/router';
-import { HeaderButton } from '../../../model/models';
-import { PageHeaderService } from '../../../service/page-header-service';
+import { HeaderButton, HeaderData } from '../../../model/models';
+import { PageHeader2 } from '../../../shared/components/page-header-2/page-header-2';
 
 @Component({
   selector: 'app-add-client',
-  imports: [],
+  imports: [PageHeader2],
   templateUrl: './add-client.html',
   styleUrl: './add-client.scss',
   standalone: true,
 })
-export class AddClient implements OnInit {
-  headerTitle = 'Add Client';
+export class AddClient {
   navigateToClientList = () => {
     this.router.navigate(['/clients', 'list']);
   };
-  headerButtons: HeaderButton[] = [
-    {
-      id: 'returnToClientListBtn',
-      label: '<i class="bi bi-arrow-left"></i> Back',
-      type: 'button',
-      buttonClass: 'btn btn-primary btn-sm',
-      disabled: false,
-      clickHandler: this.navigateToClientList,
-    },
-  ];
+  headerData: HeaderData = {
+    headerTitle: 'Add Client',
+    headerButtons: [
+      {
+        id: 'returnToClientListBtn',
+        label: '<i class="bi bi-arrow-left"></i> Back',
+        type: 'button',
+        buttonClass: 'btn btn-primary btn-sm',
+        disabled: false,
+        clickHandler: this.navigateToClientList,
+      },
+    ],
+  };
 
-  constructor(private router: Router, private pageHeaderService: PageHeaderService) {}
-
-  ngOnInit(): void {
-    this.pageHeaderService.send({
-      headerTitle: this.headerTitle,
-      headerButtons: this.headerButtons,
-    });
-  }
+  constructor(private router: Router) {}
 }
