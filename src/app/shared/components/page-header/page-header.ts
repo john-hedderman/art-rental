@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
-
-import { PageHeaderService } from '../../../service/page-header-service';
+import { Component, input } from '@angular/core';
+import { HeaderData } from '../../../model/models';
 
 @Component({
   selector: 'app-page-header',
-  imports: [AsyncPipe],
+  imports: [],
   templateUrl: './page-header.html',
   styleUrl: './page-header.scss',
   standalone: true,
 })
 export class PageHeader {
-  constructor(public pageHeaderService: PageHeaderService) {}
+  headerData = input<HeaderData>({
+    headerTitle: '',
+    headerButtons: [],
+  });
 }

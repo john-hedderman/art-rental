@@ -10,11 +10,11 @@ import {
 
 import { Client, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
-import { PageHeader2 } from '../../../shared/components/page-header-2/page-header-2';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 @Component({
   selector: 'app-job-list',
-  imports: [NgxDatatableModule, PageHeader2],
+  imports: [NgxDatatableModule, PageHeader],
   templateUrl: './job-list.html',
   styleUrl: './job-list.scss',
   standalone: true,

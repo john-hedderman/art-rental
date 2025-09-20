@@ -6,11 +6,11 @@ import { map } from 'rxjs/operators';
 import { Client, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { AsyncPipe } from '@angular/common';
-import { PageHeader2 } from '../../../shared/components/page-header-2/page-header-2';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 @Component({
   selector: 'app-job-detail',
-  imports: [AsyncPipe, PageHeader2],
+  imports: [AsyncPipe, PageHeader],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.scss',
   standalone: true,

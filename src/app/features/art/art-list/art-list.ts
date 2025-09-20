@@ -3,11 +3,11 @@ import { Component } from '@angular/core';
 import { Card } from '../../../shared/components/card/card';
 import { Art, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
-import { PageHeader2 } from '../../../shared/components/page-header-2/page-header-2';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 @Component({
   selector: 'app-art-list',
-  imports: [Card, PageHeader2],
+  imports: [Card, PageHeader],
   templateUrl: './art-list.html',
   styleUrl: './art-list.scss',
   standalone: true,

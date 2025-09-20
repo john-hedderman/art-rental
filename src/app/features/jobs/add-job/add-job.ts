@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { HeaderData } from '../../../model/models';
-import { PageHeader2 } from '../../../shared/components/page-header-2/page-header-2';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 @Component({
   selector: 'app-add-job',
-  imports: [PageHeader2],
+  imports: [PageHeader],
   templateUrl: './add-job.html',
   styleUrl: './add-job.scss',
   standalone: true,

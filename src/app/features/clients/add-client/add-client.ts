@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 
 import { Router } from '@angular/router';
-import { HeaderButton, HeaderData } from '../../../model/models';
-import { PageHeader2 } from '../../../shared/components/page-header-2/page-header-2';
+import { HeaderData } from '../../../model/models';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 @Component({
   selector: 'app-add-client',
-  imports: [PageHeader2],
+  imports: [PageHeader],
   templateUrl: './add-client.html',
   styleUrl: './add-client.scss',
   standalone: true,

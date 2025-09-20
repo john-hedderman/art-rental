@@ -8,13 +8,13 @@ import {
   SelectEvent,
 } from '@swimlane/ngx-datatable';
 
-import { Client, HeaderButton, HeaderData } from '../../../model/models';
+import { Client, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
-import { PageHeader2 } from '../../../shared/components/page-header-2/page-header-2';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 @Component({
   selector: 'app-client-list',
-  imports: [NgxDatatableModule, PageHeader2],
+  imports: [NgxDatatableModule, PageHeader],
   templateUrl: './client-list.html',
   styleUrl: './client-list.scss',
   standalone: true,
