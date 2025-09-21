@@ -21,7 +21,7 @@ export class ArtList {
   navigateToAddToCart = () => {};
   navigateToAddArt = () => {};
   headerData: HeaderData = {
-    headerTitle: 'Add Art',
+    headerTitle: 'Artwork',
     headerButtons: [
       {
         id: 'addArtBtn',
@@ -33,7 +33,7 @@ export class ArtList {
       },
       {
         id: 'addArtToCartBtn',
-        label: 'Add Selected to Cart',
+        label: 'Add Selected to Job',
         type: 'button',
         buttonClass: 'btn btn-primary btn-sm',
         disabled: true,
