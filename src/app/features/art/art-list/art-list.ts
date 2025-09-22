@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { Card } from '../../../shared/components/card/card';
 import { Art, HeaderData } from '../../../model/models';
@@ -7,16 +8,15 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 @Component({
   selector: 'app-art-list',
-  imports: [Card, PageHeader],
+  imports: [Card, PageHeader, FormsModule],
   templateUrl: './art-list.html',
   styleUrl: './art-list.scss',
   standalone: true,
-  host: {
-    class: 'overflow-y-auto',
-  },
 })
 export class ArtList {
   artwork: Art[] = [];
+
+  selection = 'card';
 
   navigateToAddToCart = () => {};
   navigateToAddArt = () => {};
@@ -70,11 +70,27 @@ export class ArtList {
     }
   };
 
+  onSelectView(event: any) {
+    const newView = event.target.dataset.arView;
+    if (newView) {
+      localStorage.setItem('artView', newView);
+      this.selection = newView;
+    }
+  }
+
+  setViewSelection() {
+    const storedView = localStorage.getItem('artView');
+    if (storedView) {
+      this.selection = storedView;
+    }
+  }
+
   constructor(private dataService: DataService) {
     this.dataService.art$.subscribe((artwork) => {
       if (artwork) {
         this.artwork = artwork;
       }
     });
+    this.setViewSelection();
   }
 }

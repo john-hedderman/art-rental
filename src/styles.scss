@@ -28,6 +28,8 @@
 
   --ar-page-header-height: 3rem;
 
+  --ar-page-menubar-height: 3rem;
+
   --ar-table-header-height: 50px;
 }
 
@@ -67,5 +69,15 @@ body {
 }
 
 .ar-page-container {
-  height: calc(100vh - var(--ar-navbar-height) - var(--ar-page-header-height));
+  height: calc(100vh - var(--ar-navbar-height));
+}
+
+.ar-page-content {
+  height: calc(
+    100vh - var(--ar-navbar-height) - var(--ar-page-header-height) - var(--ar-page-menubar-height)
+  );
+}
+
+.ar-menubar {
+  height: var(--ar-page-menubar-height);
 }
