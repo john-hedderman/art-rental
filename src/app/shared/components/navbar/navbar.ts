@@ -13,7 +13,6 @@ import { filter, takeUntil } from 'rxjs/operators';
 export class Navbar implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();
 
-  @Input() title: string | undefined;
   @ViewChild('navbarToggler') navbarToggler: ElementRef | undefined;
 
   onClickNavLink(event: PointerEvent, fromBrand?: boolean) {
