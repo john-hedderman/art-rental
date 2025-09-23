@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input, Input } from '@angular/core';
 import { NgClass } from '@angular/common';
 
 @Component({
@@ -9,11 +9,15 @@ import { NgClass } from '@angular/common';
   standalone: true,
 })
 export class Card {
-  @Input() imageSource = '';
-  @Input() imageAlt = '';
-  @Input() imageTitle = '';
-  @Input() cardTitle = '';
-  @Input() cardText = '';
-  @Input() isSelectable = false;
-  @Input() changeHandler: any;
+  cardData = input<any>({
+    imageData: {
+      source: '',
+      alt: '',
+      title: '',
+    },
+    title: '',
+    text: '',
+    isSelectable: false,
+    changeHandler: null,
+  });
 }

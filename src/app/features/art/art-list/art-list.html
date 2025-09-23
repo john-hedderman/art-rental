@@ -37,13 +37,13 @@
 <div class="card-group overflow-y-auto ar-page-content">
   @for (art of artwork; track $index) {
   <app-card
-    [imageSource]="art.url"
-    [imageAlt]="art.name"
-    [imageTitle]="art.name"
-    [cardTitle]="art.name"
-    [cardText]="art.artist"
-    [isSelectable]="true"
-    [changeHandler]="setAddToCartButtonState"
+    [cardData]="{
+      imageData: { source: art.url, alt: art.name, title: art.name },
+      title: art.name,
+      text: art.artist,
+      isSelectable: true,
+      changeHandler: setAddToCartButtonState
+    }"
     class="mt-3 ms-3"
   ></app-card>
   }

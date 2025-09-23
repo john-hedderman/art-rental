@@ -14,11 +14,17 @@
       <h5 class="mt-3 mb-0">Jobs</h5>
       <div>
         <app-card
-          [imageSource]="''"
-          [imageAlt]="''"
-          [imageTitle]="''"
-          [cardTitle]="'A Job'"
-          [cardText]="'A Job description'"
+          [cardData]="{
+            imageData: {
+              source: '',
+              alt: '',
+              title: '',
+            },
+            title: 'A Job',
+            text: 'A Job description',
+            isSelectable: false,
+            changeHandler: null
+          }"
           class="mt-3 ms-3"
         ></app-card>
       </div>

@@ -2,18 +2,18 @@
   <div class="row g-0">
     <div class="col-1 ar-img-container">
       <img
-        src="{{ imageSource }}"
+        src="{{ cardData().imageData.source }}"
         class="img-fluid ar-rounded-start h-100"
-        alt="{{ imageAlt }}"
-        title="{{ imageTitle }}"
+        alt="{{ cardData().imageData.alt }}"
+        title="{{ cardData().imageData.title }}"
         loading="lazy"
       />
     </div>
     <div class="col ar-text-container overflow-y-auto">
       <div class="card-body">
-        <h6 class="card-title fw-bold">{{ cardTitle }}</h6>
+        <h6 class="card-title fw-bold">{{ cardData().title }}</h6>
         <p class="card-text fst-italic">
-          {{ cardText }}
+          {{ cardData().text }}
         </p>
       </div>
     </div>
@@ -25,10 +25,10 @@
           type="checkbox"
           id="card"
           class="form-check-input ar-form-check-input"
-          [ngClass]="{ 'd-none': !isSelectable }"
+          [ngClass]="{ 'd-none': !cardData().isSelectable }"
           name="card"
           value="true"
-          (change)="changeHandler($event)"
+          (change)="cardData().changeHandler($event)"
         />
       </div>
     </div>
