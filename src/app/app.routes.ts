@@ -12,6 +12,7 @@ import { JobsPage } from './features/jobs/jobs-page';
 import { JobList } from './features/jobs/job-list/job-list';
 import { AddJob } from './features/jobs/add-job/add-job';
 import { JobDetail } from './features/jobs/job-detail/job-detail';
+import { ArtDetail } from './features/art/art-detail/art-detail';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,10 @@ export const routes: Routes = [
       {
         path: 'list',
         component: ArtList,
+      },
+      {
+        path: ':id',
+        component: ArtDetail,
       },
       {
         path: '',

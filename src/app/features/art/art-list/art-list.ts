@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { Card } from '../../../shared/components/card/card';
 import { Art, HeaderData } from '../../../model/models';
@@ -40,6 +41,14 @@ export class ArtList {
         clickHandler: this.navigateToAddToCart,
       },
     ],
+  };
+
+  navigateToArtDetail = (id: number, event: PointerEvent) => {
+    const tgt = event.target as HTMLElement;
+    if (tgt.id === 'cardFooter' || tgt.id === 'cardFormCheck' || tgt.id === 'cardCheck') {
+      return;
+    }
+    this.router.navigate(['/art', id]);
   };
 
   setAddToCartButtonState = () => {
@@ -85,7 +94,7 @@ export class ArtList {
     }
   }
 
-  constructor(private dataService: DataService) {
+  constructor(private dataService: DataService, private router: Router) {
     this.dataService.art$.subscribe((artwork) => {
       if (artwork) {
         this.artwork = artwork;

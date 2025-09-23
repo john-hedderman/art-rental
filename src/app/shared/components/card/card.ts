@@ -19,5 +19,6 @@ export class Card {
     text: '',
     isSelectable: false,
     changeHandler: null,
+    clickHandler: null,
   });
 }

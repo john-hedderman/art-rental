@@ -1,4 +1,4 @@
-<div class="card ar-card">
+<div class="card ar-card" (click)="cardData().clickHandler($event)">
   <div class="row g-0">
     <div class="col-1 ar-img-container">
       <img
@@ -19,11 +19,11 @@
     </div>
   </div>
   <div class="row g-0">
-    <div class="card-footer">
-      <div class="form-check">
+    <div class="card-footer" id="cardFooter">
+      <div class="form-check" id="cardFormCheck">
         <input
           type="checkbox"
-          id="card"
+          id="cardCheck"
           class="form-check-input ar-form-check-input"
           [ngClass]="{ 'd-none': !cardData().isSelectable }"
           name="card"
