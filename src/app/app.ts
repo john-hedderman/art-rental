@@ -10,6 +10,4 @@ import { Navbar } from './shared/components/navbar/navbar';
   styleUrl: './app.scss',
   standalone: true,
 })
-export class App {
-  title = 'Unforgettable Occasions';
-}
+export class App {}

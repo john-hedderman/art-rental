@@ -20,9 +20,9 @@
   --ar-border-color-dark: #666;
 
   --ar-navbar-height: 4.25rem;
-  --ar-navbar-brand-font-size: 1.75rem;
-  --ar-navbar-brand-font-size-small: 1.5rem;
-  --ar-navbar-brand-font-size-smaller: 1rem;
+
+  --ar-navbar-brand-font-size-small: 1.125rem;
+  --ar-navbar-brand-font-size: 1.5rem;
 
   --ar-bg-color-card-title: #f1e4cf;
 
@@ -43,29 +43,6 @@
 body {
   height: 100vh;
   padding-top: var(--ar-navbar-height);
-
-  // at these breakpoints, the navbar brand font size is reduced
-  // so correspondingly reduce the top padding here, by the line-height times the delta
-
-  @media screen and (max-width: 440px) {
-    padding-top: calc(
-      var(--ar-navbar-height) -
-        (
-          var(--bs-body-line-height) *
-            (var(--ar-navbar-brand-font-size) - var(--ar-navbar-brand-font-size-small))
-        )
-    );
-  }
-
-  @media screen and (max-width: 385px) {
-    padding-top: calc(
-      var(--ar-navbar-height) -
-        (
-          var(--bs-body-line-height) *
-            (var(--ar-navbar-brand-font-size) - var(--ar-navbar-brand-font-size-smaller))
-        )
-    );
-  }
 }
 
 .ar-page-container {
@@ -80,4 +57,10 @@ body {
 
 .ar-menubar {
   height: var(--ar-page-menubar-height);
+}
+
+.kranky-regular {
+  font-family: 'Kranky', serif;
+  font-weight: 400;
+  font-style: normal;
 }
