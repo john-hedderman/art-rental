@@ -55,7 +55,7 @@ export class ClientList implements OnInit {
     });
   }
 
-  navigateToClientDetail(id: number) {
+  navigateToClientDetail(id: string) {
     this.router.navigate(['/clients', id]);
   }
 

@@ -13,7 +13,7 @@ export interface Artist {
 }
 
 export interface Client {
-  id: number;
+  id: string;
   name: string;
   address1: string;
   address2: string;
@@ -24,9 +24,18 @@ export interface Client {
 }
 
 export interface Job {
-  id: number;
-  clientId: number;
-  clientName?: string;
+  id: string;
+  clientId: string;
+  address1: string;
+  address2: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  description?: string;
+}
+
+export interface DetailedJob extends Job {
+  clientName: string;
 }
 
 export interface HeaderButton {

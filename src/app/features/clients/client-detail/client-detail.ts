@@ -56,7 +56,7 @@ export class ClientDetail {
     combineLatest([this.dataService.clients$, this.getClientId()]).subscribe(
       ([clients, clientId]) => {
         if (clients && clientId) {
-          const matchedClients = clients.filter((client: Client) => client.id === +clientId);
+          const matchedClients = clients.filter((client: Client) => client.id === clientId);
           const matchedClient = matchedClients.length ? matchedClients[0] : ({} as Client);
           this.client$ = of(matchedClient); // for template
         }

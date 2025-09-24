@@ -48,7 +48,7 @@ export class JobList implements OnInit {
   selected: Job[] = [];
   selectionType = SelectionType.single;
 
-  navigateToJobDetail(id: number) {
+  navigateToJobDetail(id: string) {
     this.router.navigate(['/jobs', id]);
   }
 

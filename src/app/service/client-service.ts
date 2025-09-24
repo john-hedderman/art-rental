@@ -13,7 +13,7 @@ export class ClientService {
     this.dataService.clients$.subscribe((clients) => {
       if (clients) {
         const filteredClients = clients.filter((client: Client) => {
-          return clientId === null ? false : client.id === +clientId;
+          return clientId === null ? false : client.id === clientId;
         });
         foundClient = filteredClients.length ? filteredClients[0] : ({} as Client);
       }

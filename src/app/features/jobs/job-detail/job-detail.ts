@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Client, HeaderData, Job } from '../../../model/models';
+import { Client, DetailedJob, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { AsyncPipe } from '@angular/common';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 @Component({
   selector: 'app-job-detail',
-  imports: [AsyncPipe, PageHeader],
+  imports: [AsyncPipe, PageHeader, RouterLink],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.scss',
   standalone: true,
@@ -34,7 +34,7 @@ export class JobDetail {
   };
 
   jobId = '';
-  job$: Observable<Job> | undefined;
+  job$: Observable<DetailedJob> | undefined;
 
   jobs: Job[] = [];
   clients: Client[] = [];
@@ -62,7 +62,7 @@ export class JobDetail {
             const clients = this.clients.filter((client) => client.id === job.clientId);
             const clientName = clients.length ? clients[0].name : '';
             const mergedJob = { ...job, clientName: clientName };
-            if (mergedJob.id === +this.jobId) {
+            if (mergedJob.id === this.jobId) {
               this.job$ = of(mergedJob); // for template
             }
             return mergedJob;

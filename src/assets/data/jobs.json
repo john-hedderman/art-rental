@@ -1,14 +1,19 @@
 [
   {
-    "id": 1,
-    "clientId": 1
+    "id": "000001",
+    "clientId": "000001"
   },
   {
-    "id": 2,
-    "clientId": 2
+    "id": "000002",
+    "clientId": "000003"
   },
   {
-    "id": 3,
-    "clientId": 3
+    "id": "000003",
+    "clientId": "000005",
+    "address1": "742 Evergreen Terrace",
+    "address2": "",
+    "city": "Sodus Point",
+    "state": "NY",
+    "zipCode": "14555"
   }
 ]
