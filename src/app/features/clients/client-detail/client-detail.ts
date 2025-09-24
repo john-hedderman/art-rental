@@ -4,14 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Client, HeaderData } from '../../../model/models';
+import { Client, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
-import { Card } from '../../../shared/components/card/card';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 @Component({
   selector: 'app-client-detail',
-  imports: [AsyncPipe, Card, PageHeader],
+  imports: [AsyncPipe, PageHeader],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
   standalone: true,
@@ -40,12 +39,7 @@ export class ClientDetail {
   };
 
   getClientId(): Observable<string> {
-    return this.route.paramMap.pipe(
-      map((params) => {
-        const id = params.get('id');
-        return id !== null ? id : '';
-      })
-    );
+    return this.route.paramMap.pipe(map((params) => params.get('id') ?? ''));
   }
 
   constructor(
@@ -53,14 +47,19 @@ export class ClientDetail {
     private router: Router,
     private dataService: DataService
   ) {
-    combineLatest([this.dataService.clients$, this.getClientId()]).subscribe(
-      ([clients, clientId]) => {
-        if (clients && clientId) {
-          const matchedClients = clients.filter((client: Client) => client.id === clientId);
-          const matchedClient = matchedClients.length ? matchedClients[0] : ({} as Client);
-          this.client$ = of(matchedClient); // for template
+    combineLatest([
+      this.dataService.clients$,
+      this.getClientId(),
+      this.dataService.jobs$,
+    ]).subscribe(([clients, clientId, jobs]: [Client[], string, Job[]]) => {
+      if (clients && clientId && jobs) {
+        for (const client of clients) {
+          if (client.id === clientId) {
+            this.client$ = of(client); // for template
+            break;
+          }
         }
       }
-    );
+    });
   }
 }

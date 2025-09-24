@@ -1,7 +1,12 @@
 [
   {
     "id": "000001",
-    "clientId": "000001"
+    "clientId": "000005",
+    "address1": "3996 Howard Street",
+    "address2": "",
+    "city": "Webster",
+    "state": "NY",
+    "zipCode": "14580"
   },
   {
     "id": "000002",
@@ -10,10 +15,10 @@
   {
     "id": "000003",
     "clientId": "000005",
-    "address1": "742 Evergreen Terrace",
+    "address1": "1460 Ryan Road",
     "address2": "",
-    "city": "Sodus Point",
+    "city": "Webster",
     "state": "NY",
-    "zipCode": "14555"
+    "zipCode": "14580"
   }
 ]

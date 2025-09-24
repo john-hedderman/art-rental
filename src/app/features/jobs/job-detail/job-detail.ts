@@ -33,19 +33,10 @@ export class JobDetail {
     ],
   };
 
-  jobId = '';
   job$: Observable<DetailedJob> | undefined;
 
-  jobs: Job[] = [];
-  clients: Client[] = [];
-
   getJobId(): Observable<string> {
-    return this.route.paramMap.pipe(
-      map((params) => {
-        const id = params.get('id');
-        return id !== null ? id : '';
-      })
-    );
+    return this.route.paramMap.pipe(map((params) => params.get('id') ?? ''));
   }
 
   constructor(
@@ -54,19 +45,17 @@ export class JobDetail {
     private dataService: DataService
   ) {
     combineLatest([this.dataService.clients$, this.getJobId(), this.dataService.jobs$]).subscribe(
-      ([clients, jobId, jobs]) => {
+      ([clients, jobId, jobs]: [Client[], string, Job[]]) => {
         if (clients && jobId && jobs) {
-          this.clients = clients;
-          this.jobId = jobId;
-          this.jobs = jobs.map((job: Job) => {
-            const clients = this.clients.filter((client) => client.id === job.clientId);
-            const clientName = clients.length ? clients[0].name : '';
-            const mergedJob = { ...job, clientName: clientName };
-            if (mergedJob.id === this.jobId) {
+          for (const job of jobs) {
+            const matchedClients = clients.filter((client: Client) => client.id === job.clientId);
+            const clientName = matchedClients.length ? matchedClients[0].name : '';
+            const mergedJob = { ...job, clientName };
+            if (job.id === jobId) {
               this.job$ = of(mergedJob); // for template
+              break;
             }
-            return mergedJob;
-          });
+          }
         }
       }
     );

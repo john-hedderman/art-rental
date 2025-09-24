@@ -21,6 +21,7 @@ export interface Client {
   state: string;
   zipCode: string;
   industry: string;
+  jobs: Job[];
 }
 
 export interface Job {

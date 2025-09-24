@@ -7,7 +7,8 @@
     "city": "Greece",
     "state": "NY",
     "zipCode": "",
-    "industry": "Arts & Crafts"
+    "industry": "Arts & Crafts",
+    "jobs": []
   },
   {
     "id": "000002",
@@ -17,7 +18,8 @@
     "city": "Irondiquoit",
     "state": "NY",
     "zipCode": "",
-    "industry": "Beauty"
+    "industry": "Beauty",
+    "jobs": []
   },
   {
     "id": "000003",
@@ -27,7 +29,8 @@
     "city": "Henrietta",
     "state": "NY",
     "zipCode": "",
-    "industry": "Education"
+    "industry": "Education",
+    "jobs": []
   },
   {
     "id": "000004",
@@ -37,7 +40,8 @@
     "city": "Rochester",
     "state": "NY",
     "zipCode": "",
-    "industry": "Home"
+    "industry": "Home",
+    "jobs": []
   },
   {
     "id": "000005",
@@ -47,7 +51,15 @@
     "city": "Webster",
     "state": "NY",
     "zipCode": "14580",
-    "industry": "Luxury"
+    "industry": "Luxury",
+    "jobs": [
+      {
+        "id": "000001"
+      },
+      {
+        "id": "000003"
+      }
+    ]
   },
   {
     "id": "000006",
@@ -57,7 +69,8 @@
     "city": "Buffalo",
     "state": "NY",
     "zipCode": "",
-    "industry": "Fashion"
+    "industry": "Fashion",
+    "jobs": []
   },
   {
     "id": "000007",
@@ -67,7 +80,8 @@
     "city": "Java",
     "state": "NY",
     "zipCode": "",
-    "industry": "Jewelry"
+    "industry": "Jewelry",
+    "jobs": []
   },
   {
     "id": "000008",
@@ -77,7 +91,8 @@
     "city": "Geneva",
     "state": "NY",
     "zipCode": "",
-    "industry": "Design"
+    "industry": "Design",
+    "jobs": []
   },
   {
     "id": "000009",
@@ -87,7 +102,8 @@
     "city": "Oswego",
     "state": "NY",
     "zipCode": "",
-    "industry": "Gaming"
+    "industry": "Gaming",
+    "jobs": []
   },
   {
     "id": "000010",
@@ -97,7 +113,8 @@
     "city": "Victor",
     "state": "NY",
     "zipCode": "",
-    "industry": "Finance"
+    "industry": "Finance",
+    "jobs": []
   },
   {
     "id": "000011",
@@ -107,7 +124,8 @@
     "city": "Macedon",
     "state": "NY",
     "zipCode": "",
-    "industry": "Cleaning"
+    "industry": "Cleaning",
+    "jobs": []
   },
   {
     "id": "000012",
@@ -117,7 +135,8 @@
     "city": "Ontario",
     "state": "NY",
     "zipCode": "",
-    "industry": "Communication"
+    "industry": "Communication",
+    "jobs": []
   },
   {
     "id": "000013",
@@ -127,7 +146,8 @@
     "city": "Penn Yan",
     "state": "NY",
     "zipCode": "",
-    "industry": "Health"
+    "industry": "Health",
+    "jobs": []
   },
   {
     "id": "000014",
@@ -137,7 +157,8 @@
     "city": "Canandaigua",
     "state": "NY",
     "zipCode": "",
-    "industry": "Food"
+    "industry": "Food",
+    "jobs": []
   },
   {
     "id": "000015",
@@ -147,7 +168,8 @@
     "city": "Syracuse",
     "state": "NY",
     "zipCode": "",
-    "industry": "Kids"
+    "industry": "Kids",
+    "jobs": []
   },
   {
     "id": "000016",
@@ -157,7 +179,8 @@
     "city": "Fulton",
     "state": "NY",
     "zipCode": "",
-    "industry": "Candles"
+    "industry": "Candles",
+    "jobs": []
   },
   {
     "id": "000017",
@@ -167,7 +190,8 @@
     "city": "Utica",
     "state": "NY",
     "zipCode": "",
-    "industry": "Events"
+    "industry": "Events",
+    "jobs": []
   },
   {
     "id": "000018",
@@ -177,7 +201,8 @@
     "city": "Rome",
     "state": "NY",
     "zipCode": "",
-    "industry": "Clothing"
+    "industry": "Clothing",
+    "jobs": []
   },
   {
     "id": "000019",
@@ -187,7 +212,8 @@
     "city": "Honeoye Falls",
     "state": "NY",
     "zipCode": "",
-    "industry": "Garden"
+    "industry": "Garden",
+    "jobs": []
   },
   {
     "id": "000020",
@@ -197,6 +223,7 @@
     "city": "Verona",
     "state": "NY",
     "zipCode": "",
-    "industry": "Fitness"
+    "industry": "Fitness",
+    "jobs": []
   }
 ]
