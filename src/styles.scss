@@ -49,6 +49,10 @@ body {
   height: calc(100vh - var(--ar-navbar-height));
 }
 
+.ar-page-content-no-menubar {
+  height: calc(100vh - var(--ar-navbar-height) - var(--ar-page-header-height));
+}
+
 .ar-page-content {
   height: calc(
     100vh - var(--ar-navbar-height) - var(--ar-page-header-height) - var(--ar-page-menubar-height)
