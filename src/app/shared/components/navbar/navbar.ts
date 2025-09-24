@@ -1,7 +1,7 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { RouteChangeService } from '../../../service/route-change-service';
 
 @Component({
   selector: 'app-navbar',
@@ -41,19 +41,32 @@ export class Navbar implements OnInit, OnDestroy {
     target?.classList.add('active');
   }
 
-  constructor(private router: Router) {}
+  getFirstSegment(url: string | null): String {
+    if (!url || url.indexOf('/') !== 0 || url === '/') {
+      return '';
+    }
+    const relativeUrl = url.substring(1);
+    const firstSlash = relativeUrl.indexOf('/');
+    return firstSlash === -1 ? relativeUrl : relativeUrl.substring(0, firstSlash);
+  }
+
+  constructor(private router: Router, private routeChangesService: RouteChangeService) {}
 
   ngOnInit(): void {
-    this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((event: NavigationEnd) => {
-        const activeLink = document.querySelector(`.ar-nav-link[routerLink="${event.url}"]`);
-        activeLink?.setAttribute('aria-current', 'page');
-        activeLink?.classList.add('active');
+    this.routeChangesService.routeChanges$.subscribe((url) => {
+      const currentRouteSegment = this.getFirstSegment(url);
+      document.querySelectorAll('.ar-nav-link').forEach((link) => {
+        const routerLink = link.getAttribute('routerLink');
+        const routerLinkSegment = this.getFirstSegment(routerLink);
+        if (routerLinkSegment === currentRouteSegment) {
+          link.classList.add('active');
+          link.setAttribute('aria-current', 'page');
+        } else {
+          link.classList.remove('active');
+          link.setAttribute('aria-current', '');
+        }
       });
+    });
   }
 
   ngOnDestroy(): void {
