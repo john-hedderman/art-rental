@@ -24,7 +24,7 @@ export class JobDetail {
     headerButtons: [
       {
         id: 'returnToJobListBtn',
-        label: '<i class="bi bi-arrow-left"></i> Back',
+        label: '<i class="bi bi-arrow-left"></i> Job list',
         type: 'button',
         buttonClass: 'btn btn-primary btn-sm',
         disabled: false,
