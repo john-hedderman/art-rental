@@ -12,3 +12,6 @@
   (select)="onSelect($event)"
 >
 </ngx-datatable>
+<ng-template #clientNameTemplate let-value="value" let-row="row">
+  {{ row.client?.name }}
+</ng-template>

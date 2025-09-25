@@ -32,11 +32,8 @@ export interface Job {
   city: string;
   state: string;
   zipCode: string;
-  description?: string;
-}
-
-export interface DetailedJob extends Job {
-  clientName: string;
+  description: string;
+  client: Client | undefined;
 }
 
 export interface HeaderButton {

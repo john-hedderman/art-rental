@@ -7,7 +7,7 @@
       <p class="pb-4">{{ job.id }}</p>
       <h5 class="fw-bold pb-2 ar-heading">Client:</h5>
       <p class="pb-4">
-        <a href="#" [routerLink]="`/clients/${job.clientId}` ">{{ job.clientName }}</a>
+        <a href="#" [routerLink]="`/clients/${job.client?.id}` ">{{ job.client?.name }}</a>
       </p>
       <h5 class="fw-bold pb-2 ar-heading">Job Site:</h5>
       <p class="pb-4">

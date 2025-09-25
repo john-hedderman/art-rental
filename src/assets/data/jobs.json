@@ -6,7 +6,10 @@
     "address2": "",
     "city": "Webster",
     "state": "NY",
-    "zipCode": "14580"
+    "zipCode": "14580",
+    "client": {
+      "id": "000005"
+    }
   },
   {
     "id": "000002",
@@ -19,6 +22,9 @@
     "address2": "",
     "city": "Webster",
     "state": "NY",
-    "zipCode": "14580"
+    "zipCode": "14580",
+    "client": {
+      "id": "000005"
+    }
   }
 ]

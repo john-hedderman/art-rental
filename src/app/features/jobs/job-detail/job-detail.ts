@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Client, DetailedJob, HeaderData, Job } from '../../../model/models';
+import { Client, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { AsyncPipe } from '@angular/common';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -33,7 +33,7 @@ export class JobDetail {
     ],
   };
 
-  job$: Observable<DetailedJob> | undefined;
+  job$: Observable<Job> | undefined;
 
   getJobId(): Observable<string> {
     return this.route.paramMap.pipe(map((params) => params.get('id') ?? ''));
@@ -49,10 +49,10 @@ export class JobDetail {
         if (clients && jobId && jobs) {
           const job: Job | undefined = jobs.find((job) => job.id === jobId);
           if (job) {
-            const client = clients.find((client) => client.id === job.clientId);
-            const clientName = client?.name ?? '';
-            const mergedJob = { ...job, clientName };
-            this.job$ = of(mergedJob); // for template
+            const client = clients.find((client) => client.id === job.client?.id);
+            // ensure client data is fleshed out
+            job.client = client ?? ({} as Client);
+            this.job$ = of(job); // for template
           }
         }
       }

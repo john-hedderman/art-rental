@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import {
@@ -23,6 +23,8 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
   },
 })
 export class JobList implements OnInit {
+  @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
+
   navigateToAddJob = () => {
     this.router.navigate(['/jobs', 'add']);
   };
@@ -64,9 +66,9 @@ export class JobList implements OnInit {
         if (clients && jobs) {
           this.clients = clients;
           this.jobs = jobs.map((job: Job) => {
-            const clients = this.clients.filter((client) => client.id === job.clientId);
-            const clientName = clients.length ? clients[0].name : '';
-            return { ...job, clientName: clientName };
+            const client = this.clients.find((client) => client.id === job.client?.id);
+            // ensure client information is fleshed out
+            return { ...job, client };
           });
           this.rows = [...this.jobs];
         }
@@ -77,7 +79,7 @@ export class JobList implements OnInit {
   ngOnInit(): void {
     this.columns = [
       { prop: 'id', name: 'Job Number' },
-      { prop: 'clientName', name: 'Client' },
+      { name: 'Client', cellTemplate: this.clientNameTemplate },
     ];
   }
 }
