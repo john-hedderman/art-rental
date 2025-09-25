@@ -66,7 +66,7 @@ export class JobList implements OnInit {
         if (clients && jobs) {
           this.clients = clients;
           this.jobs = jobs.map((job: Job) => {
-            const client = this.clients.find((client) => client.id === job.client?.id);
+            const client = clients.find((client) => client.id === job.client?.id)!;
             // ensure client information is fleshed out
             return { ...job, client };
           });

@@ -1,16 +1,17 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Client, HeaderData, Job } from '../../../model/models';
+import { Art, Client, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
-import { AsyncPipe } from '@angular/common';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { Card } from '../../../shared/components/card/card';
 
 @Component({
   selector: 'app-job-detail',
-  imports: [AsyncPipe, PageHeader, RouterLink],
+  imports: [AsyncPipe, PageHeader, RouterLink, Card],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.scss',
   standalone: true,
@@ -35,6 +36,14 @@ export class JobDetail {
 
   job$: Observable<Job> | undefined;
 
+  handleArtCardClick = (id: number, event: PointerEvent) => {
+    const tgt = event.target as HTMLElement;
+    if (tgt.id === 'cardFooter' || tgt.id === 'cardFormCheck' || tgt.id === 'cardCheck') {
+      return;
+    }
+    this.router.navigate(['/art', id]);
+  };
+
   getJobId(): Observable<string> {
     return this.route.paramMap.pipe(map((params) => params.get('id') ?? ''));
   }
@@ -44,18 +53,19 @@ export class JobDetail {
     private route: ActivatedRoute,
     private dataService: DataService
   ) {
-    combineLatest([this.dataService.clients$, this.getJobId(), this.dataService.jobs$]).subscribe(
-      ([clients, jobId, jobs]: [Client[], string, Job[]]) => {
-        if (clients && jobId && jobs) {
-          const job: Job | undefined = jobs.find((job) => job.id === jobId);
-          if (job) {
-            const client = clients.find((client) => client.id === job.client?.id);
-            // ensure client data is fleshed out
-            job.client = client ?? ({} as Client);
-            this.job$ = of(job); // for template
-          }
-        }
+    combineLatest([
+      this.dataService.clients$,
+      this.dataService.art$,
+      this.getJobId(),
+      this.dataService.jobs$,
+    ]).subscribe(([clients, artwork, jobId, jobs]: [Client[], Art[], string, Job[]]) => {
+      const job: Job | undefined = jobs.find((job) => job.id === jobId);
+      if (job) {
+        const client = clients.find((client) => client.id === job.client.id);
+        job.client = client ?? ({} as Client);
+        job.art = artwork.filter((piece) => piece.job.id === jobId);
+        this.job$ = of(job); // for template
       }
-    );
+    });
   }
 }

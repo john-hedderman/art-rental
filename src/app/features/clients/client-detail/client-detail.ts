@@ -53,7 +53,7 @@ export class ClientDetail {
       this.dataService.jobs$,
     ]).subscribe(([clients, clientId, jobs]: [Client[], string, Job[]]) => {
       if (clients && clientId && jobs) {
-        const client: Client | undefined = clients.find((client) => client.id === clientId);
+        const client: Client = clients.find((client) => client.id === clientId)!;
         if (client) {
           client.jobs = jobs.filter((job) => job.clientId === client.id);
           this.client$ = of(client); // for template

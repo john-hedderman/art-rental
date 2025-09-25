@@ -43,7 +43,7 @@ export class ArtList {
     ],
   };
 
-  navigateToArtDetail = (id: number, event: PointerEvent) => {
+  handleArtCardClick = (id: number, event: PointerEvent) => {
     const tgt = event.target as HTMLElement;
     if (tgt.id === 'cardFooter' || tgt.id === 'cardFormCheck' || tgt.id === 'cardCheck') {
       return;

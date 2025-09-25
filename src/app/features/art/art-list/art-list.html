@@ -43,7 +43,7 @@
       text: art.artist,
       isSelectable: true,
       changeHandler: setAddToCartButtonState.bind(this),
-      clickHandler: navigateToArtDetail.bind(null, art.id)
+      clickHandler: handleArtCardClick.bind(null, art.id)
     }"
     class="mt-3 ms-3"
   ></app-card>

@@ -3,11 +3,10 @@
   <div class="row">
     <div class="col">
       @if (job$ | async; as job) {
-      <h5 class="fw-bold pb-2 ar-heading">Job ID:</h5>
-      <p class="pb-4">{{ job.id }}</p>
+      <h5 class="pb-4"><strong>Job ID:</strong> {{ job.id }}</h5>
       <h5 class="fw-bold pb-2 ar-heading">Client:</h5>
       <p class="pb-4">
-        <a href="#" [routerLink]="`/clients/${job.client?.id}` ">{{ job.client?.name }}</a>
+        <a href="#" [routerLink]="`/clients/${job.client.id}` ">{{ job.client.name }}</a>
       </p>
       <h5 class="fw-bold pb-2 ar-heading">Job Site:</h5>
       <p class="pb-4">
@@ -17,7 +16,24 @@
         }
         {{ job.city }}, {{ job.state }} {{ job.zipCode }}
       </p>
-      }
+      <h5 class="fw-bold pb-2 ar-heading">Art:</h5>
+      @if (job.art && job.art.length) {
+      <div class="card-group ar-card-group overflow-y-auto ar-page-content">
+        @for (art of job.art; track $index) {
+        <app-card
+          [cardData]="{
+            imageData: { source: art.url, alt: art.name, title: art.name },
+            title: art.name,
+            text: art.artist,
+            isSelectable: false,
+            changeHandler: null,
+            clickHandler: handleArtCardClick.bind(null, art.id)
+          }"
+          class="mt-3 ms-3"
+        ></app-card>
+        }
+      </div>
+      } }
     </div>
   </div>
 </div>

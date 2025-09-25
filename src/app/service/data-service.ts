@@ -7,10 +7,10 @@ import { Art, Artist, Client, Job } from '../model/models';
   providedIn: 'root',
 })
 export class DataService {
-  public art$: BehaviorSubject<any> = new BehaviorSubject(null);
-  public artists$: BehaviorSubject<any> = new BehaviorSubject(null);
-  public clients$: BehaviorSubject<any> = new BehaviorSubject(null);
-  public jobs$: BehaviorSubject<any> = new BehaviorSubject(null);
+  public art$: BehaviorSubject<Art[]> = new BehaviorSubject([] as Art[]);
+  public artists$: BehaviorSubject<Artist[]> = new BehaviorSubject([] as Artist[]);
+  public clients$: BehaviorSubject<Client[]> = new BehaviorSubject([] as Client[]);
+  public jobs$: BehaviorSubject<Job[]> = new BehaviorSubject([] as Job[]);
 
   constructor(private http: HttpClient) {
     this.load('art').subscribe((art) => this.art$.next(art));

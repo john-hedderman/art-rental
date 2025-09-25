@@ -4,62 +4,89 @@
     "url": "images/art/boots.jpg",
     "name": "Boots",
     "artist": "Aaron Smit",
-    "tags": "folk art, illustration"
+    "tags": "folk art, illustration",
+    "job": {
+      "id": ""
+    }
   },
   {
     "id": 2,
     "url": "images/art/pastel.jpg",
     "name": "Ethereal Vortex Imagined",
     "artist": "Kayla Johnson",
-    "tags": "abstract, pastel"
+    "tags": "abstract, pastel",
+    "job": {
+      "id": ""
+    }
   },
   {
     "id": 3,
     "url": "images/art/geometry.jpg",
     "name": "Meta Movement",
     "artist": "Carl Brock",
-    "tags": "abstract, geometry"
+    "tags": "abstract, geometry",
+    "job": {
+      "id": "000003"
+    }
   },
   {
     "id": 4,
     "url": "images/art/light-of-memory.jpg",
     "name": "Light of Memory",
     "artist": "Linda Armstrong",
-    "tags": "abstract, portrait, people"
+    "tags": "abstract, portrait, people",
+    "job": {
+      "id": ""
+    }
   },
   {
     "id": 5,
     "url": "images/art/vibrant-purple-floral.jpg",
     "name": "Vibrant Purple Floral",
     "artist": "Bobby McLean",
-    "tags": "vibrant, organic"
+    "tags": "vibrant, organic",
+    "job": {
+      "id": ""
+    }
   },
   {
     "id": 6,
     "url": "images/art/surreal-echoes.jpg",
     "name": "Surreal Echoes",
     "artist": "Carl Brock",
-    "tags": "surrealism, geometry, vibrant"
+    "tags": "surrealism, geometry, vibrant",
+    "job": {
+      "id": "000003"
+    }
   },
   {
     "id": 7,
     "url": "images/art/pulse-of-the-unseen.jpg",
     "name": "Pulse of the Unseen",
     "artist": "Carl Brock",
-    "tags": "abstract"
+    "tags": "abstract",
+    "job": {
+      "id": "000003"
+    }
   },
   {
     "id": 8,
     "url": "images/art/genesis-in-metamorphosis.jpg",
     "name": "Genesis in Metamorphosis",
     "artist": "Jeffery Lewis",
-    "tags": "abstract, expressionism"
+    "tags": "abstract, expressionism",
+    "job": {
+      "id": ""
+    }
   },
   {
     "id": 9,
     "url": "images/art/infinite-evolution.jpg",
     "name": "Infinite Evolution",
     "artist": "Molly Owens",
-    "tags": "abstract, expressionism"
+    "tags": "abstract, expressionism",
+    "job": {
+      "id": ""
+    }
   }
 ]

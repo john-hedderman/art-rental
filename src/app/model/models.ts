@@ -3,6 +3,8 @@ export interface Art {
   artist: string;
   name: string;
   url: string;
+  tags: string;
+  job: Job;
 }
 
 export interface Artist {
@@ -33,7 +35,8 @@ export interface Job {
   state: string;
   zipCode: string;
   description: string;
-  client: Client | undefined;
+  client: Client;
+  art: Art[];
 }
 
 export interface HeaderButton {
