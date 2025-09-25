@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -10,7 +10,7 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 @Component({
   selector: 'app-client-detail',
-  imports: [AsyncPipe, PageHeader],
+  imports: [AsyncPipe, PageHeader, RouterLink],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
   standalone: true,
@@ -53,11 +53,10 @@ export class ClientDetail {
       this.dataService.jobs$,
     ]).subscribe(([clients, clientId, jobs]: [Client[], string, Job[]]) => {
       if (clients && clientId && jobs) {
-        for (const client of clients) {
-          if (client.id === clientId) {
-            this.client$ = of(client); // for template
-            break;
-          }
+        const client: Client | undefined = clients.find((client) => client.id === clientId);
+        if (client) {
+          client.jobs = jobs.filter((job) => job.clientId === client.id);
+          this.client$ = of(client); // for template
         }
       }
     });

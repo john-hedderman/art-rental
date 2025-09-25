@@ -47,14 +47,12 @@ export class JobDetail {
     combineLatest([this.dataService.clients$, this.getJobId(), this.dataService.jobs$]).subscribe(
       ([clients, jobId, jobs]: [Client[], string, Job[]]) => {
         if (clients && jobId && jobs) {
-          for (const job of jobs) {
-            const matchedClients = clients.filter((client: Client) => client.id === job.clientId);
-            const clientName = matchedClients.length ? matchedClients[0].name : '';
+          const job: Job | undefined = jobs.find((job) => job.id === jobId);
+          if (job) {
+            const client = clients.find((client) => client.id === job.clientId);
+            const clientName = client?.name ?? '';
             const mergedJob = { ...job, clientName };
-            if (job.id === jobId) {
-              this.job$ = of(mergedJob); // for template
-              break;
-            }
+            this.job$ = of(mergedJob); // for template
           }
         }
       }

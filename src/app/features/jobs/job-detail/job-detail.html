@@ -3,12 +3,13 @@
   <div class="row">
     <div class="col">
       @if (job$ | async; as job) {
-      <h5 class="pb-4"><span class="fw-bold">Job ID: </span>{{ job.id }}</h5>
-      <h5 class="pb-4">
-        <span class="fw-bold">Client: </span>
+      <h5 class="fw-bold pb-2 ar-heading">Job ID:</h5>
+      <p class="pb-4">{{ job.id }}</p>
+      <h5 class="fw-bold pb-2 ar-heading">Client:</h5>
+      <p class="pb-4">
         <a href="#" [routerLink]="`/clients/${job.clientId}` ">{{ job.clientName }}</a>
-      </h5>
-      <h5 class="fw-bold">Job Site:</h5>
+      </p>
+      <h5 class="fw-bold pb-2 ar-heading">Job Site:</h5>
       <p class="pb-4">
         {{ job.address1 }}<br />
         @if (job.address2) {

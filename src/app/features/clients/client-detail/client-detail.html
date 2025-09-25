@@ -3,16 +3,24 @@
   <div class="row">
     @if (client$ | async; as client) {
     <div class="col-md-6 col-sm-12 ar-page-content-no-menubar overflow-y-auto p-3">
-      <h5 class="fw-bold">{{ client.name }}</h5>
-      <p class="pb-4">
-        {{ client.address1 }} <br />
-        {{ client.city }}, {{ client.state }} {{ client.zipCode }} <br />
-      </p>
+      <h5 class="fw-bold pb-2 ar-heading">{{ client.name }}</h5>
+      <p class="mb-0">{{ client.address1 }}</p>
+      @if (client.address2) {
+      <p class="mb-0">{{ client.address2 }}</p>
+      }
+      <p class="pb-4">{{ client.city }}, {{ client.state }} {{ client.zipCode }}</p>
     </div>
     <div class="col-md-6 col-sm-12 ar-page-content-no-menubar overflow-y-auto p-3">
-      <h5 class="fw-bold">Jobs</h5>
+      <h5 class="fw-bold pb-2 ar-heading">Jobs</h5>
       @if (client.jobs && client.jobs.length) { @for (job of client.jobs; track $index) {
-      <p class="mb-0">{{ job.id }}</p>
+      <p class="mb-0">
+        <a class="fw-bold" href="#" [routerLink]="`/jobs/${job.id}`">{{ job.id }}</a>
+      </p>
+      <p class="mb-0">{{ job.address1 }}</p>
+      @if (job.address2) {
+      <p class="mb-0">{{ job.address2 }}</p>
+      }
+      <p>{{ job.city }}, {{ job.state }} {{ job.zipCode }}</p>
       } }
     </div>
     }
