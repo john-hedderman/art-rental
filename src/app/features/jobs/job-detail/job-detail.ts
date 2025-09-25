@@ -8,6 +8,7 @@ import { Art, Client, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Card } from '../../../shared/components/card/card';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-job-detail',
@@ -51,7 +52,8 @@ export class JobDetail {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private dataService: DataService
+    private dataService: DataService,
+    public util: Util
   ) {
     combineLatest([
       this.dataService.clients$,

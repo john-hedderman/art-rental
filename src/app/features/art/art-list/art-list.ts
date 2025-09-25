@@ -6,6 +6,7 @@ import { Card } from '../../../shared/components/card/card';
 import { Art, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-art-list',
@@ -94,7 +95,7 @@ export class ArtList {
     }
   }
 
-  constructor(private dataService: DataService, private router: Router) {
+  constructor(private dataService: DataService, private router: Router, public util: Util) {
     this.dataService.art$.subscribe((artwork) => {
       if (artwork) {
         this.artwork = artwork;
