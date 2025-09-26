@@ -6,6 +6,7 @@
   --ar-card-width: 20rem;
   --ar-card-border-radius: 0.375rem;
   --ar-card-side-length: 150px;
+  --ar-card-footer-height: 45px;
 
   width: var(--ar-card-width);
   border: 1px solid var(--ar-border-color);
@@ -29,6 +30,10 @@
 
   .ar-text-container {
     height: var(--ar-card-side-length);
+  }
+
+  .ar-card-footer {
+    height: var(--ar-card-footer-height);
   }
 
   .ar-form-check-input {

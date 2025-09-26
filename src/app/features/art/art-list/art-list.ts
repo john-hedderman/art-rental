@@ -45,39 +45,7 @@ export class ArtList {
   };
 
   handleArtCardClick = (id: number, event: PointerEvent) => {
-    const tgt = event.target as HTMLElement;
-    if (tgt.id === 'cardFooter' || tgt.id === 'cardFormCheck' || tgt.id === 'cardCheck') {
-      return;
-    }
     this.router.navigate(['/art', id]);
-  };
-
-  setAddToCartButtonState = () => {
-    const addArtToCartBtn = document.getElementById('addArtToCartBtn');
-    if (!addArtToCartBtn) {
-      return;
-    }
-
-    const checkboxes = document.querySelectorAll<HTMLInputElement>(
-      'input.ar-form-check-input[type=checkbox]'
-    );
-    if (!checkboxes || checkboxes.length < 1) {
-      return;
-    }
-
-    let disabled = true;
-    for (const checkbox of checkboxes) {
-      if (checkbox.checked) {
-        disabled = false;
-        break;
-      }
-    }
-
-    if (disabled) {
-      addArtToCartBtn.setAttribute('disabled', '');
-    } else {
-      addArtToCartBtn.removeAttribute('disabled');
-    }
   };
 
   onSelectView(event: any) {

@@ -19,18 +19,6 @@
     </div>
   </div>
   <div class="row g-0">
-    <div class="card-footer" id="cardFooter">
-      <div class="form-check" id="cardFormCheck">
-        <input
-          type="checkbox"
-          id="cardCheck"
-          class="form-check-input ar-form-check-input"
-          [ngClass]="{ 'd-none': !cardData().isSelectable }"
-          name="card"
-          value="true"
-          (change)="cardData().changeHandler($event)"
-        />
-      </div>
-    </div>
+    <div class="card-footer ar-card-footer" id="cardFooter"></div>
   </div>
 </div>

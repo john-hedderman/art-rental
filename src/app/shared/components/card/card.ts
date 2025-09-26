@@ -1,9 +1,8 @@
-import { Component, input, Input } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-card',
-  imports: [NgClass],
+  imports: [],
   templateUrl: './card.html',
   styleUrl: './card.scss',
   standalone: true,
@@ -17,8 +16,6 @@ export class Card {
     },
     title: '',
     text: '',
-    isSelectable: false,
-    changeHandler: null,
     clickHandler: null,
   });
 }
