@@ -22,7 +22,7 @@
       font-weight: 400;
       font-style: normal;
 
-      @media screen and (min-width: 576px) {
+      @media (min-width: 576px) {
         font-size: var(--ar-navbar-brand-font-size);
       }
     }

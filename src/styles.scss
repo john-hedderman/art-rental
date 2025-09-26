@@ -75,4 +75,10 @@ body {
 
 .ar-card-group {
   align-content: flex-start;
+
+  // Bootstrap rules only applied this at 576px and up
+  @media (max-width: 576px) {
+    display: flex;
+    flex-flow: row wrap;
+  }
 }
