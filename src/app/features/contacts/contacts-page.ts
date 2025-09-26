@@ -7,8 +7,5 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './contacts-page.html',
   styleUrl: './contacts-page.scss',
   standalone: true,
-  host: {
-    class: 'flex-grow-1',
-  },
 })
 export class ContactsPage {}

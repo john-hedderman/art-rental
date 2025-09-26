@@ -1,1 +1,11 @@
-<p>contact-list works!</p>
+<app-page-header [headerData]="headerData"></app-page-header>
+<ngx-datatable
+  class="material"
+  [rows]="rows"
+  [columns]="columns"
+  [columnMode]="'force'"
+  [headerHeight]="50"
+  [rowHeight]="50"
+  [scrollbarV]="true"
+>
+</ngx-datatable>

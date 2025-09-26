@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "clientId": "000005",
+    "firstName": "Fred",
+    "lastName": "Banks",
+    "phone": "585-555-1212",
+    "title": "Office Manager"
+  },
+  {
+    "id": 2,
+    "clientId": "000005",
+    "firstName": "Dino",
+    "lastName": "Richardson",
+    "phone": "585-555-1111",
+    "title": "Operations Consultant"
+  },
+  {
+    "id": 3,
+    "clientId": "000004",
+    "firstName": "Rhonda",
+    "lastName": "Boettcher",
+    "phone": "585-555-1101",
+    "title": "Event Planner"
+  }
+]

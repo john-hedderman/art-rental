@@ -39,6 +39,15 @@ export interface Job {
   art: Art[];
 }
 
+export interface Contact {
+  id: number;
+  clientId: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  title: string;
+}
+
 export interface HeaderButton {
   id: string;
   label: string;
