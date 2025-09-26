@@ -13,6 +13,8 @@ import { JobList } from './features/jobs/job-list/job-list';
 import { AddJob } from './features/jobs/add-job/add-job';
 import { JobDetail } from './features/jobs/job-detail/job-detail';
 import { ArtDetail } from './features/art/art-detail/art-detail';
+import { ContactsPage } from './features/contacts/contacts-page';
+import { ContactList } from './features/contacts/contact-list/contact-list';
 
 export const routes: Routes = [
   {
@@ -87,6 +89,21 @@ export const routes: Routes = [
       {
         path: ':id',
         component: JobDetail,
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full',
+      },
+    ],
+  },
+  {
+    path: 'contacts',
+    component: ContactsPage,
+    children: [
+      {
+        path: 'list',
+        component: ContactList,
       },
       {
         path: '',
