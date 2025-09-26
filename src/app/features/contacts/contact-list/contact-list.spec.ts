@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContactList } from './contact-list';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('ContactList', () => {
   let component: ContactList;
@@ -8,9 +9,9 @@ describe('ContactList', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ContactList]
-    })
-    .compileComponents();
+      imports: [ContactList],
+      providers: [provideHttpClient()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ContactList);
     component = fixture.componentInstance;
