@@ -57,14 +57,16 @@ export class JobDetail {
   ) {
     combineLatest([
       this.dataService.clients$,
+      this.dataService.contacts$,
       this.dataService.art$,
       this.getJobId(),
       this.dataService.jobs$,
-    ]).subscribe(([clients, artwork, jobId, jobs]) => {
+    ]).subscribe(([clients, contacts, artwork, jobId, jobs]) => {
       const job: Job | undefined = jobs.find((job) => job.id === jobId);
       if (job) {
         const client = clients.find((client) => client.id === job.client?.id);
         job.client = client ?? ({} as Client);
+        job.contacts = contacts.filter((contact) => contact.clientId === job.client.id);
         job.art = artwork.filter((art) => art.job?.id === jobId);
         this.job$ = of(job); // for template
       }

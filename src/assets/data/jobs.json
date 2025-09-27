@@ -7,13 +7,23 @@
     "city": "Webster",
     "state": "NY",
     "zipCode": "14580",
+    "description": "",
     "client": {
       "id": "000005"
-    }
-  },
-  {
-    "id": "000002",
-    "clientId": "000003"
+    },
+    "contacts": [
+      {
+        "id": 1
+      },
+      {
+        "id": 2
+      }
+    ],
+    "art": [
+      {
+        "id": 2
+      }
+    ]
   },
   {
     "id": "000003",
@@ -23,9 +33,18 @@
     "city": "Webster",
     "state": "NY",
     "zipCode": "14580",
+    "description": "",
     "client": {
       "id": "000005"
     },
+    "contacts": [
+      {
+        "id": 1
+      },
+      {
+        "id": 2
+      }
+    ],
     "art": [
       {
         "id": 3

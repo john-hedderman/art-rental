@@ -36,6 +36,7 @@ export interface Job {
   zipCode: string;
   description: string;
   client: Client;
+  contacts: Contact[];
   art: Art[];
 }
 
