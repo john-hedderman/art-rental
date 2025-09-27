@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { combineLatest, Observable, of } from 'rxjs';
@@ -19,6 +19,8 @@ import { Util } from '../../../shared/util/util';
   standalone: true,
 })
 export class JobDetail implements OnInit {
+  @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
+
   navigateToJobList = () => {
     this.router.navigate(['/jobs', 'list']);
   };
@@ -68,9 +70,13 @@ export class JobDetail implements OnInit {
     }).subscribe(({ clients, contacts, artwork, jobId, jobs }) => {
       const job: Job | undefined = jobs.find((job) => job.id === jobId);
       if (job) {
-        const client = clients.find((client) => client.id === job.client?.id);
-        job.client = client ?? ({} as Client);
-        job.contacts = contacts.filter((contact) => contact.clientId === job.client.id);
+        job.client = clients.find((client) => client.id === job.client?.id) ?? ({} as Client);
+        job.contacts = contacts
+          .filter((contact) => contact.clientId === job.client.id)
+          .map((contact: Contact) => {
+            const client = clients.find((client) => client.id === contact.clientId);
+            return { ...contact, client };
+          });
         job.art = artwork.filter((art) => art.job?.id === jobId);
         this.job$ = of(job); // for template
         this.rows = [...job.contacts]; // for table of contacts
@@ -82,7 +88,7 @@ export class JobDetail implements OnInit {
     this.columns = [
       { prop: 'firstName', name: 'First Name' },
       { prop: 'lastName', name: 'Last Name' },
-      { prop: 'clientId', name: 'Client ID' },
+      { prop: '', name: 'Client', cellTemplate: this.clientNameTemplate },
       { prop: 'phone', name: 'Phone' },
     ];
   }

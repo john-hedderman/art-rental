@@ -5,7 +5,10 @@
     "firstName": "Fred",
     "lastName": "Banks",
     "phone": "585-555-1212",
-    "title": "Office Manager"
+    "title": "Office Manager",
+    "client": {
+      "id": "000005"
+    }
   },
   {
     "id": 2,
@@ -13,7 +16,10 @@
     "firstName": "Dino",
     "lastName": "Richardson",
     "phone": "585-555-1111",
-    "title": "Operations Consultant"
+    "title": "Operations Consultant",
+    "client": {
+      "id": "000005"
+    }
   },
   {
     "id": 3,
@@ -21,6 +27,9 @@
     "firstName": "Rhonda",
     "lastName": "Boettcher",
     "phone": "585-555-1101",
-    "title": "Event Planner"
+    "title": "Event Planner",
+    "client": {
+      "id": "000004"
+    }
   }
 ]

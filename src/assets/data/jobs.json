@@ -1,7 +1,6 @@
 [
   {
     "id": "000001",
-    "clientId": "000005",
     "address1": "3996 Howard Street",
     "address2": "",
     "city": "Webster",
@@ -12,22 +11,15 @@
       "id": "000005"
     },
     "contacts": [
-      {
-        "id": 1
-      },
-      {
-        "id": 2
-      }
+      { "id": 1 },
+      { "id": 2 }
     ],
     "art": [
-      {
-        "id": 2
-      }
+      { "id": 2 }
     ]
   },
   {
     "id": "000003",
-    "clientId": "000005",
     "address1": "1460 Ryan Road",
     "address2": "",
     "city": "Webster",
@@ -38,23 +30,13 @@
       "id": "000005"
     },
     "contacts": [
-      {
-        "id": 1
-      },
-      {
-        "id": 2
-      }
+      { "id": 1 },
+      { "id": 2 }
     ],
     "art": [
-      {
-        "id": 3
-      },
-      {
-        "id": 6
-      },
-      {
-        "id": 7
-      }
+      { "id": 3 },
+      { "id": 6 },
+      { "id": 7 }
     ]
   }
 ]
