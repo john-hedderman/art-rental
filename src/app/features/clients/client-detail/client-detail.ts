@@ -47,17 +47,15 @@ export class ClientDetail {
     private router: Router,
     private dataService: DataService
   ) {
-    combineLatest([
-      this.dataService.clients$,
-      this.getClientId(),
-      this.dataService.jobs$,
-    ]).subscribe(([clients, clientId, jobs]: [Client[], string, Job[]]) => {
-      if (clients && clientId && jobs) {
-        const client: Client = clients.find((client) => client.id === clientId)!;
-        if (client) {
-          client.jobs = jobs.filter((job) => job.clientId === client.id);
-          this.client$ = of(client); // for template
-        }
+    combineLatest({
+      clients: this.dataService.clients$,
+      clientId: this.getClientId(),
+      jobs: this.dataService.jobs$,
+    }).subscribe(({ clients, clientId, jobs }) => {
+      const client: Client = clients.find((client) => client.id === clientId)!;
+      if (client) {
+        client.jobs = jobs.filter((job) => job.clientId === client.id);
+        this.client$ = of(client); // for template
       }
     });
   }
