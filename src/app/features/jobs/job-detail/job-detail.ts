@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { Art, Client, HeaderData, Job } from '../../../model/models';
+import { Client, Contact, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Card } from '../../../shared/components/card/card';
@@ -12,12 +13,12 @@ import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-job-detail',
-  imports: [AsyncPipe, PageHeader, RouterLink, Card],
+  imports: [AsyncPipe, PageHeader, RouterLink, Card, NgxDatatableModule],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.scss',
   standalone: true,
 })
-export class JobDetail {
+export class JobDetail implements OnInit {
   navigateToJobList = () => {
     this.router.navigate(['/jobs', 'list']);
   };
@@ -36,6 +37,9 @@ export class JobDetail {
   };
 
   job$: Observable<Job> | undefined;
+
+  rows: Contact[] = [];
+  columns: TableColumn[] = [];
 
   handleArtCardClick = (id: number, event: PointerEvent) => {
     const tgt = event.target as HTMLElement;
@@ -69,7 +73,17 @@ export class JobDetail {
         job.contacts = contacts.filter((contact) => contact.clientId === job.client.id);
         job.art = artwork.filter((art) => art.job?.id === jobId);
         this.job$ = of(job); // for template
+        this.rows = [...job.contacts]; // for table of contacts
       }
     });
+  }
+
+  ngOnInit(): void {
+    this.columns = [
+      { prop: 'firstName', name: 'First Name' },
+      { prop: 'lastName', name: 'Last Name' },
+      { prop: 'clientId', name: 'Client ID' },
+      { prop: 'phone', name: 'Phone' },
+    ];
   }
 }

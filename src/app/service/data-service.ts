@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { Art, Artist, Client, Contact, Job } from '../model/models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataService {
-  public art$: BehaviorSubject<Art[]> = new BehaviorSubject([] as Art[]);
-  public artists$: BehaviorSubject<Artist[]> = new BehaviorSubject([] as Artist[]);
-  public clients$: BehaviorSubject<Client[]> = new BehaviorSubject([] as Client[]);
-  public jobs$: BehaviorSubject<Job[]> = new BehaviorSubject([] as Job[]);
-  public contacts$: BehaviorSubject<Contact[]> = new BehaviorSubject([] as Contact[]);
+  public art$: ReplaySubject<Art[]> = new ReplaySubject(1);
+  public artists$: ReplaySubject<Artist[]> = new ReplaySubject(1);
+  public clients$: ReplaySubject<Client[]> = new ReplaySubject(1);
+  public jobs$: ReplaySubject<Job[]> = new ReplaySubject(1);
+  public contacts$: ReplaySubject<Contact[]> = new ReplaySubject(1);
 
   constructor(private http: HttpClient) {
     this.load('art').subscribe((art) => this.art$.next(art));
