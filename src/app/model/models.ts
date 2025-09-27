@@ -28,7 +28,6 @@ export interface Client {
 
 export interface Job {
   id: string;
-  clientId: string;
   address1: string;
   address2: string;
   city: string;
@@ -42,11 +41,11 @@ export interface Job {
 
 export interface Contact {
   id: number;
-  clientId: string;
   firstName: string;
   lastName: string;
   phone: string;
   title: string;
+  client: Client;
 }
 
 export interface HeaderButton {

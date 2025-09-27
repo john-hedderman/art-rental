@@ -54,7 +54,7 @@ export class ClientDetail {
     }).subscribe(({ clients, clientId, jobs }) => {
       const client: Client = clients.find((client) => client.id === clientId)!;
       if (client) {
-        client.jobs = jobs.filter((job) => job.clientId === client.id);
+        client.jobs = jobs.filter((job) => job.client.id === client.id);
         this.client$ = of(client); // for template
       }
     });

@@ -72,9 +72,10 @@ export class JobDetail implements OnInit {
       if (job) {
         job.client = clients.find((client) => client.id === job.client?.id) ?? ({} as Client);
         job.contacts = contacts
-          .filter((contact) => contact.clientId === job.client.id)
+          .filter((contact) => contact.client.id === job.client.id)
           .map((contact: Contact) => {
-            const client = clients.find((client) => client.id === contact.clientId);
+            const client =
+              clients.find((client) => client.id === contact.client.id) ?? ({} as Client);
             return { ...contact, client };
           });
         job.art = artwork.filter((art) => art.job?.id === jobId);

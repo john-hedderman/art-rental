@@ -1,7 +1,6 @@
 [
   {
     "id": 1,
-    "clientId": "000005",
     "firstName": "Fred",
     "lastName": "Banks",
     "phone": "585-555-1212",
@@ -12,7 +11,6 @@
   },
   {
     "id": 2,
-    "clientId": "000005",
     "firstName": "Dino",
     "lastName": "Richardson",
     "phone": "585-555-1111",
@@ -23,7 +21,6 @@
   },
   {
     "id": 3,
-    "clientId": "000004",
     "firstName": "Rhonda",
     "lastName": "Boettcher",
     "phone": "585-555-1101",

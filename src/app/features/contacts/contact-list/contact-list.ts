@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Contact, HeaderData } from '../../../model/models';
+import { Client, Contact, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-contact-list',
@@ -16,6 +17,8 @@ import { DataService } from '../../../service/data-service';
   },
 })
 export class ContactList implements OnInit {
+  @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
+
   contacts: Contact[] = [];
 
   headerData: HeaderData = {
@@ -27,11 +30,15 @@ export class ContactList implements OnInit {
   columns: TableColumn[] = [];
 
   constructor(private dataService: DataService) {
-    this.dataService.contacts$.subscribe((contacts) => {
-      if (contacts) {
-        this.contacts = contacts;
-        this.rows = [...this.contacts];
-      }
+    combineLatest({
+      contacts: this.dataService.contacts$,
+      clients: this.dataService.clients$,
+    }).subscribe(({ contacts, clients }) => {
+      const mergedContacts = contacts.map((contact) => {
+        const client = clients.find((client) => client.id === contact.client.id) ?? ({} as Client);
+        return { ...contact, client };
+      });
+      this.rows = [...mergedContacts];
     });
   }
 
@@ -39,7 +46,7 @@ export class ContactList implements OnInit {
     this.columns = [
       { prop: 'firstName', name: 'First Name' },
       { prop: 'lastName', name: 'Last Name' },
-      { prop: 'clientId', name: 'Client ID' },
+      { prop: '', name: 'Client', cellTemplate: this.clientNameTemplate },
       { prop: 'phone', name: 'Phone' },
     ];
   }
