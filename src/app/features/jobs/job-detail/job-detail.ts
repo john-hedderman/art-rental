@@ -60,12 +60,12 @@ export class JobDetail {
       this.dataService.art$,
       this.getJobId(),
       this.dataService.jobs$,
-    ]).subscribe(([clients, artwork, jobId, jobs]: [Client[], Art[], string, Job[]]) => {
+    ]).subscribe(([clients, artwork, jobId, jobs]) => {
       const job: Job | undefined = jobs.find((job) => job.id === jobId);
       if (job) {
-        const client = clients.find((client) => client.id === job.client.id);
+        const client = clients.find((client) => client.id === job.client?.id);
         job.client = client ?? ({} as Client);
-        job.art = artwork.filter((piece) => piece.job.id === jobId);
+        job.art = artwork.filter((art) => art.job?.id === jobId);
         this.job$ = of(job); // for template
       }
     });

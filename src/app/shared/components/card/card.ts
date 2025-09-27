@@ -16,6 +16,7 @@ export class Card {
     },
     title: '',
     text: '',
+    footerText: '',
     clickHandler: null,
   });
 }

@@ -7,6 +7,7 @@ import { Art, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-art-list',
@@ -64,10 +65,22 @@ export class ArtList {
   }
 
   constructor(private dataService: DataService, private router: Router, public util: Util) {
-    this.dataService.art$.subscribe((artwork) => {
-      if (artwork) {
-        this.artwork = artwork;
-      }
+    combineLatest([
+      this.dataService.art$,
+      this.dataService.jobs$,
+      this.dataService.clients$,
+    ]).subscribe(([artwork, jobs, clients]) => {
+      this.artwork = artwork.map((art: Art) => {
+        let job = jobs.find((job) => job.id === art.job?.id);
+        if (job) {
+          const client = clients.find((client) => client.id === job?.client?.id);
+          if (client) {
+            job = { ...job, client };
+          }
+          return { ...art, job };
+        }
+        return art;
+      });
     });
     this.setViewSelection();
   }
