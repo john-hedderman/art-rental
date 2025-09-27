@@ -65,11 +65,11 @@ export class ArtList {
   }
 
   constructor(private dataService: DataService, private router: Router, public util: Util) {
-    combineLatest([
-      this.dataService.art$,
-      this.dataService.jobs$,
-      this.dataService.clients$,
-    ]).subscribe(([artwork, jobs, clients]) => {
+    combineLatest({
+      artwork: this.dataService.art$,
+      jobs: this.dataService.jobs$,
+      clients: this.dataService.clients$,
+    }).subscribe(({ artwork, jobs, clients }) => {
       this.artwork = artwork.map((art: Art) => {
         let job = jobs.find((job) => job.id === art.job?.id);
         if (job) {
