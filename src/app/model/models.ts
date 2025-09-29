@@ -48,6 +48,18 @@ export interface Contact {
   client: Client;
 }
 
+export interface Site {
+  id: string;
+  address1: string;
+  address2: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  description: string;
+  client: Client;
+  job: Job;
+}
+
 export interface HeaderButton {
   id: string;
   label: string;

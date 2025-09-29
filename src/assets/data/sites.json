@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "address1": "3996 Howard Street",
+    "address2": "",
+    "city": "Webster",
+    "state": "NY",
+    "zipCode": "14580",
+    "description": "",
+    "client": {
+      "id": "000005"
+    },
+    "job": {
+      "id": "000001"
+    }
+  },
+  {
+    "id": 2,
+    "address1": "1460 Ryan Road",
+    "address2": "",
+    "city": "Webster",
+    "state": "NY",
+    "zipCode": "14580",
+    "description": "",
+    "client": {
+      "id": "000005"
+    },
+    "job": {
+      "id": "000003"
+    }
+  }
+]

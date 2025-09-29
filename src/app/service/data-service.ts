@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, ReplaySubject } from 'rxjs';
-import { Art, Artist, Client, Contact, Job } from '../model/models';
+import { Art, Artist, Client, Contact, Job, Site } from '../model/models';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +12,7 @@ export class DataService {
   public clients$: ReplaySubject<Client[]> = new ReplaySubject(1);
   public jobs$: ReplaySubject<Job[]> = new ReplaySubject(1);
   public contacts$: ReplaySubject<Contact[]> = new ReplaySubject(1);
+  public sites$: ReplaySubject<Site[]> = new ReplaySubject(1);
 
   constructor(private http: HttpClient) {
     this.load('art').subscribe((art) => this.art$.next(art));
@@ -19,6 +20,7 @@ export class DataService {
     this.load('clients').subscribe((clients) => this.clients$.next(clients));
     this.load('jobs').subscribe((jobs) => this.jobs$.next(jobs));
     this.load('contacts').subscribe((contacts) => this.contacts$.next(contacts));
+    this.load('sites').subscribe((sites) => this.sites$.next(sites));
   }
 
   load(data: 'art'): Observable<Art[]>;
@@ -26,6 +28,7 @@ export class DataService {
   load(data: 'clients'): Observable<Client[]>;
   load(data: 'jobs'): Observable<Job[]>;
   load(data: 'contacts'): Observable<Contact[]>;
+  load(data: 'sites'): Observable<Site[]>;
 
   load(data: string): Observable<unknown[]> {
     return this.http.get<unknown[]>(`assets/data/${data}.json`);

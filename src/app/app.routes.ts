@@ -15,6 +15,9 @@ import { JobDetail } from './features/jobs/job-detail/job-detail';
 import { ArtDetail } from './features/art/art-detail/art-detail';
 import { ContactsPage } from './features/contacts/contacts-page';
 import { ContactList } from './features/contacts/contact-list/contact-list';
+import { SitesPage } from './features/sites/sites-page';
+import { SiteList } from './features/sites/site-list/site-list';
+import { SiteDetail } from './features/sites/site-detail/site-detail';
 
 export const routes: Routes = [
   {
@@ -104,6 +107,25 @@ export const routes: Routes = [
       {
         path: 'list',
         component: ContactList,
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full',
+      },
+    ],
+  },
+  {
+    path: 'sites',
+    component: SitesPage,
+    children: [
+      {
+        path: 'list',
+        component: SiteList,
+      },
+      {
+        path: ':id',
+        component: SiteDetail,
       },
       {
         path: '',
