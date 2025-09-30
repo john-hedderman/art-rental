@@ -17,6 +17,7 @@ import { combineLatest } from 'rxjs';
   },
 })
 export class ContactList implements OnInit {
+  @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
   @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
 
   contacts: Contact[] = [];
@@ -28,6 +29,18 @@ export class ContactList implements OnInit {
 
   rows: Contact[] = [];
   columns: TableColumn[] = [];
+
+  nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
+    const nameA = `${rowA['firstName']} ${rowA['lastName']}`;
+    const nameB = `${rowB['firstName']} ${rowB['lastName']}`;
+    return nameA.localeCompare(nameB);
+  }
+
+  clientNameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
+    const clientNameA = `${rowA['client']['name']}`;
+    const clientNameB = `${rowB['client']['name']}`;
+    return clientNameA.localeCompare(clientNameB);
+  }
 
   constructor(private dataService: DataService) {
     combineLatest({
@@ -44,9 +57,16 @@ export class ContactList implements OnInit {
 
   ngOnInit(): void {
     this.columns = [
-      { prop: 'firstName', name: 'First Name' },
-      { prop: 'lastName', name: 'Last Name' },
-      { prop: '', name: 'Client', cellTemplate: this.clientNameTemplate },
+      {
+        name: 'Name',
+        cellTemplate: this.nameTemplate,
+        comparator: this.nameComparator,
+      },
+      {
+        name: 'Client',
+        cellTemplate: this.clientNameTemplate,
+        comparator: this.clientNameComparator,
+      },
       { prop: 'phone', name: 'Phone' },
     ];
   }

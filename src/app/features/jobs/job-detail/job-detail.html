@@ -56,6 +56,12 @@
   }
 </div>
 
+<ng-template #nameTemplate let-row="row">
+  @if (row.firstName && row.lastName) {
+  {{ row.firstName }} {{ row.lastName }}
+  }
+</ng-template>
+
 <ng-template #clientNameTemplate let-value="value" let-row="row">
   {{ row.client?.name }}
 </ng-template>
