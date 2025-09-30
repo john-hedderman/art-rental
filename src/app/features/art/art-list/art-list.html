@@ -1,40 +1,6 @@
 <app-page-header [headerData]="headerData"></app-page-header>
-
-<div class="ar-menubar p-3">
-  <div class="dropdown">
-    <button
-      class="btn btn-outline-secondary btn-sm dropdown-toggle"
-      type="button"
-      data-bs-toggle="dropdown"
-      aria-expanded="false"
-    >
-      View
-    </button>
-    <ul class="dropdown-menu">
-      <li>
-        <a
-          class="dropdown-item"
-          [class]="{ active: selection === 'card' }"
-          data-ar-view="card"
-          (click)="onSelectView($event)"
-          >Card</a
-        >
-      </li>
-      <li>
-        <a
-          class="dropdown-item"
-          [class]="{ active: selection === 'detail' }"
-          data-ar-view="detail"
-          (click)="onSelectView($event)"
-          >Detail</a
-        >
-      </li>
-    </ul>
-  </div>
-</div>
-
 @switch (selection) { @case ('card') {
-<div class="card-group ar-card-group overflow-y-auto ar-page-content">
+<div class="card-group ar-card-group overflow-y-auto ar-page-content-no-menubar">
   @for (art of artwork; track $index) {
   <app-card
     [cardData]="{
