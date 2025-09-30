@@ -29,7 +29,7 @@ export class JobDetail implements OnInit {
     headerButtons: [
       {
         id: 'returnToJobListBtn',
-        label: '<i class="bi bi-arrow-left"></i> Job list',
+        label: 'Job list',
         type: 'button',
         buttonClass: 'btn btn-primary btn-sm',
         disabled: false,
