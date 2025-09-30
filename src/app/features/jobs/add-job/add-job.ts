@@ -20,7 +20,7 @@ export class AddJob {
     headerButtons: [
       {
         id: 'returnToJobListBtn',
-        label: '<i class="bi bi-arrow-left"></i> Back',
+        label: 'Job list',
         type: 'button',
         buttonClass: 'btn btn-primary btn-sm',
         disabled: false,

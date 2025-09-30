@@ -34,7 +34,7 @@ export class JobList implements OnInit {
     headerButtons: [
       {
         id: 'addJobBtn',
-        label: 'New Job',
+        label: 'Add Job',
         type: 'button',
         buttonClass: 'btn btn-primary btn-sm',
         disabled: false,

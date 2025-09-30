@@ -20,7 +20,7 @@ export class AddClient {
     headerButtons: [
       {
         id: 'returnToClientListBtn',
-        label: '<i class="bi bi-arrow-left"></i> Client list',
+        label: 'Client list',
         type: 'button',
         buttonClass: 'btn btn-primary btn-sm',
         disabled: false,

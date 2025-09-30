@@ -20,7 +20,7 @@ export class SiteDetail {
     headerButtons: [
       {
         id: 'returnToSiteListBtn',
-        label: '<i class="bi bi-arrow-left"></i> Site list',
+        label: 'Site list',
         type: 'button',
         buttonClass: 'btn btn-primary btn-sm',
         disabled: false,

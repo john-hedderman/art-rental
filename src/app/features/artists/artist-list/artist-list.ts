@@ -20,7 +20,16 @@ export class ArtistList {
 
   headerData: HeaderData = {
     headerTitle: 'Artists',
-    headerButtons: [],
+    headerButtons: [
+      {
+        id: 'addArtistBtn',
+        label: 'Add Artist',
+        type: 'button',
+        buttonClass: 'btn btn-primary btn-sm',
+        disabled: false,
+        clickHandler: null,
+      },
+    ],
   };
 
   constructor(private dataService: DataService) {

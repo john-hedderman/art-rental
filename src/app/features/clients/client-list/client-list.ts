@@ -33,7 +33,7 @@ export class ClientList implements OnInit {
     headerButtons: [
       {
         id: 'addClientBtn',
-        label: 'New Client',
+        label: 'Add Client',
         type: 'button',
         buttonClass: 'btn btn-primary btn-sm',
         disabled: false,
