@@ -13,6 +13,7 @@
   border: 1px solid var(--ar-border-color);
   border-radius: var(--ar-card-border-radius);
   color: var(--ar-text-color-primary-light);
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2);
 
   .ar-img-container {
     width: var(--ar-card-side-length);
