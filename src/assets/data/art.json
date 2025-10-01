@@ -1,6 +1,9 @@
 [
   {
     "id": 1,
+    "file": "boots.jpg",
+    "path": "images/art",
+    "fullSizePath": "images/art/full",
     "url": "images/art/boots.jpg",
     "name": "Boots",
     "artist": "Aaron Smit",
@@ -11,6 +14,9 @@
   },
   {
     "id": 2,
+    "file": "pastel.jpg",
+    "path": "images/art",
+    "fullSizePath": "images/art/full",
     "url": "images/art/pastel.jpg",
     "name": "Ethereal Vortex Imagined",
     "artist": "Kayla Johnson",
@@ -21,6 +27,9 @@
   },
   {
     "id": 3,
+    "file": "geometry.jpg",
+    "path": "images/art",
+    "fullSizePath": "images/art/full",
     "url": "images/art/geometry.jpg",
     "name": "Meta Movement",
     "artist": "Carl Brock",
@@ -31,6 +40,9 @@
   },
   {
     "id": 4,
+    "file": "light-of-memory.jpg",
+    "path": "images/art",
+    "fullSizePath": "images/art/full",
     "url": "images/art/light-of-memory.jpg",
     "name": "Light of Memory",
     "artist": "Linda Armstrong",
@@ -41,6 +53,9 @@
   },
   {
     "id": 5,
+    "file": "vibrant-purple-floral.jpg",
+    "path": "images/art",
+    "fullSizePath": "images/art/full",
     "url": "images/art/vibrant-purple-floral.jpg",
     "name": "Vibrant Purple Floral",
     "artist": "Bobby McLean",
@@ -51,6 +66,9 @@
   },
   {
     "id": 6,
+    "file": "surreal-echoes.jpg",
+    "path": "images/art",
+    "fullSizePath": "images/art/full",
     "url": "images/art/surreal-echoes.jpg",
     "name": "Surreal Echoes",
     "artist": "Carl Brock",
@@ -61,6 +79,9 @@
   },
   {
     "id": 7,
+    "file": "pulse-of-the-unseen.jpg",
+    "path": "images/art",
+    "fullSizePath": "images/art/full",
     "url": "images/art/pulse-of-the-unseen.jpg",
     "name": "Pulse of the Unseen",
     "artist": "Carl Brock",
@@ -71,6 +92,9 @@
   },
   {
     "id": 8,
+    "file": "genesis-in-metamorphosis.jpg",
+    "path": "images/art",
+    "fullSizePath": "images/art/full",
     "url": "images/art/genesis-in-metamorphosis.jpg",
     "name": "Genesis in Metamorphosis",
     "artist": "Jeffery Lewis",
@@ -81,6 +105,9 @@
   },
   {
     "id": 9,
+    "file": "infinite-evolution.jpg",
+    "path": "images/art",
+    "fullSizePath": "images/art/full",
     "url": "images/art/infinite-evolution.jpg",
     "name": "Infinite Evolution",
     "artist": "Molly Owens",
