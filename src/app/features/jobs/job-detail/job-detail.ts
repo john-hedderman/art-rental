@@ -22,6 +22,9 @@ export class JobDetail implements OnInit {
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
   @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
 
+  navigateToArtDetail = (id: number) => {
+    this.router.navigate(['/art', id]);
+  };
   navigateToJobList = () => {
     this.router.navigate(['/jobs', 'list']);
   };
@@ -43,14 +46,6 @@ export class JobDetail implements OnInit {
 
   rows: Contact[] = [];
   columns: TableColumn[] = [];
-
-  handleArtCardClick = (id: number, event: PointerEvent) => {
-    const tgt = event.target as HTMLElement;
-    if (tgt.id === 'cardFooter' || tgt.id === 'cardFormCheck' || tgt.id === 'cardCheck') {
-      return;
-    }
-    this.router.navigate(['/art', id]);
-  };
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
     const nameA = `${rowA['firstName']} ${rowA['lastName']}`;

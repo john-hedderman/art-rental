@@ -18,6 +18,8 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 export class ArtistList {
   artists: Artist[] = [];
 
+  navigateToArtistDetail = () => {};
+  navigateToAddArtist = () => {};
   headerData: HeaderData = {
     headerTitle: 'Artists',
     headerButtons: [
@@ -27,7 +29,7 @@ export class ArtistList {
         type: 'button',
         buttonClass: 'btn btn-primary btn-sm',
         disabled: false,
-        clickHandler: null,
+        clickHandler: this.navigateToAddArtist,
       },
     ],
   };

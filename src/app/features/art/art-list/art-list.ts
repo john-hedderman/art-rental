@@ -21,6 +21,9 @@ export class ArtList {
 
   selection = 'card';
 
+  navigateToArtDetail = (id: number) => {
+    this.router.navigate(['/art', id]);
+  };
   navigateToAddToCart = () => {};
   navigateToAddArt = () => {};
   headerData: HeaderData = {
@@ -35,10 +38,6 @@ export class ArtList {
         clickHandler: this.navigateToAddArt,
       },
     ],
-  };
-
-  handleArtCardClick = (id: number, event: PointerEvent) => {
-    this.router.navigate(['/art', id]);
   };
 
   constructor(private dataService: DataService, private router: Router, public util: Util) {
