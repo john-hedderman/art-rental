@@ -1,5 +1,6 @@
 <app-page-header [headerData]="headerData"></app-page-header>
 <ngx-datatable
+  #contactsTable
   class="material"
   [rows]="rows"
   [columns]="columns"
@@ -8,7 +9,24 @@
   [rowHeight]="50"
   [scrollbarV]="true"
 >
+  <ngx-datatable-row-detail [rowHeight]="50">
+    <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+      <div class="row-detail-container">
+        <div>{{ row.client?.name }}, {{ row.phone }}</div>
+      </div>
+    </ng-template>
+  </ngx-datatable-row-detail>
 </ngx-datatable>
+
+<ng-template #arrowTemplate let-row="row" let-expanded="expanded">
+  <a
+    [class.bi-chevron-right]="!expanded"
+    [class.bi-chevron-down]="expanded"
+    title="Expand/Collapse Row"
+    (click)="toggleExpandRow(row)"
+    class="desktop-hidden bi"
+  ></a>
+</ng-template>
 
 <ng-template #nameTemplate let-row="row">
   @if (row.firstName && row.lastName) {
@@ -16,6 +34,18 @@
   }
 </ng-template>
 
-<ng-template #clientNameTemplate let-value="value" let-row="row">
-  {{ row.client?.name }}
+<ng-template #clientNameHeaderTemplate let-column="column">
+  <span class="mobile-hidden">{{ column.name }}</span>
+</ng-template>
+
+<ng-template #clientNameTemplate let-row="row">
+  <span class="mobile-hidden">{{ row.client?.name }}</span>
+</ng-template>
+
+<ng-template #phoneHeaderTemplate let-column="column">
+  <span class="mobile-hidden">{{ column.name }}</span>
+</ng-template>
+
+<ng-template #phoneTemplate let-value="value">
+  <span class="mobile-hidden">{{ value }}</span>
 </ng-template>

@@ -1,1 +1,38 @@
 @use '../../../../sass/datatable';
+
+@media (max-width: 767px) {
+  .desktop-hidden {
+    display: initial;
+  }
+
+  .mobile-hidden {
+    display: none;
+  }
+
+  ::ng-deep ngx-datatable {
+    // hide Client and Phone sort arrows because ngx-datatable is broken and doesn't do this
+    // must adjust if columns change - haven't found an unbrittle solution
+    .datatable-header-cell:nth-of-type(3) .sort-btn,
+    .datatable-header-cell:nth-of-type(4) .sort-btn {
+      display: none;
+    }
+
+    .datatable-header-cell .resize-handle {
+      display: none;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .desktop-hidden {
+    display: none;
+  }
+  .mobile-hidden {
+    display: initial;
+  }
+}
+
+.row-detail-container {
+  padding: 6px 0 0 60px;
+  font-size: 14px;
+}
