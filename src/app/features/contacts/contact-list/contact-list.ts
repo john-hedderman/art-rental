@@ -6,6 +6,7 @@ import { combineLatest } from 'rxjs';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Contact, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-contact-list',
@@ -29,10 +30,8 @@ export class ContactList implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
-    this.checkScreenSize();
+    Util.showHideRowDetail();
   }
-
-  contacts: Contact[] = [];
 
   headerData: HeaderData = {
     headerTitle: 'Contacts',
@@ -42,21 +41,6 @@ export class ContactList implements OnInit {
   rows: Contact[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
-
-  checkScreenSize() {
-    let detailRows;
-    if (window.innerWidth >= 768) {
-      detailRows = document.querySelectorAll('.datatable-row-detail:not(.d-none)');
-      detailRows.forEach((detailRow) => {
-        detailRow.classList.add('d-none');
-      });
-    } else {
-      detailRows = document.querySelectorAll('.datatable-row-detail.d-none');
-      detailRows.forEach((detailRow) => {
-        detailRow.classList.remove('d-none');
-      });
-    }
-  }
 
   toggleExpandRow(row: Contact) {
     this.table.rowDetail!.toggleExpandRow(row);

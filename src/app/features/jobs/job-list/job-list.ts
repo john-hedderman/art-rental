@@ -6,6 +6,7 @@ import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/n
 import { Client, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-job-list',
@@ -29,7 +30,7 @@ export class JobList implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
-    this.checkScreenSize();
+    Util.showHideRowDetail();
   }
 
   navigateToAddJob = () => {
@@ -49,27 +50,9 @@ export class JobList implements OnInit {
     ],
   };
 
-  jobs: Job[] = [];
-  clients: Client[] = [];
-
   rows: Job[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
-
-  checkScreenSize() {
-    let detailRows;
-    if (window.innerWidth >= 768) {
-      detailRows = document.querySelectorAll('.datatable-row-detail:not(.d-none)');
-      detailRows.forEach((detailRow) => {
-        detailRow.classList.add('d-none');
-      });
-    } else {
-      detailRows = document.querySelectorAll('.datatable-row-detail.d-none');
-      detailRows.forEach((detailRow) => {
-        detailRow.classList.remove('d-none');
-      });
-    }
-  }
 
   toggleExpandRow(row: Client) {
     this.table.rowDetail!.toggleExpandRow(row);
@@ -94,13 +77,11 @@ export class JobList implements OnInit {
     combineLatest({ clients: this.dataService.clients$, jobs: this.dataService.jobs$ }).subscribe(
       ({ clients, jobs }) => {
         if (clients && jobs) {
-          this.clients = clients;
-          this.jobs = jobs.map((job: Job) => {
+          const jobsWithClients = jobs.map((job: Job) => {
             const client = clients.find((client) => client.id === job.client?.id)!;
-            // ensure client information is fleshed out
             return { ...job, client };
           });
-          this.rows = [...this.jobs];
+          this.rows = [...jobsWithClients];
         }
       }
     );
