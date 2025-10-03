@@ -1,12 +1,7 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
-import {
-  NgxDatatableModule,
-  SelectEvent,
-  SelectionType,
-  TableColumn,
-} from '@swimlane/ngx-datatable';
+import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { Client, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
@@ -23,8 +18,19 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
   },
 })
 export class JobList implements OnInit {
+  @ViewChild('jobsTable') table!: DatatableComponent<Client>;
+  @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
+  @ViewChild('clientNameHeaderTemplate', { static: true })
+  clientNameHeaderTemplate!: TemplateRef<any>;
   @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
+  @ViewChild('jobAddressHeaderTemplate', { static: true })
+  jobAddressHeaderTemplate!: TemplateRef<any>;
   @ViewChild('jobAddressTemplate', { static: true }) jobAddressTemplate!: TemplateRef<any>;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.checkScreenSize();
+  }
 
   navigateToAddJob = () => {
     this.router.navigate(['/jobs', 'add']);
@@ -48,17 +54,34 @@ export class JobList implements OnInit {
 
   rows: Job[] = [];
   columns: TableColumn[] = [];
-  selected: Job[] = [];
-  selectionType = SelectionType.single;
+  expanded: any = {};
 
-  navigateToJobDetail(id: string) {
-    this.router.navigate(['/jobs', id]);
+  checkScreenSize() {
+    let detailRows;
+    if (window.innerWidth >= 768) {
+      detailRows = document.querySelectorAll('.datatable-row-detail:not(.d-none)');
+      detailRows.forEach((detailRow) => {
+        detailRow.classList.add('d-none');
+      });
+    } else {
+      detailRows = document.querySelectorAll('.datatable-row-detail.d-none');
+      detailRows.forEach((detailRow) => {
+        detailRow.classList.remove('d-none');
+      });
+    }
   }
 
-  onSelect({ selected }: SelectEvent<Job>) {
-    this.selected.splice(0, this.selected.length);
-    this.selected.push(...selected);
-    this.navigateToJobDetail(selected[0].id);
+  toggleExpandRow(row: Client) {
+    this.table.rowDetail!.toggleExpandRow(row);
+  }
+
+  onActivate(event: any) {
+    if (event.type !== 'click') {
+      return;
+    }
+    if (event.cellIndex !== 0) {
+      this.router.navigate(['/jobs', event.row.id]);
+    }
   }
 
   addressComparator(rowA: any, rowB: any): number {
@@ -85,11 +108,27 @@ export class JobList implements OnInit {
 
   ngOnInit(): void {
     this.columns = [
-      { prop: 'id', name: 'Job Number' },
-      { prop: '', name: 'Client', cellTemplate: this.clientNameTemplate },
       {
+        width: 50,
+        resizeable: false,
+        sortable: false,
+        draggable: false,
+        canAutoResize: false,
+        cellTemplate: this.arrowTemplate,
+      },
+      { width: 200, prop: 'id', name: 'Job Number' },
+      {
+        width: 300,
+        prop: '',
+        name: 'Client',
+        headerTemplate: this.clientNameHeaderTemplate,
+        cellTemplate: this.clientNameTemplate,
+      },
+      {
+        width: 400,
         prop: '',
         name: 'Address',
+        headerTemplate: this.jobAddressHeaderTemplate,
         cellTemplate: this.jobAddressTemplate,
         comparator: this.addressComparator,
       },

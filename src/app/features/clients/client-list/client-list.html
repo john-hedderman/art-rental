@@ -8,8 +8,6 @@
   [headerHeight]="50"
   [rowHeight]="50"
   [scrollbarV]="true"
-  [selected]="selected"
-  [selectionType]="selectionType"
   (activate)="onActivate($event)"
 >
   <ngx-datatable-row-detail [rowHeight]="50">
@@ -31,10 +29,6 @@
     (click)="toggleExpandRow(row)"
     class="desktop-hidden bi"
   ></a>
-</ng-template>
-
-<ng-template #nameTemplate let-value="value">
-  <span>{{ value }}</span>
 </ng-template>
 
 <ng-template #locationHeaderTemplate let-column="column">

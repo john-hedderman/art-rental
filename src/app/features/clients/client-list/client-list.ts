@@ -1,12 +1,6 @@
 import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  NgxDatatableModule,
-  TableColumn,
-  SelectionType,
-  SelectEvent,
-  DatatableComponent,
-} from '@swimlane/ngx-datatable';
+import { NgxDatatableModule, TableColumn, DatatableComponent } from '@swimlane/ngx-datatable';
 
 import { Client, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
@@ -54,8 +48,6 @@ export class ClientList implements OnInit {
 
   rows: Client[] = [];
   columns: TableColumn[] = [];
-  selected: Client[] = [];
-  selectionType = SelectionType.single;
   expanded: any = {};
 
   checkScreenSize() {
