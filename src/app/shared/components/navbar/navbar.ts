@@ -1,6 +1,7 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { Subject } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { RouteChangeService } from '../../../service/route-change-service';
 
 @Component({
@@ -10,9 +11,7 @@ import { RouteChangeService } from '../../../service/route-change-service';
   styleUrl: './navbar.scss',
   standalone: true,
 })
-export class Navbar implements OnInit, OnDestroy {
-  destroy$ = new Subject<void>();
-
+export class Navbar {
   @ViewChild('navbarToggler') navbarToggler: ElementRef | undefined;
 
   onClickNavLink(event: PointerEvent, fromBrand?: boolean) {
@@ -50,10 +49,8 @@ export class Navbar implements OnInit, OnDestroy {
     return firstSlash === -1 ? relativeUrl : relativeUrl.substring(0, firstSlash);
   }
 
-  constructor(private router: Router, private routeChangesService: RouteChangeService) {}
-
-  ngOnInit(): void {
-    this.routeChangesService.routeChanges$.subscribe((url) => {
+  constructor(private router: Router, private routeChangesService: RouteChangeService) {
+    this.routeChangesService.routeChanges$.pipe(takeUntilDestroyed()).subscribe((url) => {
       const currentRouteSegment = this.getFirstSegment(url);
       document.querySelectorAll('.ar-nav-link').forEach((link) => {
         const routerLink = link.getAttribute('routerLink');
@@ -67,10 +64,5 @@ export class Navbar implements OnInit, OnDestroy {
         }
       });
     });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
+import { combineLatest, take } from 'rxjs';
 
 import { Card } from '../../../shared/components/card/card';
 import { Art, HeaderData } from '../../../model/models';
@@ -45,18 +45,20 @@ export class ArtList {
       artwork: this.dataService.art$,
       jobs: this.dataService.jobs$,
       clients: this.dataService.clients$,
-    }).subscribe(({ artwork, jobs, clients }) => {
-      this.artwork = artwork.map((art: Art) => {
-        let job = jobs.find((job) => job.id === art.job?.id);
-        if (job) {
-          const client = clients.find((client) => client.id === job?.client?.id);
-          if (client) {
-            job = { ...job, client };
+    })
+      .pipe(take(1))
+      .subscribe(({ artwork, jobs, clients }) => {
+        this.artwork = artwork.map((art: Art) => {
+          let job = jobs.find((job) => job.id === art.job?.id);
+          if (job) {
+            const client = clients.find((client) => client.id === job?.client?.id);
+            if (client) {
+              job = { ...job, client };
+            }
+            return { ...art, job };
           }
-          return { ...art, job };
-        }
-        return art;
+          return art;
+        });
       });
-    });
   }
 }

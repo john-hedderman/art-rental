@@ -1,7 +1,7 @@
 import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 import { Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
+import { combineLatest, take } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Contact, HeaderData } from '../../../model/models';
@@ -71,13 +71,16 @@ export class ContactList implements OnInit {
     combineLatest({
       contacts: this.dataService.contacts$,
       clients: this.dataService.clients$,
-    }).subscribe(({ contacts, clients }) => {
-      const mergedContacts = contacts.map((contact) => {
-        const client = clients.find((client) => client.id === contact.client.id) ?? ({} as Client);
-        return { ...contact, client };
+    })
+      .pipe(take(1))
+      .subscribe(({ contacts, clients }) => {
+        const mergedContacts = contacts.map((contact) => {
+          const client =
+            clients.find((client) => client.id === contact.client.id) ?? ({} as Client);
+          return { ...contact, client };
+        });
+        this.rows = [...mergedContacts];
       });
-      this.rows = [...mergedContacts];
-    });
   }
 
   ngOnInit(): void {

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 
@@ -14,7 +15,7 @@ export class RouteChangeService {
 
   constructor(private router: Router) {
     this._routeChanges = new Subject<string>();
-    this.router.events.subscribe((event) => {
+    this.router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this._routeChanges.next(event.url);
       }

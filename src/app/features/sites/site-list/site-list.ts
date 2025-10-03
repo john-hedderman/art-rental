@@ -1,4 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { combineLatest, take } from 'rxjs';
 import {
   NgxDatatableModule,
   SelectEvent,
@@ -10,7 +11,6 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, HeaderData, Site } from '../../../model/models';
 import { Router } from '@angular/router';
 import { DataService } from '../../../service/data-service';
-import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-site-list',
@@ -56,8 +56,9 @@ export class SiteList implements OnInit {
   }
 
   constructor(private router: Router, private dataService: DataService) {
-    combineLatest({ clients: this.dataService.clients$, sites: this.dataService.sites$ }).subscribe(
-      ({ clients, sites }) => {
+    combineLatest({ clients: this.dataService.clients$, sites: this.dataService.sites$ })
+      .pipe(take(1))
+      .subscribe(({ clients, sites }) => {
         if (clients && sites) {
           this.clients = clients;
           this.sites = sites.map((site: Site) => {
@@ -67,8 +68,7 @@ export class SiteList implements OnInit {
           });
           this.rows = [...this.sites];
         }
-      }
-    );
+      });
   }
 
   ngOnInit(): void {

@@ -1,8 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
-import { combineLatest, Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { Client, Contact, HeaderData, Job, Site } from '../../../model/models';
@@ -76,23 +75,25 @@ export class JobDetail implements OnInit {
       sites: this.dataService.sites$,
       jobId: this.getJobId(),
       jobs: this.dataService.jobs$,
-    }).subscribe(({ clients, contacts, artwork, sites, jobId, jobs }) => {
-      const job: Job | undefined = jobs.find((job) => job.id === jobId);
-      if (job) {
-        job.client = clients.find((client) => client.id === job.client?.id) ?? ({} as Client);
-        job.contacts = contacts
-          .filter((contact) => contact.client.id === job.client.id)
-          .map((contact: Contact) => {
-            const client =
-              clients.find((client) => client.id === contact.client.id) ?? ({} as Client);
-            return { ...contact, client };
-          });
-        job.art = artwork.filter((art) => art.job?.id === jobId);
-        job.site = sites.find((site) => site.id === job.site?.id) ?? ({} as Site);
-        this.job$ = of(job); // for template
-        this.rows = [...job.contacts]; // for table of contacts
-      }
-    });
+    })
+      .pipe(take(1))
+      .subscribe(({ clients, contacts, artwork, sites, jobId, jobs }) => {
+        const job: Job | undefined = jobs.find((job) => job.id === jobId);
+        if (job) {
+          job.client = clients.find((client) => client.id === job.client?.id) ?? ({} as Client);
+          job.contacts = contacts
+            .filter((contact) => contact.client.id === job.client.id)
+            .map((contact: Contact) => {
+              const client =
+                clients.find((client) => client.id === contact.client.id) ?? ({} as Client);
+              return { ...contact, client };
+            });
+          job.art = artwork.filter((art) => art.job?.id === jobId);
+          job.site = sites.find((site) => site.id === job.site?.id) ?? ({} as Site);
+          this.job$ = of(job); // for template
+          this.rows = [...job.contacts]; // for table of contacts
+        }
+      });
   }
 
   ngOnInit(): void {

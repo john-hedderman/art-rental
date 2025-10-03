@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { combineLatest } from 'rxjs';
+import { combineLatest, take } from 'rxjs';
 
 import { Art, HeaderData } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -43,19 +43,21 @@ export class ArtDetail {
       artwork: this.dataService.art$,
       jobs: this.dataService.jobs$,
       clients: this.dataService.clients$,
-    }).subscribe(({ artwork, jobs, clients }) => {
-      const tempArt = artwork.map((art: Art) => {
-        let job = jobs.find((job) => job.id === art.job?.id);
-        if (job) {
-          const client = clients.find((client) => client.id === job?.client?.id);
-          if (client) {
-            job = { ...job, client };
+    })
+      .pipe(take(1))
+      .subscribe(({ artwork, jobs, clients }) => {
+        const tempArt = artwork.map((art: Art) => {
+          let job = jobs.find((job) => job.id === art.job?.id);
+          if (job) {
+            const client = clients.find((client) => client.id === job?.client?.id);
+            if (client) {
+              job = { ...job, client };
+            }
+            return { ...art, job };
           }
-          return { ...art, job };
-        }
-        return art;
+          return art;
+        });
+        this.art = tempArt.find((art: Art) => art.id === +artId!) ?? ({} as Art);
       });
-      this.art = tempArt.find((art: Art) => art.id === +artId!) ?? ({} as Art);
-    });
   }
 }

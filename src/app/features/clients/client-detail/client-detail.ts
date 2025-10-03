@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { combineLatest, Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, map, Observable, of, take } from 'rxjs';
 
 import { Client, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
@@ -51,12 +50,14 @@ export class ClientDetail {
       clients: this.dataService.clients$,
       clientId: this.getClientId(),
       jobs: this.dataService.jobs$,
-    }).subscribe(({ clients, clientId, jobs }) => {
-      const client: Client = clients.find((client) => client.id === clientId)!;
-      if (client) {
-        client.jobs = jobs.filter((job) => job.client.id === client.id);
-        this.client$ = of(client); // for template
-      }
-    });
+    })
+      .pipe(take(1))
+      .subscribe(({ clients, clientId, jobs }) => {
+        const client: Client = clients.find((client) => client.id === clientId)!;
+        if (client) {
+          client.jobs = jobs.filter((job) => job.client.id === client.id);
+          this.client$ = of(client); // for template
+        }
+      });
   }
 }

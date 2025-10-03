@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
+import { take } from 'rxjs';
 
-import { Artist, HeaderButton, HeaderData } from '../../../model/models';
+import { Artist, HeaderData } from '../../../model/models';
 import { Card } from '../../../shared/components/card/card';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -35,7 +36,7 @@ export class ArtistList {
   };
 
   constructor(private dataService: DataService) {
-    this.dataService.artists$.subscribe((artists) => {
+    this.dataService.artists$.pipe(take(1)).subscribe((artists) => {
       if (artists) {
         this.artists = artists;
       }

@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
+import { combineLatest, take } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { Client, HeaderData, Job } from '../../../model/models';
@@ -74,8 +74,9 @@ export class JobList implements OnInit {
   }
 
   constructor(private dataService: DataService, private router: Router) {
-    combineLatest({ clients: this.dataService.clients$, jobs: this.dataService.jobs$ }).subscribe(
-      ({ clients, jobs }) => {
+    combineLatest({ clients: this.dataService.clients$, jobs: this.dataService.jobs$ })
+      .pipe(take(1))
+      .subscribe(({ clients, jobs }) => {
         if (clients && jobs) {
           const jobsWithClients = jobs.map((job: Job) => {
             const client = clients.find((client) => client.id === job.client?.id)!;
@@ -83,8 +84,7 @@ export class JobList implements OnInit {
           });
           this.rows = [...jobsWithClients];
         }
-      }
-    );
+      });
   }
 
   ngOnInit(): void {

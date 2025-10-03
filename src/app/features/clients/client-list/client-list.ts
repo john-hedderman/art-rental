@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxDatatableModule, TableColumn, DatatableComponent } from '@swimlane/ngx-datatable';
+import { take } from 'rxjs';
 
 import { Client, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
@@ -71,7 +72,7 @@ export class ClientList implements OnInit {
   }
 
   constructor(private dataService: DataService, private router: Router) {
-    this.dataService.clients$.subscribe((clients) => {
+    this.dataService.clients$.pipe(take(1)).subscribe((clients) => {
       if (clients) {
         this.rows = [...clients];
       }
