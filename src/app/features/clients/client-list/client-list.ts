@@ -1,11 +1,11 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-
 import {
   NgxDatatableModule,
   TableColumn,
   SelectionType,
   SelectEvent,
+  DatatableComponent,
 } from '@swimlane/ngx-datatable';
 
 import { Client, HeaderData } from '../../../model/models';
@@ -23,7 +23,17 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
   },
 })
 export class ClientList implements OnInit {
+  @ViewChild('clientsTable') table!: DatatableComponent<Client>;
+  @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
+  @ViewChild('locationHeaderTemplate', { static: true }) locationHeaderTemplate!: TemplateRef<any>;
   @ViewChild('locationTemplate', { static: true }) locationTemplate!: TemplateRef<any>;
+  @ViewChild('businessHeaderTemplate', { static: true }) businessHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('businessTemplate', { static: true }) businessTemplate!: TemplateRef<any>;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.checkScreenSize();
+  }
 
   navigateToAddClient = () => {
     this.router.navigate(['/clients', 'add']);
@@ -46,6 +56,41 @@ export class ClientList implements OnInit {
   columns: TableColumn[] = [];
   selected: Client[] = [];
   selectionType = SelectionType.single;
+  expanded: any = {};
+
+  checkScreenSize() {
+    let detailRows;
+    if (window.innerWidth >= 768) {
+      detailRows = document.querySelectorAll('.datatable-row-detail:not(.d-none)');
+      detailRows.forEach((detailRow) => {
+        detailRow.classList.add('d-none');
+      });
+    } else {
+      detailRows = document.querySelectorAll('.datatable-row-detail.d-none');
+      detailRows.forEach((detailRow) => {
+        detailRow.classList.remove('d-none');
+      });
+    }
+  }
+
+  toggleExpandRow(row: Client) {
+    this.table.rowDetail!.toggleExpandRow(row);
+  }
+
+  onActivate(event: any) {
+    if (event.type !== 'click') {
+      return;
+    }
+    if (event.cellIndex !== 0) {
+      this.router.navigate(['/clients', event.row.id]);
+    }
+  }
+
+  locationComparator(rowA: any, rowB: any): number {
+    const locationA = `${rowA['city']}, ${rowA['state']}`;
+    const locationB = `${rowB['city']}, ${rowB['state']}`;
+    return locationA.localeCompare(locationB);
+  }
 
   constructor(private dataService: DataService, private router: Router) {
     this.dataService.clients$.subscribe((clients) => {
@@ -55,32 +100,32 @@ export class ClientList implements OnInit {
     });
   }
 
-  navigateToClientDetail(id: string) {
-    this.router.navigate(['/clients', id]);
-  }
-
-  onSelect({ selected }: SelectEvent<Client>) {
-    this.selected.splice(0, this.selected.length);
-    this.selected.push(...selected);
-    this.navigateToClientDetail(selected[0].id);
-  }
-
-  locationComparator(rowA: any, rowB: any): number {
-    const locationA = `${rowA['city']}, ${rowA['state']}`;
-    const locationB = `${rowB['city']}, ${rowB['state']}`;
-    return locationA.localeCompare(locationB);
-  }
-
   ngOnInit(): void {
     this.columns = [
-      { prop: 'name', name: 'Name' },
       {
+        width: 50,
+        resizeable: false,
+        sortable: false,
+        draggable: false,
+        canAutoResize: false,
+        cellTemplate: this.arrowTemplate,
+      },
+      { width: 300, prop: 'name', name: 'Name' },
+      {
+        width: 250,
         prop: '',
         name: 'Location',
+        headerTemplate: this.locationHeaderTemplate,
         cellTemplate: this.locationTemplate,
         comparator: this.locationComparator,
       },
-      { prop: 'industry', name: 'Business' },
+      {
+        width: 200,
+        prop: 'industry',
+        name: 'Business',
+        headerTemplate: this.businessHeaderTemplate,
+        cellTemplate: this.businessTemplate,
+      },
     ];
   }
 }

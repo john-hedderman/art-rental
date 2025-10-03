@@ -1,20 +1,58 @@
 <app-page-header [headerData]="headerData"></app-page-header>
 <ngx-datatable
+  #clientsTable
   class="material"
   [rows]="rows"
   [columns]="columns"
   [columnMode]="'force'"
   [headerHeight]="50"
   [rowHeight]="50"
+  [scrollbarV]="true"
   [selected]="selected"
   [selectionType]="selectionType"
-  [scrollbarV]="true"
-  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
 >
+  <ngx-datatable-row-detail [rowHeight]="50">
+    <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+      @if (row.city && row.state) {
+      <div class="row-detail-container">
+        <div>{{ row.city }}, {{ row.state }} &mdash; {{ row.industry }}</div>
+      </div>
+      }
+    </ng-template>
+  </ngx-datatable-row-detail>
 </ngx-datatable>
 
+<ng-template #arrowTemplate let-row="row" let-expanded="expanded">
+  <a
+    [class.bi-chevron-right]="!expanded"
+    [class.bi-chevron-down]="expanded"
+    title="Expand/Collapse Row"
+    (click)="toggleExpandRow(row)"
+    class="desktop-hidden bi"
+  ></a>
+</ng-template>
+
+<ng-template #nameTemplate let-value="value">
+  <span>{{ value }}</span>
+</ng-template>
+
+<ng-template #locationHeaderTemplate let-column="column">
+  <span class="mobile-hidden">{{ column.name }}</span>
+</ng-template>
+
 <ng-template #locationTemplate let-value="value" let-row="row">
-  @if (row.city && row.state) {
-  {{ row.city }}, {{ row.state }}
-  }
+  <span class="mobile-hidden">
+    @if (row.city && row.state) {
+    {{ row.city }}, {{ row.state }}
+    }
+  </span>
+</ng-template>
+
+<ng-template #businessHeaderTemplate let-column="column">
+  <span class="mobile-hidden">{{ column.name }}</span>
+</ng-template>
+
+<ng-template #businessTemplate let-value="value">
+  <span class="mobile-hidden">{{ value }}</span>
 </ng-template>

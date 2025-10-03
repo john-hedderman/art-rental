@@ -1,0 +1,29 @@
+@media (max-width: 767px) {
+  .desktop-hidden {
+    display: initial;
+  }
+
+  .mobile-hidden {
+    display: none;
+  }
+
+  ::ng-deep ngx-datatable {
+    .datatable-header-cell .resize-handle {
+      display: none;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .desktop-hidden {
+    display: none;
+  }
+  .mobile-hidden {
+    display: initial;
+  }
+}
+
+.row-detail-container {
+  padding: 6px 0 0 60px;
+  font-size: 14px;
+}
