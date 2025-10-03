@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SiteList } from './site-list';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('SiteList', () => {
   let component: SiteList;
@@ -8,9 +9,9 @@ describe('SiteList', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SiteList]
-    })
-    .compileComponents();
+      imports: [SiteList],
+      providers: [provideHttpClient()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SiteList);
     component = fixture.componentInstance;

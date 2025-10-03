@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { combineLatest, take } from 'rxjs';
+import { combineLatest, map, Observable, take } from 'rxjs';
 
-import { Art, HeaderData } from '../../../model/models';
+import { Art, Client, HeaderData, Job } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { DataService } from '../../../service/data-service';
 
@@ -33,31 +33,37 @@ export class ArtDetail {
     ],
   };
 
+  getArtId(): Observable<string> {
+    return this.route.paramMap.pipe(map((params) => params.get('id') ?? ''));
+  }
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private dataService: DataService
   ) {
-    const artId = this.route.snapshot.paramMap.get('id');
     combineLatest({
       artwork: this.dataService.art$,
+      artId: this.getArtId(),
       jobs: this.dataService.jobs$,
       clients: this.dataService.clients$,
     })
       .pipe(take(1))
-      .subscribe(({ artwork, jobs, clients }) => {
-        const tempArt = artwork.map((art: Art) => {
-          let job = jobs.find((job) => job.id === art.job?.id);
+      .subscribe(({ artwork, artId, jobs, clients }) => {
+        let art: Art | undefined = artwork.find((work) => work.id === +artId);
+        if (art) {
+          let job: Job | undefined = jobs.find((job) => job.id === art?.job?.id);
           if (job) {
-            const client = clients.find((client) => client.id === job?.client?.id);
+            const client: Client | undefined = clients.find(
+              (client) => client.id === job?.client?.id
+            );
             if (client) {
               job = { ...job, client };
             }
-            return { ...art, job };
+            art = { ...art, job };
           }
-          return art;
-        });
-        this.art = tempArt.find((art: Art) => art.id === +artId!) ?? ({} as Art);
+        }
+        this.art = art!;
       });
   }
 }
