@@ -1,5 +1,6 @@
 import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
+import { Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -61,6 +62,15 @@ export class ContactList implements OnInit {
     this.table.rowDetail!.toggleExpandRow(row);
   }
 
+  onActivate(event: any) {
+    if (event.type !== 'click') {
+      return;
+    }
+    if (event.cellIndex !== 0) {
+      this.router.navigate(['/contacts', event.row.id]);
+    }
+  }
+
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
     const nameA = `${rowA['firstName']} ${rowA['lastName']}`;
     const nameB = `${rowB['firstName']} ${rowB['lastName']}`;
@@ -73,7 +83,7 @@ export class ContactList implements OnInit {
     return clientNameA.localeCompare(clientNameB);
   }
 
-  constructor(private dataService: DataService) {
+  constructor(private dataService: DataService, private router: Router) {
     combineLatest({
       contacts: this.dataService.contacts$,
       clients: this.dataService.clients$,
