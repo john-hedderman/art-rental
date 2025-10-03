@@ -36,10 +36,10 @@ export interface Job {
   city: string;
   state: string;
   zipCode: string;
-  description: string;
   client: Client;
   contacts: Contact[];
   art: Art[];
+  site: Site;
 }
 
 export interface Contact {
@@ -53,12 +53,12 @@ export interface Contact {
 
 export interface Site {
   id: string;
+  name: string;
   address1: string;
   address2: string;
   city: string;
   state: string;
   zipCode: string;
-  description: string;
   client: Client;
   job: Job;
 }

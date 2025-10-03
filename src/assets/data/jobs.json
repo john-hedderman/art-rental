@@ -6,7 +6,6 @@
     "city": "Webster",
     "state": "NY",
     "zipCode": "14580",
-    "description": "",
     "client": {
       "id": "000005"
     },
@@ -25,7 +24,6 @@
     "city": "Webster",
     "state": "NY",
     "zipCode": "14580",
-    "description": "",
     "client": {
       "id": "000005"
     },
@@ -37,6 +35,9 @@
       { "id": 3 },
       { "id": 6 },
       { "id": 7 }
-    ]
+    ],
+    "site": {
+      "id": 2
+    }
   }
 ]

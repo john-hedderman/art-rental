@@ -7,11 +7,15 @@
       <p class="pb-4">{{ job.id }}</p>
       <h5 class="fw-bold pb-2 ar-heading">Job Site:</h5>
       <p class="pb-4">
-        {{ job.address1 }}<br />
-        @if (job.address2) {
-        {{ job.address2 }}<br />
+        @if (job.site) { @if (job.site.name) {
+        {{ job.site.name }}<br />
         }
-        {{ job.city }}, {{ job.state }} {{ job.zipCode }}
+        {{ job.site.address1 }}<br />
+        @if (job.site.address2) {
+        {{ job.site.address2 }}<br />
+        }
+        {{ job.site.city }}, {{ job.site.state }} {{ job.site.zipCode }}
+        }
       </p>
     </div>
     <div class="col">

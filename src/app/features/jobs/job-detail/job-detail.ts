@@ -5,7 +5,7 @@ import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { Client, Contact, HeaderData, Job } from '../../../model/models';
+import { Client, Contact, HeaderData, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Card } from '../../../shared/components/card/card';
@@ -73,9 +73,10 @@ export class JobDetail implements OnInit {
       clients: this.dataService.clients$,
       contacts: this.dataService.contacts$,
       artwork: this.dataService.art$,
+      sites: this.dataService.sites$,
       jobId: this.getJobId(),
       jobs: this.dataService.jobs$,
-    }).subscribe(({ clients, contacts, artwork, jobId, jobs }) => {
+    }).subscribe(({ clients, contacts, artwork, sites, jobId, jobs }) => {
       const job: Job | undefined = jobs.find((job) => job.id === jobId);
       if (job) {
         job.client = clients.find((client) => client.id === job.client?.id) ?? ({} as Client);
@@ -87,6 +88,7 @@ export class JobDetail implements OnInit {
             return { ...contact, client };
           });
         job.art = artwork.filter((art) => art.job?.id === jobId);
+        job.site = sites.find((site) => site.id === job.site?.id) ?? ({} as Site);
         this.job$ = of(job); // for template
         this.rows = [...job.contacts]; // for table of contacts
       }

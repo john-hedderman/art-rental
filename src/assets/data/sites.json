@@ -1,12 +1,12 @@
 [
   {
     "id": 1,
+    "name": "",
     "address1": "3996 Howard Street",
     "address2": "",
     "city": "Webster",
     "state": "NY",
     "zipCode": "14580",
-    "description": "",
     "client": {
       "id": "000005"
     },
@@ -16,12 +16,12 @@
   },
   {
     "id": 2,
-    "address1": "1460 Ryan Road",
-    "address2": "",
+    "name": "Main Lobby",
+    "address1": "Mercator Hotel",
+    "address2": "1460 Ryan Road",
     "city": "Webster",
     "state": "NY",
     "zipCode": "14580",
-    "description": "",
     "client": {
       "id": "000005"
     },
