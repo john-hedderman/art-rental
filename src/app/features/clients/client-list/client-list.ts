@@ -5,6 +5,7 @@ import { NgxDatatableModule, TableColumn, DatatableComponent } from '@swimlane/n
 import { Client, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-client-list',
@@ -26,7 +27,7 @@ export class ClientList implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
-    this.checkScreenSize();
+    Util.showHideRowDetail();
   }
 
   navigateToAddClient = () => {
@@ -49,21 +50,6 @@ export class ClientList implements OnInit {
   rows: Client[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
-
-  checkScreenSize() {
-    let detailRows;
-    if (window.innerWidth >= 768) {
-      detailRows = document.querySelectorAll('.datatable-row-detail:not(.d-none)');
-      detailRows.forEach((detailRow) => {
-        detailRow.classList.add('d-none');
-      });
-    } else {
-      detailRows = document.querySelectorAll('.datatable-row-detail.d-none');
-      detailRows.forEach((detailRow) => {
-        detailRow.classList.remove('d-none');
-      });
-    }
-  }
 
   toggleExpandRow(row: Client) {
     this.table.rowDetail!.toggleExpandRow(row);
