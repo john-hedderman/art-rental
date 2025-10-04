@@ -1,16 +1,12 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { combineLatest, take } from 'rxjs';
-import {
-  NgxDatatableModule,
-  SelectEvent,
-  SelectionType,
-  TableColumn,
-} from '@swimlane/ngx-datatable';
+import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Client, HeaderData, Site } from '../../../model/models';
-import { Router } from '@angular/router';
+import { HeaderData, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-site-list',
@@ -23,11 +19,17 @@ import { DataService } from '../../../service/data-service';
   },
 })
 export class SiteList implements OnInit {
+  @ViewChild('sitesTable') table!: DatatableComponent<Site>;
+  @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
+  @ViewChild('siteAddressHeaderTemplate', { static: true })
+  siteAddressHeaderTemplate!: TemplateRef<any>;
   @ViewChild('siteAddressTemplate', { static: true }) siteAddressTemplate!: TemplateRef<any>;
 
-  sites: Site[] = [];
-  clients: Client[] = [];
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    Util.showHideRowDetail();
+  }
 
   headerData: HeaderData = {
     headerTitle: 'Sites',
@@ -36,17 +38,19 @@ export class SiteList implements OnInit {
 
   rows: Site[] = [];
   columns: TableColumn[] = [];
-  selected: Site[] = [];
-  selectionType = SelectionType.single;
+  expanded: any = {};
 
-  navigateToSiteDetail(id: string) {
-    this.router.navigate(['/sites', id]);
+  toggleExpandRow(row: Site) {
+    this.table.rowDetail!.toggleExpandRow(row);
   }
 
-  onSelect({ selected }: SelectEvent<Site>) {
-    this.selected.splice(0, this.selected.length);
-    this.selected.push(...selected);
-    this.navigateToSiteDetail(selected[0].id);
+  onActivate(event: any) {
+    if (event.type !== 'click') {
+      return;
+    }
+    if (event.cellIndex !== 0) {
+      this.router.navigate(['/sites', event.row.id]);
+    }
   }
 
   addressComparator(rowA: any, rowB: any): number {
@@ -60,23 +64,34 @@ export class SiteList implements OnInit {
       .pipe(take(1))
       .subscribe(({ clients, sites }) => {
         if (clients && sites) {
-          this.clients = clients;
-          this.sites = sites.map((site: Site) => {
+          const mergedSites = sites.map((site: Site) => {
             const client = clients.find((client) => client.id === site.client?.id)!;
-            // ensure client information is fleshed out
             return { ...site, client };
           });
-          this.rows = [...this.sites];
+          this.rows = [...mergedSites];
         }
       });
   }
 
   ngOnInit(): void {
     this.columns = [
-      { prop: '', name: 'Client', cellTemplate: this.clientNameTemplate },
+      {
+        width: 50,
+        resizeable: false,
+        sortable: false,
+        draggable: false,
+        canAutoResize: false,
+        cellTemplate: this.arrowTemplate,
+      },
+      {
+        prop: '',
+        name: 'Client',
+        cellTemplate: this.clientNameTemplate,
+      },
       {
         prop: '',
         name: 'Site Address',
+        headerTemplate: this.siteAddressHeaderTemplate,
         cellTemplate: this.siteAddressTemplate,
         comparator: this.addressComparator,
       },

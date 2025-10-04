@@ -1,25 +1,54 @@
 <app-page-header [headerData]="headerData"></app-page-header>
 <ngx-datatable
+  #sitesTable
   class="material"
   [rows]="rows"
   [columns]="columns"
   [columnMode]="'force'"
   [headerHeight]="50"
   [rowHeight]="50"
-  [selected]="selected"
-  [selectionType]="selectionType"
   [scrollbarV]="true"
-  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
 >
+  <ngx-datatable-row-detail [rowHeight]="50">
+    <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+      <div class="row-detail-container">
+        <div>
+          @if (row.address1 && row.city && row.state && row.zipCode) {
+          {{ row.address1 }}, @if (row.address2) { {{ row.address2 }}, } {{ row.city }},
+          {{ row.state }} {{ row.zipCode }}
+          }
+        </div>
+      </div>
+    </ng-template>
+  </ngx-datatable-row-detail>
 </ngx-datatable>
+
+<ng-template #arrowTemplate let-row="row" let-expanded="expanded">
+  <a
+    [class.bi-chevron-right]="!expanded"
+    [class.bi-chevron-down]="expanded"
+    title="Expand/Collapse Row"
+    (click)="toggleExpandRow(row)"
+    class="desktop-hidden bi"
+  ></a>
+</ng-template>
 
 <ng-template #clientNameTemplate let-value="value" let-row="row">
   {{ row.client?.name }}
+  @if (row.name) { &mdash; {{ row.name }}
+  }
+</ng-template>
+
+<ng-template #siteAddressHeaderTemplate let-column="column">
+  <span class="mobile-hidden">{{ column.name }}</span>
 </ng-template>
 
 <ng-template #siteAddressTemplate let-value="value" let-row="row">
-  @if (row.address1 && row.city && row.state && row.zipCode) {
-  {{ row.address1 }}, @if (row.address2) { {{ row.address2 }}, } {{ row.city }}, {{ row.state }}
-  {{ row.zipCode }}
-  }
+  <span class="mobile-hidden">
+    @if (row.address1 && row.city && row.state && row.zipCode) {
+    {{ row.address1 }}, @if (row.address2) { {{ row.address2 }}, } {{ row.city }}, {{ row.state }}
+    {{ row.zipCode }}
+    }
+  </span>
 </ng-template>
