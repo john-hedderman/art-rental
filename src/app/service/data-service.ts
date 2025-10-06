@@ -31,9 +31,8 @@ export class DataService {
   load(data: 'sites'): Observable<Site[]>;
 
   load(data: string): Observable<unknown[]> {
-    if (data === 'art') {
-      return this.http.get<unknown[]>('http://localhost:3000/art');
-    }
-    return this.http.get<unknown[]>(`assets/data/${data}.json`);
+    // load data from a separate server
+    // see project art-rental-server (in short, run "node app")
+    return this.http.get<unknown[]>(`http://localhost:3000/data/${data}`);
   }
 }
