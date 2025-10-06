@@ -31,6 +31,9 @@ export class DataService {
   load(data: 'sites'): Observable<Site[]>;
 
   load(data: string): Observable<unknown[]> {
+    if (data === 'art') {
+      return this.http.get<unknown[]>('http://localhost:3000/art');
+    }
     return this.http.get<unknown[]>(`assets/data/${data}.json`);
   }
 }
