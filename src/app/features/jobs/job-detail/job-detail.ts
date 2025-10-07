@@ -9,10 +9,11 @@ import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Card } from '../../../shared/components/card/card';
 import { Util } from '../../../shared/util/util';
+import { ContactsTable } from '../../../shared/components/contacts-table/contacts-table';
 
 @Component({
   selector: 'app-job-detail',
-  imports: [AsyncPipe, PageHeader, RouterLink, Card, NgxDatatableModule],
+  imports: [AsyncPipe, PageHeader, RouterLink, Card, NgxDatatableModule, ContactsTable],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.scss',
   standalone: true,

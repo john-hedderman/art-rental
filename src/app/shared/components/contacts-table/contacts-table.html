@@ -1,0 +1,17 @@
+<h5 class="fw-bold pb-2 ar-heading">Contacts:</h5>
+<ngx-datatable
+  class="material mt-3"
+  [rows]="rows"
+  [columns]="columns"
+  [columnMode]="'force'"
+  [headerHeight]="50"
+  [rowHeight]="50"
+  [scrollbarV]="true"
+>
+</ngx-datatable>
+
+<ng-template #nameTemplate let-row="row">
+  @if (row.firstName && row.lastName) {
+  {{ row.firstName }} {{ row.lastName }}
+  }
+</ng-template>

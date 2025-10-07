@@ -7,10 +7,11 @@ import { Client, Contact, HeaderData, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
+import { ContactsTable } from '../../../shared/components/contacts-table/contacts-table';
 
 @Component({
   selector: 'app-client-detail',
-  imports: [AsyncPipe, PageHeader, RouterLink, NgxDatatableModule],
+  imports: [AsyncPipe, PageHeader, RouterLink, NgxDatatableModule, ContactsTable],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
   standalone: true,
