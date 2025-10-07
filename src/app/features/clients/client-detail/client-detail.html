@@ -16,12 +16,20 @@
       <p class="mb-0">
         <a class="fw-bold" href="#" [routerLink]="`/jobs/${job.id}`">{{ job.id }}</a>
       </p>
-      <p class="mb-0">{{ job.address1 }}</p>
-      @if (job.address2) {
-      <p class="mb-0">{{ job.address2 }}</p>
+      <p class="pb-4">
+        @if (job.site) { @if (job.site.name) {
+        {{ job.site.name }}<br />
+        }
+        {{ job.site.address1 }}<br />
+        @if (job.site.address2) {
+        {{ job.site.address2 }}<br />
+        }
+        {{ job.site.city }}, {{ job.site.state }} {{ job.site.zipCode }}
+        }
+      </p>
+      } } @else {
+      <p>Cannot find any jobs for this client.</p>
       }
-      <p>{{ job.city }}, {{ job.state }} {{ job.zipCode }}</p>
-      } }
     </div>
     }
   </div>
