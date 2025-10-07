@@ -27,6 +27,7 @@ export interface Client {
   zipCode: string;
   industry: string;
   jobs: Job[];
+  contacts: Contact[];
 }
 
 export interface Job {

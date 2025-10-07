@@ -8,7 +8,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Arts & Crafts",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000002",
@@ -19,7 +20,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Beauty",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000003",
@@ -30,7 +32,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Education",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000004",
@@ -41,7 +44,12 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Home",
-    "jobs": []
+    "jobs": [],
+    "contacts": [
+      {
+        "id": 3
+      }
+    ]
   },
   {
     "id": "000005",
@@ -59,6 +67,14 @@
       {
         "id": "000003"
       }
+    ],
+    "contacts": [
+      {
+        "id": 1
+      },
+      {
+        "id": 2
+      }
     ]
   },
   {
@@ -70,7 +86,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Fashion",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000007",
@@ -81,7 +98,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Jewelry",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000008",
@@ -92,7 +110,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Design",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000009",
@@ -103,7 +122,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Gaming",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000010",
@@ -114,7 +134,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Finance",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000011",
@@ -125,7 +146,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Cleaning",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000012",
@@ -136,7 +158,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Communication",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000013",
@@ -147,7 +170,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Health",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000014",
@@ -158,7 +182,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Food",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000015",
@@ -169,7 +194,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Kids",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000016",
@@ -180,7 +206,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Candles",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000017",
@@ -191,7 +218,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Events",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000018",
@@ -202,7 +230,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Clothing",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000019",
@@ -213,7 +242,8 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Garden",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   },
   {
     "id": "000020",
@@ -224,6 +254,7 @@
     "state": "NY",
     "zipCode": "",
     "industry": "Fitness",
-    "jobs": []
+    "jobs": [],
+    "contacts": []
   }
 ]

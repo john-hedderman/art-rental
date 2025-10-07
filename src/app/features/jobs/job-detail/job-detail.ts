@@ -19,7 +19,6 @@ import { Util } from '../../../shared/util/util';
 })
 export class JobDetail implements OnInit {
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
-  @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
 
   navigateToArtDetail = (id: number) => {
     this.router.navigate(['/art', id]);
@@ -50,12 +49,6 @@ export class JobDetail implements OnInit {
     const nameA = `${rowA['firstName']} ${rowA['lastName']}`;
     const nameB = `${rowB['firstName']} ${rowB['lastName']}`;
     return nameA.localeCompare(nameB);
-  }
-
-  clientNameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
-    const clientNameA = `${rowA['client']['name']}`;
-    const clientNameB = `${rowB['client']['name']}`;
-    return clientNameA.localeCompare(clientNameB);
   }
 
   getJobId(): Observable<string> {
@@ -104,11 +97,13 @@ export class JobDetail implements OnInit {
         comparator: this.nameComparator,
       },
       {
-        name: 'Client',
-        cellTemplate: this.clientNameTemplate,
-        comparator: this.clientNameComparator,
+        prop: 'title',
+        name: 'Title',
       },
-      { prop: 'phone', name: 'Phone' },
+      {
+        prop: 'phone',
+        name: 'Phone',
+      },
     ];
   }
 }
