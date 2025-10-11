@@ -33,9 +33,21 @@ export class ContactList implements OnInit {
     Util.showHideRowDetail();
   }
 
+  goToAddContact = () => {
+    this.router.navigate(['/contacts', 'add']);
+  };
   headerData: HeaderData = {
     headerTitle: 'Contacts',
-    headerButtons: [],
+    headerButtons: [
+      {
+        id: 'addContactBtn',
+        label: 'Add Contact',
+        type: 'button',
+        buttonClass: 'btn btn-primary btn-sm',
+        disabled: false,
+        clickHandler: this.goToAddContact,
+      },
+    ],
   };
 
   rows: Contact[] = [];

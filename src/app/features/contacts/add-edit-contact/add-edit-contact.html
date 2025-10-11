@@ -1,0 +1,62 @@
+<form [formGroup]="contactForm" class="ar-heading mt-4 pb-3">
+  <div class="row mb-3">
+    <label for="firstName" class="col-form-label col-md-2">First name</label>
+    <div class="col-md-10">
+      <input
+        type="text"
+        class="form-control"
+        id="firstName"
+        formControlName="firstName"
+        aria-describedby="firstName"
+      />
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label for="lastName" class="col-form-label col-md-2">Last name</label>
+    <div class="col-md-10">
+      <input
+        type="text"
+        class="form-control"
+        id="lastName"
+        formControlName="lastName"
+        aria-describedby="lastName"
+      />
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label for="clientName" class="col-form-label col-md-2">Client</label>
+    <div class="col-md-10">
+      <input
+        type="text"
+        class="form-control"
+        id="clientName"
+        formControlName="clientName"
+        aria-describedby="clientName"
+      />
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label for="contactTitle" class="col-form-label col-md-2">Title</label>
+    <div class="col-md-10">
+      <input
+        type="text"
+        class="form-control"
+        id="contactTitle"
+        formControlName="contactTitle"
+        aria-describedby="contactTitle"
+      />
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label for="contactPhone" class="col-form-label col-md-2">Phone</label>
+    <div class="col-md-5">
+      <input
+        type="text"
+        class="form-control"
+        id="contactPhone"
+        formControlName="contactPhone"
+        aria-describedby="contactPhone"
+      />
+    </div>
+  </div>
+</form>
