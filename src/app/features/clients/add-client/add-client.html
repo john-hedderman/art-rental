@@ -1,130 +1,195 @@
 <app-page-header [headerData]="headerData"></app-page-header>
 <div class="container-fluid p-3 ar-page-content-no-menubar overflow-y-auto">
-  <h5 class="fw-bold mb-4 pb-2 ar-heading">Client</h5>
-  <form [formGroup]="clientForm">
-    <div class="row mb-3">
-      <label for="clientName" class="col-form-label col-md-2">Client name</label>
-      <div class="col-md-10">
-        <input
-          type="text"
-          class="form-control"
-          id="clientName"
-          formControlName="clientName"
-          aria-describedby="clientName"
-        />
-      </div>
+  <form
+    [formGroup]="clientForm"
+    (ngSubmit)="onSubmit()"
+    class="row g-3 needs-validation"
+    [class.was-validated]="submitted"
+    novalidate
+  >
+    <div class="col-12">
+      <label for="clientName" class="col-form-label">Client name</label>
+      <input
+        type="text"
+        id="clientName"
+        formControlName="clientName"
+        aria-describedby="clientName"
+        class="form-control"
+        required
+      />
+      <div class="invalid-feedback">Please provide a client name.</div>
     </div>
-    <div formGroupName="address">
-      <div class="row mb-3">
-        <label for="address1" class="col-form-label col-md-2">Address</label>
-        <div class="col-md-10">
+    <div class="col-md-6">
+      <label for="clientAddress1" class="col-form-label">Address</label>
+      <input
+        type="text"
+        id="clientAddress1"
+        formControlName="clientAddress1"
+        aria-describedby="clientAddress1"
+        class="form-control"
+        required
+      />
+      <div class="invalid-feedback">Please provide a street address.</div>
+    </div>
+    <div class="col-md-6">
+      <label for="clientAddress2" class="col-form-label">Address 2</label>
+      <input
+        type="text"
+        id="clientAddress2"
+        formControlName="clientAddress2"
+        aria-describedby="clientAddress2"
+        class="form-control"
+      />
+    </div>
+    <div class="col-md-6">
+      <label for="clientCity" class="col-form-label">City</label>
+      <input
+        type="text"
+        id="clientCity"
+        formControlName="clientCity"
+        aria-describedby="clientCity"
+        class="form-control"
+        required
+      />
+      <div class="invalid-feedback">Please provide a city.</div>
+    </div>
+    <div class="col-md-3">
+      <label for="clientState" class="col-form-label">State</label>
+      <select
+        class="form-select"
+        name="clientState"
+        id="clientState"
+        formControlName="clientState"
+        autocomplete="address-level1"
+        required
+      >
+        <option value="" selected="selected">Select a state...</option>
+        <option value="AL">Alabama</option>
+        <option value="AK">Alaska</option>
+        <option value="AZ">Arizona</option>
+        <option value="AR">Arkansas</option>
+        <option value="CA">California</option>
+        <option value="CO">Colorado</option>
+        <option value="CT">Connecticut</option>
+        <option value="DE">Delaware</option>
+        <option value="DC">District Of Columbia</option>
+        <option value="FL">Florida</option>
+        <option value="GA">Georgia</option>
+        <option value="HI">Hawaii</option>
+        <option value="ID">Idaho</option>
+        <option value="IL">Illinois</option>
+        <option value="IN">Indiana</option>
+        <option value="IA">Iowa</option>
+        <option value="KS">Kansas</option>
+        <option value="KY">Kentucky</option>
+        <option value="LA">Louisiana</option>
+        <option value="ME">Maine</option>
+        <option value="MD">Maryland</option>
+        <option value="MA">Massachusetts</option>
+        <option value="MI">Michigan</option>
+        <option value="MN">Minnesota</option>
+        <option value="MS">Mississippi</option>
+        <option value="MO">Missouri</option>
+        <option value="MT">Montana</option>
+        <option value="NE">Nebraska</option>
+        <option value="NV">Nevada</option>
+        <option value="NH">New Hampshire</option>
+        <option value="NJ">New Jersey</option>
+        <option value="NM">New Mexico</option>
+        <option value="NY">New York</option>
+        <option value="NC">North Carolina</option>
+        <option value="ND">North Dakota</option>
+        <option value="OH">Ohio</option>
+        <option value="OK">Oklahoma</option>
+        <option value="OR">Oregon</option>
+        <option value="PA">Pennsylvania</option>
+        <option value="RI">Rhode Island</option>
+        <option value="SC">South Carolina</option>
+        <option value="SD">South Dakota</option>
+        <option value="TN">Tennessee</option>
+        <option value="TX">Texas</option>
+        <option value="UT">Utah</option>
+        <option value="VT">Vermont</option>
+        <option value="VA">Virginia</option>
+        <option value="WA">Washington</option>
+        <option value="WV">West Virginia</option>
+        <option value="WI">Wisconsin</option>
+        <option value="WY">Wyoming</option>
+      </select>
+      <div class="invalid-feedback">Please select a state.</div>
+    </div>
+    <div class="col-md-3">
+      <label for="clientZip" class="col-form-label">Zip code</label>
+      <input
+        type="text"
+        id="clientZip"
+        formControlName="clientZip"
+        aria-describedby="clientZip"
+        class="form-control"
+        required
+        minlength="5"
+      />
+      <div class="invalid-feedback">Please provide a Zip code of at least 5 digits.</div>
+    </div>
+
+    <h5 class="fw-bold mb-3 pb-2 pt-4 ar-heading">Contacts</h5>
+    <div class="mt-0">
+      <button class="btn btn-secondary btn-sm" type="button" (click)="addContact()">
+        + Add contact
+      </button>
+    </div>
+
+    <div formArrayName="clientContacts" class="mt-0">
+      @for (clientContactGroup of clientContacts.controls; track $index; let i = $index) {
+      <div [formGroupName]="i" class="row mt-5">
+        <div class="col-md-6">
+          <label for="contactFirstName-{{ i }}" class="col-form-label">First name</label>
           <input
             type="text"
             class="form-control"
-            id="address1"
-            formControlName="address1"
-            aria-describedby="address1"
+            id="contactFirstName-{{ i }}"
+            formControlName="contactFirstName"
+            required
           />
+          <div class="invalid-feedback">Please provide a first name.</div>
         </div>
-      </div>
-      <div class="row mb-3">
-        <label for="address2" class="col-form-label col-md-2">Street 2</label>
-        <div class="col-md-10">
+        <div class="col-md-6">
+          <label for="contactLastName-{{ i }}" class="col-form-label">Last name</label>
           <input
             type="text"
             class="form-control"
-            id="address2"
-            formControlName="address2"
-            aria-describedby="address2"
+            id="contactLastName-{{ i }}"
+            formControlName="contactLastName"
+            required
           />
+          <div class="invalid-feedback">Please provide a last name.</div>
         </div>
-      </div>
-      <div class="row mb-3">
-        <label for="city" class="col-form-label col-md-2">City</label>
-        <div class="col-md-5">
+        <div class="col-md-6">
+          <label for="contactTitle-{{ i }}" class="col-form-label">Title</label>
           <input
             type="text"
             class="form-control"
-            id="city"
-            formControlName="city"
-            aria-describedby="city"
+            id="contactTitle-{{ i }}"
+            formControlName="contactTitle"
           />
         </div>
-      </div>
-      <div class="row mb-3">
-        <label for="state" class="col-form-label col-md-2">State</label>
-        <div class="col-md-5">
-          <select
-            class="form-select"
-            name="state"
-            id="state"
-            formControlName="state"
-            autocomplete="address-level1"
-          >
-            <option value="" selected="selected">Select a state...</option>
-            <option value="AL">Alabama</option>
-            <option value="AK">Alaska</option>
-            <option value="AZ">Arizona</option>
-            <option value="AR">Arkansas</option>
-            <option value="CA">California</option>
-            <option value="CO">Colorado</option>
-            <option value="CT">Connecticut</option>
-            <option value="DE">Delaware</option>
-            <option value="DC">District Of Columbia</option>
-            <option value="FL">Florida</option>
-            <option value="GA">Georgia</option>
-            <option value="HI">Hawaii</option>
-            <option value="ID">Idaho</option>
-            <option value="IL">Illinois</option>
-            <option value="IN">Indiana</option>
-            <option value="IA">Iowa</option>
-            <option value="KS">Kansas</option>
-            <option value="KY">Kentucky</option>
-            <option value="LA">Louisiana</option>
-            <option value="ME">Maine</option>
-            <option value="MD">Maryland</option>
-            <option value="MA">Massachusetts</option>
-            <option value="MI">Michigan</option>
-            <option value="MN">Minnesota</option>
-            <option value="MS">Mississippi</option>
-            <option value="MO">Missouri</option>
-            <option value="MT">Montana</option>
-            <option value="NE">Nebraska</option>
-            <option value="NV">Nevada</option>
-            <option value="NH">New Hampshire</option>
-            <option value="NJ">New Jersey</option>
-            <option value="NM">New Mexico</option>
-            <option value="NY">New York</option>
-            <option value="NC">North Carolina</option>
-            <option value="ND">North Dakota</option>
-            <option value="OH">Ohio</option>
-            <option value="OK">Oklahoma</option>
-            <option value="OR">Oregon</option>
-            <option value="PA">Pennsylvania</option>
-            <option value="RI">Rhode Island</option>
-            <option value="SC">South Carolina</option>
-            <option value="SD">South Dakota</option>
-            <option value="TN">Tennessee</option>
-            <option value="TX">Texas</option>
-            <option value="UT">Utah</option>
-            <option value="VT">Vermont</option>
-            <option value="VA">Virginia</option>
-            <option value="WA">Washington</option>
-            <option value="WV">West Virginia</option>
-            <option value="WI">Wisconsin</option>
-            <option value="WY">Wyoming</option>
-          </select>
+        <div class="col-md-6">
+          <label for="contactPhone-{{ i }}" class="col-form-label">Phone</label>
+          <input
+            type="text"
+            class="form-control"
+            id="contactPhone-{{ i }}"
+            formControlName="contactPhone"
+            required
+          />
+          <div class="invalid-feedback">Please provide a phone number.</div>
         </div>
       </div>
-      <div class="row mb-3">
-        <label for="zip" class="col-form-label col-md-2">Zip code</label>
-        <div class="col-md-2">
-          <input type="text" class="form-control" id="zip" formControlName="zip" />
-        </div>
-      </div>
+      }
+    </div>
+
+    <div class="mt-4">
+      <button class="btn btn-primary btn-sm" type="submit">Submit</button>
     </div>
   </form>
-  <p class="pb-2"></p>
-  <h5 class="fw-bold mb-4 pb-2 ar-heading">Contacts</h5>
-  <div>Enter contact information here...</div>
 </div>

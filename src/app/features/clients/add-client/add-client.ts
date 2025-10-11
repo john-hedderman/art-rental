@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { HeaderData } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { HeaderData } from '../../../model/models';
 
 @Component({
   selector: 'app-add-client',
@@ -13,37 +12,46 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
   standalone: true,
 })
 export class AddClient implements OnInit {
-  goToClientList = () => {
-    this.router.navigate(['/clients', 'list']);
-  };
   headerData: HeaderData = {
     headerTitle: 'Add Client',
-    headerButtons: [
-      {
-        id: 'goToClientListBtn',
-        label: 'Client list',
-        type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
-        disabled: false,
-        clickHandler: this.goToClientList,
-      },
-    ],
+    headerButtons: [],
   };
 
   clientForm!: FormGroup;
+  submitted = false;
 
-  constructor(private router: Router) {}
+  onSubmit() {
+    this.submitted = true;
+  }
+
+  get clientContacts(): FormArray {
+    return this.clientForm.get('clientContacts') as FormArray;
+  }
+
+  newContact(): FormGroup {
+    return this.fb.group({
+      contactFirstName: [''],
+      contactLastName: [''],
+      contactTitle: [''],
+      contactPhone: [''],
+    });
+  }
+
+  addContact(): void {
+    this.clientContacts.push(this.newContact());
+  }
+
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.clientForm = new FormGroup({
-      clientName: new FormControl(''),
-      address: new FormGroup({
-        address1: new FormControl(''),
-        address2: new FormControl(''),
-        city: new FormControl(''),
-        state: new FormControl(''),
-        zip: new FormControl(''),
-      }),
+    this.clientForm = this.fb.group({
+      clientName: [''],
+      clientAddress1: [''],
+      clientAddress2: [''],
+      clientCity: [''],
+      clientState: [''],
+      clientZip: [''],
+      clientContacts: this.fb.array([]),
     });
   }
 }
