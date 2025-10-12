@@ -13,7 +13,11 @@ import { HeaderData } from '../../../model/models';
 })
 export class AddClient implements OnInit {
   headerData: HeaderData = {
+<<<<<<< HEAD
     headerTitle: 'Add Client',
+=======
+    headerTitle: 'Artists',
+>>>>>>> 731a0d87a465b3f303bb2d32fefe4dc5cfd432f3
     headerButtons: [],
   };
 
