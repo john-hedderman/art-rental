@@ -1,8 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { HeaderData } from '../../../model/models';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-client',
@@ -12,13 +19,21 @@ import { HeaderData } from '../../../model/models';
   standalone: true,
 })
 export class AddClient implements OnInit {
+  goToClientList = () => {
+    this.router.navigate(['/clients', 'list']);
+  };
   headerData: HeaderData = {
-<<<<<<< HEAD
     headerTitle: 'Add Client',
-=======
-    headerTitle: 'Artists',
->>>>>>> 731a0d87a465b3f303bb2d32fefe4dc5cfd432f3
-    headerButtons: [],
+    headerButtons: [
+      {
+        id: 'goToClientListBtn',
+        label: 'Client list',
+        type: 'button',
+        buttonClass: 'btn btn-primary btn-sm',
+        disabled: false,
+        clickHandler: this.goToClientList,
+      },
+    ],
   };
 
   clientForm!: FormGroup;
@@ -34,18 +49,33 @@ export class AddClient implements OnInit {
 
   newContact(): FormGroup {
     return this.fb.group({
+      id: Date.now(),
       contactFirstName: [''],
       contactLastName: [''],
       contactTitle: [''],
       contactPhone: [''],
+      contactEmail: [''],
     });
+  }
+
+  trackById(index: number, v: AbstractControl) {
+    return v.value.id;
+  }
+
+  resetForm() {
+    this.clientForm.reset();
+    this.submitted = false;
   }
 
   addContact(): void {
     this.clientContacts.push(this.newContact());
   }
 
-  constructor(private fb: FormBuilder) {}
+  removeContact(index: number): void {
+    this.clientContacts.removeAt(index);
+  }
+
+  constructor(private fb: FormBuilder, private router: Router) {}
 
   ngOnInit(): void {
     this.clientForm = this.fb.group({
