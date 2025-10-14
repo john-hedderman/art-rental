@@ -16,8 +16,8 @@ export class ContactsTable implements OnInit {
   @Input() columns: TableColumn[] = [];
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
-    const nameA = `${rowA['firstName']} ${rowA['lastName']}`;
-    const nameB = `${rowB['firstName']} ${rowB['lastName']}`;
+    const nameA = `${rowA['first_name']} ${rowA['last_name']}`;
+    const nameB = `${rowB['first_name']} ${rowB['last_name']}`;
     return nameA.localeCompare(nameB);
   }
   ngOnInit(): void {

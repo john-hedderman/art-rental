@@ -52,8 +52,8 @@ export class AddClient implements OnInit {
   newContact(): FormGroup {
     return this.fb.group({
       client_id: Date.now(),
-      firstName: [''],
-      lastName: [''],
+      first_name: [''],
+      last_name: [''],
       phone: [''],
       title: [''],
       email: [''],

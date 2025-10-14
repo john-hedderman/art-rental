@@ -4,7 +4,7 @@
   <div class="row">
     <div class="col-md-6 col-sm-12">
       <h5 class="fw-bold pb-2 ar-heading">Job ID:</h5>
-      <p class="pb-4">{{ job.id }}</p>
+      <p class="pb-4">{{ job.job_id }}</p>
       <h5 class="fw-bold pb-2 ar-heading">Job Site:</h5>
       <p class="pb-4">
         @if (job.site) { @if (job.site.name) {
@@ -51,7 +51,7 @@
 </div>
 
 <ng-template #nameTemplate let-row="row">
-  @if (row.firstName && row.lastName) {
-  {{ row.firstName }} {{ row.lastName }}
+  @if (row.first_name && row.last_name) {
+  {{ row.first_name }} {{ row.last_name }}
   }
 </ng-template>

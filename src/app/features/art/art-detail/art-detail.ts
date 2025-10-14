@@ -52,7 +52,7 @@ export class ArtDetail {
       .subscribe(({ artwork, artId, jobs, clients }) => {
         let art: Art | undefined = artwork.find((work) => work.art_id === +artId);
         if (art) {
-          let job: Job | undefined = jobs.find((job) => job.id === art?.job?.id);
+          let job: Job | undefined = jobs.find((job) => job.job_id === art?.job?.job_id);
           if (job) {
             const client: Client | undefined = clients.find(
               (client) => client.client_id === job?.client?.client_id

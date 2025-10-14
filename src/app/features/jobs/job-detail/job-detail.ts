@@ -47,8 +47,8 @@ export class JobDetail implements OnInit {
   columns: TableColumn[] = [];
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
-    const nameA = `${rowA['firstName']} ${rowA['lastName']}`;
-    const nameB = `${rowB['firstName']} ${rowB['lastName']}`;
+    const nameA = `${rowA['first_name']} ${rowA['last_name']}`;
+    const nameB = `${rowB['first_name']} ${rowB['last_name']}`;
     return nameA.localeCompare(nameB);
   }
 
@@ -72,7 +72,7 @@ export class JobDetail implements OnInit {
     })
       .pipe(take(1))
       .subscribe(({ clients, contacts, artwork, sites, jobId, jobs }) => {
-        const job: Job | undefined = jobs.find((job) => job.id === jobId);
+        const job: Job | undefined = jobs.find((job) => job.job_id === jobId);
         if (job) {
           job.client =
             clients.find((client) => client.client_id === job.client?.client_id) ?? ({} as Client);
@@ -84,8 +84,8 @@ export class JobDetail implements OnInit {
                 ({} as Client);
               return { ...contact, client };
             });
-          job.art = artwork.filter((art) => art.job?.id === jobId);
-          job.site = sites.find((site) => site.id === job.site?.id) ?? ({} as Site);
+          job.art = artwork.filter((art) => art.job?.job_id === jobId);
+          job.site = sites.find((site) => site.site_id === job.site?.site_id) ?? ({} as Site);
           this.job$ = of(job); // for template
           this.rows = [...job.contacts]; // for table of contacts
         }

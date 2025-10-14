@@ -1,8 +1,8 @@
 [
   {
-    "id": 1,
-    "firstName": "Fred",
-    "lastName": "Banks",
+    "contact_id": 1,
+    "first_name": "Fred",
+    "last_name": "Banks",
     "phone": "585-555-1212",
     "title": "Office Manager",
     "email": "fbanks@grandeur.com",
@@ -11,9 +11,9 @@
     }
   },
   {
-    "id": 2,
-    "firstName": "Dino",
-    "lastName": "Richardson",
+    "contact_id": 2,
+    "first_name": "Dino",
+    "last_name": "Richardson",
     "phone": "585-555-1111",
     "title": "Operations Consultant",
     "email": "drichardson@grandeur.com",
@@ -22,9 +22,9 @@
     }
   },
   {
-    "id": 3,
-    "firstName": "Rhonda",
-    "lastName": "Boettcher",
+    "contact_id": 3,
+    "first_name": "Rhonda",
+    "last_name": "Boettcher",
     "phone": "585-555-1101",
     "title": "Event Planner",
     "email": "rboettcher@grandeur.com",

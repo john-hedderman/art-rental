@@ -63,7 +63,7 @@ export class JobList implements OnInit {
       return;
     }
     if (event.cellIndex !== 0) {
-      this.router.navigate(['/jobs', event.row.id]);
+      this.router.navigate(['/jobs', event.row.job_id]);
     }
   }
 
@@ -97,7 +97,7 @@ export class JobList implements OnInit {
         canAutoResize: false,
         cellTemplate: this.arrowTemplate,
       },
-      { width: 200, prop: 'id', name: 'Job Number' },
+      { width: 200, prop: 'job_id', name: 'Job Number' },
       {
         width: 300,
         prop: '',

@@ -49,7 +49,7 @@ export class ArtList {
       .pipe(take(1))
       .subscribe(({ artwork, jobs, clients }) => {
         this.artwork = artwork.map((art: Art) => {
-          let job = jobs.find((job) => job.id === art.job?.id);
+          let job = jobs.find((job) => job.job_id === art.job?.job_id);
           if (job) {
             const client = clients.find((client) => client.client_id === job?.client?.client_id);
             if (client) {

@@ -9,7 +9,7 @@
     "artist": "Aaron Smit",
     "tags": "folk art, illustration",
     "job": {
-      "id": ""
+      "job_id": ""
     }
   },
   {
@@ -22,7 +22,7 @@
     "artist": "Kayla Johnson",
     "tags": "abstract, pastel",
     "job": {
-      "id": ""
+      "job_id": ""
     }
   },
   {
@@ -35,7 +35,7 @@
     "artist": "Carl Brock",
     "tags": "abstract, geometry",
     "job": {
-      "id": "000003"
+      "job_id": "000003"
     }
   },
   {
@@ -48,7 +48,7 @@
     "artist": "Linda Armstrong",
     "tags": "abstract, portrait, people",
     "job": {
-      "id": ""
+      "job_id": ""
     }
   },
   {
@@ -61,7 +61,7 @@
     "artist": "Bobby McLean",
     "tags": "vibrant, organic",
     "job": {
-      "id": ""
+      "job_id": ""
     }
   },
   {
@@ -74,7 +74,7 @@
     "artist": "Carl Brock",
     "tags": "surrealism, geometry, vibrant",
     "job": {
-      "id": "000003"
+      "job_id": "000003"
     }
   },
   {
@@ -87,7 +87,7 @@
     "artist": "Carl Brock",
     "tags": "abstract",
     "job": {
-      "id": "000003"
+      "job_id": "000003"
     }
   },
   {
@@ -100,7 +100,7 @@
     "artist": "Jeffery Lewis",
     "tags": "abstract, expressionism",
     "job": {
-      "id": ""
+      "job_id": ""
     }
   },
   {
@@ -113,7 +113,7 @@
     "artist": "Molly Owens",
     "tags": "abstract, expressionism",
     "job": {
-      "id": ""
+      "job_id": ""
     }
   }
 ]

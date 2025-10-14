@@ -49,7 +49,7 @@ export class SiteList implements OnInit {
       return;
     }
     if (event.cellIndex !== 0) {
-      this.router.navigate(['/sites', event.row.id]);
+      this.router.navigate(['/sites', event.row.site_id]);
     }
   }
 

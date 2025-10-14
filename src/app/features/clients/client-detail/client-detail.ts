@@ -42,8 +42,8 @@ export class ClientDetail implements OnInit {
   columns: TableColumn[] = [];
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
-    const nameA = `${rowA['firstName']} ${rowA['lastName']}`;
-    const nameB = `${rowB['firstName']} ${rowB['lastName']}`;
+    const nameA = `${rowA['first_name']} ${rowA['last_name']}`;
+    const nameB = `${rowB['first_name']} ${rowB['last_name']}`;
     return nameA.localeCompare(nameB);
   }
 
@@ -72,7 +72,7 @@ export class ClientDetail implements OnInit {
           client.jobs = jobs
             .filter((job) => job.client.client_id === client.client_id)
             .map((job: Job) => {
-              const site = sites.find((site) => site.id === job.site?.id) ?? ({} as Site);
+              const site = sites.find((site) => site.site_id === job.site?.site_id) ?? ({} as Site);
               return { ...job, site };
             });
           client.contacts = contacts.filter((contact) => contact.client?.client_id === clientId);

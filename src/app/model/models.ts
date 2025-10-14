@@ -31,7 +31,7 @@ export interface Client {
 }
 
 export interface Job {
-  id: string;
+  job_id: string;
   address1: string;
   address2: string;
   city: string;
@@ -44,9 +44,9 @@ export interface Job {
 }
 
 export interface Contact {
-  id: number;
-  firstName: string;
-  lastName: string;
+  contact_id: number;
+  first_name: string;
+  last_name: string;
   phone: string;
   title: string;
   client: Client;
@@ -54,7 +54,7 @@ export interface Contact {
 }
 
 export interface Site {
-  id: string;
+  site_id: string;
   name: string;
   address1: string;
   address2: string;

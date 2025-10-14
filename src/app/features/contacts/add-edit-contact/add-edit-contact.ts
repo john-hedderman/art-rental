@@ -13,8 +13,8 @@ export class AddEditContact implements OnInit {
 
   ngOnInit(): void {
     this.contactForm = new FormGroup({
-      firstName: new FormControl('', Validators.required),
-      lastName: new FormControl('', Validators.required),
+      first_name: new FormControl('', Validators.required),
+      last_name: new FormControl('', Validators.required),
       phone: new FormControl(''),
       title: new FormControl(''),
       client: new FormControl('', Validators.required),

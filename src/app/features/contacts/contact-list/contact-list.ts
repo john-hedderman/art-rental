@@ -63,13 +63,13 @@ export class ContactList implements OnInit {
       return;
     }
     if (event.cellIndex !== 0) {
-      this.router.navigate(['/contacts', event.row.id]);
+      this.router.navigate(['/contacts', event.row.contact_id]);
     }
   }
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
-    const nameA = `${rowA['firstName']} ${rowA['lastName']}`;
-    const nameB = `${rowB['firstName']} ${rowB['lastName']}`;
+    const nameA = `${rowA['first_name']} ${rowA['last_name']}`;
+    const nameB = `${rowB['first_name']} ${rowB['last_name']}`;
     return nameA.localeCompare(nameB);
   }
 
