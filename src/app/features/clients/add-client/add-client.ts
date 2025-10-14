@@ -38,23 +38,27 @@ export class AddClient implements OnInit {
 
   clientForm!: FormGroup;
   submitted = false;
+  id!: number;
 
   onSubmit() {
     this.submitted = true;
   }
 
-  get clientContacts(): FormArray {
-    return this.clientForm.get('clientContacts') as FormArray;
+  get contacts(): FormArray {
+    return this.clientForm.get('contacts') as FormArray;
   }
 
   newContact(): FormGroup {
     return this.fb.group({
       id: Date.now(),
-      contactFirstName: [''],
-      contactLastName: [''],
-      contactTitle: [''],
-      contactPhone: [''],
-      contactEmail: [''],
+      firstName: [''],
+      lastName: [''],
+      phone: [''],
+      title: [''],
+      email: [''],
+      client: this.fb.group({
+        id: [this.id],
+      }),
     });
   }
 
@@ -68,24 +72,29 @@ export class AddClient implements OnInit {
   }
 
   addContact(): void {
-    this.clientContacts.push(this.newContact());
+    this.contacts.push(this.newContact());
   }
 
   removeContact(index: number): void {
-    this.clientContacts.removeAt(index);
+    this.contacts.removeAt(index);
   }
 
-  constructor(private fb: FormBuilder, private router: Router) {}
+  constructor(private fb: FormBuilder, private router: Router) {
+    this.id = Date.now();
+  }
 
   ngOnInit(): void {
     this.clientForm = this.fb.group({
-      clientName: [''],
-      clientAddress1: [''],
-      clientAddress2: [''],
-      clientCity: [''],
-      clientState: [''],
-      clientZip: [''],
-      clientContacts: this.fb.array([]),
+      id: this.id,
+      name: [''],
+      address1: [''],
+      address2: [''],
+      city: [''],
+      state: [''],
+      zipCode: [''],
+      industry: [''],
+      jobs: this.fb.array([]),
+      contacts: this.fb.array([]),
     });
   }
 }

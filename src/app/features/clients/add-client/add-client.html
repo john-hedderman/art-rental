@@ -8,65 +8,73 @@
     [class.was-validated]="submitted"
     novalidate
   >
-    <div class="col-12">
-      <label for="clientName" class="col-form-label"
+    <div class="col-md-6">
+      <label for="name" class="col-form-label"
         >Client name <span class="text-danger">*</span></label
       >
       <input
         type="text"
-        id="clientName"
-        formControlName="clientName"
-        aria-describedby="clientName"
+        id="name"
+        formControlName="name"
+        aria-describedby="name"
         class="form-control"
         required
       />
       <div class="invalid-feedback">Please provide a client name.</div>
     </div>
     <div class="col-md-6">
-      <label for="clientAddress1" class="col-form-label"
+      <label for="industry" class="col-form-label">Industry</label>
+      <input
+        type="text"
+        id="industry"
+        formControlName="industry"
+        aria-describedby="industry"
+        class="form-control"
+      />
+    </div>
+    <div class="col-md-6">
+      <label for="address1" class="col-form-label"
         >Address <span class="text-danger">*</span></label
       >
       <input
         type="text"
-        id="clientAddress1"
-        formControlName="clientAddress1"
-        aria-describedby="clientAddress1"
+        id="address1"
+        formControlName="address1"
+        aria-describedby="address1"
         class="form-control"
         required
       />
       <div class="invalid-feedback">Please provide a street address.</div>
     </div>
     <div class="col-md-6">
-      <label for="clientAddress2" class="col-form-label">Address 2</label>
+      <label for="address2" class="col-form-label">Address 2</label>
       <input
         type="text"
-        id="clientAddress2"
-        formControlName="clientAddress2"
-        aria-describedby="clientAddress2"
+        id="address2"
+        formControlName="address2"
+        aria-describedby="address2"
         class="form-control"
       />
     </div>
     <div class="col-md-6">
-      <label for="clientCity" class="col-form-label">City <span class="text-danger">*</span></label>
+      <label for="city" class="col-form-label">City <span class="text-danger">*</span></label>
       <input
         type="text"
-        id="clientCity"
-        formControlName="clientCity"
-        aria-describedby="clientCity"
+        id="city"
+        formControlName="city"
+        aria-describedby="city"
         class="form-control"
         required
       />
       <div class="invalid-feedback">Please provide a city.</div>
     </div>
     <div class="col-md-3">
-      <label for="clientState" class="col-form-label"
-        >State <span class="text-danger">*</span></label
-      >
+      <label for="state" class="col-form-label">State <span class="text-danger">*</span></label>
       <select
         class="form-select"
-        name="clientState"
-        id="clientState"
-        formControlName="clientState"
+        name="state"
+        id="state"
+        formControlName="state"
         autocomplete="address-level1"
         required
       >
@@ -126,14 +134,14 @@
       <div class="invalid-feedback">Please select a state.</div>
     </div>
     <div class="col-md-3">
-      <label for="clientZip" class="col-form-label"
+      <label for="zipCode" class="col-form-label"
         >Zip code <span class="text-danger">*</span></label
       >
       <input
         type="text"
-        id="clientZip"
-        formControlName="clientZip"
-        aria-describedby="clientZip"
+        id="zipCode"
+        formControlName="zipCode"
+        aria-describedby="zipCode"
         class="form-control"
         required
         minlength="5"
@@ -148,9 +156,9 @@
       </button>
     </div>
 
-    <div formArrayName="clientContacts" class="ar-client-contacts">
-      @for (clientContactGroup of clientContacts.controls; track trackById($index,
-      clientContactGroup); let i = $index) {
+    <div formArrayName="contacts" class="ar-client-contacts">
+      @for (clientContactGroup of contacts.controls; track trackById($index, clientContactGroup);
+      let i = $index) {
       <div [formGroupName]="i" class="row pt-1 border-top ar-contact-row mt-4">
         <div class="col-12 mt-1 pe-1">
           <button
@@ -162,61 +170,51 @@
           </button>
         </div>
         <div class="col-md-6">
-          <label for="contactFirstName-{{ i }}" class="col-form-label"
+          <label for="firstName-{{ i }}" class="col-form-label"
             >First name <span class="text-danger">*</span></label
           >
           <input
             type="text"
             class="form-control"
-            id="contactFirstName-{{ i }}"
-            formControlName="contactFirstName"
+            id="firstName-{{ i }}"
+            formControlName="firstName"
             required
           />
           <div class="invalid-feedback">Please provide a first name.</div>
         </div>
         <div class="col-md-6">
-          <label for="contactLastName-{{ i }}" class="col-form-label"
+          <label for="lastName-{{ i }}" class="col-form-label"
             >Last name <span class="text-danger">*</span></label
           >
           <input
             type="text"
             class="form-control"
-            id="contactLastName-{{ i }}"
-            formControlName="contactLastName"
+            id="lastName-{{ i }}"
+            formControlName="lastName"
             required
           />
           <div class="invalid-feedback">Please provide a last name.</div>
         </div>
         <div class="col-md-6">
-          <label for="contactPhone-{{ i }}" class="col-form-label"
+          <label for="phone-{{ i }}" class="col-form-label"
             >Phone <span class="text-danger">*</span></label
           >
           <input
             type="tel"
             class="form-control"
-            id="contactPhone-{{ i }}"
-            formControlName="contactPhone"
+            id="phone-{{ i }}"
+            formControlName="phone"
             required
           />
           <div class="invalid-feedback">Please provide a phone number.</div>
         </div>
         <div class="col-md-6">
-          <label for="contactEmail-{{ i }}" class="col-form-label">Email</label>
-          <input
-            type="text"
-            class="form-control"
-            id="contactEmail-{{ i }}"
-            formControlName="contactEmail"
-          />
+          <label for="email-{{ i }}" class="col-form-label">Email</label>
+          <input type="text" class="form-control" id="email-{{ i }}" formControlName="email" />
         </div>
         <div class="col-md-6">
-          <label for="contactTitle-{{ i }}" class="col-form-label">Title</label>
-          <input
-            type="text"
-            class="form-control"
-            id="contactTitle-{{ i }}"
-            formControlName="contactTitle"
-          />
+          <label for="title-{{ i }}" class="col-form-label">Title</label>
+          <input type="text" class="form-control" id="title-{{ i }}" formControlName="title" />
         </div>
       </div>
       }

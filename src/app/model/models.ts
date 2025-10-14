@@ -18,14 +18,14 @@ export interface Artist {
 }
 
 export interface Client {
-  id: string;
+  id: number;
   name: string;
   address1: string;
   address2: string;
   city: string;
   state: string;
   zipCode: string;
-  industry: string;
+  industry?: string;
   jobs: Job[];
   contacts: Contact[];
 }
@@ -50,6 +50,7 @@ export interface Contact {
   phone: string;
   title: string;
   client: Client;
+  email?: string;
 }
 
 export interface Site {

@@ -5,8 +5,9 @@
     "lastName": "Banks",
     "phone": "585-555-1212",
     "title": "Office Manager",
+    "email": "fbanks@grandeur.com",
     "client": {
-      "id": "000005"
+      "id": 5
     }
   },
   {
@@ -15,8 +16,9 @@
     "lastName": "Richardson",
     "phone": "585-555-1111",
     "title": "Operations Consultant",
+    "email": "drichardson@grandeur.com",
     "client": {
-      "id": "000005"
+      "id": 5
     }
   },
   {
@@ -25,8 +27,9 @@
     "lastName": "Boettcher",
     "phone": "585-555-1101",
     "title": "Event Planner",
+    "email": "rboettcher@grandeur.com",
     "client": {
-      "id": "000004"
+      "id": 4
     }
   }
 ]

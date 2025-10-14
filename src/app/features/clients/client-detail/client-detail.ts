@@ -47,8 +47,10 @@ export class ClientDetail implements OnInit {
     return nameA.localeCompare(nameB);
   }
 
-  getClientId(): Observable<string> {
-    return this.route.paramMap.pipe(map((params) => params.get('id') ?? ''));
+  getClientId(): Observable<number> {
+    return this.route.paramMap.pipe(
+      map((params) => (params.get('id') ? parseInt(params.get('id')!) : -1))
+    );
   }
 
   constructor(
