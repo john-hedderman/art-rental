@@ -61,7 +61,7 @@ export class ClientList implements OnInit {
       return;
     }
     if (event.cellIndex !== 0) {
-      this.router.navigate(['/clients', event.row.id]);
+      this.router.navigate(['/clients', event.row.client_id]);
     }
   }
 

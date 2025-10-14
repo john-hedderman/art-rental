@@ -7,7 +7,7 @@
     "state": "NY",
     "zipCode": "14580",
     "client": {
-      "id": 5
+      "client_id": 5
     },
     "contacts": [
       { "id": 1 },
@@ -28,7 +28,7 @@
     "state": "NY",
     "zipCode": "14580",
     "client": {
-      "id": 5
+      "client_id": 5
     },
     "contacts": [
       { "id": 1 },

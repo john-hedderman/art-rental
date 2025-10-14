@@ -7,7 +7,7 @@
     "title": "Office Manager",
     "email": "fbanks@grandeur.com",
     "client": {
-      "id": 5
+      "client_id": 5
     }
   },
   {
@@ -18,7 +18,7 @@
     "title": "Operations Consultant",
     "email": "drichardson@grandeur.com",
     "client": {
-      "id": 5
+      "client_id": 5
     }
   },
   {
@@ -29,7 +29,7 @@
     "title": "Event Planner",
     "email": "rboettcher@grandeur.com",
     "client": {
-      "id": 4
+      "client_id": 4
     }
   }
 ]

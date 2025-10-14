@@ -13,11 +13,11 @@ export class AddEditContact implements OnInit {
 
   ngOnInit(): void {
     this.contactForm = new FormGroup({
-      contactFirstName: new FormControl('', Validators.required),
-      contactLastName: new FormControl('', Validators.required),
-      contactPhone: new FormControl(''),
-      contactTitle: new FormControl(''),
-      contactClient: new FormControl('', Validators.required),
+      firstName: new FormControl('', Validators.required),
+      lastName: new FormControl('', Validators.required),
+      phone: new FormControl(''),
+      title: new FormControl(''),
+      client: new FormControl('', Validators.required),
     });
   }
 }

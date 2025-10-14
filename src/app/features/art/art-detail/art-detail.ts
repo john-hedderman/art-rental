@@ -55,7 +55,7 @@ export class ArtDetail {
           let job: Job | undefined = jobs.find((job) => job.id === art?.job?.id);
           if (job) {
             const client: Client | undefined = clients.find(
-              (client) => client.id === job?.client?.id
+              (client) => client.client_id === job?.client?.client_id
             );
             if (client) {
               job = { ...job, client };

@@ -67,15 +67,15 @@ export class ClientDetail implements OnInit {
     })
       .pipe(take(1))
       .subscribe(({ clients, clientId, jobs, sites, contacts }) => {
-        const client: Client = clients.find((client) => client.id === clientId)!;
+        const client: Client = clients.find((client) => client.client_id === clientId)!;
         if (client) {
           client.jobs = jobs
-            .filter((job) => job.client.id === client.id)
+            .filter((job) => job.client.client_id === client.client_id)
             .map((job: Job) => {
               const site = sites.find((site) => site.id === job.site?.id) ?? ({} as Site);
               return { ...job, site };
             });
-          client.contacts = contacts.filter((contact) => contact.client?.id === clientId);
+          client.contacts = contacts.filter((contact) => contact.client?.client_id === clientId);
           this.client$ = of(client); // for template
           this.rows = [...client.contacts]; // for table of contacts
         }

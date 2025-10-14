@@ -65,7 +65,7 @@ export class SiteList implements OnInit {
       .subscribe(({ clients, sites }) => {
         if (clients && sites) {
           const mergedSites = sites.map((site: Site) => {
-            const client = clients.find((client) => client.id === site.client?.id)!;
+            const client = clients.find((client) => client.client_id === site.client?.client_id)!;
             return { ...site, client };
           });
           this.rows = [...mergedSites];

@@ -18,7 +18,7 @@ export interface Artist {
 }
 
 export interface Client {
-  id: number;
+  client_id: number;
   name: string;
   address1: string;
   address2: string;

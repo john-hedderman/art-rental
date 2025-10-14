@@ -74,12 +74,14 @@ export class JobDetail implements OnInit {
       .subscribe(({ clients, contacts, artwork, sites, jobId, jobs }) => {
         const job: Job | undefined = jobs.find((job) => job.id === jobId);
         if (job) {
-          job.client = clients.find((client) => client.id === job.client?.id) ?? ({} as Client);
+          job.client =
+            clients.find((client) => client.client_id === job.client?.client_id) ?? ({} as Client);
           job.contacts = contacts
-            .filter((contact) => contact.client.id === job.client.id)
+            .filter((contact) => contact.client.client_id === job.client.client_id)
             .map((contact: Contact) => {
               const client =
-                clients.find((client) => client.id === contact.client.id) ?? ({} as Client);
+                clients.find((client) => client.client_id === contact.client.client_id) ??
+                ({} as Client);
               return { ...contact, client };
             });
           job.art = artwork.filter((art) => art.job?.id === jobId);

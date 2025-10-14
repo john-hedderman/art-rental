@@ -38,10 +38,11 @@ export class AddClient implements OnInit {
 
   clientForm!: FormGroup;
   submitted = false;
-  id!: number;
+  client_id!: number;
 
   onSubmit() {
     this.submitted = true;
+    console.log('Form:', this.clientForm.value);
   }
 
   get contacts(): FormArray {
@@ -50,14 +51,14 @@ export class AddClient implements OnInit {
 
   newContact(): FormGroup {
     return this.fb.group({
-      id: Date.now(),
+      client_id: Date.now(),
       firstName: [''],
       lastName: [''],
       phone: [''],
       title: [''],
       email: [''],
       client: this.fb.group({
-        id: [this.id],
+        id: [this.client_id],
       }),
     });
   }
@@ -80,12 +81,12 @@ export class AddClient implements OnInit {
   }
 
   constructor(private fb: FormBuilder, private router: Router) {
-    this.id = Date.now();
+    this.client_id = Date.now();
   }
 
   ngOnInit(): void {
     this.clientForm = this.fb.group({
-      id: this.id,
+      client_id: this.client_id,
       name: [''],
       address1: [''],
       address2: [''],

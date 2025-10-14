@@ -51,7 +51,7 @@ export class ArtList {
         this.artwork = artwork.map((art: Art) => {
           let job = jobs.find((job) => job.id === art.job?.id);
           if (job) {
-            const client = clients.find((client) => client.id === job?.client?.id);
+            const client = clients.find((client) => client.client_id === job?.client?.client_id);
             if (client) {
               job = { ...job, client };
             }

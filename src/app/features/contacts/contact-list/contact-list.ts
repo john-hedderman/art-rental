@@ -88,7 +88,8 @@ export class ContactList implements OnInit {
       .subscribe(({ contacts, clients }) => {
         const mergedContacts = contacts.map((contact) => {
           const client =
-            clients.find((client) => client.id === contact.client.id) ?? ({} as Client);
+            clients.find((client) => client.client_id === contact.client.client_id) ??
+            ({} as Client);
           return { ...contact, client };
         });
         this.rows = [...mergedContacts];

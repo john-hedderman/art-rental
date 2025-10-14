@@ -79,7 +79,7 @@ export class JobList implements OnInit {
       .subscribe(({ clients, jobs }) => {
         if (clients && jobs) {
           const jobsWithClients = jobs.map((job: Job) => {
-            const client = clients.find((client) => client.id === job.client?.id)!;
+            const client = clients.find((client) => client.client_id === job.client?.client_id)!;
             return { ...job, client };
           });
           this.rows = [...jobsWithClients];
