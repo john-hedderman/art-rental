@@ -8,7 +8,7 @@
       @if (client.address2) {
       <p class="mb-0">{{ client.address2 }}</p>
       }
-      <p class="pb-4">{{ client.city }}, {{ client.state }} {{ client.zipCode }}</p>
+      <p class="pb-4">{{ client.city }}, {{ client.state }} {{ client.zip_code }}</p>
     </div>
     <div class="col-md-6 col-sm-12">
       <h5 class="fw-bold pb-2 ar-heading">Jobs</h5>
@@ -24,7 +24,7 @@
         @if (job.site.address2) {
         {{ job.site.address2 }}<br />
         }
-        {{ job.site.city }}, {{ job.site.state }} {{ job.site.zipCode }}
+        {{ job.site.city }}, {{ job.site.state }} {{ job.site.zip_code }}
         }
       </p>
       } } @else {

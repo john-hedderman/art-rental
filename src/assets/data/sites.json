@@ -6,7 +6,7 @@
     "address2": "",
     "city": "Webster",
     "state": "NY",
-    "zipCode": "14580",
+    "zip_code": "14580",
     "client": {
       "client_id": 5
     },
@@ -21,7 +21,7 @@
     "address2": "1460 Ryan Road",
     "city": "Webster",
     "state": "NY",
-    "zipCode": "14580",
+    "zip_code": "14580",
     "client": {
       "client_id": 5
     },

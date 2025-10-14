@@ -2,7 +2,7 @@ export interface Art {
   art_id: number;
   file: string;
   path: string;
-  fullSizePath: string;
+  full_size_path: string;
   artist: string;
   name: string;
   url: string;
@@ -24,7 +24,7 @@ export interface Client {
   address2: string;
   city: string;
   state: string;
-  zipCode: string;
+  zip_code: string;
   industry?: string;
   jobs: Job[];
   contacts: Contact[];
@@ -36,7 +36,7 @@ export interface Job {
   address2: string;
   city: string;
   state: string;
-  zipCode: string;
+  zip_code: string;
   client: Client;
   contacts: Contact[];
   art: Art[];
@@ -60,7 +60,7 @@ export interface Site {
   address2: string;
   city: string;
   state: string;
-  zipCode: string;
+  zip_code: string;
   client: Client;
   job: Job;
 }

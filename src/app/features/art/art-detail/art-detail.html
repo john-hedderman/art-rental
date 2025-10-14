@@ -5,7 +5,7 @@
     <div class="col-sm-12 col-md-6 ar-page-content-no-menubar p-3 ar-art">
       <div class="ar-art-detail__image-container">
         <img
-          src="{{ art.fullSizePath }}/{{ art.file }}"
+          src="{{ art.full_size_path }}/{{ art.file }}"
           class="img-fluid ar-rounded-start h-100"
           alt="{{ art.name }}"
           title="{{ art.name }}"
@@ -34,7 +34,7 @@
       @if (art.job.address2) {
       <p class="mb-0">{{ art.job.address2 }}</p>
       }
-      <p>{{ art.job.city }}, {{ art.job.state }} {{ art.job.zipCode }}</p>
+      <p>{{ art.job.city }}, {{ art.job.state }} {{ art.job.zip_code }}</p>
       } @else {
       <p class="pb-4">No job</p>
       }

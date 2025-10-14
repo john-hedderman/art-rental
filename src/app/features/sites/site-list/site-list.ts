@@ -54,8 +54,8 @@ export class SiteList implements OnInit {
   }
 
   addressComparator(rowA: any, rowB: any): number {
-    const locationA = `${rowA['address1']}, ${rowA['city']}, ${rowA['state']} ${rowA['zipCode']}`;
-    const locationB = `${rowB['address1']}, ${rowB['city']}, ${rowB['state']} ${rowB['zipCode']}`;
+    const locationA = `${rowA['address1']}, ${rowA['city']}, ${rowA['state']} ${rowA['zip_code']}`;
+    const locationB = `${rowB['address1']}, ${rowB['city']}, ${rowB['state']} ${rowB['zip_code']}`;
     return locationA.localeCompare(locationB);
   }
 

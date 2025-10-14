@@ -92,7 +92,7 @@ export class AddClient implements OnInit {
       address2: [''],
       city: [''],
       state: [''],
-      zipCode: [''],
+      zip_code: [''],
       industry: [''],
       jobs: this.fb.array([]),
       contacts: this.fb.array([]),

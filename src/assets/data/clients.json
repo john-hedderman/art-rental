@@ -6,7 +6,7 @@
     "address2": "",
     "city": "Greece",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Arts & Crafts",
     "jobs": [],
     "contacts": []
@@ -18,7 +18,7 @@
     "address2": "",
     "city": "Irondiquoit",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Beauty",
     "jobs": [],
     "contacts": []
@@ -30,7 +30,7 @@
     "address2": "",
     "city": "Henrietta",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Education",
     "jobs": [],
     "contacts": []
@@ -42,7 +42,7 @@
     "address2": "",
     "city": "Rochester",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Home",
     "jobs": [],
     "contacts": [
@@ -58,7 +58,7 @@
     "address2": "",
     "city": "Webster",
     "state": "NY",
-    "zipCode": "14580",
+    "zip_code": "14580",
     "industry": "Luxury",
     "jobs": [
       {
@@ -84,7 +84,7 @@
     "address2": "",
     "city": "Buffalo",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Fashion",
     "jobs": [],
     "contacts": []
@@ -96,7 +96,7 @@
     "address2": "",
     "city": "Java",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Jewelry",
     "jobs": [],
     "contacts": []
@@ -108,7 +108,7 @@
     "address2": "",
     "city": "Geneva",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Design",
     "jobs": [],
     "contacts": []
@@ -120,7 +120,7 @@
     "address2": "",
     "city": "Oswego",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Gaming",
     "jobs": [],
     "contacts": []
@@ -132,7 +132,7 @@
     "address2": "",
     "city": "Victor",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Finance",
     "jobs": [],
     "contacts": []
@@ -144,7 +144,7 @@
     "address2": "",
     "city": "Macedon",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Cleaning",
     "jobs": [],
     "contacts": []
@@ -156,7 +156,7 @@
     "address2": "",
     "city": "Ontario",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Communication",
     "jobs": [],
     "contacts": []
@@ -168,7 +168,7 @@
     "address2": "",
     "city": "Penn Yan",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Health",
     "jobs": [],
     "contacts": []
@@ -180,7 +180,7 @@
     "address2": "",
     "city": "Canandaigua",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Food",
     "jobs": [],
     "contacts": []
@@ -192,7 +192,7 @@
     "address2": "",
     "city": "Syracuse",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Kids",
     "jobs": [],
     "contacts": []
@@ -204,7 +204,7 @@
     "address2": "",
     "city": "Fulton",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Candles",
     "jobs": [],
     "contacts": []
@@ -216,7 +216,7 @@
     "address2": "",
     "city": "Utica",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Events",
     "jobs": [],
     "contacts": []
@@ -228,7 +228,7 @@
     "address2": "",
     "city": "Rome",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Clothing",
     "jobs": [],
     "contacts": []
@@ -240,7 +240,7 @@
     "address2": "",
     "city": "Honeoye Falls",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Garden",
     "jobs": [],
     "contacts": []
@@ -252,7 +252,7 @@
     "address2": "",
     "city": "Verona",
     "state": "NY",
-    "zipCode": "",
+    "zip_code": "",
     "industry": "Fitness",
     "jobs": [],
     "contacts": []
