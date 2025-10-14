@@ -1,6 +1,6 @@
 [
   {
-    "id": 1,
+    "art_id": 1,
     "file": "boots.jpg",
     "path": "images/art",
     "fullSizePath": "images/art/full",
@@ -13,7 +13,7 @@
     }
   },
   {
-    "id": 2,
+    "art_id": 2,
     "file": "pastel.jpg",
     "path": "images/art",
     "fullSizePath": "images/art/full",
@@ -26,7 +26,7 @@
     }
   },
   {
-    "id": 3,
+    "art_id": 3,
     "file": "geometry.jpg",
     "path": "images/art",
     "fullSizePath": "images/art/full",
@@ -39,7 +39,7 @@
     }
   },
   {
-    "id": 4,
+    "art_id": 4,
     "file": "light-of-memory.jpg",
     "path": "images/art",
     "fullSizePath": "images/art/full",
@@ -52,7 +52,7 @@
     }
   },
   {
-    "id": 5,
+    "art_id": 5,
     "file": "vibrant-purple-floral.jpg",
     "path": "images/art",
     "fullSizePath": "images/art/full",
@@ -65,7 +65,7 @@
     }
   },
   {
-    "id": 6,
+    "art_id": 6,
     "file": "surreal-echoes.jpg",
     "path": "images/art",
     "fullSizePath": "images/art/full",
@@ -78,7 +78,7 @@
     }
   },
   {
-    "id": 7,
+    "art_id": 7,
     "file": "pulse-of-the-unseen.jpg",
     "path": "images/art",
     "fullSizePath": "images/art/full",
@@ -91,7 +91,7 @@
     }
   },
   {
-    "id": 8,
+    "art_id": 8,
     "file": "genesis-in-metamorphosis.jpg",
     "path": "images/art",
     "fullSizePath": "images/art/full",
@@ -104,7 +104,7 @@
     }
   },
   {
-    "id": 9,
+    "art_id": 9,
     "file": "infinite-evolution.jpg",
     "path": "images/art",
     "fullSizePath": "images/art/full",

@@ -1,5 +1,5 @@
 export interface Art {
-  id: number;
+  art_id: number;
   file: string;
   path: string;
   fullSizePath: string;
@@ -11,7 +11,7 @@ export interface Art {
 }
 
 export interface Artist {
-  id: number;
+  artist_id: number;
   name: string;
   photo: string;
   types: string;
