@@ -51,7 +51,7 @@ export class AddClient implements OnInit {
 
   newContact(): FormGroup {
     return this.fb.group({
-      client_id: Date.now(),
+      contact_id: Date.now(),
       first_name: [''],
       last_name: [''],
       phone: [''],
@@ -64,7 +64,7 @@ export class AddClient implements OnInit {
   }
 
   trackById(index: number, v: AbstractControl) {
-    return v.value.id;
+    return v.value.contact_id;
   }
 
   resetForm() {
