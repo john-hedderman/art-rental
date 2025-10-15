@@ -52,23 +52,39 @@ export class DataService {
     this.load('sites_test').subscribe((sites_test) => this.sites_test$.next(sites_test));
   }
 
-  load(data: 'art'): Observable<Art[]>;
-  load(data: 'artists'): Observable<Artist[]>;
-  load(data: 'clients'): Observable<Client[]>;
-  load(data: 'jobs'): Observable<Job[]>;
-  load(data: 'contacts'): Observable<Contact[]>;
-  load(data: 'sites'): Observable<Site[]>;
+  load(dataType: 'art'): Observable<Art[]>;
+  load(dataType: 'artists'): Observable<Artist[]>;
+  load(dataType: 'clients'): Observable<Client[]>;
+  load(dataType: 'jobs'): Observable<Job[]>;
+  load(dataType: 'contacts'): Observable<Contact[]>;
+  load(dataType: 'sites'): Observable<Site[]>;
 
-  load(data: 'art_test'): Observable<ArtTest[]>;
-  load(data: 'artists_test'): Observable<ArtistTest[]>;
-  load(data: 'clients_test'): Observable<ClientTest[]>;
-  load(data: 'jobs_test'): Observable<JobTest[]>;
-  load(data: 'contacts_test'): Observable<ContactTest[]>;
-  load(data: 'sites_test'): Observable<SiteTest[]>;
+  load(dataType: 'art_test'): Observable<ArtTest[]>;
+  load(dataType: 'artists_test'): Observable<ArtistTest[]>;
+  load(dataType: 'clients_test'): Observable<ClientTest[]>;
+  load(dataType: 'jobs_test'): Observable<JobTest[]>;
+  load(dataType: 'contacts_test'): Observable<ContactTest[]>;
+  load(dataType: 'sites_test'): Observable<SiteTest[]>;
 
-  load(data: string): Observable<unknown[]> {
+  load(dataType: string): Observable<unknown[]> {
     // load data from a separate server
-    // see project art-rental-server (in short, run "node app")
-    return this.http.get<unknown[]>(`http://localhost:3000/data/${data}`);
+    // see project art-rental-server
+    return this.http.get<unknown[]>(`http://localhost:3000/data/${dataType}`);
+  }
+
+  save(data: any, collectionName: string): void {
+    fetch(`http://localhost:3000/data/${collectionName}`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .catch((err) => {
+        console.error(`${collectionName} error:`, err);
+      })
+      .then((response: any) => {
+        return response.json();
+      });
   }
 }

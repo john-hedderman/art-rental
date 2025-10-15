@@ -10,6 +10,8 @@ import {
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { ContactTest, HeaderData } from '../../../model/models';
 import { Router } from '@angular/router';
+import { DataService } from '../../../service/data-service';
+import { Collections } from '../../../shared/enums/collections';
 
 @Component({
   selector: 'app-add-client',
@@ -47,16 +49,22 @@ export class AddClient implements OnInit {
   }
 
   saveClient(clientData: any) {
+    const collectionName = Collections.ClientsInsertTest;
     const { contacts, ...allButContacts } = clientData;
     const contact_ids = contacts.map((contact: ContactTest) => contact.contact_id);
-    const finalClientData = { ...allButContacts, contact_ids };
+    const finalClientData = { ...allButContacts, contact_ids, job_ids: [] };
+    this.dataService.save(finalClientData, collectionName);
   }
 
   saveContacts(contactsData: any[], client_id: number) {
+    const collectionName = Collections.ContactsInsertTest;
     const finalContactsData = contactsData.map((contact: ContactTest) => {
       const { client, ...allButClient } = contact;
       return { ...allButClient, client_id };
     });
+    for (const contact of finalContactsData) {
+      this.dataService.save(contact, collectionName);
+    }
   }
 
   get contacts(): FormArray {
@@ -94,7 +102,7 @@ export class AddClient implements OnInit {
     this.contacts.removeAt(index);
   }
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder, private router: Router, private dataService: DataService) {
     this.client_id = Date.now();
   }
 
@@ -108,7 +116,6 @@ export class AddClient implements OnInit {
       state: [''],
       zip_code: [''],
       industry: [''],
-      jobs: this.fb.array([]),
       contacts: this.fb.array([]),
     });
   }
