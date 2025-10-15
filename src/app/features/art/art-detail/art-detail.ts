@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, take } from 'rxjs';
 
-import { Art, Client, HeaderData, Job } from '../../../model/models';
+import { ArtTest, HeaderData } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { DataService } from '../../../service/data-service';
 
@@ -14,7 +14,7 @@ import { DataService } from '../../../service/data-service';
   standalone: true,
 })
 export class ArtDetail {
-  art: Art = {} as Art;
+  art: ArtTest = {} as ArtTest;
 
   navigateToArtList = () => {
     this.router.navigate(['/art', 'list']);
@@ -33,8 +33,8 @@ export class ArtDetail {
     ],
   };
 
-  getArtId(): Observable<string> {
-    return this.route.paramMap.pipe(map((params) => params.get('id') ?? ''));
+  getArtId(): Observable<number> {
+    return this.route.paramMap.pipe(map((params) => +params.get('id')!));
   }
 
   constructor(
@@ -43,20 +43,18 @@ export class ArtDetail {
     private dataService: DataService
   ) {
     combineLatest({
-      artwork: this.dataService.art$,
+      artwork: this.dataService.art_test$,
       artId: this.getArtId(),
-      jobs: this.dataService.jobs$,
-      clients: this.dataService.clients$,
+      jobs: this.dataService.jobs_test$,
+      clients: this.dataService.clients_test$,
     })
       .pipe(take(1))
       .subscribe(({ artwork, artId, jobs, clients }) => {
-        let art: Art | undefined = artwork.find((work) => work.art_id === +artId);
+        let art = artwork.find((piece) => piece.art_id === artId);
         if (art) {
-          let job: Job | undefined = jobs.find((job) => job.job_id === art?.job?.job_id);
+          let job = jobs.find((job) => job.job_id === art?.job_id);
           if (job) {
-            const client: Client | undefined = clients.find(
-              (client) => client.client_id === job?.client?.client_id
-            );
+            const client = clients.find((client) => client.client_id === job?.client_id);
             if (client) {
               job = { ...job, client };
             }

@@ -12,7 +12,7 @@
     </div>
     <div class="col-md-6 col-sm-12">
       <h5 class="fw-bold pb-2 ar-heading">Jobs</h5>
-      @if (client.jobs && client.jobs.length) { @for (job of client.jobs; track $index) {
+      @if (jobs && jobs.length) { @for (job of jobs; track $index) {
       <p class="mb-0">
         <a class="fw-bold" href="#" [routerLink]="`/jobs/${job.job_id}`">{{ job.job_id }}</a>
       </p>

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { combineLatest, take } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { Client, HeaderData, Job } from '../../../model/models';
+import { HeaderData, JobTest } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
@@ -19,7 +19,7 @@ import { Util } from '../../../shared/util/util';
   },
 })
 export class JobList implements OnInit {
-  @ViewChild('jobsTable') table!: DatatableComponent<Client>;
+  @ViewChild('jobsTable') table!: DatatableComponent<JobTest>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('clientNameHeaderTemplate', { static: true })
   clientNameHeaderTemplate!: TemplateRef<any>;
@@ -50,11 +50,11 @@ export class JobList implements OnInit {
     ],
   };
 
-  rows: Job[] = [];
+  rows: JobTest[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
 
-  toggleExpandRow(row: Client) {
+  toggleExpandRow(row: JobTest) {
     this.table.rowDetail!.toggleExpandRow(row);
   }
 
@@ -74,15 +74,15 @@ export class JobList implements OnInit {
   }
 
   constructor(private dataService: DataService, private router: Router) {
-    combineLatest({ clients: this.dataService.clients$, jobs: this.dataService.jobs$ })
+    combineLatest({ clients: this.dataService.clients_test$, jobs: this.dataService.jobs_test$ })
       .pipe(take(1))
       .subscribe(({ clients, jobs }) => {
         if (clients && jobs) {
-          const jobsWithClients = jobs.map((job: Job) => {
-            const client = clients.find((client) => client.client_id === job.client?.client_id)!;
+          const fullJobs = jobs.map((job) => {
+            const client = clients.find((client) => client.client_id === job.client_id)!;
             return { ...job, client };
           });
-          this.rows = [...jobsWithClients];
+          this.rows = [...fullJobs];
         }
       });
   }

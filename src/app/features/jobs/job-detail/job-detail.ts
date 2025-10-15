@@ -4,7 +4,14 @@ import { AsyncPipe } from '@angular/common';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { Client, Contact, HeaderData, Job, Site } from '../../../model/models';
+import {
+  ArtTest,
+  ClientTest,
+  ContactTest,
+  HeaderData,
+  JobTest,
+  SiteTest,
+} from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Card } from '../../../shared/components/card/card';
@@ -41,9 +48,9 @@ export class JobDetail implements OnInit {
     ],
   };
 
-  job$: Observable<Job> | undefined;
+  job$: Observable<JobTest> | undefined;
 
-  rows: Contact[] = [];
+  rows: ContactTest[] = [];
   columns: TableColumn[] = [];
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
@@ -52,8 +59,8 @@ export class JobDetail implements OnInit {
     return nameA.localeCompare(nameB);
   }
 
-  getJobId(): Observable<string> {
-    return this.route.paramMap.pipe(map((params) => params.get('id') ?? ''));
+  getJobId(): Observable<number> {
+    return this.route.paramMap.pipe(map((params) => +params.get('id')!));
   }
 
   constructor(
@@ -63,29 +70,26 @@ export class JobDetail implements OnInit {
     public util: Util
   ) {
     combineLatest({
-      clients: this.dataService.clients$,
-      contacts: this.dataService.contacts$,
-      artwork: this.dataService.art$,
-      sites: this.dataService.sites$,
+      clients: this.dataService.clients_test$,
+      contacts: this.dataService.contacts_test$,
+      artwork: this.dataService.art_test$,
+      sites: this.dataService.sites_test$,
       jobId: this.getJobId(),
-      jobs: this.dataService.jobs$,
+      jobs: this.dataService.jobs_test$,
     })
       .pipe(take(1))
       .subscribe(({ clients, contacts, artwork, sites, jobId, jobs }) => {
-        const job: Job | undefined = jobs.find((job) => job.job_id === jobId);
+        const job = jobs.find((job) => job.job_id === jobId);
         if (job) {
-          job.client =
-            clients.find((client) => client.client_id === job.client?.client_id) ?? ({} as Client);
+          job.client = clients.find((client) => client.client_id === job.client_id);
           job.contacts = contacts
-            .filter((contact) => contact.client.client_id === job.client.client_id)
-            .map((contact: Contact) => {
-              const client =
-                clients.find((client) => client.client_id === contact.client.client_id) ??
-                ({} as Client);
+            .filter((contact) => contact.client_id === job.client_id)
+            .map((contact) => {
+              const client = clients.find((client) => client.client_id === contact.client_id);
               return { ...contact, client };
             });
-          job.art = artwork.filter((art) => art.job?.job_id === jobId);
-          job.site = sites.find((site) => site.site_id === job.site?.site_id) ?? ({} as Site);
+          job.art = artwork.filter((art) => art.job_id === jobId);
+          job.site = sites.find((site) => site.site_id === job.site_id);
           this.job$ = of(job); // for template
           this.rows = [...job.contacts]; // for table of contacts
         }

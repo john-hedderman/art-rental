@@ -3,7 +3,7 @@ import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 
-import { Client, Contact, HeaderData, Job, Site } from '../../../model/models';
+import { ClientTest, ContactTest, HeaderData, JobTest, SiteTest } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
@@ -36,10 +36,12 @@ export class ClientDetail implements OnInit {
     ],
   };
 
-  client$: Observable<Client> | undefined;
-
-  rows: Contact[] = [];
+  client$: Observable<ClientTest> | undefined;
+  rows: ContactTest[] = [];
   columns: TableColumn[] = [];
+
+  contacts: ContactTest[] = [];
+  jobs: JobTest[] = [];
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
     const nameA = `${rowA['first_name']} ${rowA['last_name']}`;
@@ -48,9 +50,7 @@ export class ClientDetail implements OnInit {
   }
 
   getClientId(): Observable<number> {
-    return this.route.paramMap.pipe(
-      map((params) => (params.get('id') ? parseInt(params.get('id')!) : -1))
-    );
+    return this.route.paramMap.pipe(map((params) => +params.get('id')!));
   }
 
   constructor(
@@ -59,25 +59,29 @@ export class ClientDetail implements OnInit {
     private dataService: DataService
   ) {
     combineLatest({
-      clients: this.dataService.clients$,
+      clients: this.dataService.clients_test$,
       clientId: this.getClientId(),
-      jobs: this.dataService.jobs$,
-      sites: this.dataService.sites$,
-      contacts: this.dataService.contacts$,
+      jobs: this.dataService.jobs_test$,
+      sites: this.dataService.sites_test$,
+      contacts: this.dataService.contacts_test$,
     })
       .pipe(take(1))
       .subscribe(({ clients, clientId, jobs, sites, contacts }) => {
-        const client: Client = clients.find((client) => client.client_id === clientId)!;
+        const client = clients.find((client) => client.client_id === clientId)!;
         if (client) {
-          client.jobs = jobs
-            .filter((job) => job.client.client_id === client.client_id)
-            .map((job: Job) => {
-              const site = sites.find((site) => site.site_id === job.site?.site_id) ?? ({} as Site);
+          this.jobs = jobs
+            .filter((job) => {
+              return client.job_ids.indexOf(job.job_id) !== -1;
+            })
+            .map((job) => {
+              const site = sites.find((site) => site.site_id === job.site_id);
               return { ...job, site };
             });
-          client.contacts = contacts.filter((contact) => contact.client?.client_id === clientId);
+          this.contacts = contacts.filter((contact) => {
+            return client.contact_ids.indexOf(contact.contact_id) !== -1;
+          });
           this.client$ = of(client); // for template
-          this.rows = [...client.contacts]; // for table of contacts
+          this.rows = [...this.contacts]; // for table of contacts
         }
       });
   }

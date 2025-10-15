@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgxDatatableModule, TableColumn, DatatableComponent } from '@swimlane/ngx-datatable';
 import { take } from 'rxjs';
 
-import { Client, HeaderData } from '../../../model/models';
+import { ClientTest, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
@@ -19,7 +19,7 @@ import { Util } from '../../../shared/util/util';
   },
 })
 export class ClientList implements OnInit {
-  @ViewChild('clientsTable') table!: DatatableComponent<Client>;
+  @ViewChild('clientsTable') table!: DatatableComponent<ClientTest>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('locationHeaderTemplate', { static: true }) locationHeaderTemplate!: TemplateRef<any>;
   @ViewChild('locationTemplate', { static: true }) locationTemplate!: TemplateRef<any>;
@@ -48,11 +48,11 @@ export class ClientList implements OnInit {
     ],
   };
 
-  rows: Client[] = [];
+  rows: ClientTest[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
 
-  toggleExpandRow(row: Client) {
+  toggleExpandRow(row: ClientTest) {
     this.table.rowDetail!.toggleExpandRow(row);
   }
 
@@ -72,7 +72,7 @@ export class ClientList implements OnInit {
   }
 
   constructor(private dataService: DataService, private router: Router) {
-    this.dataService.clients$.pipe(take(1)).subscribe((clients) => {
+    this.dataService.clients_test$.pipe(take(1)).subscribe((clients) => {
       if (clients) {
         this.rows = [...clients];
       }

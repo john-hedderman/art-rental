@@ -4,7 +4,7 @@ import { combineLatest, take } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { HeaderData, Site } from '../../../model/models';
+import { HeaderData, SiteTest } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
 
@@ -19,7 +19,7 @@ import { Util } from '../../../shared/util/util';
   },
 })
 export class SiteList implements OnInit {
-  @ViewChild('sitesTable') table!: DatatableComponent<Site>;
+  @ViewChild('sitesTable') table!: DatatableComponent<SiteTest>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
   @ViewChild('siteAddressHeaderTemplate', { static: true })
@@ -36,11 +36,11 @@ export class SiteList implements OnInit {
     headerButtons: [],
   };
 
-  rows: Site[] = [];
+  rows: SiteTest[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
 
-  toggleExpandRow(row: Site) {
+  toggleExpandRow(row: SiteTest) {
     this.table.rowDetail!.toggleExpandRow(row);
   }
 
@@ -60,15 +60,15 @@ export class SiteList implements OnInit {
   }
 
   constructor(private router: Router, private dataService: DataService) {
-    combineLatest({ clients: this.dataService.clients$, sites: this.dataService.sites$ })
+    combineLatest({ clients: this.dataService.clients_test$, sites: this.dataService.sites_test$ })
       .pipe(take(1))
       .subscribe(({ clients, sites }) => {
         if (clients && sites) {
-          const mergedSites = sites.map((site: Site) => {
-            const client = clients.find((client) => client.client_id === site.client?.client_id)!;
+          const fullSites = sites.map((site) => {
+            const client = clients.find((client) => client.client_id === site.client_id)!;
             return { ...site, client };
           });
-          this.rows = [...mergedSites];
+          this.rows = [...fullSites];
         }
       });
   }

@@ -46,9 +46,7 @@
     "industry": "Home",
     "jobs": [],
     "contacts": [
-      {
-        "id": 3
-      }
+      { "contact_id": 3 }
     ]
   },
   {
@@ -61,20 +59,12 @@
     "zip_code": "14580",
     "industry": "Luxury",
     "jobs": [
-      {
-        "id": "000001"
-      },
-      {
-        "id": "000003"
-      }
+      { "job_id": "000001" },
+      { "job_id": "000003" }
     ],
     "contacts": [
-      {
-        "id": 1
-      },
-      {
-        "id": 2
-      }
+      { "contact_id": 1 },
+      { "contact_id": 2 }
     ]
   },
   {

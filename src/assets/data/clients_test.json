@@ -1,0 +1,26 @@
+[
+  {
+    "client_id": 4,
+    "name": "Hearth and Home",
+    "address1": "",
+    "address2": "",
+    "city": "Rochester",
+    "state": "NY",
+    "zip_code": "",
+    "industry": "Home",
+    "job_ids": [],
+    "contact_ids": [ 3 ]
+  },
+  {
+    "client_id": 5,
+    "name": "Grandeur",
+    "address1": "643 Longview Avenue",
+    "address2": "",
+    "city": "Webster",
+    "state": "NY",
+    "zip_code": "14580",
+    "industry": "Luxury",
+    "job_ids": [ 1, 3 ],
+    "contact_ids": [ 1, 2 ]
+  }
+]

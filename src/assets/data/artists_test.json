@@ -1,0 +1,50 @@
+[
+  {
+    "artist_id": 1,
+    "name": "Kayla Johnson",
+    "photo": "images/artists/kayla-johnson.jpg",
+    "types": "abstract, pastel"
+  },
+  {
+    "artist_id": 2,
+    "name": "Carl Brock",
+    "photo": "images/artists/carl-brock.jpg",
+    "types": "abstract, geometry, people"
+  },
+  {
+    "artist_id": 3,
+    "name": "Aaron Smit",
+    "photo": "images/artists/aaron-smit.jpg",
+    "types": "illustration"
+  },
+  {
+    "artist_id": 4,
+    "name": "Howard Sanchez",
+    "photo": "images/artists/howard-sanchez.jpg",
+    "types": "nature, landscape"
+  },
+  {
+    "artist_id": 5,
+    "name": "Linda Armstrong",
+    "photo": "images/artists/linda-armstrong.jpg",
+    "types": "portrait, people"
+  },
+  {
+    "artist_id": 6,
+    "name": "Bobby McLean",
+    "photo": "",
+    "types": "vibrant"
+  },
+  {
+    "artist_id": 7,
+    "name": "Jeffery Lewis",
+    "photo": "",
+    "types": "people"
+  },
+  {
+    "artist_id": 8,
+    "name": "Molly Owens",
+    "photo": "",
+    "types": "landscape"
+  }
+]

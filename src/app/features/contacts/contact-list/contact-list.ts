@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { combineLatest, take } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Client, Contact, HeaderData } from '../../../model/models';
+import { ContactTest, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
 
@@ -19,7 +19,7 @@ import { Util } from '../../../shared/util/util';
   },
 })
 export class ContactList implements OnInit {
-  @ViewChild('contactsTable') table!: DatatableComponent<Contact>;
+  @ViewChild('contactsTable') table!: DatatableComponent<ContactTest>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
   @ViewChild('clientNameHeaderTemplate', { static: true })
@@ -50,11 +50,11 @@ export class ContactList implements OnInit {
     ],
   };
 
-  rows: Contact[] = [];
+  rows: ContactTest[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
 
-  toggleExpandRow(row: Contact) {
+  toggleExpandRow(row: ContactTest) {
     this.table.rowDetail!.toggleExpandRow(row);
   }
 
@@ -81,18 +81,16 @@ export class ContactList implements OnInit {
 
   constructor(private dataService: DataService, private router: Router) {
     combineLatest({
-      contacts: this.dataService.contacts$,
-      clients: this.dataService.clients$,
+      contacts: this.dataService.contacts_test$,
+      clients: this.dataService.clients_test$,
     })
       .pipe(take(1))
       .subscribe(({ contacts, clients }) => {
-        const mergedContacts = contacts.map((contact) => {
-          const client =
-            clients.find((client) => client.client_id === contact.client.client_id) ??
-            ({} as Client);
+        const fullContacts = contacts.map((contact) => {
+          const client = clients.find((client) => client.client_id === contact.client_id);
           return { ...contact, client };
         });
-        this.rows = [...mergedContacts];
+        this.rows = [...fullContacts];
       });
   }
 

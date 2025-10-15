@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { HeaderData } from '../../../model/models';
+import { ContactTest, HeaderData } from '../../../model/models';
 import { Router } from '@angular/router';
 
 @Component({
@@ -42,7 +42,21 @@ export class AddClient implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    console.log('Form:', this.clientForm.value);
+    this.saveClient(this.clientForm.value);
+    this.saveContacts(this.clientForm.value.contacts, this.clientForm.value.client_id);
+  }
+
+  saveClient(clientData: any) {
+    const { contacts, ...allButContacts } = clientData;
+    const contact_ids = contacts.map((contact: ContactTest) => contact.contact_id);
+    const finalClientData = { ...allButContacts, contact_ids };
+  }
+
+  saveContacts(contactsData: any[], client_id: number) {
+    const finalContactsData = contactsData.map((contact: ContactTest) => {
+      const { client, ...allButClient } = contact;
+      return { ...allButClient, client_id };
+    });
   }
 
   get contacts(): FormArray {

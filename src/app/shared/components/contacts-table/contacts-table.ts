@@ -1,7 +1,7 @@
 import { Component, Input, input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { Contact } from '../../../model/models';
+import { ContactTest } from '../../../model/models';
 
 @Component({
   selector: 'app-contacts-table',
@@ -12,7 +12,7 @@ import { Contact } from '../../../model/models';
 })
 export class ContactsTable implements OnInit {
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
-  @Input() rows: Contact[] = [];
+  @Input() rows: ContactTest[] = [];
   @Input() columns: TableColumn[] = [];
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {

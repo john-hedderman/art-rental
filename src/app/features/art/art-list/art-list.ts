@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { combineLatest, take } from 'rxjs';
 
 import { Card } from '../../../shared/components/card/card';
-import { Art, HeaderData } from '../../../model/models';
+import { ArtTest, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
@@ -17,7 +17,7 @@ import { Util } from '../../../shared/util/util';
   standalone: true,
 })
 export class ArtList {
-  artwork: Art[] = [];
+  artwork: ArtTest[] = [];
 
   selection = 'card';
 
@@ -42,16 +42,16 @@ export class ArtList {
 
   constructor(private dataService: DataService, private router: Router, public util: Util) {
     combineLatest({
-      artwork: this.dataService.art$,
-      jobs: this.dataService.jobs$,
-      clients: this.dataService.clients$,
+      artwork: this.dataService.art_test$,
+      jobs: this.dataService.jobs_test$,
+      clients: this.dataService.clients_test$,
     })
       .pipe(take(1))
       .subscribe(({ artwork, jobs, clients }) => {
-        this.artwork = artwork.map((art: Art) => {
-          let job = jobs.find((job) => job.job_id === art.job?.job_id);
+        this.artwork = artwork.map((art) => {
+          let job = jobs.find((job) => job.job_id === art.job_id);
           if (job) {
-            const client = clients.find((client) => client.client_id === job?.client?.client_id);
+            const client = clients.find((client) => client.client_id === job?.client_id);
             if (client) {
               job = { ...job, client };
             }
