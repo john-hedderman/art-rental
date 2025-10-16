@@ -4,10 +4,10 @@ export interface Art {
   file_name: string;
   full_size_image_url: string;
   tags: string;
-  artist_id: string;
+  artist_id: number;
   artist?: Artist;
-  job_id: string;
-  job?: Job;
+  job_id: number;
+  job?: JobTest;
 }
 
 export interface ArtTest {

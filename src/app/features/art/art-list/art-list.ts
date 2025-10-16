@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { combineLatest, take } from 'rxjs';
 
 import { Card } from '../../../shared/components/card/card';
-import { ArtTest, HeaderData } from '../../../model/models';
+import { Art, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 
@@ -16,11 +16,12 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
   standalone: true,
 })
 export class ArtList {
-  artwork: ArtTest[] = [];
+  artwork: Art[] = [];
 
-  selection = 'card';
+  view = 'card';
+  thumbnail_path = 'images/art/';
 
-  navigateToArtDetail = (id: number) => {
+  goToArtDetail = (id: number) => {
     this.router.navigate(['/art', id]);
   };
   goToAddArt = () => {
@@ -42,23 +43,32 @@ export class ArtList {
 
   constructor(private dataService: DataService, private router: Router) {
     combineLatest({
-      artwork: this.dataService.art_test$,
+      artwork: this.dataService.art$,
       jobs: this.dataService.jobs_test$,
       clients: this.dataService.clients_test$,
+      artists: this.dataService.artists$,
     })
       .pipe(take(1))
-      .subscribe(({ artwork, jobs, clients }) => {
-        this.artwork = artwork.map((art) => {
-          let job = jobs.find((job) => job.job_id === art.job_id);
-          if (job) {
-            const client = clients.find((client) => client.client_id === job?.client_id);
-            if (client) {
-              job = { ...job, client };
+      .subscribe(({ artwork, jobs, clients, artists }) => {
+        this.artwork = artwork
+          .map((art) => {
+            let job = jobs.find((job) => job.job_id === art.job_id);
+            if (job) {
+              const client = clients.find((client) => client.client_id === job?.client_id);
+              if (client) {
+                job = { ...job, client };
+              }
+              return { ...art, job };
             }
-            return { ...art, job };
-          }
-          return art;
-        });
+            return art;
+          })
+          .map((art) => {
+            const artist = artists.find((artist) => artist.artist_id === art.artist_id);
+            if (artist) {
+              return { ...art, artist };
+            }
+            return art;
+          });
       });
   }
 }

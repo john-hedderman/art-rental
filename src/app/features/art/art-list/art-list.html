@@ -1,14 +1,14 @@
 <app-page-header [headerData]="headerData"></app-page-header>
-@switch (selection) { @case ('card') {
+@switch (view) { @case ('card') {
 <div class="card-group ar-card-group overflow-y-auto ar-page-content-no-menubar">
   @for (art of artwork; track $index) {
   <app-card
     [cardData]="{
-      imageData: { source: art.url, alt: art.name, title: art.name },
-      title: art.name,
-      text: art.artist,
+      imageData: { source: `${thumbnail_path}${art.file_name}`, alt: art.title, title: art.title },
+      title: art.title,
+      text: art.artist?.name,
       footerText: art.job?.client ? `<strong>Job:</strong> ${art.job?.client?.name}` : '',
-      clickHandler: navigateToArtDetail.bind(null, art.art_id)
+      clickHandler: goToArtDetail.bind(null, art.art_id)
     }"
     class="mt-3 ms-3"
   ></app-card>
