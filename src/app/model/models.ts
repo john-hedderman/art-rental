@@ -27,8 +27,8 @@ export interface ArtTest {
 export interface Artist {
   artist_id: number;
   name: string;
-  photo: string;
-  types: string;
+  photo_path: string;
+  tags: string;
 }
 
 export interface ArtistTest {
