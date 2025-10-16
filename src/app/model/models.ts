@@ -1,13 +1,13 @@
 export interface Art {
   art_id: number;
-  file: string;
-  path: string;
-  full_size_path: string;
-  artist: string;
-  name: string;
-  url: string;
+  title: string;
+  file_name: string;
+  full_size_image_url: string;
   tags: string;
-  job: Job;
+  artist_id: string;
+  artist?: Artist;
+  job_id: string;
+  job?: Job;
 }
 
 export interface ArtTest {

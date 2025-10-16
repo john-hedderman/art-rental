@@ -1,0 +1,98 @@
+<app-page-header [headerData]="headerData"></app-page-header>
+<div class="container-fluid p-3 ar-page-content-no-menubar overflow-y-auto">
+  <p>Please complete all required fields (<span class="text-danger">*</span>).</p>
+  <p>You may enter "Untitled" if there is no title for the artwork.</p>
+  <form
+    [formGroup]="artForm"
+    (ngSubmit)="onSubmit()"
+    class="needs-validation"
+    [class.was-validated]="submitted && artForm.invalid"
+    novalidate
+  >
+    <div class="row">
+      <div class="col-md-6">
+        <label for="name" class="col-form-label">Title <span class="text-danger">*</span></label>
+        <input
+          type="text"
+          id="title"
+          formControlName="title"
+          aria-describedby="title"
+          class="form-control"
+          required
+        />
+        <div class="invalid-feedback">Please provide a title.</div>
+      </div>
+      <div class="col-md-6">
+        <label for="file_name" class="col-form-label"
+          >Image file name <span class="text-danger">*</span></label
+        >
+        <input
+          type="text"
+          id="file_name"
+          formControlName="file_name"
+          aria-describedby="file_name"
+          class="form-control"
+          required
+        />
+        <div class="invalid-feedback">Please provide an image file name.</div>
+      </div>
+      <div class="col-12">
+        <label for="full_size_image_url" class="col-form-label">Full size image URL</label>
+        <input
+          type="text"
+          id="full_size_image_url"
+          formControlName="full_size_image_url"
+          aria-describedby="full_size_image_url"
+          class="form-control"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="artist_id" class="col-form-label"
+          >Artist <span class="text-danger">*</span></label
+        >
+        <select
+          class="form-select"
+          name="artist_id"
+          id="artist_id"
+          formControlName="artist_id"
+          required
+        >
+          <option value="" selected="selected">Select an artist...</option>
+          <option value="0">Unknown</option>
+          @if (artists$ | async; as artists) { @for (artist of artists; track $index) {
+          <option value="{{ artist.artist_id }}">{{ artist.name }}</option>
+          } }
+        </select>
+        <div class="invalid-feedback">Please select an artist.</div>
+      </div>
+      <div class="col-md-6">
+        <label for="job_id" class="col-form-label">Job <span class="text-danger">*</span></label>
+        <select class="form-select" name="job_id" id="job_id" formControlName="job_id" required>
+          <option value="" selected="selected">Select a job...</option>
+          <option value="0">Not on a job</option>
+          @if (jobs$ | async; as jobs) { @for (job of jobs; track $index) {
+          <option value="{{ job.job_id }}">{{ job.client?.name }} ({{ job.address1 }})</option>
+          } }
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="tags" class="col-form-label">Tags (comma-separated)</label>
+        <input
+          type="text"
+          id="tags"
+          formControlName="tags"
+          aria-describedby="tags"
+          class="form-control"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 mt-4 w-auto m-auto">
+        <button class="btn btn-primary btn-sm" type="submit">Submit</button>
+        <button class="btn btn-secondary btn-sm ms-3" type="button" (click)="resetForm()">
+          Reset form
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

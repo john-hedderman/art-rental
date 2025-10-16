@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 
 import { ArtPage } from './features/art/art-page';
 import { ArtList } from './features/art/art-list/art-list';
+import { AddArt } from './features/art/add-art/add-art';
 import { ArtistsPage } from './features/artists/artists-page';
 import { ArtistList } from './features/artists/artist-list/artist-list';
 import { AddArtist } from './features/artists/add-artist/add-artist';
@@ -30,6 +31,10 @@ export const routes: Routes = [
       {
         path: 'list',
         component: ArtList,
+      },
+      {
+        path: 'add',
+        component: AddArt,
       },
       {
         path: ':id',

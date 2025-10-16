@@ -7,7 +7,6 @@ import { Card } from '../../../shared/components/card/card';
 import { ArtTest, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-art-list',
@@ -24,8 +23,9 @@ export class ArtList {
   navigateToArtDetail = (id: number) => {
     this.router.navigate(['/art', id]);
   };
-  navigateToAddToCart = () => {};
-  navigateToAddArt = () => {};
+  goToAddArt = () => {
+    this.router.navigate(['/art', 'add']);
+  };
   headerData: HeaderData = {
     headerTitle: 'Artwork',
     headerButtons: [
@@ -35,12 +35,12 @@ export class ArtList {
         type: 'button',
         buttonClass: 'btn btn-primary btn-sm',
         disabled: false,
-        clickHandler: this.navigateToAddArt,
+        clickHandler: this.goToAddArt,
       },
     ],
   };
 
-  constructor(private dataService: DataService, private router: Router, public util: Util) {
+  constructor(private dataService: DataService, private router: Router) {
     combineLatest({
       artwork: this.dataService.art_test$,
       jobs: this.dataService.jobs_test$,

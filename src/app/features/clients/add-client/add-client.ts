@@ -45,8 +45,11 @@ export class AddClient implements OnInit {
   onSubmit() {
     this.clientForm.value.client_id = Date.now();
     this.submitted = true;
-    this.saveClient(this.clientForm.value);
-    this.saveContacts(this.clientForm.value.contacts, this.clientForm.value.client_id);
+    if (this.clientForm.valid) {
+      this.saveClient(this.clientForm.value);
+      this.saveContacts(this.clientForm.value.contacts, this.clientForm.value.client_id);
+      this.resetForm();
+    }
   }
 
   saveClient(clientData: any) {
