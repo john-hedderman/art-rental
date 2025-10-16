@@ -4,13 +4,13 @@
   <app-card
     [cardData]="{
       imageData: {
-        source: artist.photo,
+        source: artist.photo_path,
         alt: artist.name,
         title: artist.name
       },
       title: artist.name,
-      text: artist.types,
-      clickHandler: navigateToArtistDetail
+      text: artist.tags,
+      clickHandler: goToArtistDetail
     }"
     class="d-inline-block mt-3 ms-3"
   ></app-card>

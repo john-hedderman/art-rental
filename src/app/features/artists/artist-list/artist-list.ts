@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { take } from 'rxjs';
 
-import { ArtistTest, HeaderData } from '../../../model/models';
+import { Artist, HeaderData } from '../../../model/models';
 import { Card } from '../../../shared/components/card/card';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-artist-list',
@@ -17,10 +18,12 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
   },
 })
 export class ArtistList {
-  artists: ArtistTest[] = [];
+  artists: Artist[] = [];
 
-  navigateToArtistDetail = () => {};
-  navigateToAddArtist = () => {};
+  goToArtistDetail = () => {};
+  goToAddArtist = () => {
+    this.router.navigate(['/artists', 'add']);
+  };
   headerData: HeaderData = {
     headerTitle: 'Artists',
     headerButtons: [
@@ -30,13 +33,13 @@ export class ArtistList {
         type: 'button',
         buttonClass: 'btn btn-primary btn-sm',
         disabled: false,
-        clickHandler: this.navigateToAddArtist,
+        clickHandler: this.goToAddArtist,
       },
     ],
   };
 
-  constructor(private dataService: DataService) {
-    this.dataService.artists_test$.pipe(take(1)).subscribe((artists) => {
+  constructor(private dataService: DataService, private router: Router) {
+    this.dataService.artists$.pipe(take(1)).subscribe((artists) => {
       if (artists) {
         this.artists = artists;
       }

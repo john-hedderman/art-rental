@@ -43,6 +43,7 @@ export class AddClient implements OnInit {
   client_id!: number;
 
   onSubmit() {
+    this.clientForm.value.client_id = Date.now();
     this.submitted = true;
     this.saveClient(this.clientForm.value);
     this.saveContacts(this.clientForm.value.contacts, this.clientForm.value.client_id);
@@ -102,9 +103,7 @@ export class AddClient implements OnInit {
     this.contacts.removeAt(index);
   }
 
-  constructor(private fb: FormBuilder, private router: Router, private dataService: DataService) {
-    this.client_id = Date.now();
-  }
+  constructor(private fb: FormBuilder, private router: Router, private dataService: DataService) {}
 
   ngOnInit(): void {
     this.clientForm = this.fb.group({

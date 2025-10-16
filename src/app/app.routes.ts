@@ -4,6 +4,7 @@ import { ArtPage } from './features/art/art-page';
 import { ArtList } from './features/art/art-list/art-list';
 import { ArtistsPage } from './features/artists/artists-page';
 import { ArtistList } from './features/artists/artist-list/artist-list';
+import { AddArtist } from './features/artists/add-artist/add-artist';
 import { ClientsPage } from './features/clients/clients-page';
 import { ClientList } from './features/clients/client-list/client-list';
 import { AddClient } from './features/clients/add-client/add-client';
@@ -48,6 +49,10 @@ export const routes: Routes = [
       {
         path: 'list',
         component: ArtistList,
+      },
+      {
+        path: 'add',
+        component: AddArtist,
       },
       {
         path: '',
