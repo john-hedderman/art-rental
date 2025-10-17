@@ -3,9 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, ReplaySubject } from 'rxjs';
 import {
   Art,
-  ArtTest,
   Artist,
-  ArtistTest,
   Client,
   ClientTest,
   Contact,
@@ -27,8 +25,6 @@ export class DataService {
   public contacts$: ReplaySubject<Contact[]> = new ReplaySubject(1);
   public sites$: ReplaySubject<Site[]> = new ReplaySubject(1);
 
-  public art_test$: ReplaySubject<ArtTest[]> = new ReplaySubject(1);
-  public artists_test$: ReplaySubject<ArtistTest[]> = new ReplaySubject(1);
   public clients_test$: ReplaySubject<ClientTest[]> = new ReplaySubject(1);
   public jobs_test$: ReplaySubject<JobTest[]> = new ReplaySubject(1);
   public contacts_test$: ReplaySubject<ContactTest[]> = new ReplaySubject(1);
@@ -42,8 +38,6 @@ export class DataService {
     this.load('contacts').subscribe((contacts) => this.contacts$.next(contacts));
     this.load('sites').subscribe((sites) => this.sites$.next(sites));
 
-    this.load('art_test').subscribe((art_test) => this.art_test$.next(art_test));
-    this.load('artists_test').subscribe((artists_test) => this.artists_test$.next(artists_test));
     this.load('clients_test').subscribe((clients_test) => this.clients_test$.next(clients_test));
     this.load('jobs_test').subscribe((jobs_test) => this.jobs_test$.next(jobs_test));
     this.load('contacts_test').subscribe((contacts_test) =>
@@ -59,8 +53,6 @@ export class DataService {
   load(dataType: 'contacts'): Observable<Contact[]>;
   load(dataType: 'sites'): Observable<Site[]>;
 
-  load(dataType: 'art_test'): Observable<ArtTest[]>;
-  load(dataType: 'artists_test'): Observable<ArtistTest[]>;
   load(dataType: 'clients_test'): Observable<ClientTest[]>;
   load(dataType: 'jobs_test'): Observable<JobTest[]>;
   load(dataType: 'contacts_test'): Observable<ContactTest[]>;

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, take } from 'rxjs';
 
-import { ArtTest, HeaderData } from '../../../model/models';
+import { Art, HeaderData } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { DataService } from '../../../service/data-service';
 
@@ -14,7 +14,7 @@ import { DataService } from '../../../service/data-service';
   standalone: true,
 })
 export class ArtDetail {
-  art: ArtTest = {} as ArtTest;
+  art: Art = {} as Art;
 
   navigateToArtList = () => {
     this.router.navigate(['/art', 'list']);
@@ -43,13 +43,14 @@ export class ArtDetail {
     private dataService: DataService
   ) {
     combineLatest({
-      artwork: this.dataService.art_test$,
+      artwork: this.dataService.art$,
       artId: this.getArtId(),
       jobs: this.dataService.jobs_test$,
       clients: this.dataService.clients_test$,
+      artists: this.dataService.artists$,
     })
       .pipe(take(1))
-      .subscribe(({ artwork, artId, jobs, clients }) => {
+      .subscribe(({ artwork, artId, jobs, clients, artists }) => {
         let art = artwork.find((piece) => piece.art_id === artId);
         if (art) {
           let job = jobs.find((job) => job.job_id === art?.job_id);
@@ -59,6 +60,10 @@ export class ArtDetail {
               job = { ...job, client };
             }
             art = { ...art, job };
+          }
+          let artist = artists.find((artist) => artist.artist_id === art?.artist_id);
+          if (artist) {
+            art = { ...art, artist };
           }
         }
         this.art = art!;

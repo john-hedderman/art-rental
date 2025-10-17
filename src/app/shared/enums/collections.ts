@@ -1,8 +1,6 @@
 export enum Collections {
   Art = 'art',
-  ArtTest = 'art_test',
   Artists = 'artists',
-  ArtistsTest = 'artists_test',
   Clients = 'clients',
   ClientsTest = 'clients_test',
   ClientsInsertTest = 'clients_insert_test',

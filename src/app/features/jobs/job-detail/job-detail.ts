@@ -4,14 +4,7 @@ import { AsyncPipe } from '@angular/common';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import {
-  ArtTest,
-  ClientTest,
-  ContactTest,
-  HeaderData,
-  JobTest,
-  SiteTest,
-} from '../../../model/models';
+import { Art, ClientTest, ContactTest, HeaderData, JobTest, SiteTest } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Card } from '../../../shared/components/card/card';
@@ -48,7 +41,10 @@ export class JobDetail implements OnInit {
     ],
   };
 
+  thumbnail_path = 'images/art/';
+
   job$: Observable<JobTest> | undefined;
+  art$: Observable<Art[]> | undefined;
 
   rows: ContactTest[] = [];
   columns: TableColumn[] = [];
@@ -72,7 +68,7 @@ export class JobDetail implements OnInit {
     combineLatest({
       clients: this.dataService.clients_test$,
       contacts: this.dataService.contacts_test$,
-      artwork: this.dataService.art_test$,
+      artwork: this.dataService.art$,
       sites: this.dataService.sites_test$,
       jobId: this.getJobId(),
       jobs: this.dataService.jobs_test$,
@@ -89,6 +85,7 @@ export class JobDetail implements OnInit {
               return { ...contact, client };
             });
           job.art = artwork.filter((art) => art.job_id === jobId);
+          this.art$ = of(job.art);
           job.site = sites.find((site) => site.site_id === job.site_id);
           this.job$ = of(job); // for template
           this.rows = [...job.contacts]; // for table of contacts

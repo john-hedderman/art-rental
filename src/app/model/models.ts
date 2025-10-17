@@ -10,32 +10,11 @@ export interface Art {
   job?: JobTest;
 }
 
-export interface ArtTest {
-  art_id: number;
-  file: string;
-  path: string;
-  full_size_path: string;
-  name: string;
-  url: string;
-  tags: string;
-  artist_id: number;
-  artist?: ArtistTest;
-  job_id: number;
-  job?: JobTest;
-}
-
 export interface Artist {
   artist_id: number;
   name: string;
   photo_path: string;
   tags: string;
-}
-
-export interface ArtistTest {
-  artist_id: number;
-  name: string;
-  photo: string;
-  types: string;
 }
 
 export interface Client {
@@ -91,7 +70,7 @@ export interface JobTest {
   contact_ids: number[];
   contacts?: ContactTest[];
   art_ids: number[];
-  art?: ArtTest[];
+  art?: Art[];
   site_id: number;
   site?: SiteTest;
 }
