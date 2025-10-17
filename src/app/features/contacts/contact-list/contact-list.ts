@@ -82,7 +82,7 @@ export class ContactList implements OnInit {
   constructor(private dataService: DataService, private router: Router) {
     combineLatest({
       contacts: this.dataService.contacts_test$,
-      clients: this.dataService.clients_test$,
+      clients: this.dataService.clients$,
     })
       .pipe(take(1))
       .subscribe(({ contacts, clients }) => {

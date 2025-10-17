@@ -74,7 +74,7 @@ export class JobList implements OnInit {
   }
 
   constructor(private dataService: DataService, private router: Router) {
-    combineLatest({ clients: this.dataService.clients_test$, jobs: this.dataService.jobs_test$ })
+    combineLatest({ clients: this.dataService.clients$, jobs: this.dataService.jobs_test$ })
       .pipe(take(1))
       .subscribe(({ clients, jobs }) => {
         if (clients && jobs) {

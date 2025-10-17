@@ -45,7 +45,7 @@ export class ArtList {
     combineLatest({
       artwork: this.dataService.art$,
       jobs: this.dataService.jobs_test$,
-      clients: this.dataService.clients_test$,
+      clients: this.dataService.clients$,
       artists: this.dataService.artists$,
     })
       .pipe(take(1))

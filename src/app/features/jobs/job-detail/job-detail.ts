@@ -4,7 +4,7 @@ import { AsyncPipe } from '@angular/common';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { Art, ClientTest, ContactTest, HeaderData, JobTest, SiteTest } from '../../../model/models';
+import { Art, ContactTest, HeaderData, JobTest } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Card } from '../../../shared/components/card/card';

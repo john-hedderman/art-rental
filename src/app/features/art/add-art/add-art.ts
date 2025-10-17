@@ -66,7 +66,7 @@ export class AddArt implements OnInit {
     combineLatest({
       artists: this.dataService.artists$,
       jobs: this.dataService.jobs_test$,
-      clients: this.dataService.clients_test$,
+      clients: this.dataService.clients$,
     })
       .pipe(take(1))
       .subscribe(({ artists, jobs, clients }) => {

@@ -60,7 +60,7 @@ export class SiteList implements OnInit {
   }
 
   constructor(private router: Router, private dataService: DataService) {
-    combineLatest({ clients: this.dataService.clients_test$, sites: this.dataService.sites_test$ })
+    combineLatest({ clients: this.dataService.clients$, sites: this.dataService.sites_test$ })
       .pipe(take(1))
       .subscribe(({ clients, sites }) => {
         if (clients && sites) {

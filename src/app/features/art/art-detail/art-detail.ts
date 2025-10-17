@@ -46,7 +46,7 @@ export class ArtDetail {
       artwork: this.dataService.art$,
       artId: this.getArtId(),
       jobs: this.dataService.jobs_test$,
-      clients: this.dataService.clients_test$,
+      clients: this.dataService.clients$,
       artists: this.dataService.artists$,
     })
       .pipe(take(1))

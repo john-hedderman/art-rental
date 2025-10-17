@@ -27,22 +27,9 @@ export interface Client {
   zip_code: string;
   industry?: string;
   contact_ids: number[];
-  job_ids: number[];
-}
-
-export interface ClientTest {
-  client_id: number;
-  name: string;
-  address1: string;
-  address2: string;
-  city: string;
-  state: string;
-  zip_code: string;
-  industry?: string;
+  contacts?: ContactTest[];
   job_ids: number[];
   jobs?: JobTest[];
-  contact_ids: number[];
-  contacts?: ContactTest[];
 }
 
 export interface Job {
@@ -66,7 +53,7 @@ export interface JobTest {
   state: string;
   zip_code: string;
   client_id: number;
-  client?: ClientTest;
+  client?: Client;
   contact_ids: number[];
   contacts?: ContactTest[];
   art_ids: number[];
@@ -93,7 +80,7 @@ export interface ContactTest {
   title: string;
   email?: string;
   client_id: number;
-  client?: ClientTest;
+  client?: Client;
 }
 
 export interface Site {
@@ -117,7 +104,7 @@ export interface SiteTest {
   state: string;
   zip_code: string;
   client_id: number;
-  client?: ClientTest;
+  client?: Client;
   job_id: number;
   job?: JobTest;
 }
