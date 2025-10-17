@@ -53,7 +53,7 @@ export class AddClient implements OnInit {
   }
 
   saveClient(clientData: any) {
-    const collectionName = Collections.ClientsInsertTest;
+    const collectionName = Collections.Clients;
     const { contacts, ...allButContacts } = clientData;
     const contact_ids = contacts.map((contact: ContactTest) => contact.contact_id);
     const finalClientData = { ...allButContacts, contact_ids, job_ids: [] };

@@ -3,7 +3,7 @@ import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 
-import { ClientTest, ContactTest, HeaderData, JobTest, SiteTest } from '../../../model/models';
+import { Client, ContactTest, HeaderData, JobTest, SiteTest } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
@@ -36,7 +36,7 @@ export class ClientDetail implements OnInit {
     ],
   };
 
-  client$: Observable<ClientTest> | undefined;
+  client$: Observable<Client> | undefined;
   rows: ContactTest[] = [];
   columns: TableColumn[] = [];
 
@@ -59,7 +59,7 @@ export class ClientDetail implements OnInit {
     private dataService: DataService
   ) {
     combineLatest({
-      clients: this.dataService.clients_test$,
+      clients: this.dataService.clients$,
       clientId: this.getClientId(),
       jobs: this.dataService.jobs_test$,
       sites: this.dataService.sites_test$,
@@ -71,14 +71,14 @@ export class ClientDetail implements OnInit {
         if (client) {
           this.jobs = jobs
             .filter((job) => {
-              return client.job_ids.indexOf(job.job_id) !== -1;
+              return client.job_ids.indexOf(job.job_id) >= 0;
             })
             .map((job) => {
               const site = sites.find((site) => site.site_id === job.site_id);
               return { ...job, site };
             });
           this.contacts = contacts.filter((contact) => {
-            return client.contact_ids.indexOf(contact.contact_id) !== -1;
+            return client.contact_ids.indexOf(contact.contact_id) >= 0;
           });
           this.client$ = of(client); // for template
           this.rows = [...this.contacts]; // for table of contacts

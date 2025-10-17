@@ -66,7 +66,7 @@ export class JobDetail implements OnInit {
     public util: Util
   ) {
     combineLatest({
-      clients: this.dataService.clients_test$,
+      clients: this.dataService.clients$,
       contacts: this.dataService.contacts_test$,
       artwork: this.dataService.art$,
       sites: this.dataService.sites_test$,

@@ -26,8 +26,8 @@ export interface Client {
   state: string;
   zip_code: string;
   industry?: string;
-  jobs: Job[];
-  contacts: Contact[];
+  contact_ids: number[];
+  job_ids: number[];
 }
 
 export interface ClientTest {
