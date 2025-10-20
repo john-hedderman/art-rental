@@ -63,6 +63,7 @@ export class AddSite implements OnInit {
 
   resetForm() {
     this.siteForm.reset();
+    this.siteForm.get('job_id')?.disable();
     this.submitted = false;
   }
 
@@ -91,8 +92,9 @@ export class AddSite implements OnInit {
     menu?.add(newOption);
     newOption = new Option('TBD', 'tbd');
     menu?.add(newOption);
-    for (const job of this.jobs) {
-      newOption = new Option(job.job_number, job.job_id.toString());
+    const clientJobs = this.jobs.filter((job) => job.client_id === this.selectedClientId);
+    for (const clientJob of clientJobs) {
+      newOption = new Option(clientJob.job_number, clientJob.job_id.toString());
       menu?.add(newOption);
     }
   }
@@ -120,7 +122,7 @@ export class AddSite implements OnInit {
       state: [''],
       zip_code: [''],
       client_id: [''],
-      job_id: [''],
+      job_id: [{ value: '', disabled: true }],
     });
   }
 }
