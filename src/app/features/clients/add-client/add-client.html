@@ -1,6 +1,6 @@
 <app-page-header [headerData]="headerData"></app-page-header>
 <div class="container-fluid p-3 ar-page-content-no-menubar overflow-y-auto">
-  <p><span class="text-danger">*</span> required</p>
+  <p>Please complete all required fields (<span class="text-danger">*</span>).</p>
   <form
     [formGroup]="clientForm"
     (ngSubmit)="onSubmit()"

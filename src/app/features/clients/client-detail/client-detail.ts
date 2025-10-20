@@ -3,7 +3,7 @@ import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 
-import { Client, ContactTest, HeaderData, JobTest, SiteTest } from '../../../model/models';
+import { Client, ContactTest, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
@@ -37,11 +37,12 @@ export class ClientDetail implements OnInit {
   };
 
   client$: Observable<Client> | undefined;
+  jobs$: Observable<Job[]> | undefined;
+
   rows: ContactTest[] = [];
   columns: TableColumn[] = [];
 
   contacts: ContactTest[] = [];
-  jobs: JobTest[] = [];
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
     const nameA = `${rowA['first_name']} ${rowA['last_name']}`;
@@ -61,7 +62,7 @@ export class ClientDetail implements OnInit {
     combineLatest({
       clients: this.dataService.clients$,
       clientId: this.getClientId(),
-      jobs: this.dataService.jobs_test$,
+      jobs: this.dataService.jobs$,
       sites: this.dataService.sites_test$,
       contacts: this.dataService.contacts_test$,
     })
@@ -69,7 +70,7 @@ export class ClientDetail implements OnInit {
       .subscribe(({ clients, clientId, jobs, sites, contacts }) => {
         const client = clients.find((client) => client.client_id === clientId)!;
         if (client) {
-          this.jobs = jobs
+          const fullJobs = jobs
             .filter((job) => {
               return client.job_ids.indexOf(job.job_id) >= 0;
             })
@@ -77,6 +78,7 @@ export class ClientDetail implements OnInit {
               const site = sites.find((site) => site.site_id === job.site_id);
               return { ...job, site };
             });
+          this.jobs$ = of(fullJobs);
           this.contacts = contacts.filter((contact) => {
             return client.contact_ids.indexOf(contact.contact_id) >= 0;
           });

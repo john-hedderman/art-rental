@@ -4,7 +4,7 @@ import { AsyncPipe } from '@angular/common';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { Art, ContactTest, HeaderData, JobTest } from '../../../model/models';
+import { Art, ContactTest, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Card } from '../../../shared/components/card/card';
@@ -43,7 +43,7 @@ export class JobDetail implements OnInit {
 
   thumbnail_path = 'images/art/';
 
-  job$: Observable<JobTest> | undefined;
+  job$: Observable<Job> | undefined;
   art$: Observable<Art[]> | undefined;
 
   rows: ContactTest[] = [];
@@ -71,7 +71,7 @@ export class JobDetail implements OnInit {
       artwork: this.dataService.art$,
       sites: this.dataService.sites_test$,
       jobId: this.getJobId(),
-      jobs: this.dataService.jobs_test$,
+      jobs: this.dataService.jobs$,
     })
       .pipe(take(1))
       .subscribe(({ clients, contacts, artwork, sites, jobId, jobs }) => {

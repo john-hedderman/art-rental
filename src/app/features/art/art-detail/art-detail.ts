@@ -45,12 +45,13 @@ export class ArtDetail {
     combineLatest({
       artwork: this.dataService.art$,
       artId: this.getArtId(),
-      jobs: this.dataService.jobs_test$,
+      jobs: this.dataService.jobs$,
       clients: this.dataService.clients$,
       artists: this.dataService.artists$,
+      sites: this.dataService.sites_test$,
     })
       .pipe(take(1))
-      .subscribe(({ artwork, artId, jobs, clients, artists }) => {
+      .subscribe(({ artwork, artId, jobs, clients, artists, sites }) => {
         let art = artwork.find((piece) => piece.art_id === artId);
         if (art) {
           let job = jobs.find((job) => job.job_id === art?.job_id);
@@ -58,6 +59,10 @@ export class ArtDetail {
             const client = clients.find((client) => client.client_id === job?.client_id);
             if (client) {
               job = { ...job, client };
+            }
+            const site = sites.find((site) => site.job_id === job?.job_id);
+            if (site) {
+              job = { ...job, site };
             }
             art = { ...art, job };
           }

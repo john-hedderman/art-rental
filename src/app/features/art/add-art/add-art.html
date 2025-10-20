@@ -71,7 +71,7 @@
           <option value="" selected="selected">Select a job...</option>
           <option value="0">Not on a job</option>
           @if (jobs$ | async; as jobs) { @for (job of jobs; track $index) {
-          <option value="{{ job.job_id }}">{{ job.client?.name }} ({{ job.address1 }})</option>
+          <option value="{{ job.job_id }}">{{ job.client?.name }} ({{ job.site?.name }})</option>
           } }
         </select>
       </div>

@@ -8,7 +8,6 @@ export enum Collections {
   ContactsTest = 'contacts_test',
   ContactsInsertTest = 'contacts_insert_test',
   Jobs = 'jobs',
-  JobsTest = 'jobs_test',
   Sites = 'sites',
   SitesTest = 'sites_test',
 }

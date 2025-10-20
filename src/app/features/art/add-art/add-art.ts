@@ -5,7 +5,7 @@ import { combineLatest, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Artist, HeaderData, JobTest } from '../../../model/models';
+import { Artist, HeaderData, Job } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
 
@@ -39,7 +39,7 @@ export class AddArt implements OnInit {
   art_id!: number;
 
   artists$: Observable<Artist[]> | undefined;
-  jobs$: Observable<JobTest[]> | undefined;
+  jobs$: Observable<Job[]> | undefined;
 
   onSubmit() {
     this.submitted = true;
@@ -65,16 +65,22 @@ export class AddArt implements OnInit {
   constructor(private router: Router, private dataService: DataService, private fb: FormBuilder) {
     combineLatest({
       artists: this.dataService.artists$,
-      jobs: this.dataService.jobs_test$,
+      jobs: this.dataService.jobs$,
       clients: this.dataService.clients$,
+      sites: this.dataService.sites_test$,
     })
       .pipe(take(1))
-      .subscribe(({ artists, jobs, clients }) => {
+      .subscribe(({ artists, jobs, clients, sites }) => {
         this.artists$ = of(artists);
-        const jobsWithClient = jobs.map((job) => {
-          const client = clients.find((client) => client.client_id === job.client_id)!;
-          return { ...job, client };
-        });
+        const jobsWithClient = jobs
+          .map((job) => {
+            const client = clients.find((client) => client.client_id === job.client_id)!;
+            return { ...job, client };
+          })
+          .map((job) => {
+            const site = sites.find((site) => site.site_id === job.site_id)!;
+            return { ...job, site };
+          });
         this.jobs$ = of(jobsWithClient);
       });
   }

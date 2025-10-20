@@ -32,12 +32,13 @@
         }}</a>
       </p>
       <p class="mb-0">{{ art.job.client?.name }}</p>
-      <p class="mb-0">{{ art.job.address1 }}</p>
-      @if (art.job.address2) {
-      <p class="mb-0">{{ art.job.address2 }}</p>
+      @if (art.job.site) {
+      <p class="mb-0">{{ art.job.site.address1 }}</p>
+      @if (art.job.site.address2) {
+      <p class="mb-0">{{ art.job.site.address2 }}</p>
       }
-      <p>{{ art.job.city }}, {{ art.job.state }} {{ art.job.zip_code }}</p>
-      } @else {
+      <p>{{ art.job.site.city }}, {{ art.job.site.state }} {{ art.job.site.zip_code }}</p>
+      } } @else {
       <p class="pb-4">Not on a job</p>
       }
     </div>

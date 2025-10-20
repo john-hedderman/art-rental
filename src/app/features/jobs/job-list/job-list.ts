@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { combineLatest, take } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { HeaderData, JobTest } from '../../../model/models';
+import { HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
@@ -19,7 +19,7 @@ import { Util } from '../../../shared/util/util';
   },
 })
 export class JobList implements OnInit {
-  @ViewChild('jobsTable') table!: DatatableComponent<JobTest>;
+  @ViewChild('jobsTable') table!: DatatableComponent<Job>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('clientNameHeaderTemplate', { static: true })
   clientNameHeaderTemplate!: TemplateRef<any>;
@@ -50,11 +50,11 @@ export class JobList implements OnInit {
     ],
   };
 
-  rows: JobTest[] = [];
+  rows: Job[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
 
-  toggleExpandRow(row: JobTest) {
+  toggleExpandRow(row: Job) {
     this.table.rowDetail!.toggleExpandRow(row);
   }
 
@@ -74,16 +74,29 @@ export class JobList implements OnInit {
   }
 
   constructor(private dataService: DataService, private router: Router) {
-    combineLatest({ clients: this.dataService.clients$, jobs: this.dataService.jobs_test$ })
+    combineLatest({
+      clients: this.dataService.clients$,
+      jobs: this.dataService.jobs$,
+      sites: this.dataService.sites_test$,
+    })
       .pipe(take(1))
-      .subscribe(({ clients, jobs }) => {
-        if (clients && jobs) {
-          const fullJobs = jobs.map((job) => {
-            const client = clients.find((client) => client.client_id === job.client_id)!;
-            return { ...job, client };
+      .subscribe(({ clients, jobs, sites }) => {
+        const fullJobs = jobs
+          .map((job) => {
+            const client = clients.find((client) => client.client_id === job.client_id);
+            if (client) {
+              return { ...job, client };
+            }
+            return job;
+          })
+          .map((job) => {
+            const site = sites.find((site) => site.job_id === job.job_id);
+            if (site) {
+              return { ...job, site };
+            }
+            return job;
           });
-          this.rows = [...fullJobs];
-        }
+        this.rows = [...fullJobs];
       });
   }
 

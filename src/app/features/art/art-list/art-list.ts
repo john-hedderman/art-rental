@@ -44,7 +44,7 @@ export class ArtList {
   constructor(private dataService: DataService, private router: Router) {
     combineLatest({
       artwork: this.dataService.art$,
-      jobs: this.dataService.jobs_test$,
+      jobs: this.dataService.jobs$,
       clients: this.dataService.clients$,
       artists: this.dataService.artists$,
     })

@@ -7,7 +7,7 @@ export interface Art {
   artist_id: number;
   artist?: Artist;
   job_id: number;
-  job?: JobTest;
+  job?: Job;
 }
 
 export interface Artist {
@@ -29,37 +29,20 @@ export interface Client {
   contact_ids: number[];
   contacts?: ContactTest[];
   job_ids: number[];
-  jobs?: JobTest[];
+  jobs?: Job[];
 }
 
 export interface Job {
   job_id: number;
-  address1: string;
-  address2: string;
-  city: string;
-  state: string;
-  zip_code: string;
-  client: Client;
-  contacts: Contact[];
-  art: Art[];
-  site: Site;
-}
-
-export interface JobTest {
-  job_id: number;
-  address1: string;
-  address2: string;
-  city: string;
-  state: string;
-  zip_code: string;
+  job_number: string;
   client_id: number;
   client?: Client;
+  site_id: number;
+  site?: SiteTest;
   contact_ids: number[];
   contacts?: ContactTest[];
   art_ids: number[];
   art?: Art[];
-  site_id: number;
-  site?: SiteTest;
 }
 
 export interface Contact {
@@ -106,7 +89,7 @@ export interface SiteTest {
   client_id: number;
   client?: Client;
   job_id: number;
-  job?: JobTest;
+  job?: Job;
 }
 
 export interface HeaderButton {
