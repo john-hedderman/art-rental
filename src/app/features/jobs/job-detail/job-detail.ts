@@ -69,7 +69,7 @@ export class JobDetail implements OnInit {
       clients: this.dataService.clients$,
       contacts: this.dataService.contacts_test$,
       artwork: this.dataService.art$,
-      sites: this.dataService.sites_test$,
+      sites: this.dataService.sites$,
       jobId: this.getJobId(),
       jobs: this.dataService.jobs$,
     })

@@ -63,7 +63,7 @@ export class ClientDetail implements OnInit {
       clients: this.dataService.clients$,
       clientId: this.getClientId(),
       jobs: this.dataService.jobs$,
-      sites: this.dataService.sites_test$,
+      sites: this.dataService.sites$,
       contacts: this.dataService.contacts_test$,
     })
       .pipe(take(1))

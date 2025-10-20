@@ -28,7 +28,7 @@
       @if (art.job) {
       <p class="mb-0">
         <a class="fw-bold" href="#" [routerLink]="`/jobs/${art.job.job_id}`">{{
-          art.job.job_id
+          art.job.job_number
         }}</a>
       </p>
       <p class="mb-0">{{ art.job.client?.name }}</p>

@@ -4,7 +4,7 @@ import { combineLatest, take } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { HeaderData, SiteTest } from '../../../model/models';
+import { HeaderData, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
 
@@ -19,7 +19,7 @@ import { Util } from '../../../shared/util/util';
   },
 })
 export class SiteList implements OnInit {
-  @ViewChild('sitesTable') table!: DatatableComponent<SiteTest>;
+  @ViewChild('sitesTable') table!: DatatableComponent<Site>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
   @ViewChild('siteAddressHeaderTemplate', { static: true })
@@ -31,16 +31,28 @@ export class SiteList implements OnInit {
     Util.showHideRowDetail();
   }
 
+  goToAddSite = () => {
+    this.router.navigate(['/sites', 'add']);
+  };
   headerData: HeaderData = {
     headerTitle: 'Sites',
-    headerButtons: [],
+    headerButtons: [
+      {
+        id: 'goToAddSiteBtn',
+        label: 'Add Site',
+        type: 'button',
+        buttonClass: 'btn btn-primary btn-sm',
+        disabled: false,
+        clickHandler: this.goToAddSite,
+      },
+    ],
   };
 
-  rows: SiteTest[] = [];
+  rows: Site[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
 
-  toggleExpandRow(row: SiteTest) {
+  toggleExpandRow(row: Site) {
     this.table.rowDetail!.toggleExpandRow(row);
   }
 
@@ -60,7 +72,7 @@ export class SiteList implements OnInit {
   }
 
   constructor(private router: Router, private dataService: DataService) {
-    combineLatest({ clients: this.dataService.clients$, sites: this.dataService.sites_test$ })
+    combineLatest({ clients: this.dataService.clients$, sites: this.dataService.sites$ })
       .pipe(take(1))
       .subscribe(({ clients, sites }) => {
         if (clients && sites) {

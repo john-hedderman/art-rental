@@ -19,6 +19,7 @@ import { ContactsPage } from './features/contacts/contacts-page';
 import { ContactList } from './features/contacts/contact-list/contact-list';
 import { SitesPage } from './features/sites/sites-page';
 import { SiteList } from './features/sites/site-list/site-list';
+import { AddSite } from './features/sites/add-site/add-site';
 import { SiteDetail } from './features/sites/site-detail/site-detail';
 import { ContactDetail } from './features/contacts/contact-detail/contact-detail';
 import { AddContact } from './features/contacts/add-contact/add-contact';
@@ -142,6 +143,10 @@ export const routes: Routes = [
       {
         path: 'list',
         component: SiteList,
+      },
+      {
+        path: 'add',
+        component: AddSite,
       },
       {
         path: ':id',

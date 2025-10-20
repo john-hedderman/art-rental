@@ -77,7 +77,7 @@ export class JobList implements OnInit {
     combineLatest({
       clients: this.dataService.clients$,
       jobs: this.dataService.jobs$,
-      sites: this.dataService.sites_test$,
+      sites: this.dataService.sites$,
     })
       .pipe(take(1))
       .subscribe(({ clients, jobs, sites }) => {
@@ -110,7 +110,7 @@ export class JobList implements OnInit {
         canAutoResize: false,
         cellTemplate: this.arrowTemplate,
       },
-      { width: 200, prop: 'job_id', name: 'Job Number' },
+      { width: 200, prop: 'job_number', name: 'Job Number' },
       {
         width: 300,
         prop: '',

@@ -38,7 +38,7 @@ export interface Job {
   client_id: number;
   client?: Client;
   site_id: number;
-  site?: SiteTest;
+  site?: Site;
   contact_ids: number[];
   contacts?: ContactTest[];
   art_ids: number[];
@@ -67,18 +67,6 @@ export interface ContactTest {
 }
 
 export interface Site {
-  site_id: string;
-  name: string;
-  address1: string;
-  address2: string;
-  city: string;
-  state: string;
-  zip_code: string;
-  client: Client;
-  job: Job;
-}
-
-export interface SiteTest {
   site_id: number;
   name: string;
   address1: string;

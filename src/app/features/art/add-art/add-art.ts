@@ -67,19 +67,25 @@ export class AddArt implements OnInit {
       artists: this.dataService.artists$,
       jobs: this.dataService.jobs$,
       clients: this.dataService.clients$,
-      sites: this.dataService.sites_test$,
+      sites: this.dataService.sites$,
     })
       .pipe(take(1))
       .subscribe(({ artists, jobs, clients, sites }) => {
         this.artists$ = of(artists);
         const jobsWithClient = jobs
           .map((job) => {
-            const client = clients.find((client) => client.client_id === job.client_id)!;
-            return { ...job, client };
+            const client = clients.find((client) => client.client_id === job.client_id);
+            if (client) {
+              return { ...job, client };
+            }
+            return job;
           })
           .map((job) => {
-            const site = sites.find((site) => site.site_id === job.site_id)!;
-            return { ...job, site };
+            const site = sites.find((site) => site.site_id === job.site_id);
+            if (site) {
+              return { ...job, site };
+            }
+            return job;
           });
         this.jobs$ = of(jobsWithClient);
       });

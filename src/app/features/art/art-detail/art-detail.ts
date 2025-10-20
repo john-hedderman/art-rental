@@ -48,7 +48,7 @@ export class ArtDetail {
       jobs: this.dataService.jobs$,
       clients: this.dataService.clients$,
       artists: this.dataService.artists$,
-      sites: this.dataService.sites_test$,
+      sites: this.dataService.sites$,
     })
       .pipe(take(1))
       .subscribe(({ artwork, artId, jobs, clients, artists, sites }) => {
