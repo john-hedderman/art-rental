@@ -44,8 +44,27 @@ export class DataService {
     return this.http.get<unknown[]>(`http://localhost:3000/data/${dataType}`);
   }
 
-  save(data: any, collectionName: string): void {
+  saveDocument(data: any, collectionName: string): void {
     fetch(`http://localhost:3000/data/${collectionName}`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .catch((err) => {
+        console.error(`${collectionName} error:`, err);
+      })
+      .then((response: any) => {
+        return response.json();
+      });
+  }
+
+  replaceDocument(data: any, collectionName: string, id: number, recordId: string): void {
+    const paramsObj = {} as any;
+    paramsObj['recordId'] = recordId;
+    const params = new URLSearchParams(paramsObj);
+    fetch(`http://localhost:3000/data/${collectionName}/${id}?${params}`, {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {

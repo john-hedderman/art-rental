@@ -68,7 +68,7 @@ export class AddJob implements OnInit {
 
   saveJob(jobData: any) {
     const collectionName = Collections.Jobs;
-    this.dataService.save(jobData, collectionName);
+    this.dataService.saveDocument(jobData, collectionName);
   }
 
   resetForm() {

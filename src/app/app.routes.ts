@@ -42,6 +42,10 @@ export const routes: Routes = [
         component: ArtDetail,
       },
       {
+        path: ':id/edit',
+        component: AddArt,
+      },
+      {
         path: '',
         redirectTo: 'list',
         pathMatch: 'full',

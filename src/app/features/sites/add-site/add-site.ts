@@ -58,7 +58,7 @@ export class AddSite implements OnInit {
 
   save(siteData: any) {
     const collectionName = Collections.Sites;
-    this.dataService.save(siteData, collectionName);
+    this.dataService.saveDocument(siteData, collectionName);
   }
 
   resetForm() {

@@ -57,7 +57,7 @@ export class AddClient implements OnInit {
     const { contacts, ...allButContacts } = clientData;
     const contact_ids = contacts.map((contact: ContactTest) => contact.contact_id);
     const finalClientData = { ...allButContacts, contact_ids, job_ids: [] };
-    this.dataService.save(finalClientData, collectionName);
+    this.dataService.saveDocument(finalClientData, collectionName);
   }
 
   saveContacts(contactsData: any[], client_id: number) {
@@ -67,7 +67,7 @@ export class AddClient implements OnInit {
       return { ...allButClient, client_id };
     });
     for (const contact of finalContactsData) {
-      this.dataService.save(contact, collectionName);
+      this.dataService.saveDocument(contact, collectionName);
     }
   }
 

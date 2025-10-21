@@ -14,24 +14,36 @@ import { DataService } from '../../../service/data-service';
   standalone: true,
 })
 export class ArtDetail {
-  art: Art = {} as Art;
-
-  navigateToArtList = () => {
+  goToEditArt = () => {
+    this.router.navigate(['/art', this.artId, 'edit']);
+  };
+  goToArtList = () => {
     this.router.navigate(['/art', 'list']);
   };
   headerData: HeaderData = {
     headerTitle: 'Art detail',
     headerButtons: [
       {
+        id: 'goToEditArtBtn',
+        label: 'Edit',
+        type: 'button',
+        buttonClass: 'btn btn-primary btn-sm',
+        disabled: false,
+        clickHandler: this.goToEditArt,
+      },
+      {
         id: 'goToArtListBtn',
         label: 'Art list',
         type: 'button',
         buttonClass: 'btn btn-primary btn-sm',
         disabled: false,
-        clickHandler: this.navigateToArtList,
+        clickHandler: this.goToArtList,
       },
     ],
   };
+
+  art: Art = {} as Art;
+  artId = 0;
 
   getArtId(): Observable<number> {
     return this.route.paramMap.pipe(map((params) => +params.get('id')!));
@@ -52,6 +64,7 @@ export class ArtDetail {
     })
       .pipe(take(1))
       .subscribe(({ artwork, artId, jobs, clients, artists, sites }) => {
+        this.artId = artId;
         let art = artwork.find((piece) => piece.art_id === artId);
         if (art) {
           let job = jobs.find((job) => job.job_id === art?.job_id);

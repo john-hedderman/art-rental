@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Artist, HeaderData, Job } from '../../../model/models';
+import { Art, Artist, HeaderData, Job } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-add-art',
@@ -34,9 +35,13 @@ export class AddArt implements OnInit {
     ],
   };
 
+  editObj: Art = {} as Art;
+
   artForm!: FormGroup;
   submitted = false;
   art_id!: number;
+
+  artId = '';
 
   artists$: Observable<Artist[]> | undefined;
   jobs$: Observable<Job[]> | undefined;
@@ -44,25 +49,46 @@ export class AddArt implements OnInit {
   onSubmit() {
     this.submitted = true;
     if (this.artForm.valid) {
-      this.artForm.value.art_id = Date.now();
       this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
       this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
-      this.save(this.artForm.value);
-      this.resetForm();
+      if (this.editObj.art_id) {
+        this.replaceDocument(this.artForm.value);
+      } else {
+        this.artForm.value.art_id = Date.now();
+        this.saveDocument(this.artForm.value);
+        this.resetForm();
+      }
     }
   }
 
-  save(artData: any) {
+  saveDocument(artData: any) {
     const collectionName = Collections.Art;
-    this.dataService.save(artData, collectionName);
+    this.dataService.saveDocument(artData, collectionName);
+  }
+
+  replaceDocument(artData: any) {
+    const collectionName = Collections.Art;
+    this.dataService.replaceDocument(artData, collectionName, artData.art_id, 'art_id');
   }
 
   resetForm() {
-    this.artForm.reset();
+    if (!this.editObj.art_id) {
+      this.artForm.reset();
+    }
     this.submitted = false;
   }
 
-  constructor(private router: Router, private dataService: DataService, private fb: FormBuilder) {
+  constructor(
+    private router: Router,
+    private dataService: DataService,
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private http: HttpClient
+  ) {
+    const segments = this.route.snapshot.url.map((x) => x.path);
+    if (segments[segments.length - 1] === 'edit') {
+      this.headerData.headerTitle = 'Edit Art';
+    }
     combineLatest({
       artists: this.dataService.artists$,
       jobs: this.dataService.jobs$,
@@ -93,7 +119,7 @@ export class AddArt implements OnInit {
 
   ngOnInit(): void {
     this.artForm = this.fb.group({
-      art_id: this.art_id,
+      art_id: [null],
       title: [''],
       file_name: [''],
       full_size_image_url: [''],
@@ -101,5 +127,27 @@ export class AddArt implements OnInit {
       job_id: [null],
       tags: [''],
     });
+
+    this.artId = this.route.snapshot.paramMap.get('id') ?? '';
+    if (this.artId) {
+      this.http
+        .get<Art[]>(`http://localhost:3000/data/art/${this.artId}?recordId=art_id`)
+        .subscribe((art) => {
+          if (art && art.length === 1) {
+            this.editObj = art[0];
+            if (this.editObj) {
+              // effectively touch prepopulated fields (when this is edit mode, not add),
+              // so they can be considered valid and let the form submission complete
+              this.artForm.get('art_id')?.setValue(this.editObj.art_id);
+              this.artForm.get('title')?.setValue(this.editObj.title);
+              this.artForm.get('file_name')?.setValue(this.editObj.file_name);
+              this.artForm.get('full_size_image_url')?.setValue(this.editObj.full_size_image_url);
+              this.artForm.get('artist_id')?.setValue(this.editObj.artist_id);
+              this.artForm.get('job_id')?.setValue(this.editObj.job_id);
+              this.artForm.get('tags')?.setValue(this.editObj.tags);
+            }
+          }
+        });
+    }
   }
 }

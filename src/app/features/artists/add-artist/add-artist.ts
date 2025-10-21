@@ -45,7 +45,7 @@ export class AddArtist implements OnInit {
 
   saveArtist(artistData: any) {
     const collectionName = Collections.Artists;
-    this.dataService.save(artistData, collectionName);
+    this.dataService.saveDocument(artistData, collectionName);
   }
 
   resetForm() {
