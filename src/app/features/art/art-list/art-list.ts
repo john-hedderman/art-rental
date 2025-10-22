@@ -39,6 +39,7 @@ export class ArtList {
         clickHandler: this.goToAddArt,
       },
     ],
+    headerLinks: [],
   };
 
   constructor(private dataService: DataService, private router: Router) {

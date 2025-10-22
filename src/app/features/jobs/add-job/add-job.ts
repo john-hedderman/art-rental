@@ -32,6 +32,7 @@ export class AddJob implements OnInit {
         clickHandler: this.goToJobList,
       },
     ],
+    headerLinks: [],
   };
 
   jobForm!: FormGroup;

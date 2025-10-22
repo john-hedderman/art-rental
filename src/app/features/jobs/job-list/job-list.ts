@@ -48,6 +48,7 @@ export class JobList implements OnInit {
         clickHandler: this.navigateToAddJob,
       },
     ],
+    headerLinks: [],
   };
 
   rows: Job[] = [];

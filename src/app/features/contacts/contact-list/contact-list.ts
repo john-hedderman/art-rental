@@ -48,6 +48,7 @@ export class ContactList implements OnInit {
         clickHandler: this.goToAddContact,
       },
     ],
+    headerLinks: [],
   };
 
   rows: ContactTest[] = [];

@@ -30,6 +30,7 @@ export class AddArtist implements OnInit {
         clickHandler: this.goToArtistList,
       },
     ],
+    headerLinks: [],
   };
 
   artistForm!: FormGroup;

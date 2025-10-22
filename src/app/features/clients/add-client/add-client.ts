@@ -36,6 +36,7 @@ export class AddClient implements OnInit {
         clickHandler: this.goToClientList,
       },
     ],
+    headerLinks: [],
   };
 
   clientForm!: FormGroup;

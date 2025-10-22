@@ -89,7 +89,16 @@ export interface HeaderButton {
   clickHandler: any;
 }
 
+export interface HeaderLink {
+  id: string;
+  label: string;
+  routerLink: string;
+  linkClass: string;
+  clickHandler: any;
+}
+
 export interface HeaderData {
   headerTitle: string;
   headerButtons: HeaderButton[];
+  headerLinks: HeaderLink[];
 }

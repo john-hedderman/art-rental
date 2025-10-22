@@ -28,6 +28,7 @@ export class AddContact {
         clickHandler: this.goToContactList,
       },
     ],
+    headerLinks: [],
   };
 
   constructor(private router: Router) {}

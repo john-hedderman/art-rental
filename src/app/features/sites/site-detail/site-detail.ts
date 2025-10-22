@@ -27,6 +27,7 @@ export class SiteDetail {
         clickHandler: this.navigateToSiteList,
       },
     ],
+    headerLinks: [],
   };
 
   constructor(private router: Router) {}

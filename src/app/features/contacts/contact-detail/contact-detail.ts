@@ -27,6 +27,7 @@ export class ContactDetail {
         clickHandler: this.navigateToContactList,
       },
     ],
+    headerLinks: [],
   };
 
   constructor(private router: Router) {}

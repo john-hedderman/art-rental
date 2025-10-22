@@ -46,6 +46,7 @@ export class ClientList implements OnInit {
         clickHandler: this.navigateToAddClient,
       },
     ],
+    headerLinks: [],
   };
 
   rows: Client[] = [];

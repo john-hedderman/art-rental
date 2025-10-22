@@ -46,6 +46,7 @@ export class SiteList implements OnInit {
         clickHandler: this.goToAddSite,
       },
     ],
+    headerLinks: [],
   };
 
   rows: Site[] = [];

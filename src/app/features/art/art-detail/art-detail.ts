@@ -40,6 +40,7 @@ export class ArtDetail {
         clickHandler: this.goToArtList,
       },
     ],
+    headerLinks: [],
   };
 
   art: Art = {} as Art;

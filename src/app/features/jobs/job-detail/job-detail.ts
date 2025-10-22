@@ -39,6 +39,7 @@ export class JobDetail implements OnInit {
         clickHandler: this.navigateToJobList,
       },
     ],
+    headerLinks: [],
   };
 
   thumbnail_path = 'images/art/';

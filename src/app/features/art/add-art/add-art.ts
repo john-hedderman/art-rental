@@ -23,16 +23,8 @@ export class AddArt implements OnInit {
   };
   headerData: HeaderData = {
     headerTitle: 'Add Art',
-    headerButtons: [
-      {
-        id: 'goToArtListBtn',
-        label: 'Art list',
-        type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
-        disabled: false,
-        clickHandler: this.goToArtList,
-      },
-    ],
+    headerButtons: [],
+    headerLinks: [],
   };
 
   editObj: Art = {} as Art;

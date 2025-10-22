@@ -36,6 +36,7 @@ export class ArtistList {
         clickHandler: this.goToAddArtist,
       },
     ],
+    headerLinks: [],
   };
 
   constructor(private dataService: DataService, private router: Router) {

@@ -34,6 +34,7 @@ export class ClientDetail implements OnInit {
         clickHandler: this.navigateToClientList,
       },
     ],
+    headerLinks: [],
   };
 
   client$: Observable<Client> | undefined;

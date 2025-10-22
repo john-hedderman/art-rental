@@ -32,6 +32,7 @@ export class AddSite implements OnInit {
         clickHandler: this.goToSiteList,
       },
     ],
+    headerLinks: [],
   };
 
   siteForm!: FormGroup;
