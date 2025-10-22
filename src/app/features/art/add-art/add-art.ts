@@ -36,6 +36,7 @@ export class AddArt implements OnInit {
   };
 
   editObj: Art = {} as Art;
+  editMode = false;
 
   artForm!: FormGroup;
   submitted = false;
@@ -51,7 +52,7 @@ export class AddArt implements OnInit {
     if (this.artForm.valid) {
       this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
       this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
-      if (this.editObj.art_id) {
+      if (this.editMode) {
         this.replaceDocument(this.artForm.value);
       } else {
         this.artForm.value.art_id = Date.now();
@@ -72,10 +73,24 @@ export class AddArt implements OnInit {
   }
 
   resetForm() {
-    if (!this.editObj.art_id) {
+    if (this.editMode) {
+      this.repopulateEditForm();
+    } else {
       this.artForm.reset();
     }
     this.submitted = false;
+  }
+
+  repopulateEditForm() {
+    // this also effectively touches the form fields, so those with prepopulated data and that
+    // the user has never touched can be considered valid, letting the form submission complete
+    this.artForm.get('art_id')?.setValue(this.editObj.art_id);
+    this.artForm.get('title')?.setValue(this.editObj.title);
+    this.artForm.get('file_name')?.setValue(this.editObj.file_name);
+    this.artForm.get('full_size_image_url')?.setValue(this.editObj.full_size_image_url);
+    this.artForm.get('artist_id')?.setValue(this.editObj.artist_id);
+    this.artForm.get('job_id')?.setValue(this.editObj.job_id);
+    this.artForm.get('tags')?.setValue(this.editObj.tags);
   }
 
   constructor(
@@ -130,24 +145,19 @@ export class AddArt implements OnInit {
 
     this.artId = this.route.snapshot.paramMap.get('id') ?? '';
     if (this.artId) {
+      this.editMode = true;
       this.http
         .get<Art[]>(`http://localhost:3000/data/art/${this.artId}?recordId=art_id`)
         .subscribe((art) => {
           if (art && art.length === 1) {
             this.editObj = art[0];
             if (this.editObj) {
-              // effectively touch prepopulated fields (when this is edit mode, not add),
-              // so they can be considered valid and let the form submission complete
-              this.artForm.get('art_id')?.setValue(this.editObj.art_id);
-              this.artForm.get('title')?.setValue(this.editObj.title);
-              this.artForm.get('file_name')?.setValue(this.editObj.file_name);
-              this.artForm.get('full_size_image_url')?.setValue(this.editObj.full_size_image_url);
-              this.artForm.get('artist_id')?.setValue(this.editObj.artist_id);
-              this.artForm.get('job_id')?.setValue(this.editObj.job_id);
-              this.artForm.get('tags')?.setValue(this.editObj.tags);
+              this.repopulateEditForm();
             }
           }
         });
+    } else {
+      this.editMode = false;
     }
   }
 }
