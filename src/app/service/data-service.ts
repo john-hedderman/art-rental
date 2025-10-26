@@ -60,22 +60,33 @@ export class DataService {
       });
   }
 
-  replaceDocument(data: any, collectionName: string, id: number, recordId: string): void {
-    const paramsObj = {} as any;
-    paramsObj['recordId'] = recordId;
-    const params = new URLSearchParams(paramsObj);
-    fetch(`http://localhost:3000/data/${collectionName}/${id}?${params}`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .catch((err) => {
-        console.error(`${collectionName} error:`, err);
-      })
-      .then((response: any) => {
-        return response.json();
+  async replaceDocument(
+    data: any,
+    collectionName: string,
+    id: number,
+    recordId: string
+  ): Promise<any> {
+    try {
+      const paramsObj = {} as any;
+      paramsObj['recordId'] = recordId;
+      const params = new URLSearchParams(paramsObj);
+      const response = await fetch(`http://localhost:3000/data/${collectionName}/${id}?${params}`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
+      if (!response.ok) {
+        throw new Error(
+          `Save response not ok. Status: ${response.status} - ${response.statusText}`
+        );
+      }
+      const jsonData = await response.json();
+      return jsonData;
+    } catch (error: any) {
+      console.error('Saving edits failed. Fetch error:', error.message);
+      throw error;
+    }
   }
 }

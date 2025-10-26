@@ -28,7 +28,7 @@ export class ArtList {
     this.router.navigate(['/art', 'add']);
   };
   headerData: HeaderData = {
-    headerTitle: 'Artwork',
+    headerTitle: 'Art',
     headerButtons: [
       {
         id: 'addArtBtn',

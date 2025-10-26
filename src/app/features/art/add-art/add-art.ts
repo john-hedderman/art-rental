@@ -39,13 +39,17 @@ export class AddArt implements OnInit {
   artists$: Observable<Artist[]> | undefined;
   jobs$: Observable<Job[]> | undefined;
 
-  onSubmit() {
+  saveStatus = '';
+  OPERATION_SUCCESS = 'success';
+  OPERATION_FAILURE = 'failure';
+
+  async onSubmit() {
     this.submitted = true;
     if (this.artForm.valid) {
       this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
       this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
       if (this.editMode) {
-        this.replaceDocument(this.artForm.value);
+        this.saveStatus = await this.replaceDocument(this.artForm.value);
       } else {
         this.artForm.value.art_id = Date.now();
         this.saveDocument(this.artForm.value);
@@ -59,9 +63,24 @@ export class AddArt implements OnInit {
     this.dataService.saveDocument(artData, collectionName);
   }
 
-  replaceDocument(artData: any) {
+  async replaceDocument(artData: any): Promise<string> {
     const collectionName = Collections.Art;
-    this.dataService.replaceDocument(artData, collectionName, artData.art_id, 'art_id');
+    let result = this.OPERATION_SUCCESS;
+    try {
+      const returnData = await this.dataService.replaceDocument(
+        artData,
+        collectionName,
+        artData.art_id,
+        'art_id'
+      );
+      if (returnData.modifiedCount === 0) {
+        result = this.OPERATION_FAILURE;
+      }
+    } catch (error) {
+      console.error('Save error:', error);
+      result = this.OPERATION_FAILURE;
+    }
+    return result;
   }
 
   resetForm() {
@@ -94,7 +113,7 @@ export class AddArt implements OnInit {
   ) {
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {
-      this.headerData.headerTitle = 'Edit Art';
+      this.headerData.headerTitle = 'Update Art';
     }
     combineLatest({
       artists: this.dataService.artists$,
