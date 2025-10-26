@@ -56,12 +56,12 @@ export class ArtDetail {
     private dataService: DataService
   ) {
     combineLatest({
-      artwork: this.dataService.art$,
+      artwork: this.dataService.load('art'),
       artId: this.getArtId(),
-      jobs: this.dataService.jobs$,
-      clients: this.dataService.clients$,
-      artists: this.dataService.artists$,
-      sites: this.dataService.sites$,
+      jobs: this.dataService.load('jobs'),
+      clients: this.dataService.load('clients'),
+      artists: this.dataService.load('artists'),
+      sites: this.dataService.load('sites'),
     })
       .pipe(take(1))
       .subscribe(({ artwork, artId, jobs, clients, artists, sites }) => {

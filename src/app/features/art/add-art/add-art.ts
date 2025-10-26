@@ -116,10 +116,10 @@ export class AddArt implements OnInit {
       this.headerData.headerTitle = 'Update Art';
     }
     combineLatest({
-      artists: this.dataService.artists$,
-      jobs: this.dataService.jobs$,
-      clients: this.dataService.clients$,
-      sites: this.dataService.sites$,
+      artists: this.dataService.load('artists'),
+      jobs: this.dataService.load('jobs'),
+      clients: this.dataService.load('clients'),
+      sites: this.dataService.load('sites'),
     })
       .pipe(take(1))
       .subscribe(({ artists, jobs, clients, sites }) => {

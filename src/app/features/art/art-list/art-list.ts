@@ -44,10 +44,10 @@ export class ArtList {
 
   constructor(private dataService: DataService, private router: Router) {
     combineLatest({
-      artwork: this.dataService.art$,
-      jobs: this.dataService.jobs$,
-      clients: this.dataService.clients$,
-      artists: this.dataService.artists$,
+      artwork: this.dataService.load('art'),
+      jobs: this.dataService.load('jobs'),
+      clients: this.dataService.load('clients'),
+      artists: this.dataService.load('artists'),
     })
       .pipe(take(1))
       .subscribe(({ artwork, jobs, clients, artists }) => {
