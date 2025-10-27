@@ -89,4 +89,28 @@ export class DataService {
       throw error;
     }
   }
+
+  async deleteDocument(collectionName: string, id: number, recordId: string) {
+    try {
+      const paramsObj = {} as any;
+      paramsObj['recordId'] = recordId;
+      const params = new URLSearchParams(paramsObj);
+      const response = await fetch(`http://localhost:3000/data/${collectionName}/${id}?${params}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(
+          `Delete response not ok. Status: ${response.status} - ${response.statusText}`
+        );
+      }
+      const jsonData = await response.json();
+      return jsonData;
+    } catch (error: any) {
+      console.error('Delete failed. Fetch error:', error.message);
+      throw error;
+    }
+  }
 }

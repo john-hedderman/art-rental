@@ -5,6 +5,7 @@ import { combineLatest, map, Observable, take } from 'rxjs';
 import { Art, HeaderData } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { DataService } from '../../../service/data-service';
+import { Collections } from '../../../shared/enums/collections';
 
 @Component({
   selector: 'app-art-detail',
@@ -22,29 +23,47 @@ export class ArtDetail {
   };
   headerData: HeaderData = {
     headerTitle: 'Art detail',
-    headerButtons: [
+    headerButtons: [],
+    headerLinks: [
       {
-        id: 'goToEditArtBtn',
-        label: 'Edit',
-        type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
-        disabled: false,
-        clickHandler: this.goToEditArt,
-      },
-      {
-        id: 'goToArtListBtn',
+        id: 'goToArtListLink',
         label: 'Art list',
-        type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
-        disabled: false,
+        routerLink: '/art/list',
+        linkClass: '',
         clickHandler: this.goToArtList,
       },
     ],
-    headerLinks: [],
   };
 
   art: Art = {} as Art;
   artId = 0;
+
+  deleteStatus = '';
+  OPERATION_SUCCESS = 'success';
+  OPERATION_FAILURE = 'failure';
+
+  async onClickDelete() {
+    this.deleteStatus = await this.deleteDocument();
+  }
+
+  async deleteDocument(): Promise<string> {
+    const collectionName = Collections.Art;
+    let result = this.OPERATION_SUCCESS;
+    try {
+      const returnData = await this.dataService.deleteDocument(
+        collectionName,
+        this.artId,
+        'art_id'
+      );
+      if (returnData.deletedCount === 0) {
+        result = this.OPERATION_FAILURE;
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      result = this.OPERATION_FAILURE;
+    }
+    return result;
+  }
 
   getArtId(): Observable<number> {
     return this.route.paramMap.pipe(map((params) => +params.get('id')!));

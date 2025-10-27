@@ -18,8 +18,12 @@ import { HttpClient } from '@angular/common/http';
   standalone: true,
 })
 export class AddArt implements OnInit {
-  goToArtList = () => {
-    this.router.navigate(['/art', 'list']);
+  goBack = () => {
+    if (this.editMode) {
+      this.router.navigate(['/art', this.artId]);
+    } else {
+      this.router.navigate(['/art', 'list']);
+    }
   };
   headerData: HeaderData = {
     headerTitle: 'Add Art',

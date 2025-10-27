@@ -1,7 +1,7 @@
 <app-page-header [headerData]="headerData"></app-page-header>
 <div class="container-fluid">
   <div class="row">
-    <div class="col-sm-12 col-md-6 ar-page-content-no-menubar p-3 ar-art">
+    <div class="col-sm-12 col-md-6 ar-page-content-buttonbar-no-menubar p-3 ar-art">
       <div class="ar-art-detail__image-container">
         <img
           src="{{ art.full_size_image_url }}"
@@ -11,7 +11,7 @@
         />
       </div>
     </div>
-    <div class="col-sm-12 col-md-6 ar-page-content-no-menubar overflow-y-auto p-3 ar-art">
+    <div class="col-sm-12 col-md-6 ar-page-content-buttonbar-no-menubar overflow-y-auto p-3 ar-art">
       <h5 class="fw-bold pb-2 ar-heading">Title</h5>
       @if (art.title) {
       <p class="pb-4">{{ art.title }}</p>
@@ -41,6 +41,93 @@
       } } @else {
       <p class="pb-4">Not on a job</p>
       }
+    </div>
+  </div>
+  <div class="row pb-3">
+    <div class="col-12">
+      <h5 class="fw-bold pb-2 pt-3 ar-heading"></h5>
+      <div class="pt-2 text-center">
+        <button type="button" class="btn btn-primary" (click)="goToEditArt()">Edit</button>
+        <button
+          type="button"
+          class="btn btn-danger ms-3"
+          data-bs-toggle="modal"
+          data-bs-target="#confirmModal"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="confirmModal"
+  tabindex="-1"
+  aria-labelledby="confirmModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmModalLabel">Are you sure?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to remove this piece of art from the system?
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          (click)="onClickDelete()"
+          data-bs-toggle="modal"
+          data-bs-target="#resultModal"
+        >
+          Yes, delete
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="resultModal"
+  tabindex="-1"
+  aria-labelledby="resultModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmModalLabel">Delete result</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="goToArtList()"
+        ></button>
+      </div>
+      @if (deleteStatus === OPERATION_SUCCESS) {
+      <div class="modal-body">The art was successfully deleted.</div>
+      } @else {
+      <div class="modal-body">There was an error, and the art was not deleted.</div>
+      }
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          (click)="goToArtList()"
+        >
+          Close
+        </button>
+      </div>
     </div>
   </div>
 </div>
