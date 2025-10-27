@@ -48,9 +48,10 @@ export class ArtList {
       jobs: this.dataService.load('jobs'),
       clients: this.dataService.load('clients'),
       artists: this.dataService.load('artists'),
+      sites: this.dataService.load('sites'),
     })
       .pipe(take(1))
-      .subscribe(({ artwork, jobs, clients, artists }) => {
+      .subscribe(({ artwork, jobs, clients, artists, sites }) => {
         this.artwork = artwork
           .map((art) => {
             let job = jobs.find((job) => job.job_id === art.job_id);
@@ -58,6 +59,10 @@ export class ArtList {
               const client = clients.find((client) => client.client_id === job?.client_id);
               if (client) {
                 job = { ...job, client };
+              }
+              const site = sites.find((site) => site.site_id === job?.site_id);
+              if (site) {
+                job = { ...job, site };
               }
               return { ...art, job };
             }
