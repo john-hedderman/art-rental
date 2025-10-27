@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 
 import { AddArt } from './add-art';
 
@@ -8,9 +10,9 @@ describe('AddArt', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddArt]
-    })
-    .compileComponents();
+      imports: [AddArt],
+      providers: [provideRouter([]), provideHttpClient()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AddArt);
     component = fixture.componentInstance;
