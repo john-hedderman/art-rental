@@ -4,13 +4,14 @@ import { Router } from '@angular/router';
 import { combineLatest, take } from 'rxjs';
 
 import { Card } from '../../../shared/components/card/card';
-import { Art, HeaderData } from '../../../model/models';
+import { Art, ButtonbarData, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 
 @Component({
   selector: 'app-art-list',
-  imports: [Card, PageHeader, FormsModule],
+  imports: [Card, PageHeader, FormsModule, Buttonbar],
   templateUrl: './art-list.html',
   styleUrl: './art-list.scss',
   standalone: true,
@@ -29,17 +30,21 @@ export class ArtList {
   };
   headerData: HeaderData = {
     headerTitle: 'Art',
-    headerButtons: [
+    headerButtons: [],
+    headerLinks: [],
+  };
+
+  buttonbarData: ButtonbarData = {
+    buttons: [
       {
         id: 'addArtBtn',
-        label: 'Add Art',
+        label: 'Add art',
         type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
+        buttonClass: 'btn btn-primary',
         disabled: false,
         clickHandler: this.goToAddArt,
       },
     ],
-    headerLinks: [],
   };
 
   constructor(private dataService: DataService, private router: Router) {

@@ -1,0 +1,19 @@
+<div class="row pb-3 buttonbar">
+  <div class="col-12 px-0">
+    <h5 class="pt-0 ar-heading"></h5>
+    <div class="pt-2 text-center">
+      @for (button of buttonbarData().buttons; track $index) {
+      <button
+        id="{{ button.id }}"
+        type="{{ button.type }}"
+        class="{{ button.buttonClass }}"
+        (click)="button.clickHandler()"
+        [disabled]="button.disabled"
+        [innerHTML]="button.label"
+      >
+        Add art
+      </button>
+      }
+    </div>
+  </div>
+</div>

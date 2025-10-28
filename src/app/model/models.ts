@@ -102,3 +102,16 @@ export interface HeaderData {
   headerButtons: HeaderButton[];
   headerLinks: HeaderLink[];
 }
+
+export interface ButtonbarButton {
+  id: string;
+  label: string;
+  type: string;
+  buttonClass: string;
+  disabled: boolean;
+  clickHandler: any;
+}
+
+export interface ButtonbarData {
+  buttons: ButtonbarButton[];
+}
