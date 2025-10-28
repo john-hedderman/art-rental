@@ -53,30 +53,33 @@ export class AddArt implements OnInit {
       this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
       this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
       if (this.editMode) {
-        this.saveStatus = await this.replaceDocument(this.artForm.value);
+        this.saveStatus = await this.saveDocument(this.artForm.value);
       } else {
         this.artForm.value.art_id = Date.now();
-        this.saveDocument(this.artForm.value);
+        this.saveStatus = await this.saveDocument(this.artForm.value);
         this.resetForm();
+      }
+      if (this.saveStatus === this.OPERATION_SUCCESS) {
+        this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
       }
     }
   }
 
-  saveDocument(artData: any) {
-    const collectionName = Collections.Art;
-    this.dataService.saveDocument(artData, collectionName);
-  }
-
-  async replaceDocument(artData: any): Promise<string> {
+  async saveDocument(artData: any): Promise<string> {
     const collectionName = Collections.Art;
     let result = this.OPERATION_SUCCESS;
     try {
-      const returnData = await this.dataService.replaceDocument(
-        artData,
-        collectionName,
-        artData.art_id,
-        'art_id'
-      );
+      let returnData;
+      if (this.editMode) {
+        returnData = await this.dataService.saveDocument(
+          artData,
+          collectionName,
+          artData.art_id,
+          'art_id'
+        );
+      } else {
+        returnData = await this.dataService.saveDocument(artData, collectionName);
+      }
       if (returnData.modifiedCount === 0) {
         result = this.OPERATION_FAILURE;
       }
@@ -97,7 +100,7 @@ export class AddArt implements OnInit {
   }
 
   repopulateEditForm() {
-    // this also effectively touches the form fields, so those with prepopulated data and that
+    // this also effectively touches the form fields, so the prepopulated fields that
     // the user has never touched can be considered valid, letting the form submission complete
     this.artForm.get('art_id')?.setValue(this.editObj.art_id);
     this.artForm.get('title')?.setValue(this.editObj.title);

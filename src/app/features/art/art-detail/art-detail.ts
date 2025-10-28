@@ -44,6 +44,9 @@ export class ArtDetail {
 
   async onClickDelete() {
     this.deleteStatus = await this.deleteDocument();
+    if (this.deleteStatus === this.OPERATION_SUCCESS) {
+      this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
+    }
   }
 
   async deleteDocument(): Promise<string> {
@@ -75,12 +78,12 @@ export class ArtDetail {
     private dataService: DataService
   ) {
     combineLatest({
-      artwork: this.dataService.load('art'),
+      artwork: this.dataService.art$,
       artId: this.getArtId(),
-      jobs: this.dataService.load('jobs'),
-      clients: this.dataService.load('clients'),
-      artists: this.dataService.load('artists'),
-      sites: this.dataService.load('sites'),
+      jobs: this.dataService.jobs$,
+      clients: this.dataService.clients$,
+      artists: this.dataService.artists$,
+      sites: this.dataService.sites$,
     })
       .pipe(take(1))
       .subscribe(({ artwork, artId, jobs, clients, artists, sites }) => {

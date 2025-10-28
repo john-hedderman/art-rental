@@ -44,39 +44,32 @@ export class DataService {
     return this.http.get<unknown[]>(`http://localhost:3000/data/${dataType}`);
   }
 
-  saveDocument(data: any, collectionName: string): void {
-    fetch(`http://localhost:3000/data/${collectionName}`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .catch((err) => {
-        console.error(`${collectionName} error:`, err);
-      })
-      .then((response: any) => {
-        return response.json();
-      });
-  }
-
-  async replaceDocument(
+  async saveDocument(
     data: any,
     collectionName: string,
-    id: number,
-    recordId: string
+    id?: number,
+    recordId?: string
   ): Promise<any> {
     try {
-      const paramsObj = {} as any;
-      paramsObj['recordId'] = recordId;
-      const params = new URLSearchParams(paramsObj);
-      const response = await fetch(`http://localhost:3000/data/${collectionName}/${id}?${params}`, {
+      const options = {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json',
         },
-      });
+      };
+      let response;
+      if (id) {
+        const paramsObj = {} as any;
+        paramsObj['recordId'] = recordId;
+        const params = new URLSearchParams(paramsObj);
+        response = await fetch(
+          `http://localhost:3000/data/${collectionName}/${id}?${params}`,
+          options
+        );
+      } else {
+        response = await fetch(`http://localhost:3000/data/${collectionName}`, options);
+      }
       if (!response.ok) {
         throw new Error(
           `Save response not ok. Status: ${response.status} - ${response.statusText}`
