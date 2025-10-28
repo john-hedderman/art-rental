@@ -2,14 +2,15 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, take } from 'rxjs';
 
-import { Art, HeaderData } from '../../../model/models';
+import { Art, ButtonbarData, HeaderData } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
+import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 
 @Component({
   selector: 'app-art-detail',
-  imports: [PageHeader, RouterLink],
+  imports: [PageHeader, RouterLink, Buttonbar],
   templateUrl: './art-detail.html',
   styleUrl: './art-detail.scss',
   standalone: true,
@@ -31,6 +32,31 @@ export class ArtDetail {
         routerLink: '/art/list',
         linkClass: '',
         clickHandler: this.goToArtList,
+      },
+    ],
+  };
+
+  buttonbarData: ButtonbarData = {
+    buttons: [
+      {
+        id: 'editArtBtn',
+        label: 'Edit',
+        type: 'button',
+        buttonClass: 'btn btn-primary',
+        disabled: false,
+        dataBsToggle: null,
+        dataBsTarget: null,
+        clickHandler: this.goToEditArt,
+      },
+      {
+        id: 'deleteArtBtn',
+        label: 'Delete',
+        type: 'button',
+        buttonClass: 'btn btn-danger ms-3',
+        disabled: false,
+        dataBsToggle: 'modal',
+        dataBsTarget: '#confirmModal',
+        clickHandler: null,
       },
     ],
   };

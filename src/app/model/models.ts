@@ -109,6 +109,8 @@ export interface ButtonbarButton {
   type: string;
   buttonClass: string;
   disabled: boolean;
+  dataBsToggle: string | null;
+  dataBsTarget: string | null;
   clickHandler: any;
 }
 

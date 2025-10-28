@@ -42,6 +42,8 @@ export class ArtList {
         type: 'button',
         buttonClass: 'btn btn-primary',
         disabled: false,
+        dataBsToggle: null,
+        dataBsTarget: null,
         clickHandler: this.goToAddArt,
       },
     ],

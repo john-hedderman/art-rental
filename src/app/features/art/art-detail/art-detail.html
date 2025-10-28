@@ -1,7 +1,7 @@
 <app-page-header [headerData]="headerData"></app-page-header>
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-sm-12 col-md-6 ar-page-content-buttonbar-no-menubar p-3 ar-art">
+  <div class="row ar-page-content-buttonbar-no-menubar overflow-y-auto">
+    <div class="col-sm-12 col-md-6 p-3 ar-art">
       <div class="ar-art-detail__image-container">
         <img
           src="{{ art.full_size_image_url }}"
@@ -11,7 +11,7 @@
         />
       </div>
     </div>
-    <div class="col-sm-12 col-md-6 ar-page-content-buttonbar-no-menubar overflow-y-auto p-3 ar-art">
+    <div class="col-sm-12 col-md-6 p-3 ar-art">
       <h5 class="fw-bold pb-2 ar-heading">Title</h5>
       @if (art.title) {
       <p class="pb-4">{{ art.title }}</p>
@@ -43,22 +43,7 @@
       }
     </div>
   </div>
-  <div class="row pb-3">
-    <div class="col-12">
-      <h5 class="fw-bold pb-2 pt-3 ar-heading"></h5>
-      <div class="pt-2 text-center">
-        <button type="button" class="btn btn-primary" (click)="goToEditArt()">Edit</button>
-        <button
-          type="button"
-          class="btn btn-danger ms-3"
-          data-bs-toggle="modal"
-          data-bs-target="#confirmModal"
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  </div>
+  <app-buttonbar [buttonbarData]="buttonbarData"></app-buttonbar>
 </div>
 
 <div

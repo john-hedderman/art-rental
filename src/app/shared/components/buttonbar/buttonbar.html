@@ -9,6 +9,8 @@
         class="{{ button.buttonClass }}"
         (click)="button.clickHandler()"
         [disabled]="button.disabled"
+        [attr.data-bs-toggle]="button.dataBsToggle"
+        [attr.data-bs-target]="button.dataBsTarget"
         [innerHTML]="button.label"
       >
         Add art
