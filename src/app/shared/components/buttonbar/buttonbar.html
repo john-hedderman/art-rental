@@ -2,7 +2,7 @@
   <div class="col-12 px-0">
     <h5 class="pt-0 ar-heading"></h5>
     <div class="pt-2 text-center">
-      @for (button of buttonbarData().buttons; track $index) {
+      @for (button of buttonbarData().buttons; track $index) { @if (button.clickHandler) {
       <button
         id="{{ button.id }}"
         type="{{ button.type }}"
@@ -12,10 +12,18 @@
         [attr.data-bs-toggle]="button.dataBsToggle"
         [attr.data-bs-target]="button.dataBsTarget"
         [innerHTML]="button.label"
-      >
-        Add art
-      </button>
-      }
+      ></button>
+      } @else {
+      <button
+        id="{{ button.id }}"
+        type="{{ button.type }}"
+        class="{{ button.buttonClass }}"
+        [disabled]="button.disabled"
+        [attr.data-bs-toggle]="button.dataBsToggle"
+        [attr.data-bs-target]="button.dataBsTarget"
+        [innerHTML]="button.label"
+      ></button>
+      } }
     </div>
   </div>
 </div>

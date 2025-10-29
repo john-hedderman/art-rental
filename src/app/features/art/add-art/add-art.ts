@@ -5,14 +5,17 @@ import { combineLatest, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Art, Artist, HeaderData, Job } from '../../../model/models';
+import { Art, Artist, ButtonbarData, HeaderData, Job } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
 import { HttpClient } from '@angular/common/http';
+import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
+import { OperationsService } from '../../../service/operations-service';
+import { OPERATION_SUCCESS, OPERATION_FAILURE } from '../../../shared/constants';
 
 @Component({
   selector: 'app-add-art',
-  imports: [PageHeader, ReactiveFormsModule, AsyncPipe],
+  imports: [PageHeader, ReactiveFormsModule, AsyncPipe, Buttonbar],
   templateUrl: './add-art.html',
   styleUrl: './add-art.scss',
   standalone: true,
@@ -31,6 +34,31 @@ export class AddArt implements OnInit {
     headerLinks: [],
   };
 
+  buttonbarData: ButtonbarData = {
+    buttons: [
+      {
+        id: 'saveBtn',
+        label: 'Save',
+        type: 'submit',
+        buttonClass: 'btn btn-primary',
+        disabled: false,
+        dataBsToggle: null,
+        dataBsTarget: null,
+        clickHandler: null,
+      },
+      {
+        id: 'cancelBtn',
+        label: 'Cancel',
+        type: 'button',
+        buttonClass: 'btn btn-outline-secondary ms-3',
+        disabled: false,
+        dataBsToggle: null,
+        dataBsTarget: null,
+        clickHandler: this.goBack,
+      },
+    ],
+  };
+
   editObj: Art = {} as Art;
   editMode = false;
 
@@ -44,8 +72,6 @@ export class AddArt implements OnInit {
   jobs$: Observable<Job[]> | undefined;
 
   saveStatus = '';
-  OPERATION_SUCCESS = 'success';
-  OPERATION_FAILURE = 'failure';
 
   async onSubmit() {
     this.submitted = true;
@@ -54,12 +80,20 @@ export class AddArt implements OnInit {
       this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
       if (this.editMode) {
         this.saveStatus = await this.saveDocument(this.artForm.value);
+        this.operationsService.setStatus(this.saveStatus);
+        setTimeout(() => {
+          this.operationsService.setStatus('');
+        }, 2000);
       } else {
         this.artForm.value.art_id = Date.now();
         this.saveStatus = await this.saveDocument(this.artForm.value);
+        this.operationsService.setStatus(this.saveStatus);
+        setTimeout(() => {
+          this.operationsService.setStatus('');
+        }, 2000);
         this.resetForm();
       }
-      if (this.saveStatus === this.OPERATION_SUCCESS) {
+      if (this.saveStatus === OPERATION_SUCCESS) {
         this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
       }
     }
@@ -67,7 +101,7 @@ export class AddArt implements OnInit {
 
   async saveDocument(artData: any): Promise<string> {
     const collectionName = Collections.Art;
-    let result = this.OPERATION_SUCCESS;
+    let result = OPERATION_SUCCESS;
     try {
       let returnData;
       if (this.editMode) {
@@ -81,11 +115,11 @@ export class AddArt implements OnInit {
         returnData = await this.dataService.saveDocument(artData, collectionName);
       }
       if (returnData.modifiedCount === 0) {
-        result = this.OPERATION_FAILURE;
+        result = OPERATION_FAILURE;
       }
     } catch (error) {
       console.error('Save error:', error);
-      result = this.OPERATION_FAILURE;
+      result = OPERATION_FAILURE;
     }
     return result;
   }
@@ -116,7 +150,8 @@ export class AddArt implements OnInit {
     private dataService: DataService,
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private http: HttpClient
+    private http: HttpClient,
+    private operationsService: OperationsService
   ) {
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {

@@ -47,7 +47,7 @@
 </div>
 
 <div
-  class="modal fade"
+  class="modal modal-first"
   id="confirmModal"
   tabindex="-1"
   aria-labelledby="confirmModalLabel"
@@ -66,7 +66,7 @@
         <button
           type="button"
           class="btn btn-primary"
-          data-bs-dismiss="modal"
+          data-bs-dismiss="modal modal-first"
           (click)="onClickDelete()"
           data-bs-toggle="modal"
           data-bs-target="#resultModal"
@@ -80,7 +80,7 @@
 </div>
 
 <div
-  class="modal fade"
+  class="modal modal-second"
   id="resultModal"
   tabindex="-1"
   aria-labelledby="resultModalLabel"
@@ -93,12 +93,12 @@
         <button
           type="button"
           class="btn-close"
-          data-bs-dismiss="modal"
+          data-bs-dismiss="modal modal-second"
           aria-label="Close"
           (click)="goToArtList()"
         ></button>
       </div>
-      @if (deleteStatus === OPERATION_SUCCESS) {
+      @if (deleteStatus === OP_SUCCESS) {
       <div class="modal-body">The art was successfully deleted.</div>
       } @else {
       <div class="modal-body">There was an error, and the art was not deleted.</div>

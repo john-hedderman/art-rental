@@ -3,11 +3,25 @@
     <div class="flex-grow-1">
       <h5 class="mt-1 mb-0">{{ headerData().headerTitle }}</h5>
     </div>
-    <div>
+    <div class="me-2">
+      @if (operationStatus() === OP_SUCCESS) {
+      <div>
+        <span class="bi bi-check-circle d-inline-block me-2 text-success"></span
+        ><span class="text-success">Operation succeeded</span>
+      </div>
+      } @else if (operationStatus() === OP_FAILURE) {
+      <div>
+        <span class="bi bi-exclamation-circle d-inline-block me-2 text-danger"></span
+        ><span class="text-danger">Operation failed</span>
+      </div>
+      }
+    </div>
+    @if (headerData().headerLinks.length > 0) {
+    <div class="ms-3 me-2">
       @for (headerLink of headerData().headerLinks; track $index) { @if (headerLink.clickHandler) {
       <a
         id="{{ headerLink.id }}"
-        class="{{ headerLink.linkClass }} me-2 lh-lg"
+        class="{{ headerLink.linkClass }} lh-lg"
         [routerLink]="headerLink.routerLink"
         (click)="headerLink.clickHandler()"
         >{{ headerLink.label }}</a
@@ -21,17 +35,19 @@
       >
       } }
     </div>
-    <div>
+    } @if (headerData().headerButtons.length > 0) {
+    <div class="ms-3 me-2">
       @for (headerButton of headerData().headerButtons; track $index) {
       <button
         id="{{ headerButton.id }}"
         [innerHTML]="headerButton.label"
         type="{{ headerButton.type }}"
-        class="{{ headerButton.buttonClass }} ms-2"
+        class="{{ headerButton.buttonClass }}"
         [disabled]="headerButton.disabled"
         (click)="headerButton.clickHandler()"
       ></button>
       }
     </div>
+    }
   </div>
 </div>
