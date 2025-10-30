@@ -26,10 +26,21 @@ export class AddArtist implements OnInit {
       this.router.navigate(['/artists', 'list']);
     }
   };
+  goToArtistsList = () => {
+    this.router.navigate(['/artists', 'list']);
+  };
   headerData: HeaderData = {
     headerTitle: 'Add Artist',
     headerButtons: [],
-    headerLinks: [],
+    headerLinks: [
+      {
+        id: 'goToArtistsListLink',
+        label: 'Artists list',
+        routerLink: '/artists/list',
+        linkClass: '',
+        clickHandler: this.goToArtistsList,
+      },
+    ],
   };
 
   buttonbarData: ButtonbarData = {

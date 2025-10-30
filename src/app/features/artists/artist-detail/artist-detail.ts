@@ -29,7 +29,7 @@ export class ArtistDetail {
     headerLinks: [
       {
         id: 'goToArtistListLink',
-        label: 'Artists',
+        label: 'Artists list',
         routerLink: '/art/list',
         linkClass: '',
         clickHandler: this.goToArtistList,
