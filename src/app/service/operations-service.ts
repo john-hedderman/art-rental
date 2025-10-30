@@ -1,15 +1,19 @@
 import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import { OPERATION_SUCCESS, OPERATION_FAILURE } from '../shared/constants';
+import { OperationStatus } from '../model/models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OperationsService {
-  private _status: WritableSignal<string> = signal('');
+  private _status: WritableSignal<OperationStatus> = signal({
+    status: '',
+    success: '',
+    failure: '',
+  });
 
-  readonly operationStatus: Signal<string> = this._status.asReadonly();
+  readonly operationStatus: Signal<OperationStatus> = this._status.asReadonly();
 
-  setStatus(newStatus: string): void {
+  setStatus(newStatus: OperationStatus): void {
     this._status.update(() => newStatus);
   }
 }

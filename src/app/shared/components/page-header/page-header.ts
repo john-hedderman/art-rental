@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 
 import { OperationsService } from '../../../service/operations-service';
 import { OPERATION_SUCCESS, OPERATION_FAILURE } from '../../../shared/constants';
+import { OperationStatus } from '../../../../app/model/models';
 
 @Component({
   selector: 'app-page-header',
@@ -22,7 +23,7 @@ export class PageHeader {
   readonly OP_SUCCESS = OPERATION_SUCCESS;
   readonly OP_FAILURE = OPERATION_FAILURE;
 
-  operationStatus: Signal<string>;
+  operationStatus: Signal<OperationStatus>;
 
   constructor(private operationsService: OperationsService) {
     this.operationStatus = computed(() => this.operationsService.operationStatus());

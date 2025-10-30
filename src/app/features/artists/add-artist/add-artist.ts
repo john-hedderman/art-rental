@@ -80,20 +80,24 @@ export class AddArtist implements OnInit {
   saveStatus = '';
 
   async onSubmit() {
+    let success = 'Save succeeded';
+    const failure = 'Save failed';
+    const statusReset = { status: '', success: '', failure: '' };
     this.submitted = true;
     if (this.artistForm.valid) {
       if (this.editMode) {
+        success = 'Changes saved';
         this.saveStatus = await this.saveDocument(this.artistForm.value);
-        this.operationsService.setStatus(this.saveStatus);
+        this.operationsService.setStatus({ status: this.saveStatus, success, failure });
         setTimeout(() => {
-          this.operationsService.setStatus('');
+          this.operationsService.setStatus(statusReset);
         }, 2000);
       } else {
         this.artistForm.value.artist_id = Date.now();
         this.saveStatus = await this.saveDocument(this.artistForm.value);
-        this.operationsService.setStatus(this.saveStatus);
+        this.operationsService.setStatus({ status: this.saveStatus, success, failure });
         setTimeout(() => {
-          this.operationsService.setStatus('');
+          this.operationsService.setStatus(statusReset);
         }, 2000);
         this.resetForm();
       }

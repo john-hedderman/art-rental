@@ -117,3 +117,9 @@ export interface ButtonbarButton {
 export interface ButtonbarData {
   buttons: ButtonbarButton[];
 }
+
+export interface OperationStatus {
+  status: string;
+  success: string;
+  failure: string;
+}

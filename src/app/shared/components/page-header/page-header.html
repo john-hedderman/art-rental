@@ -4,15 +4,15 @@
       <h5 class="mt-1 mb-0">{{ headerData().headerTitle }}</h5>
     </div>
     <div class="me-2">
-      @if (operationStatus() === OP_SUCCESS) {
+      @if (operationStatus().status === OP_SUCCESS) {
       <div>
         <span class="bi bi-check-circle d-inline-block me-2 text-success"></span
-        ><span class="text-success">Operation succeeded</span>
+        ><span class="text-success">{{ operationStatus().success }}</span>
       </div>
-      } @else if (operationStatus() === OP_FAILURE) {
+      } @else if (operationStatus().status === OP_FAILURE) {
       <div>
         <span class="bi bi-exclamation-circle d-inline-block me-2 text-danger"></span
-        ><span class="text-danger">Operation failed</span>
+        ><span class="text-danger">{{ operationStatus().failure }}</span>
       </div>
       }
     </div>

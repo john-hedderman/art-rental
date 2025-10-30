@@ -84,22 +84,26 @@ export class AddArt implements OnInit {
   saveStatus = '';
 
   async onSubmit() {
+    let success = 'Save succeeded';
+    const failure = 'Save failed';
+    const statusReset = { status: '', success: '', failure: '' };
     this.submitted = true;
     if (this.artForm.valid) {
       this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
       this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
       if (this.editMode) {
+        success = 'Changes saved';
         this.saveStatus = await this.saveDocument(this.artForm.value);
-        this.operationsService.setStatus(this.saveStatus);
+        this.operationsService.setStatus({ status: this.saveStatus, success, failure });
         setTimeout(() => {
-          this.operationsService.setStatus('');
+          this.operationsService.setStatus(statusReset);
         }, 2000);
       } else {
         this.artForm.value.art_id = Date.now();
         this.saveStatus = await this.saveDocument(this.artForm.value);
-        this.operationsService.setStatus(this.saveStatus);
+        this.operationsService.setStatus({ status: this.saveStatus, success, failure });
         setTimeout(() => {
-          this.operationsService.setStatus('');
+          this.operationsService.setStatus(statusReset);
         }, 2000);
         this.resetForm();
       }
