@@ -1,53 +1,57 @@
 <app-page-header [headerData]="headerData"></app-page-header>
-<div class="container-fluid p-3 ar-page-content-no-menubar overflow-y-auto">
-  <p><span class="text-danger">*</span> required</p>
+<div class="container-fluid">
   <form
     [formGroup]="artistForm"
     (ngSubmit)="onSubmit()"
-    class="row g-3 needs-validation"
+    class="needs-validation"
     [class.was-validated]="submitted && artistForm.invalid"
     novalidate
   >
-    <div class="col-md-6">
-      <label for="name" class="col-form-label"
-        >Artist name <span class="text-danger">*</span></label
-      >
-      <input
-        type="text"
-        id="name"
-        formControlName="name"
-        aria-describedby="name"
-        class="form-control"
-        required
-      />
-      <div class="invalid-feedback">Please provide an artist name.</div>
+    <div class="row ar-page-content-buttonbar-no-menubar overflow-y-auto">
+      <div class="col-12 d-flex flex-column py-3">
+        <p>Please complete all required fields (<span class="text-danger">*</span>).</p>
+        <div class="row flex-grow-1">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-md-6">
+                <label for="name" class="col-form-label"
+                  >Artist name <span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  id="name"
+                  formControlName="name"
+                  aria-describedby="name"
+                  class="form-control"
+                  required
+                />
+                <div class="invalid-feedback">Please provide an artist name.</div>
+              </div>
+              <div class="col-md-6">
+                <label for="photo_path" class="col-form-label">Photo path</label>
+                <input
+                  type="text"
+                  id="photo_path"
+                  formControlName="photo_path"
+                  aria-describedby="photo_path"
+                  class="form-control"
+                />
+              </div>
+              <div class="col-12">
+                <label for="tags" class="col-form-label">Artwork tags</label>
+                <input
+                  type="text"
+                  id="tags"
+                  formControlName="tags"
+                  aria-describedby="tags"
+                  class="form-control"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="col-md-6">
-      <label for="photo_path" class="col-form-label">Photo path</label>
-      <input
-        type="text"
-        id="photo_path"
-        formControlName="photo_path"
-        aria-describedby="photo_path"
-        class="form-control"
-      />
-    </div>
-    <div class="col-12">
-      <label for="tags" class="col-form-label">Artwork tags</label>
-      <input
-        type="text"
-        id="tags"
-        formControlName="tags"
-        aria-describedby="tags"
-        class="form-control"
-      />
-    </div>
-
-    <div class="col-12 mt-4 w-auto m-auto">
-      <button class="btn btn-primary btn-sm" type="submit">Submit</button>
-      <button class="btn btn-secondary btn-sm ms-3" type="button" (click)="resetForm()">
-        Reset form
-      </button>
-    </div>
+    <app-buttonbar [buttonbarData]="buttonbarData"></app-buttonbar>
   </form>
 </div>

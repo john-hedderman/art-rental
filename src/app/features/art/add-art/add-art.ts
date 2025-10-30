@@ -64,7 +64,6 @@ export class AddArt implements OnInit {
 
   artForm!: FormGroup;
   submitted = false;
-  art_id!: number;
 
   artId = '';
 
