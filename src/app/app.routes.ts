@@ -6,6 +6,7 @@ import { AddArt } from './features/art/add-art/add-art';
 import { ArtistsPage } from './features/artists/artists-page';
 import { ArtistList } from './features/artists/artist-list/artist-list';
 import { AddArtist } from './features/artists/add-artist/add-artist';
+import { ArtistDetail } from './features/artists/artist-detail/artist-detail';
 import { ClientsPage } from './features/clients/clients-page';
 import { ClientList } from './features/clients/client-list/client-list';
 import { AddClient } from './features/clients/add-client/add-client';
@@ -63,6 +64,10 @@ export const routes: Routes = [
       {
         path: 'add',
         component: AddArtist,
+      },
+      {
+        path: ':id',
+        component: ArtistDetail,
       },
       {
         path: '',

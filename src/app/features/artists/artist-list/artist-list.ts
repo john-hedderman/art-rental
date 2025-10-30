@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
 import { take } from 'rxjs';
+import { Router } from '@angular/router';
 
-import { Artist, HeaderData } from '../../../model/models';
+import { Artist, ButtonbarData, HeaderData } from '../../../model/models';
 import { Card } from '../../../shared/components/card/card';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Router } from '@angular/router';
+import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 
 @Component({
   selector: 'app-artist-list',
-  imports: [Card, PageHeader],
+  imports: [Card, PageHeader, Buttonbar],
   templateUrl: './artist-list.html',
   styleUrl: './artist-list.scss',
   standalone: true,
@@ -20,23 +21,31 @@ import { Router } from '@angular/router';
 export class ArtistList {
   artists: Artist[] = [];
 
-  goToArtistDetail = () => {};
+  goToArtistDetail = (id: number) => {
+    this.router.navigate(['/artists', id]);
+  };
   goToAddArtist = () => {
     this.router.navigate(['/artists', 'add']);
   };
   headerData: HeaderData = {
     headerTitle: 'Artists',
-    headerButtons: [
+    headerButtons: [],
+    headerLinks: [],
+  };
+
+  buttonbarData: ButtonbarData = {
+    buttons: [
       {
         id: 'addArtistBtn',
-        label: 'Add Artist',
+        label: 'Add artist',
         type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
+        buttonClass: 'btn btn-primary',
         disabled: false,
+        dataBsToggle: null,
+        dataBsTarget: null,
         clickHandler: this.goToAddArtist,
       },
     ],
-    headerLinks: [],
   };
 
   constructor(private dataService: DataService, private router: Router) {
