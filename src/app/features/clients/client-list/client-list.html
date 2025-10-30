@@ -1,25 +1,30 @@
 <app-page-header [headerData]="headerData"></app-page-header>
-<ngx-datatable
-  #clientsTable
-  class="material"
-  [rows]="rows"
-  [columns]="columns"
-  [columnMode]="'force'"
-  [headerHeight]="50"
-  [rowHeight]="50"
-  [scrollbarV]="true"
-  (activate)="onActivate($event)"
->
-  <ngx-datatable-row-detail [rowHeight]="50">
-    <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
-      @if (row.city && row.state) {
-      <div class="row-detail-container">
-        <div>{{ row.city }}, {{ row.state }} &mdash; {{ row.industry }}</div>
-      </div>
-      }
-    </ng-template>
-  </ngx-datatable-row-detail>
-</ngx-datatable>
+<div class="container-fluid">
+  <div class="row overflow-y-hidden ar-page-content-buttonbar-no-menubar">
+    <ngx-datatable
+      #clientsTable
+      class="material"
+      [rows]="rows"
+      [columns]="columns"
+      [columnMode]="'force'"
+      [headerHeight]="50"
+      [rowHeight]="50"
+      [scrollbarV]="true"
+      (activate)="onActivate($event)"
+    >
+      <ngx-datatable-row-detail [rowHeight]="50">
+        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+          @if (row.city && row.state) {
+          <div class="row-detail-container">
+            <div>{{ row.city }}, {{ row.state }} &mdash; {{ row.industry }}</div>
+          </div>
+          }
+        </ng-template>
+      </ngx-datatable-row-detail>
+    </ngx-datatable>
+  </div>
+  <app-buttonbar [buttonbarData]="buttonbarData"></app-buttonbar>
+</div>
 
 <ng-template #arrowTemplate let-row="row" let-expanded="expanded">
   <a

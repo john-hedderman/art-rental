@@ -3,14 +3,15 @@ import { Router } from '@angular/router';
 import { NgxDatatableModule, TableColumn, DatatableComponent } from '@swimlane/ngx-datatable';
 import { take } from 'rxjs';
 
-import { Client, HeaderData } from '../../../model/models';
+import { ButtonbarData, Client, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
+import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 
 @Component({
   selector: 'app-client-list',
-  imports: [NgxDatatableModule, PageHeader],
+  imports: [NgxDatatableModule, PageHeader, Buttonbar],
   templateUrl: './client-list.html',
   styleUrl: './client-list.scss',
   standalone: true,
@@ -31,22 +32,28 @@ export class ClientList implements OnInit {
     Util.showHideRowDetail();
   }
 
-  navigateToAddClient = () => {
+  goToAddClient = () => {
     this.router.navigate(['/clients', 'add']);
   };
   headerData: HeaderData = {
     headerTitle: 'Clients',
-    headerButtons: [
+    headerButtons: [],
+    headerLinks: [],
+  };
+
+  buttonbarData: ButtonbarData = {
+    buttons: [
       {
         id: 'addClientBtn',
         label: 'Add Client',
         type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
+        buttonClass: 'btn btn-primary',
         disabled: false,
-        clickHandler: this.navigateToAddClient,
+        dataBsToggle: null,
+        dataBsTarget: null,
+        clickHandler: this.goToAddClient,
       },
     ],
-    headerLinks: [],
   };
 
   rows: Client[] = [];
