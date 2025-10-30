@@ -9,6 +9,7 @@ import { DataService } from '../../../service/data-service';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
 import { OPERATION_SUCCESS, OPERATION_FAILURE } from '../../../shared/constants';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-add-artist',
@@ -141,7 +142,8 @@ export class AddArtist implements OnInit {
     private fb: FormBuilder,
     private dataService: DataService,
     private route: ActivatedRoute,
-    private operationsService: OperationsService
+    private operationsService: OperationsService,
+    private http: HttpClient
   ) {
     this.artist_id = Date.now();
   }
@@ -155,5 +157,20 @@ export class AddArtist implements OnInit {
     });
 
     this.artistId = this.route.snapshot.paramMap.get('id') ?? '';
+    if (this.artistId) {
+      this.editMode = true;
+      this.http
+        .get<Artist[]>(`http://localhost:3000/data/artists/${this.artistId}?recordId=artist_id`)
+        .subscribe((artists) => {
+          if (artists && artists.length === 1) {
+            this.editObj = artists[0];
+            if (this.editObj) {
+              this.repopulateEditForm();
+            }
+          }
+        });
+    } else {
+      this.editMode = false;
+    }
   }
 }

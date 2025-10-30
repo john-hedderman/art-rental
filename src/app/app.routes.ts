@@ -70,6 +70,10 @@ export const routes: Routes = [
         component: ArtistDetail,
       },
       {
+        path: ':id/edit',
+        component: AddArtist,
+      },
+      {
         path: '',
         redirectTo: 'list',
         pathMatch: 'full',
