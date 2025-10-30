@@ -28,10 +28,21 @@ export class AddArt implements OnInit {
       this.router.navigate(['/art', 'list']);
     }
   };
+  goToArtList = () => {
+    this.router.navigate(['/art', 'list']);
+  };
   headerData: HeaderData = {
     headerTitle: 'Add Art',
     headerButtons: [],
-    headerLinks: [],
+    headerLinks: [
+      {
+        id: 'goToArtListLink',
+        label: 'Art list',
+        routerLink: '/art/list',
+        linkClass: '',
+        clickHandler: this.goToArtList,
+      },
+    ],
   };
 
   buttonbarData: ButtonbarData = {
