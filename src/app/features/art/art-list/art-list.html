@@ -1,7 +1,6 @@
 <app-page-header [headerData]="headerData"></app-page-header>
 <div class="container-fluid">
   <div class="row overflow-y-auto ar-page-content-buttonbar-no-menubar">
-    @switch (view) { @case ('card') {
     <div class="card-group ar-card-group px-0">
       @for (art of artwork; track $index) {
       <app-card
@@ -16,11 +15,6 @@
       ></app-card>
       }
     </div>
-    } @case('detail') {
-    <div>Detail view</div>
-    } @case('largeIcon') {
-    <div>Large icon view</div>
-    }}
   </div>
   <app-buttonbar [buttonbarData]="buttonbarData"></app-buttonbar>
 </div>

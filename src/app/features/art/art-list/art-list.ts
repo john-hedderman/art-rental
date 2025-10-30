@@ -19,7 +19,6 @@ import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 export class ArtList {
   artwork: Art[] = [];
 
-  view = 'card';
   thumbnail_path = 'images/art/';
 
   goToArtDetail = (id: number) => {
