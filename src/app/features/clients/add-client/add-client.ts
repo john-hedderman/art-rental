@@ -6,41 +6,80 @@ import {
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { ContactTest, HeaderData } from '../../../model/models';
-import { Router } from '@angular/router';
+import { ButtonbarData, Client, ContactTest, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
+import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 
 @Component({
   selector: 'app-add-client',
-  imports: [PageHeader, ReactiveFormsModule],
+  imports: [PageHeader, ReactiveFormsModule, Buttonbar],
   templateUrl: './add-client.html',
   styleUrl: './add-client.scss',
   standalone: true,
 })
 export class AddClient implements OnInit {
+  goBack = () => {
+    if (this.editMode) {
+      this.router.navigate(['/clients', this.clientId]);
+    } else {
+      this.router.navigate(['/clients', 'list']);
+    }
+  };
   goToClientList = () => {
     this.router.navigate(['/clients', 'list']);
   };
   headerData: HeaderData = {
     headerTitle: 'Add Client',
-    headerButtons: [
+    headerButtons: [],
+    headerLinks: [
       {
-        id: 'goToClientListBtn',
+        id: 'goToClientListLink',
         label: 'Client list',
-        type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
-        disabled: false,
+        routerLink: '/clients/list',
+        linkClass: '',
         clickHandler: this.goToClientList,
       },
     ],
-    headerLinks: [],
   };
+
+  buttonbarData: ButtonbarData = {
+    buttons: [
+      {
+        id: 'saveBtn',
+        label: 'Save',
+        type: 'submit',
+        buttonClass: 'btn btn-primary',
+        disabled: false,
+        dataBsToggle: null,
+        dataBsTarget: null,
+        clickHandler: null,
+      },
+      {
+        id: 'cancelBtn',
+        label: 'Cancel',
+        type: 'button',
+        buttonClass: 'btn btn-outline-secondary ms-3',
+        disabled: false,
+        dataBsToggle: null,
+        dataBsTarget: null,
+        clickHandler: this.goBack,
+      },
+    ],
+  };
+
+  editObj: Client = {} as Client;
+  editMode = false;
 
   clientForm!: FormGroup;
   submitted = false;
+
+  clientId = '';
+
   client_id!: number;
 
   onSubmit() {
@@ -95,7 +134,11 @@ export class AddClient implements OnInit {
   }
 
   resetForm() {
-    this.clientForm.reset();
+    if (this.editMode) {
+      this.repopulateEditForm();
+    } else {
+      this.clientForm.reset();
+    }
     this.submitted = false;
   }
 
@@ -107,7 +150,27 @@ export class AddClient implements OnInit {
     this.contacts.removeAt(index);
   }
 
-  constructor(private fb: FormBuilder, private router: Router, private dataService: DataService) {}
+  repopulateEditForm() {
+    // this also effectively touches the form fields, so the prepopulated fields that
+    // the user has never touched can be considered valid, letting the form submission complete
+    this.clientForm.get('client_id')?.setValue(this.editObj.client_id);
+
+    this.clientForm.get('name')?.setValue(this.editObj.name);
+    this.clientForm.get('address1')?.setValue(this.editObj.address1);
+    this.clientForm.get('address2')?.setValue(this.editObj.address2);
+    this.clientForm.get('city')?.setValue(this.editObj.city);
+    this.clientForm.get('state')?.setValue(this.editObj.state);
+    this.clientForm.get('zip_code')?.setValue(this.editObj.zip_code);
+    this.clientForm.get('industry')?.setValue(this.editObj.industry);
+  }
+
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private dataService: DataService,
+    private route: ActivatedRoute,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.clientForm = this.fb.group({
@@ -121,5 +184,20 @@ export class AddClient implements OnInit {
       industry: [''],
       contacts: this.fb.array([]),
     });
+
+    this.clientId = this.route.snapshot.paramMap.get('id') ?? '';
+    if (this.clientId) {
+      this.editMode = true;
+      this.http
+        .get<Client>(`http://localhost:3000/data/art/${this.clientId}?recordId=art_id`)
+        .subscribe((client) => {
+          if (client) {
+            this.editObj = client;
+            this.repopulateEditForm();
+          }
+        });
+    } else {
+      this.editMode = false;
+    }
   }
 }

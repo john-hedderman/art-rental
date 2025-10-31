@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 import { Artist, ButtonbarData, HeaderData } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -9,7 +10,6 @@ import { DataService } from '../../../service/data-service';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
 import { OPERATION_SUCCESS, OPERATION_FAILURE } from '../../../shared/constants';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-add-artist',
@@ -73,7 +73,6 @@ export class AddArtist implements OnInit {
 
   artistForm!: FormGroup;
   submitted = false;
-  artist_id!: number;
 
   artistId = '';
 
@@ -159,13 +158,11 @@ export class AddArtist implements OnInit {
     private route: ActivatedRoute,
     private operationsService: OperationsService,
     private http: HttpClient
-  ) {
-    this.artist_id = Date.now();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.artistForm = this.fb.group({
-      artist_id: this.artist_id,
+      artist_id: [null],
       name: [''],
       photo_path: [''],
       tags: [''],

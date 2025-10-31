@@ -3,12 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Art, Artist, ButtonbarData, HeaderData, Job } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
-import { HttpClient } from '@angular/common/http';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
 import { OPERATION_SUCCESS, OPERATION_FAILURE } from '../../../shared/constants';
@@ -78,10 +78,10 @@ export class AddArt implements OnInit {
 
   artId = '';
 
+  saveStatus = '';
+
   artists$: Observable<Artist[]> | undefined;
   jobs$: Observable<Job[]> | undefined;
-
-  saveStatus = '';
 
   async onSubmit() {
     let success = 'Save succeeded';
