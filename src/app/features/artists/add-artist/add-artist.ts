@@ -9,7 +9,7 @@ import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
-import { OPERATION_SUCCESS, OPERATION_FAILURE } from '../../../shared/constants';
+import { SUCCESS, FAILURE } from '../../../shared/constants';
 
 @Component({
   selector: 'app-add-artist',
@@ -90,17 +90,17 @@ export class AddArtist implements OnInit {
         this.operationsService.setStatus({ status: this.saveStatus, success, failure });
         setTimeout(() => {
           this.operationsService.setStatus(statusReset);
-        }, 2000);
+        }, 1500);
       } else {
         this.artistForm.value.artist_id = Date.now();
         this.saveStatus = await this.saveDocument(this.artistForm.value);
         this.operationsService.setStatus({ status: this.saveStatus, success, failure });
         setTimeout(() => {
           this.operationsService.setStatus(statusReset);
-        }, 2000);
+        }, 1500);
         this.resetForm();
       }
-      if (this.saveStatus === OPERATION_SUCCESS) {
+      if (this.saveStatus === SUCCESS) {
         this.dataService
           .load('artists')
           .subscribe((artists) => this.dataService.artists$.next(artists));
@@ -110,7 +110,7 @@ export class AddArtist implements OnInit {
 
   async saveDocument(artistData: any): Promise<string> {
     const collectionName = Collections.Artists;
-    let result = OPERATION_SUCCESS;
+    let result = SUCCESS;
     try {
       let returnData;
       if (this.editMode) {
@@ -124,11 +124,11 @@ export class AddArtist implements OnInit {
         returnData = await this.dataService.saveDocument(artistData, collectionName);
       }
       if (returnData.modifiedCount === 0) {
-        result = OPERATION_FAILURE;
+        result = FAILURE;
       }
     } catch (error) {
       console.error('Save error:', error);
-      result = OPERATION_FAILURE;
+      result = FAILURE;
     }
     return result;
   }

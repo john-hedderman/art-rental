@@ -11,7 +11,7 @@ import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
-import { OPERATION_SUCCESS, OPERATION_FAILURE } from '../../../shared/constants';
+import { SUCCESS, FAILURE } from '../../../shared/constants';
 
 @Component({
   selector: 'app-add-art',
@@ -97,17 +97,17 @@ export class AddArt implements OnInit {
         this.operationsService.setStatus({ status: this.saveStatus, success, failure });
         setTimeout(() => {
           this.operationsService.setStatus(statusReset);
-        }, 2000);
+        }, 1500);
       } else {
         this.artForm.value.art_id = Date.now();
         this.saveStatus = await this.saveDocument(this.artForm.value);
         this.operationsService.setStatus({ status: this.saveStatus, success, failure });
         setTimeout(() => {
           this.operationsService.setStatus(statusReset);
-        }, 2000);
+        }, 1500);
         this.resetForm();
       }
-      if (this.saveStatus === OPERATION_SUCCESS) {
+      if (this.saveStatus === SUCCESS) {
         this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
       }
     }
@@ -115,7 +115,7 @@ export class AddArt implements OnInit {
 
   async saveDocument(artData: any): Promise<string> {
     const collectionName = Collections.Art;
-    let result = OPERATION_SUCCESS;
+    let result = SUCCESS;
     try {
       let returnData;
       if (this.editMode) {
@@ -129,11 +129,11 @@ export class AddArt implements OnInit {
         returnData = await this.dataService.saveDocument(artData, collectionName);
       }
       if (returnData.modifiedCount === 0) {
-        result = OPERATION_FAILURE;
+        result = FAILURE;
       }
     } catch (error) {
       console.error('Save error:', error);
-      result = OPERATION_FAILURE;
+      result = FAILURE;
     }
     return result;
   }

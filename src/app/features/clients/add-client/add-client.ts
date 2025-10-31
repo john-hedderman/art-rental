@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -14,6 +14,8 @@ import { ButtonbarData, Client, ContactTest, HeaderData } from '../../../model/m
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
+import { OperationsService } from '../../../service/operations-service';
+import * as Constants from '../../../shared/constants';
 
 @Component({
   selector: 'app-add-client',
@@ -22,7 +24,7 @@ import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
   styleUrl: './add-client.scss',
   standalone: true,
 })
-export class AddClient implements OnInit {
+export class AddClient implements OnInit, OnDestroy {
   goBack = () => {
     if (this.editMode) {
       this.router.navigate(['/clients', this.clientId]);
@@ -82,33 +84,128 @@ export class AddClient implements OnInit {
 
   client_id!: number;
 
-  onSubmit() {
-    this.clientForm.value.client_id = Date.now();
-    this.submitted = true;
-    if (this.clientForm.valid) {
-      this.saveClient(this.clientForm.value);
-      this.saveContacts(this.clientForm.value.contacts, this.clientForm.value.client_id);
-      this.resetForm();
+  clientStatus = '';
+  contactsStatus = '';
+
+  contactsTimeoutId: number | undefined;
+  resetTimeoutId: number | undefined;
+
+  updateData() {
+    this.dataService
+      .load('clients')
+      .subscribe((clients) => this.dataService.clients$.next(clients));
+    this.dataService
+      .load('contacts_test')
+      .subscribe((contacts) => this.dataService.contacts_test$.next(contacts));
+  }
+
+  signalStatus(status: string, success: string, failure: string) {
+    this.operationsService.setStatus({ status, success, failure });
+  }
+
+  signalClientStatus() {
+    this.signalStatus(this.clientStatus, Constants.CLIENT_SUCCESS, Constants.CLIENT_FAILURE);
+  }
+
+  signalContactsStatus() {
+    if (this.clientStatus === Constants.SUCCESS) {
+      this.contactsTimeoutId = setTimeout(() => {
+        this.signalStatus(
+          this.contactsStatus,
+          Constants.CONTACTS_SUCCESS,
+          Constants.CONTACTS_FAILURE
+        );
+      }, 1500);
     }
   }
 
-  saveClient(clientData: any) {
-    const collectionName = Collections.Clients;
-    const { contacts, ...allButContacts } = clientData;
-    const contact_ids = contacts.map((contact: ContactTest) => contact.contact_id);
-    const finalClientData = { ...allButContacts, contact_ids, job_ids: [] };
-    this.dataService.saveDocument(finalClientData, collectionName);
+  signalResetStatus() {
+    if (this.clientStatus === Constants.SUCCESS && this.contactsStatus === Constants.SUCCESS) {
+      this.resetTimeoutId = setTimeout(() => {
+        this.signalStatus('', '', '');
+      }, 3000);
+    }
   }
 
-  saveContacts(contactsData: any[], client_id: number) {
-    const collectionName = Collections.ContactsInsertTest;
+  async onSubmit() {
+    this.submitted = true;
+    if (this.clientForm.valid) {
+      if (this.editMode) {
+      } else {
+        this.clientForm.value.client_id = Date.now();
+        this.clientStatus = await this.saveClient(this.clientForm.value);
+        this.contactsStatus = await this.saveContacts(
+          this.clientForm.value.contacts,
+          this.clientForm.value.client_id
+        );
+        this.signalClientStatus();
+        this.signalContactsStatus();
+        this.signalResetStatus();
+        this.resetForm();
+      }
+      if (this.clientStatus === Constants.SUCCESS || this.contactsStatus === Constants.SUCCESS) {
+        this.updateData();
+      }
+    }
+  }
+
+  mergeContacts(clientData: any): any {
+    const { contacts, ...allButContacts } = clientData;
+    const contact_ids = contacts.map((contact: ContactTest) => contact.contact_id);
+    return { ...allButContacts, contact_ids, job_ids: [] };
+  }
+
+  async saveClient(clientData: any): Promise<string> {
+    const collectionName = Collections.Clients;
+    const finalClientData = this.mergeContacts(clientData);
+
+    let result = Constants.SUCCESS;
+    try {
+      let returnData;
+      if (this.editMode) {
+        returnData = await this.dataService.saveDocument(
+          finalClientData,
+          collectionName,
+          finalClientData.client_id,
+          'client_id'
+        );
+      } else {
+        returnData = await this.dataService.saveDocument(finalClientData, collectionName);
+      }
+      if (returnData.modifiedCount === 0) {
+        result = Constants.FAILURE;
+      }
+    } catch (error) {
+      console.error('Save client error:', error);
+      result = Constants.FAILURE;
+    }
+    return result;
+  }
+
+  async saveContacts(contactsData: any[], client_id: number): Promise<string> {
+    const collectionName = Collections.ContactsTest;
     const finalContactsData = contactsData.map((contact: ContactTest) => {
       const { client, ...allButClient } = contact;
       return { ...allButClient, client_id };
     });
-    for (const contact of finalContactsData) {
-      this.dataService.saveDocument(contact, collectionName);
+
+    let result = Constants.SUCCESS;
+    try {
+      for (const contactData of finalContactsData) {
+        let returnData;
+        if (this.editMode) {
+        } else {
+          returnData = await this.dataService.saveDocument(contactData, collectionName);
+        }
+        if (returnData.modifiedCount === 0) {
+          result = Constants.FAILURE;
+        }
+      }
+    } catch (error) {
+      console.error('Save contacts error:', error);
+      result = Constants.FAILURE;
     }
+    return result;
   }
 
   get contacts(): FormArray {
@@ -169,7 +266,8 @@ export class AddClient implements OnInit {
     private router: Router,
     private dataService: DataService,
     private route: ActivatedRoute,
-    private http: HttpClient
+    private http: HttpClient,
+    private operationsService: OperationsService
   ) {}
 
   ngOnInit(): void {
@@ -198,6 +296,15 @@ export class AddClient implements OnInit {
         });
     } else {
       this.editMode = false;
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.contactsTimeoutId) {
+      clearTimeout(this.contactsTimeoutId);
+    }
+    if (this.resetTimeoutId) {
+      clearTimeout(this.resetTimeoutId);
     }
   }
 }

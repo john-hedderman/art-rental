@@ -5,7 +5,7 @@ import { combineLatest, map, Observable, take } from 'rxjs';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Artist, ButtonbarData, HeaderData } from '../../../model/models';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
-import { OPERATION_SUCCESS, OPERATION_FAILURE } from '../../../shared/constants';
+import { SUCCESS, FAILURE } from '../../../shared/constants';
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 
@@ -66,12 +66,12 @@ export class ArtistDetail {
   artistId = 0;
 
   deleteStatus = '';
-  readonly OP_SUCCESS = OPERATION_SUCCESS;
-  readonly OP_FAILURE = OPERATION_FAILURE;
+  readonly OP_SUCCESS = SUCCESS;
+  readonly OP_FAILURE = FAILURE;
 
   async onClickDelete() {
     this.deleteStatus = await this.deleteDocument();
-    if (this.deleteStatus === OPERATION_SUCCESS) {
+    if (this.deleteStatus === SUCCESS) {
       this.dataService
         .load('artists')
         .subscribe((artists) => this.dataService.artists$.next(artists));
@@ -80,7 +80,7 @@ export class ArtistDetail {
 
   async deleteDocument(): Promise<string> {
     const collectionName = Collections.Artists;
-    let result = OPERATION_SUCCESS;
+    let result = SUCCESS;
     try {
       const returnData = await this.dataService.deleteDocument(
         collectionName,
@@ -88,11 +88,11 @@ export class ArtistDetail {
         'artist_id'
       );
       if (returnData.deletedCount === 0) {
-        result = OPERATION_FAILURE;
+        result = FAILURE;
       }
     } catch (error) {
       console.error('Delete error:', error);
-      result = OPERATION_FAILURE;
+      result = FAILURE;
     }
     return result;
   }
