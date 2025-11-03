@@ -83,12 +83,37 @@ export class DataService {
     }
   }
 
-  async deleteDocument(collectionName: string, id: number, recordId: string) {
+  async deleteDocument(collectionName: string, id: number, recordId: string): Promise<any> {
     try {
       const paramsObj = {} as any;
       paramsObj['recordId'] = recordId;
       const params = new URLSearchParams(paramsObj);
       const response = await fetch(`http://localhost:3000/data/${collectionName}/${id}?${params}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(
+          `Delete response not ok. Status: ${response.status} - ${response.statusText}`
+        );
+      }
+      const jsonData = await response.json();
+      return jsonData;
+    } catch (error: any) {
+      console.error('Delete failed. Fetch error:', error.message);
+      throw error;
+    }
+  }
+
+  async deleteDocuments(collectionName: string, id: number, recordId: string): Promise<any> {
+    try {
+      const paramsObj = {} as any;
+      paramsObj['id'] = id;
+      paramsObj['recordId'] = recordId;
+      const params = new URLSearchParams(paramsObj);
+      const response = await fetch(`http://localhost:3000/data/${collectionName}?${params}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
