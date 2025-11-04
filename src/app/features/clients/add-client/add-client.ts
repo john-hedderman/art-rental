@@ -300,6 +300,7 @@ export class AddClient implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.signalResetStatus();
     if (this.contactsTimeoutId) {
       clearTimeout(this.contactsTimeoutId);
     }
