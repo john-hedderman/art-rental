@@ -101,7 +101,11 @@ export class ClientDetail implements OnInit, OnDestroy {
   }
 
   signalClientStatus() {
-    this.signalStatus(this.clientStatus, Constants.CLIENT_SUCCESS, Constants.CLIENT_FAILURE);
+    this.signalStatus(
+      this.clientStatus,
+      Constants.CLIENT_DELETE_SUCCESS,
+      Constants.CLIENT_DELETE_FAILURE
+    );
   }
 
   signalContactsStatus() {
@@ -109,8 +113,8 @@ export class ClientDetail implements OnInit, OnDestroy {
       this.contactsTimeoutId = setTimeout(() => {
         this.signalStatus(
           this.contactsStatus,
-          Constants.CONTACTS_SUCCESS,
-          Constants.CONTACTS_FAILURE
+          Constants.CONTACTS_DELETE_SUCCESS,
+          Constants.CONTACTS_DELETE_FAILURE
         );
       }, 1500);
     }

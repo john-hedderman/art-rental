@@ -141,6 +141,10 @@ export class AddClient implements OnInit, OnDestroy {
         this.signalClientStatus();
         this.signalContactsStatus();
         this.signalResetStatus();
+
+        for (let i = this.contacts.length - 1; i >= 0; i--) {
+          this.removeContact(i);
+        }
         this.resetForm();
       }
       if (this.clientStatus === Constants.SUCCESS || this.contactsStatus === Constants.SUCCESS) {
