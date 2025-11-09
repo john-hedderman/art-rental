@@ -97,6 +97,10 @@ export const routes: Routes = [
         component: ClientDetail,
       },
       {
+        path: ':id/edit',
+        component: AddClient,
+      },
+      {
         path: '',
         redirectTo: 'list',
         pathMatch: 'full',

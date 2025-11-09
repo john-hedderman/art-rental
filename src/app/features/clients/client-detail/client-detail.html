@@ -97,7 +97,9 @@
           (click)="goToClientList()"
         ></button>
       </div>
-      @if (clientStatus === OP_SUCCESS && contactsStatus === OP_SUCCESS) {
+      @if (clientStatus === '' || contactsStatus === '') {
+      <div class="modal-body">&nbsp;</div>
+      } @else if (clientStatus === OP_SUCCESS && contactsStatus === OP_SUCCESS) {
       <div class="modal-body">The client was successfully deleted.</div>
       } @else if (clientStatus === OP_FAILURE) {
       <div class="modal-body">There was an error, and the client was not deleted.</div>

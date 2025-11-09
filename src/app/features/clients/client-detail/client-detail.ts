@@ -24,7 +24,9 @@ import * as Constants from '../../../shared/constants';
 export class ClientDetail implements OnInit, OnDestroy {
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
 
-  goToEditClient = () => {};
+  goToEditClient = () => {
+    this.router.navigate(['/clients', this.clientId, 'edit']);
+  };
   goToClientList = () => {
     this.router.navigate(['/clients', 'list']);
   };
@@ -167,9 +169,6 @@ export class ClientDetail implements OnInit, OnDestroy {
         this.clientId,
         'client_id'
       );
-      if (returnData.deletedCount === 0) {
-        result = FAILURE;
-      }
     } catch (error) {
       console.error('Delete error:', error);
       result = FAILURE;

@@ -74,23 +74,23 @@ export class AddClient implements OnInit, OnDestroy {
     ],
   };
 
-  editObj: Client = {} as Client;
+  clientDBData: Client = {} as Client;
+  contactsDBData: ContactTest[] = [];
   editMode = false;
 
   clientForm!: FormGroup;
   submitted = false;
 
-  clientId = '';
-
-  client_id!: number;
+  clientId!: number;
 
   clientStatus = '';
+  deleteContactsStatus = '';
   contactsStatus = '';
 
   contactsTimeoutId: number | undefined;
   resetTimeoutId: number | undefined;
 
-  updateData() {
+  reloadFromDb() {
     this.dataService
       .load('clients')
       .subscribe((clients) => this.dataService.clients$.next(clients));
@@ -107,8 +107,21 @@ export class AddClient implements OnInit, OnDestroy {
     this.signalStatus(this.clientStatus, Constants.CLIENT_SUCCESS, Constants.CLIENT_FAILURE);
   }
 
+  clearContactsTimeoutId() {
+    if (this.contactsTimeoutId) {
+      clearTimeout(this.contactsTimeoutId);
+    }
+  }
+
+  clearResetTimeoutId() {
+    if (this.resetTimeoutId) {
+      clearTimeout(this.resetTimeoutId);
+    }
+  }
+
   signalContactsStatus() {
     if (this.clientStatus === Constants.SUCCESS) {
+      this.clearContactsTimeoutId();
       this.contactsTimeoutId = setTimeout(() => {
         this.signalStatus(
           this.contactsStatus,
@@ -121,6 +134,7 @@ export class AddClient implements OnInit, OnDestroy {
 
   signalResetStatus() {
     if (this.clientStatus === Constants.SUCCESS && this.contactsStatus === Constants.SUCCESS) {
+      this.clearResetTimeoutId();
       this.resetTimeoutId = setTimeout(() => {
         this.signalStatus('', '', '');
       }, 3000);
@@ -130,51 +144,48 @@ export class AddClient implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.clientForm.valid) {
+      this.clientStatus = await this.saveClient(this.clientForm.value);
+      this.deleteContactsStatus = await this.deleteContacts();
+      this.contactsStatus = await this.saveContacts(this.clientForm.value.contacts);
+      this.signalClientStatus();
+      this.signalContactsStatus();
+      this.signalResetStatus();
+      this.submitted = false;
       if (this.editMode) {
+        this.populateForm();
       } else {
-        this.clientForm.value.client_id = Date.now();
-        this.clientStatus = await this.saveClient(this.clientForm.value);
-        this.contactsStatus = await this.saveContacts(
-          this.clientForm.value.contacts,
-          this.clientForm.value.client_id
-        );
-        this.signalClientStatus();
-        this.signalContactsStatus();
-        this.signalResetStatus();
-
-        for (let i = this.contacts.length - 1; i >= 0; i--) {
-          this.removeContact(i);
-        }
-        this.resetForm();
+        this.contacts.clear();
+        this.clientForm.reset();
       }
+
       if (this.clientStatus === Constants.SUCCESS || this.contactsStatus === Constants.SUCCESS) {
-        this.updateData();
+        this.reloadFromDb();
       }
     }
   }
 
-  mergeContacts(clientData: any): any {
-    const { contacts, ...allButContacts } = clientData;
+  mergeContactIds(clientFormData: any): any {
+    const { contacts, ...allButContacts } = clientFormData;
     const contact_ids = contacts.map((contact: ContactTest) => contact.contact_id);
     return { ...allButContacts, contact_ids, job_ids: [] };
   }
 
-  async saveClient(clientData: any): Promise<string> {
-    const collectionName = Collections.Clients;
-    const finalClientData = this.mergeContacts(clientData);
+  async saveClient(clientFormData: any): Promise<string> {
+    const collection = Collections.Clients;
+    const formData = this.mergeContactIds(clientFormData);
 
     let result = Constants.SUCCESS;
     try {
       let returnData;
       if (this.editMode) {
         returnData = await this.dataService.saveDocument(
-          finalClientData,
-          collectionName,
-          finalClientData.client_id,
+          formData,
+          collection,
+          formData.client_id,
           'client_id'
         );
       } else {
-        returnData = await this.dataService.saveDocument(finalClientData, collectionName);
+        returnData = await this.dataService.saveDocument(formData, collection);
       }
       if (returnData.modifiedCount === 0) {
         result = Constants.FAILURE;
@@ -186,28 +197,36 @@ export class AddClient implements OnInit, OnDestroy {
     return result;
   }
 
-  async saveContacts(contactsData: any[], client_id: number): Promise<string> {
-    const collectionName = Collections.ContactsTest;
-    const finalContactsData = contactsData.map((contact: ContactTest) => {
-      const { client, ...allButClient } = contact;
-      return { ...allButClient, client_id };
-    });
-
+  async deleteContacts() {
+    const collection = Collections.ContactsTest;
+    let returnData;
     let result = Constants.SUCCESS;
     try {
-      for (const contactData of finalContactsData) {
-        let returnData;
-        if (this.editMode) {
-        } else {
-          returnData = await this.dataService.saveDocument(contactData, collectionName);
-        }
-        if (returnData.modifiedCount === 0) {
-          result = Constants.FAILURE;
-        }
+      returnData = await this.dataService.deleteDocuments(collection, this.clientId, 'client_id');
+      if (returnData.message.indexOf('failed') !== -1) {
+        result = Constants.FAILURE;
       }
     } catch (error) {
-      console.error('Save contacts error:', error);
+      console.error('Error deleting contacts:', error);
       result = Constants.FAILURE;
+    }
+    return result;
+  }
+
+  async saveContacts(contactsFormData: any[]): Promise<string> {
+    const collection = Collections.ContactsTest;
+    let returnData;
+    let result = Constants.SUCCESS;
+    for (const contactFormData of contactsFormData) {
+      try {
+        returnData = await this.dataService.saveDocument(contactFormData, collection);
+        if (!returnData.insertedId) {
+          result = Constants.FAILURE;
+        }
+      } catch (error) {
+        console.error('Error saving contact:', error);
+        result = Constants.FAILURE;
+      }
     }
     return result;
   }
@@ -216,53 +235,91 @@ export class AddClient implements OnInit, OnDestroy {
     return this.clientForm.get('contacts') as FormArray;
   }
 
-  newContact(): FormGroup {
+  newContact(contact_id?: number): FormGroup {
     return this.fb.group({
-      contact_id: Date.now(),
+      contact_id: contact_id || Date.now(),
       first_name: [''],
       last_name: [''],
       phone: [''],
       title: [''],
       email: [''],
-      client: this.fb.group({
-        id: [this.client_id],
-      }),
+      client_id: this.clientId,
     });
   }
 
-  trackById(index: number, v: AbstractControl) {
+  trackById(_index: number, v: AbstractControl) {
     return v.value.contact_id;
   }
 
-  resetForm() {
-    if (this.editMode) {
-      this.repopulateEditForm();
-    } else {
-      this.clientForm.reset();
-    }
-    this.submitted = false;
-  }
-
-  addContact(): void {
-    this.contacts.push(this.newContact());
+  addContact(contact_id?: number): void {
+    this.contacts.push(this.newContact(contact_id));
   }
 
   removeContact(index: number): void {
     this.contacts.removeAt(index);
   }
 
-  repopulateEditForm() {
+  populateContactData(contact_id: number) {
+    this.http
+      .get<ContactTest[]>(
+        `http://localhost:3000/data/contacts_test/${contact_id}?recordId=contact_id`
+      )
+      .subscribe((contacts) => {
+        if (contacts && contacts.length === 1) {
+          const contactDBData = contacts[0];
+          if (contactDBData) {
+            this.contactsDBData.push(contactDBData);
+            const contactsControls = this.contacts.controls;
+            const contactControl = contactsControls.find(
+              (control) => control.value.contact_id === contactDBData.contact_id
+            );
+            if (contactControl) {
+              contactControl.get('first_name')?.setValue(contactDBData.first_name);
+              contactControl.get('last_name')?.setValue(contactDBData.last_name);
+              contactControl.get('phone')?.setValue(contactDBData.phone);
+              contactControl.get('title')?.setValue(contactDBData.title);
+              contactControl.get('email')?.setValue(contactDBData.email);
+              contactControl.get('client_id')?.setValue(contactDBData.client_id);
+            }
+          }
+        }
+      });
+  }
+
+  populateContactsData() {
+    this.contacts.clear();
+    const contact_ids = this.clientDBData.contact_ids;
+    for (const contact_id of contact_ids) {
+      this.addContact(contact_id);
+      this.populateContactData(contact_id);
+    }
+  }
+
+  populateClientData() {
     // this also effectively touches the form fields, so the prepopulated fields that
     // the user has never touched can be considered valid, letting the form submission complete
-    this.clientForm.get('client_id')?.setValue(this.editObj.client_id);
+    this.clientForm.get('client_id')?.setValue(this.clientDBData.client_id);
+    this.clientForm.get('name')?.setValue(this.clientDBData.name);
+    this.clientForm.get('address1')?.setValue(this.clientDBData.address1);
+    this.clientForm.get('address2')?.setValue(this.clientDBData.address2);
+    this.clientForm.get('city')?.setValue(this.clientDBData.city);
+    this.clientForm.get('state')?.setValue(this.clientDBData.state);
+    this.clientForm.get('zip_code')?.setValue(this.clientDBData.zip_code);
+    this.clientForm.get('industry')?.setValue(this.clientDBData.industry);
+  }
 
-    this.clientForm.get('name')?.setValue(this.editObj.name);
-    this.clientForm.get('address1')?.setValue(this.editObj.address1);
-    this.clientForm.get('address2')?.setValue(this.editObj.address2);
-    this.clientForm.get('city')?.setValue(this.editObj.city);
-    this.clientForm.get('state')?.setValue(this.editObj.state);
-    this.clientForm.get('zip_code')?.setValue(this.editObj.zip_code);
-    this.clientForm.get('industry')?.setValue(this.editObj.industry);
+  populateForm() {
+    this.http
+      .get<Client[]>(`http://localhost:3000/data/clients/${this.clientId}?recordId=client_id`)
+      .subscribe((clients) => {
+        if (clients && clients.length === 1) {
+          this.clientDBData = clients[0];
+          if (this.clientDBData) {
+            this.populateClientData();
+            this.populateContactsData();
+          }
+        }
+      });
   }
 
   constructor(
@@ -275,8 +332,9 @@ export class AddClient implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.clientId = Date.now();
     this.clientForm = this.fb.group({
-      client_id: this.client_id,
+      client_id: this.clientId,
       name: [''],
       address1: [''],
       address2: [''],
@@ -287,29 +345,19 @@ export class AddClient implements OnInit, OnDestroy {
       contacts: this.fb.array([]),
     });
 
-    this.clientId = this.route.snapshot.paramMap.get('id') ?? '';
-    if (this.clientId) {
+    this.editMode = false;
+    const clientId = this.route.snapshot.paramMap.get('id');
+    if (clientId) {
       this.editMode = true;
-      this.http
-        .get<Client>(`http://localhost:3000/data/art/${this.clientId}?recordId=art_id`)
-        .subscribe((client) => {
-          if (client) {
-            this.editObj = client;
-            this.repopulateEditForm();
-          }
-        });
-    } else {
-      this.editMode = false;
+      this.clientId = +clientId;
+      this.clientForm.value.client_id = this.clientId;
+      this.populateForm();
     }
   }
 
   ngOnDestroy(): void {
     this.signalResetStatus();
-    if (this.contactsTimeoutId) {
-      clearTimeout(this.contactsTimeoutId);
-    }
-    if (this.resetTimeoutId) {
-      clearTimeout(this.resetTimeoutId);
-    }
+    this.clearContactsTimeoutId();
+    this.clearResetTimeoutId();
   }
 }
