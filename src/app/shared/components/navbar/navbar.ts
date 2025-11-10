@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { RouteChangeService } from '../../../service/route-change-service';
@@ -40,21 +40,19 @@ export class Navbar {
     target?.classList.add('active');
   }
 
-  getFirstSegment(url: string | null): String {
+  firstSegment(url: string | null): String {
     if (!url || url.indexOf('/') !== 0 || url === '/') {
       return '';
     }
-    const relativeUrl = url.substring(1);
-    const firstSlash = relativeUrl.indexOf('/');
-    return firstSlash === -1 ? relativeUrl : relativeUrl.substring(0, firstSlash);
+    return url.split('/')[1];
   }
 
-  constructor(private router: Router, private routeChangesService: RouteChangeService) {
+  constructor(private routeChangesService: RouteChangeService) {
     this.routeChangesService.routeChanges$.pipe(takeUntilDestroyed()).subscribe((url) => {
-      const currentRouteSegment = this.getFirstSegment(url);
+      const currentRouteSegment = this.firstSegment(url);
       document.querySelectorAll('.ar-nav-link').forEach((link) => {
         const routerLink = link.getAttribute('routerLink');
-        const routerLinkSegment = this.getFirstSegment(routerLink);
+        const routerLinkSegment = this.firstSegment(routerLink);
         if (routerLinkSegment === currentRouteSegment) {
           link.classList.add('active');
           link.setAttribute('aria-current', 'page');
