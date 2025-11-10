@@ -11,7 +11,7 @@ import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
-import { SUCCESS, FAILURE } from '../../../shared/constants';
+import * as Constants from '../../../constants';
 
 @Component({
   selector: 'app-add-art',
@@ -107,7 +107,7 @@ export class AddArt implements OnInit {
         }, 1500);
         this.resetForm();
       }
-      if (this.saveStatus === SUCCESS) {
+      if (this.saveStatus === Constants.SUCCESS) {
         this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
       }
     }
@@ -115,7 +115,7 @@ export class AddArt implements OnInit {
 
   async saveDocument(artData: any): Promise<string> {
     const collectionName = Collections.Art;
-    let result = SUCCESS;
+    let result = Constants.SUCCESS;
     try {
       let returnData;
       if (this.editMode) {
@@ -129,11 +129,11 @@ export class AddArt implements OnInit {
         returnData = await this.dataService.saveDocument(artData, collectionName);
       }
       if (returnData.modifiedCount === 0) {
-        result = FAILURE;
+        result = Constants.FAILURE;
       }
     } catch (error) {
       console.error('Save error:', error);
-      result = FAILURE;
+      result = Constants.FAILURE;
     }
     return result;
   }

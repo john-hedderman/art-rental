@@ -3,8 +3,8 @@ import { HeaderData } from '../../../model/models';
 import { RouterLink } from '@angular/router';
 
 import { OperationsService } from '../../../service/operations-service';
-import { SUCCESS, FAILURE } from '../../../shared/constants';
 import { OperationStatus } from '../../../../app/model/models';
+import * as Constants from '../../../constants';
 
 @Component({
   selector: 'app-page-header',
@@ -20,8 +20,8 @@ export class PageHeader {
     headerLinks: [],
   });
 
-  readonly OP_SUCCESS = SUCCESS;
-  readonly OP_FAILURE = FAILURE;
+  readonly OP_SUCCESS = Constants.SUCCESS;
+  readonly OP_FAILURE = Constants.FAILURE;
 
   operationStatus: Signal<OperationStatus>;
 

@@ -9,7 +9,7 @@ import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
-import { SUCCESS, FAILURE } from '../../../shared/constants';
+import * as Constants from '../../../constants';
 
 @Component({
   selector: 'app-add-artist',
@@ -100,7 +100,7 @@ export class AddArtist implements OnInit {
         }, 1500);
         this.resetForm();
       }
-      if (this.saveStatus === SUCCESS) {
+      if (this.saveStatus === Constants.SUCCESS) {
         this.dataService
           .load('artists')
           .subscribe((artists) => this.dataService.artists$.next(artists));
@@ -110,7 +110,7 @@ export class AddArtist implements OnInit {
 
   async saveDocument(artistData: any): Promise<string> {
     const collectionName = Collections.Artists;
-    let result = SUCCESS;
+    let result = Constants.SUCCESS;
     try {
       let returnData;
       if (this.editMode) {
@@ -124,11 +124,11 @@ export class AddArtist implements OnInit {
         returnData = await this.dataService.saveDocument(artistData, collectionName);
       }
       if (returnData.modifiedCount === 0) {
-        result = FAILURE;
+        result = Constants.FAILURE;
       }
     } catch (error) {
       console.error('Save error:', error);
-      result = FAILURE;
+      result = Constants.FAILURE;
     }
     return result;
   }

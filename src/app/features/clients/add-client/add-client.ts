@@ -15,7 +15,8 @@ import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
-import * as Constants from '../../../shared/constants';
+import * as Constants from '../../../constants';
+import * as Messages from '../../../shared/messages';
 
 @Component({
   selector: 'app-add-client',
@@ -104,7 +105,7 @@ export class AddClient implements OnInit, OnDestroy {
   }
 
   signalClientStatus() {
-    this.signalStatus(this.clientStatus, Constants.CLIENT_SUCCESS, Constants.CLIENT_FAILURE);
+    this.signalStatus(this.clientStatus, Messages.SAVED_CLIENT, Messages.SAVE_CLIENT_FAILED);
   }
 
   clearContactsTimeoutId() {
@@ -125,8 +126,8 @@ export class AddClient implements OnInit, OnDestroy {
       this.contactsTimeoutId = setTimeout(() => {
         this.signalStatus(
           this.contactsStatus,
-          Constants.CONTACTS_SUCCESS,
-          Constants.CONTACTS_FAILURE
+          Messages.SAVED_CONTACTS,
+          Messages.SAVE_CONTACTS_FAILED
         );
       }, 1500);
     }

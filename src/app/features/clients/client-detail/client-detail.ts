@@ -9,10 +9,10 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 import { ContactsTable } from '../../../shared/components/contacts-table/contacts-table';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
-import { SUCCESS, FAILURE } from '../../../shared/constants';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
-import * as Constants from '../../../shared/constants';
+import * as Constants from '../../../constants';
+import * as Messages from '../../../shared/messages';
 
 @Component({
   selector: 'app-client-detail',
@@ -83,8 +83,8 @@ export class ClientDetail implements OnInit, OnDestroy {
 
   clientStatus = '';
   contactsStatus = '';
-  readonly OP_SUCCESS = SUCCESS;
-  readonly OP_FAILURE = FAILURE;
+  readonly OP_SUCCESS = Constants.SUCCESS;
+  readonly OP_FAILURE = Constants.FAILURE;
 
   contactsTimeoutId: number | undefined;
   resetTimeoutId: number | undefined;
@@ -103,11 +103,7 @@ export class ClientDetail implements OnInit, OnDestroy {
   }
 
   signalClientStatus() {
-    this.signalStatus(
-      this.clientStatus,
-      Constants.CLIENT_DELETE_SUCCESS,
-      Constants.CLIENT_DELETE_FAILURE
-    );
+    this.signalStatus(this.clientStatus, Messages.DELETED_CLIENT, Messages.DELETE_CLIENT_FAILED);
   }
 
   signalContactsStatus() {
@@ -115,8 +111,8 @@ export class ClientDetail implements OnInit, OnDestroy {
       this.contactsTimeoutId = setTimeout(() => {
         this.signalStatus(
           this.contactsStatus,
-          Constants.CONTACTS_DELETE_SUCCESS,
-          Constants.CONTACTS_DELETE_FAILURE
+          Messages.DELETED_CONTACTS,
+          Messages.DELETE_CONTACTS_FAILED
         );
       }, 1500);
     }
@@ -143,7 +139,7 @@ export class ClientDetail implements OnInit, OnDestroy {
 
   async deleteClient(): Promise<string> {
     const collectionName = Collections.Clients;
-    let result = SUCCESS;
+    let result = Constants.SUCCESS;
     try {
       const returnData = await this.dataService.deleteDocument(
         collectionName,
@@ -151,18 +147,18 @@ export class ClientDetail implements OnInit, OnDestroy {
         'client_id'
       );
       if (returnData.deletedCount === 0) {
-        result = FAILURE;
+        result = Constants.FAILURE;
       }
     } catch (error) {
       console.error('Delete error:', error);
-      result = FAILURE;
+      result = Constants.FAILURE;
     }
     return result;
   }
 
   async deleteContacts(): Promise<string> {
     const collectionName = Collections.ContactsTest;
-    let result = SUCCESS;
+    let result = Constants.SUCCESS;
     try {
       const returnData = await this.dataService.deleteDocuments(
         collectionName,
@@ -171,7 +167,7 @@ export class ClientDetail implements OnInit, OnDestroy {
       );
     } catch (error) {
       console.error('Delete error:', error);
-      result = FAILURE;
+      result = Constants.FAILURE;
     }
     return result;
   }

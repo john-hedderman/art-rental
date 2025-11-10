@@ -7,7 +7,7 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
-import { SUCCESS, FAILURE } from '../../../shared/constants';
+import * as Constants from '../../../constants';
 
 @Component({
   selector: 'app-art-detail',
@@ -66,19 +66,19 @@ export class ArtDetail {
   artId = 0;
 
   deleteStatus = '';
-  readonly OP_SUCCESS = SUCCESS;
-  readonly OP_FAILURE = FAILURE;
+  readonly OP_SUCCESS = Constants.SUCCESS;
+  readonly OP_FAILURE = Constants.FAILURE;
 
   async onClickDelete() {
     this.deleteStatus = await this.deleteDocument();
-    if (this.deleteStatus === SUCCESS) {
+    if (this.deleteStatus === Constants.SUCCESS) {
       this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
     }
   }
 
   async deleteDocument(): Promise<string> {
     const collectionName = Collections.Art;
-    let result = SUCCESS;
+    let result = Constants.SUCCESS;
     try {
       const returnData = await this.dataService.deleteDocument(
         collectionName,
@@ -86,11 +86,11 @@ export class ArtDetail {
         'art_id'
       );
       if (returnData.deletedCount === 0) {
-        result = FAILURE;
+        result = Constants.FAILURE;
       }
     } catch (error) {
       console.error('Delete error:', error);
-      result = FAILURE;
+      result = Constants.FAILURE;
     }
     return result;
   }
