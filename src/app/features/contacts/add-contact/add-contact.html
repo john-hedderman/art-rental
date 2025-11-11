@@ -1,2 +1,87 @@
 <app-page-header [headerData]="headerData"></app-page-header>
-<app-add-edit-contact></app-add-edit-contact>
+<div class="container-fluid">
+  <form
+    [formGroup]="contactForm"
+    (ngSubmit)="onSubmit()"
+    class="needs-validation"
+    [class.was-validated]="submitted && contactForm.invalid"
+    novalidate
+  >
+    <div class="row ar-page-content-buttonbar-no-menubar overflow-y-auto">
+      <div class="col-12 d-flex flex-column py-3">
+        <p>Please complete all required fields (<span class="text-danger">*</span>).</p>
+        <div class="row flex-grow-1">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-12">
+                <label for="client_id" class="col-form-label"
+                  >Client <span class="text-danger">*</span></label
+                >
+                <select
+                  class="form-select"
+                  name="client_id"
+                  id="client_id"
+                  formControlName="client_id"
+                  required
+                >
+                  @if (clients$ | async; as clients) { @for (client of clients; track $index) {
+                  <option value="{{ client.client_id }}">{{ client.name }}</option>
+                  } }
+                </select>
+                <div class="invalid-feedback">Please select a client.</div>
+              </div>
+              <div class="col-md-6 mt-3">
+                <label for="first_name" class="col-form-label"
+                  >First name <span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="first_name"
+                  formControlName="first_name"
+                  required
+                />
+                <div class="invalid-feedback">Please provide a first name.</div>
+              </div>
+              <div class="col-md-6 mt-3">
+                <label for="last_name" class="col-form-label"
+                  >Last name <span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="last_name"
+                  formControlName="last_name"
+                  required
+                />
+                <div class="invalid-feedback">Please provide a last name.</div>
+              </div>
+              <div class="col-md-6 mt-3">
+                <label for="phone" class="col-form-label"
+                  >Phone <span class="text-danger">*</span></label
+                >
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="phone"
+                  formControlName="phone"
+                  required
+                />
+                <div class="invalid-feedback">Please provide a phone number.</div>
+              </div>
+              <div class="col-md-6 mt-3">
+                <label for="email" class="col-form-label">Email</label>
+                <input type="text" class="form-control" id="email" formControlName="email" />
+              </div>
+              <div class="col-md-6 mt-3">
+                <label for="title" class="col-form-label">Title</label>
+                <input type="text" class="form-control" id="title" formControlName="title" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-buttonbar [buttonbarData]="buttonbarData"></app-buttonbar>
+  </form>
+</div>

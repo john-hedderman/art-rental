@@ -1,6 +1,9 @@
 export const SAVED_CLIENT = 'Saved client';
 export const SAVE_CLIENT_FAILED = 'Saving client failed';
 
+export const SAVED_CONTACT = 'Saved contact';
+export const SAVE_CONTACT_FAILED = 'Saving contact failed';
+
 export const SAVED_CONTACTS = 'Saved contacts';
 export const SAVE_CONTACTS_FAILED = 'Saving contacts failed';
 
