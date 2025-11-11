@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { ButtonbarData, Client, ContactTest, HeaderData } from '../../../model/models';
+import { ButtonbarData, Client, Contact, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
@@ -76,7 +76,7 @@ export class AddClient implements OnInit, OnDestroy {
   };
 
   clientDBData: Client = {} as Client;
-  contactsDBData: ContactTest[] = [];
+  contactsDBData: Contact[] = [];
   editMode = false;
 
   clientForm!: FormGroup;
@@ -96,8 +96,8 @@ export class AddClient implements OnInit, OnDestroy {
       .load('clients')
       .subscribe((clients) => this.dataService.clients$.next(clients));
     this.dataService
-      .load('contacts_test')
-      .subscribe((contacts) => this.dataService.contacts_test$.next(contacts));
+      .load('contacts')
+      .subscribe((contacts) => this.dataService.contacts$.next(contacts));
   }
 
   signalStatus(status: string, success: string, failure: string) {
@@ -167,7 +167,7 @@ export class AddClient implements OnInit, OnDestroy {
 
   mergeContactIds(clientFormData: any): any {
     const { contacts, ...allButContacts } = clientFormData;
-    const contact_ids = contacts.map((contact: ContactTest) => contact.contact_id);
+    const contact_ids = contacts.map((contact: Contact) => contact.contact_id);
     return { ...allButContacts, contact_ids, job_ids: [] };
   }
 
@@ -199,7 +199,7 @@ export class AddClient implements OnInit, OnDestroy {
   }
 
   async deleteContacts() {
-    const collection = Collections.ContactsTest;
+    const collection = Collections.Contacts;
     let returnData;
     let result = Constants.SUCCESS;
     try {
@@ -215,7 +215,7 @@ export class AddClient implements OnInit, OnDestroy {
   }
 
   async saveContacts(contactsFormData: any[]): Promise<string> {
-    const collection = Collections.ContactsTest;
+    const collection = Collections.Contacts;
     let returnData;
     let result = Constants.SUCCESS;
     for (const contactFormData of contactsFormData) {
@@ -262,9 +262,7 @@ export class AddClient implements OnInit, OnDestroy {
 
   populateContactData(contact_id: number) {
     this.http
-      .get<ContactTest[]>(
-        `http://localhost:3000/data/contacts_test/${contact_id}?recordId=contact_id`
-      )
+      .get<Contact[]>(`http://localhost:3000/data/contacts/${contact_id}?recordId=contact_id`)
       .subscribe((contacts) => {
         if (contacts && contacts.length === 1) {
           const contactDBData = contacts[0];

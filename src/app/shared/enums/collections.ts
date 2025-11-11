@@ -3,7 +3,6 @@ export enum Collections {
   Artists = 'artists',
   Clients = 'clients',
   Contacts = 'contacts',
-  ContactsTest = 'contacts_test',
   Jobs = 'jobs',
   Sites = 'sites',
 }

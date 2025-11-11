@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { Art, Client, ContactTest, HeaderData, Site } from '../../../model/models';
+import { Art, Client, Contact, HeaderData, Site } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
@@ -40,12 +40,12 @@ export class AddJob implements OnInit {
   job_id!: number;
 
   sites: Site[] = [];
-  contacts: ContactTest[] = [];
+  contacts: Contact[] = [];
   art: Art[] = [];
 
   clients$: Observable<Client[]> | undefined;
   sites$: Observable<Site[]> | undefined;
-  contacts$: Observable<ContactTest[]> | undefined;
+  contacts$: Observable<Contact[]> | undefined;
   art$: Observable<Art[]> | undefined;
 
   selectedClientId: number | undefined;
@@ -159,7 +159,7 @@ export class AddJob implements OnInit {
     combineLatest({
       clients: this.dataService.clients$,
       sites: this.dataService.sites$,
-      contacts: this.dataService.contacts_test$,
+      contacts: this.dataService.contacts$,
       art: this.dataService.art$,
     })
       .pipe(take(1))

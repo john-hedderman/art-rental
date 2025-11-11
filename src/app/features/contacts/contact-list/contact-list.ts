@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { combineLatest, take } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { ContactTest, HeaderData } from '../../../model/models';
+import { Contact, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
 
@@ -19,7 +19,7 @@ import { Util } from '../../../shared/util/util';
   },
 })
 export class ContactList implements OnInit {
-  @ViewChild('contactsTable') table!: DatatableComponent<ContactTest>;
+  @ViewChild('contactsTable') table!: DatatableComponent<Contact>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
   @ViewChild('clientNameHeaderTemplate', { static: true })
@@ -51,11 +51,11 @@ export class ContactList implements OnInit {
     headerLinks: [],
   };
 
-  rows: ContactTest[] = [];
+  rows: Contact[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
 
-  toggleExpandRow(row: ContactTest) {
+  toggleExpandRow(row: Contact) {
     this.table.rowDetail!.toggleExpandRow(row);
   }
 
@@ -82,7 +82,7 @@ export class ContactList implements OnInit {
 
   constructor(private dataService: DataService, private router: Router) {
     combineLatest({
-      contacts: this.dataService.contacts_test$,
+      contacts: this.dataService.contacts$,
       clients: this.dataService.clients$,
     })
       .pipe(take(1))

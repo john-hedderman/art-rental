@@ -4,7 +4,7 @@ import { AsyncPipe } from '@angular/common';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { Art, ContactTest, HeaderData, Job } from '../../../model/models';
+import { Art, Contact, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Card } from '../../../shared/components/card/card';
@@ -47,7 +47,7 @@ export class JobDetail implements OnInit {
   job$: Observable<Job> | undefined;
   art$: Observable<Art[]> | undefined;
 
-  rows: ContactTest[] = [];
+  rows: Contact[] = [];
   columns: TableColumn[] = [];
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
@@ -68,7 +68,7 @@ export class JobDetail implements OnInit {
   ) {
     combineLatest({
       clients: this.dataService.clients$,
-      contacts: this.dataService.contacts_test$,
+      contacts: this.dataService.contacts$,
       artwork: this.dataService.art$,
       sites: this.dataService.sites$,
       jobId: this.getJobId(),

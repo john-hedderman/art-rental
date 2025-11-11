@@ -3,7 +3,7 @@ import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 
-import { ButtonbarData, Client, ContactTest, HeaderData, Job } from '../../../model/models';
+import { ButtonbarData, Client, Contact, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
@@ -73,10 +73,10 @@ export class ClientDetail implements OnInit, OnDestroy {
   client$: Observable<Client> | undefined;
   jobs$: Observable<Job[]> | undefined;
 
-  rows: ContactTest[] = [];
+  rows: Contact[] = [];
   columns: TableColumn[] = [];
 
-  contacts: ContactTest[] = [];
+  contacts: Contact[] = [];
   contactIds: number[] = [];
 
   clientId = 0;
@@ -94,8 +94,8 @@ export class ClientDetail implements OnInit, OnDestroy {
       .load('clients')
       .subscribe((clients) => this.dataService.clients$.next(clients));
     this.dataService
-      .load('contacts_test')
-      .subscribe((contacts) => this.dataService.contacts_test$.next(contacts));
+      .load('contacts')
+      .subscribe((contacts) => this.dataService.contacts$.next(contacts));
   }
 
   signalStatus(status: string, success: string, failure: string) {
@@ -157,7 +157,7 @@ export class ClientDetail implements OnInit, OnDestroy {
   }
 
   async deleteContacts(): Promise<string> {
-    const collectionName = Collections.ContactsTest;
+    const collectionName = Collections.Contacts;
     let result = Constants.SUCCESS;
     try {
       const returnData = await this.dataService.deleteDocuments(
@@ -193,7 +193,7 @@ export class ClientDetail implements OnInit, OnDestroy {
       clientId: this.getClientId(),
       jobs: this.dataService.jobs$,
       sites: this.dataService.sites$,
-      contacts: this.dataService.contacts_test$,
+      contacts: this.dataService.contacts$,
     })
       .pipe(take(1))
       .subscribe(({ clients, clientId, jobs, sites, contacts }) => {

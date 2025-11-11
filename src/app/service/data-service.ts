@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, ReplaySubject } from 'rxjs';
-import { Art, Artist, Client, Contact, ContactTest, Job, Site } from '../model/models';
+import { Art, Artist, Client, Contact, Job, Site } from '../model/models';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +14,6 @@ export class DataService {
   public contacts$: ReplaySubject<Contact[]> = new ReplaySubject(1);
   public sites$: ReplaySubject<Site[]> = new ReplaySubject(1);
 
-  public contacts_test$: ReplaySubject<ContactTest[]> = new ReplaySubject(1);
-
   constructor(private http: HttpClient) {
     this.load('art').subscribe((art) => this.art$.next(art));
     this.load('artists').subscribe((artists) => this.artists$.next(artists));
@@ -24,9 +22,7 @@ export class DataService {
     this.load('contacts').subscribe((contacts) => this.contacts$.next(contacts));
     this.load('sites').subscribe((sites) => this.sites$.next(sites));
 
-    this.load('contacts_test').subscribe((contacts_test) =>
-      this.contacts_test$.next(contacts_test)
-    );
+    this.load('contacts').subscribe((contacts) => this.contacts$.next(contacts));
   }
 
   load(dataType: 'art'): Observable<Art[]>;
@@ -36,7 +32,7 @@ export class DataService {
   load(dataType: 'contacts'): Observable<Contact[]>;
   load(dataType: 'sites'): Observable<Site[]>;
 
-  load(dataType: 'contacts_test'): Observable<ContactTest[]>;
+  load(dataType: 'contacts'): Observable<Contact[]>;
 
   load(dataType: string): Observable<unknown[]> {
     // load data from a separate server
