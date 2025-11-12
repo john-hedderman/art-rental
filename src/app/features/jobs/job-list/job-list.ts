@@ -3,14 +3,15 @@ import { Router } from '@angular/router';
 import { combineLatest, take } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { HeaderData, Job } from '../../../model/models';
+import { ButtonbarData, HeaderData, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
+import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 
 @Component({
   selector: 'app-job-list',
-  imports: [NgxDatatableModule, PageHeader],
+  imports: [NgxDatatableModule, PageHeader, Buttonbar],
   templateUrl: './job-list.html',
   styleUrl: './job-list.scss',
   standalone: true,
@@ -33,22 +34,28 @@ export class JobList implements OnInit {
     Util.showHideRowDetail();
   }
 
-  navigateToAddJob = () => {
+  goToAddJob = () => {
     this.router.navigate(['/jobs', 'add']);
   };
   headerData: HeaderData = {
     headerTitle: 'Jobs',
-    headerButtons: [
+    headerButtons: [],
+    headerLinks: [],
+  };
+
+  buttonbarData: ButtonbarData = {
+    buttons: [
       {
         id: 'addJobBtn',
         label: 'Add Job',
         type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
+        buttonClass: 'btn btn-primary',
         disabled: false,
-        clickHandler: this.navigateToAddJob,
+        dataBsToggle: null,
+        dataBsTarget: null,
+        clickHandler: this.goToAddJob,
       },
     ],
-    headerLinks: [],
   };
 
   rows: Job[] = [];
