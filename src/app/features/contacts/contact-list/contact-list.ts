@@ -4,13 +4,14 @@ import { Router } from '@angular/router';
 import { combineLatest, take } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Contact, HeaderData } from '../../../model/models';
+import { ButtonbarData, Contact, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
+import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 
 @Component({
   selector: 'app-contact-list',
-  imports: [NgxDatatableModule, PageHeader],
+  imports: [NgxDatatableModule, PageHeader, Buttonbar],
   templateUrl: './contact-list.html',
   styleUrl: './contact-list.scss',
   standalone: true,
@@ -38,17 +39,23 @@ export class ContactList implements OnInit {
   };
   headerData: HeaderData = {
     headerTitle: 'Contacts',
-    headerButtons: [
+    headerButtons: [],
+    headerLinks: [],
+  };
+
+  buttonbarData: ButtonbarData = {
+    buttons: [
       {
         id: 'addContactBtn',
         label: 'Add Contact',
         type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
+        buttonClass: 'btn btn-primary',
         disabled: false,
+        dataBsToggle: null,
+        dataBsTarget: null,
         clickHandler: this.goToAddContact,
       },
     ],
-    headerLinks: [],
   };
 
   rows: Contact[] = [];
