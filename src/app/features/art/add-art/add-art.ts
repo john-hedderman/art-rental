@@ -84,7 +84,7 @@ export class AddArt implements OnInit {
   jobs$: Observable<Job[]> | undefined;
 
   async onSubmit() {
-    let success = 'Save succeeded';
+    let success = 'Art saved';
     const failure = 'Save failed';
     const statusReset = { status: '', success: '', failure: '' };
     this.submitted = true;
@@ -95,16 +95,12 @@ export class AddArt implements OnInit {
         success = 'Changes saved';
         this.saveStatus = await this.saveDocument(this.artForm.value);
         this.operationsService.setStatus({ status: this.saveStatus, success, failure });
-        setTimeout(() => {
-          this.operationsService.setStatus(statusReset);
-        }, 1500);
+        this.operationsService.setStatus(statusReset, 1500);
       } else {
         this.artForm.value.art_id = Date.now();
         this.saveStatus = await this.saveDocument(this.artForm.value);
         this.operationsService.setStatus({ status: this.saveStatus, success, failure });
-        setTimeout(() => {
-          this.operationsService.setStatus(statusReset);
-        }, 1500);
+        this.operationsService.setStatus(statusReset, 1500);
         this.resetForm();
       }
       if (this.saveStatus === Constants.SUCCESS) {

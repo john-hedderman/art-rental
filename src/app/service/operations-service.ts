@@ -13,7 +13,17 @@ export class OperationsService {
 
   readonly operationStatus: Signal<OperationStatus> = this._status.asReadonly();
 
-  setStatus(newStatus: OperationStatus): void {
+  private _setStatus(newStatus: OperationStatus): void {
     this._status.update(() => newStatus);
+  }
+
+  public setStatus(newStatus: OperationStatus, delay?: number): void {
+    if (delay) {
+      setTimeout(() => {
+        this._setStatus(newStatus);
+      }, delay);
+    } else {
+      this._setStatus(newStatus);
+    }
   }
 }

@@ -86,10 +86,7 @@ export class ClientDetail implements OnInit, OnDestroy {
   readonly OP_SUCCESS = Constants.SUCCESS;
   readonly OP_FAILURE = Constants.FAILURE;
 
-  contactsTimeoutId: number | undefined;
-  resetTimeoutId: number | undefined;
-
-  updateData() {
+  reloadFromDb() {
     this.dataService
       .load('clients')
       .subscribe((clients) => this.dataService.clients$.next(clients));
@@ -98,31 +95,28 @@ export class ClientDetail implements OnInit, OnDestroy {
       .subscribe((contacts) => this.dataService.contacts$.next(contacts));
   }
 
-  signalStatus(status: string, success: string, failure: string) {
-    this.operationsService.setStatus({ status, success, failure });
+  signalStatus(status: string, success: string, failure: string, delay?: number) {
+    this.operationsService.setStatus({ status, success, failure }, delay);
   }
 
   signalClientStatus() {
     this.signalStatus(this.clientStatus, Messages.DELETED_CLIENT, Messages.DELETE_CLIENT_FAILED);
   }
 
-  signalContactsStatus() {
+  signalContactsStatus(delay?: number) {
     if (this.clientStatus === Constants.SUCCESS) {
-      this.contactsTimeoutId = setTimeout(() => {
-        this.signalStatus(
-          this.contactsStatus,
-          Messages.DELETED_CONTACTS,
-          Messages.DELETE_CONTACTS_FAILED
-        );
-      }, 1500);
+      this.signalStatus(
+        this.contactsStatus,
+        Messages.DELETED_CONTACTS,
+        Messages.DELETE_CONTACTS_FAILED,
+        delay
+      );
     }
   }
 
-  signalResetStatus() {
+  signalResetStatus(delay?: number) {
     if (this.clientStatus === Constants.SUCCESS && this.contactsStatus === Constants.SUCCESS) {
-      this.resetTimeoutId = setTimeout(() => {
-        this.signalStatus('', '', '');
-      }, 3000);
+      this.signalStatus('', '', '', delay);
     }
   }
 
@@ -130,10 +124,10 @@ export class ClientDetail implements OnInit, OnDestroy {
     this.clientStatus = await this.deleteClient();
     this.contactsStatus = await this.deleteContacts();
     this.signalClientStatus();
-    this.signalContactsStatus();
-    this.signalResetStatus();
+    this.signalContactsStatus(1500);
+    this.signalResetStatus(1500 * 2);
     if (this.clientStatus === Constants.SUCCESS || this.contactsStatus === Constants.SUCCESS) {
-      this.updateData();
+      this.reloadFromDb();
     }
   }
 
@@ -239,11 +233,5 @@ export class ClientDetail implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.signalResetStatus();
-    if (this.contactsTimeoutId) {
-      clearTimeout(this.contactsTimeoutId);
-    }
-    if (this.resetTimeoutId) {
-      clearTimeout(this.resetTimeoutId);
-    }
   }
 }

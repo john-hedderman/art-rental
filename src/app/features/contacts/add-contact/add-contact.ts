@@ -69,9 +69,6 @@ export class AddContact implements OnInit {
   contactStatus = '';
   clientStatus = '';
 
-  clientTimeoutId: number | undefined;
-  resetTimeoutId: number | undefined;
-
   clients: Client[] = [];
   clients$: Observable<Client[]> | undefined;
 
@@ -81,41 +78,28 @@ export class AddContact implements OnInit {
       .subscribe((contacts) => this.dataService.contacts$.next(contacts));
   }
 
-  clearClientTimeoutId() {
-    if (this.clientTimeoutId) {
-      clearTimeout(this.clientTimeoutId);
-    }
-  }
-
-  clearResetTimeoutId() {
-    if (this.resetTimeoutId) {
-      clearTimeout(this.resetTimeoutId);
-    }
-  }
-
-  signalStatus(status: string, success: string, failure: string) {
-    this.operationsService.setStatus({ status, success, failure });
+  signalStatus(status: string, success: string, failure: string, delay?: number) {
+    this.operationsService.setStatus({ status, success, failure }, delay);
   }
 
   signalContactStatus() {
     this.signalStatus(this.contactStatus, Messages.SAVED_CONTACT, Messages.SAVE_CONTACT_FAILED);
   }
 
-  signalClientStatus() {
+  signalClientStatus(delay?: number) {
     if (this.contactStatus === Constants.SUCCESS) {
-      this.clearClientTimeoutId();
-      this.clientTimeoutId = setTimeout(() => {
-        this.signalStatus(this.clientStatus, Messages.SAVED_CLIENT, Messages.SAVE_CLIENT_FAILED);
-      }, 1500);
+      this.signalStatus(
+        this.clientStatus,
+        Messages.SAVED_CLIENT,
+        Messages.SAVE_CLIENT_FAILED,
+        delay
+      );
     }
   }
 
-  signalResetStatus() {
+  signalResetStatus(delay?: number) {
     if (this.contactStatus === Constants.SUCCESS) {
-      this.clearResetTimeoutId();
-      this.resetTimeoutId = setTimeout(() => {
-        this.signalStatus('', '', '');
-      }, 3000);
+      this.signalStatus('', '', '', delay);
     }
   }
 
@@ -126,8 +110,8 @@ export class AddContact implements OnInit {
       this.contactStatus = await this.saveContact(this.contactForm.value);
       this.clientStatus = await this.updateClient(this.contactForm.value);
       this.signalContactStatus();
-      this.signalClientStatus();
-      this.signalResetStatus();
+      this.signalClientStatus(1500);
+      this.signalResetStatus(1500 * 2);
       this.submitted = false;
       this.contactForm.reset();
       if (this.contactStatus === Constants.SUCCESS) {

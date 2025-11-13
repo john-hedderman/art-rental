@@ -88,9 +88,6 @@ export class AddClient implements OnInit, OnDestroy {
   deleteContactsStatus = '';
   contactsStatus = '';
 
-  contactsTimeoutId: number | undefined;
-  resetTimeoutId: number | undefined;
-
   reloadFromDb() {
     this.dataService
       .load('clients')
@@ -100,45 +97,28 @@ export class AddClient implements OnInit, OnDestroy {
       .subscribe((contacts) => this.dataService.contacts$.next(contacts));
   }
 
-  signalStatus(status: string, success: string, failure: string) {
-    this.operationsService.setStatus({ status, success, failure });
+  signalStatus(status: string, success: string, failure: string, delay?: number) {
+    this.operationsService.setStatus({ status, success, failure }, delay);
   }
 
   signalClientStatus() {
     this.signalStatus(this.clientStatus, Messages.SAVED_CLIENT, Messages.SAVE_CLIENT_FAILED);
   }
 
-  clearContactsTimeoutId() {
-    if (this.contactsTimeoutId) {
-      clearTimeout(this.contactsTimeoutId);
-    }
-  }
-
-  clearResetTimeoutId() {
-    if (this.resetTimeoutId) {
-      clearTimeout(this.resetTimeoutId);
-    }
-  }
-
-  signalContactsStatus() {
+  signalContactsStatus(delay?: number) {
     if (this.clientStatus === Constants.SUCCESS) {
-      this.clearContactsTimeoutId();
-      this.contactsTimeoutId = setTimeout(() => {
-        this.signalStatus(
-          this.contactsStatus,
-          Messages.SAVED_CONTACTS,
-          Messages.SAVE_CONTACTS_FAILED
-        );
-      }, 1500);
+      this.signalStatus(
+        this.contactsStatus,
+        Messages.SAVED_CONTACTS,
+        Messages.SAVE_CONTACTS_FAILED,
+        delay
+      );
     }
   }
 
-  signalResetStatus() {
+  signalResetStatus(delay?: number) {
     if (this.clientStatus === Constants.SUCCESS && this.contactsStatus === Constants.SUCCESS) {
-      this.clearResetTimeoutId();
-      this.resetTimeoutId = setTimeout(() => {
-        this.signalStatus('', '', '');
-      }, 3000);
+      this.signalStatus('', '', '', delay);
     }
   }
 
@@ -149,8 +129,8 @@ export class AddClient implements OnInit, OnDestroy {
       this.deleteContactsStatus = await this.deleteContacts();
       this.contactsStatus = await this.saveContacts(this.clientForm.value.contacts);
       this.signalClientStatus();
-      this.signalContactsStatus();
-      this.signalResetStatus();
+      this.signalContactsStatus(1500);
+      this.signalResetStatus(1500 * 2);
       this.submitted = false;
       if (this.editMode) {
         this.populateForm();
@@ -356,7 +336,5 @@ export class AddClient implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.signalResetStatus();
-    this.clearContactsTimeoutId();
-    this.clearResetTimeoutId();
   }
 }

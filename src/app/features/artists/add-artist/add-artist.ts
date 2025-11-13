@@ -79,7 +79,7 @@ export class AddArtist implements OnInit {
   saveStatus = '';
 
   async onSubmit() {
-    let success = 'Save succeeded';
+    let success = 'Artist saved';
     const failure = 'Save failed';
     const statusReset = { status: '', success: '', failure: '' };
     this.submitted = true;
@@ -88,16 +88,12 @@ export class AddArtist implements OnInit {
         success = 'Changes saved';
         this.saveStatus = await this.saveDocument(this.artistForm.value);
         this.operationsService.setStatus({ status: this.saveStatus, success, failure });
-        setTimeout(() => {
-          this.operationsService.setStatus(statusReset);
-        }, 1500);
+        this.operationsService.setStatus(statusReset, 1500);
       } else {
         this.artistForm.value.artist_id = Date.now();
         this.saveStatus = await this.saveDocument(this.artistForm.value);
         this.operationsService.setStatus({ status: this.saveStatus, success, failure });
-        setTimeout(() => {
-          this.operationsService.setStatus(statusReset);
-        }, 1500);
+        this.operationsService.setStatus(statusReset, 1500);
         this.resetForm();
       }
       if (this.saveStatus === Constants.SUCCESS) {
