@@ -1,2 +1,108 @@
 <app-page-header [headerData]="headerData"></app-page-header>
-<p>contact-detail works!</p>
+<div class="container-fluid">
+  <div class="row ar-page-content-buttonbar-no-menubar overflow-y-auto pt-3">
+    <div class="col">
+      @if (contact$ | async; as contact) {
+      <div class="row">
+        <div class="col-12">
+          <h5 class="fw-bold pb-2 ar-heading">{{ contact.first_name }} {{ contact.last_name }}</h5>
+          <table>
+            @if (client$ | async; as client) {
+            <tr>
+              <td class="pb-2 pe-3"><strong>Client:</strong></td>
+              <td class="pb-2">{{ client.name }}</td>
+            </tr>
+            }
+            <tr>
+              <td class="pb-2 pe-3"><strong>Title:</strong></td>
+              <td class="pb-2">{{ contact.title }}</td>
+            </tr>
+            <tr>
+              <td class="pb-2 pe-3"><strong>Telephone:</strong></td>
+              <td class="pb-2">{{ contact.phone }}</td>
+            </tr>
+            <tr>
+              <td class="pb-2 pe-3"><strong>Email:</strong></td>
+              <td class="pb-2">{{ contact.email }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  <app-buttonbar [buttonbarData]="buttonbarData"></app-buttonbar>
+</div>
+
+<div
+  class="modal modal-first fade"
+  id="confirmModal"
+  tabindex="-1"
+  aria-labelledby="confirmModalLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmModalLabel">Are you sure?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">Are you sure you want to delete this contact from the system?</div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal modal-first"
+          (click)="onClickDelete()"
+          data-bs-toggle="modal"
+          data-bs-target="#resultModal"
+        >
+          Yes, delete
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal modal-second fade"
+  id="resultModal"
+  tabindex="-1"
+  aria-labelledby="resultModalLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmModalLabel">Delete</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="goToContactList()"
+        ></button>
+      </div>
+      @if (deleteStatus === OP_SUCCESS) {
+      <div class="modal-body">The contact was successfully deleted.</div>
+      } @else {
+      <div class="modal-body">There was an error, and the contact was not deleted.</div>
+      }
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          (click)="goToContactList()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

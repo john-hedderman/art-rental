@@ -147,6 +147,10 @@ export const routes: Routes = [
         component: ContactDetail,
       },
       {
+        path: ':id/edit',
+        component: AddContact,
+      },
+      {
         path: '',
         redirectTo: 'list',
         pathMatch: 'full',

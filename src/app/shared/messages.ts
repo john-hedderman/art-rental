@@ -10,5 +10,8 @@ export const SAVE_CONTACTS_FAILED = 'Saving contacts failed';
 export const DELETED_CLIENT = 'Deleted client';
 export const DELETE_CLIENT_FAILED = 'Deleting client failed';
 
+export const DELETED_CONTACT = 'Deleted contact';
+export const DELETE_CONTACT_FAILED = 'Deleting contact failed';
+
 export const DELETED_CONTACTS = 'Deleted contacts';
 export const DELETE_CONTACTS_FAILED = 'Deleting contacts failed';
