@@ -171,7 +171,7 @@
               </div>
 
               <div formArrayName="contacts" class="mt-0">
-                @for (clientContactGroup of contacts.controls; track trackById($index,
+                @for (clientContactGroup of contacts.controls; track trackByContactId($index,
                 clientContactGroup); let i = $index) {
                 <div [formGroupName]="i" class="row pt-1 border-top ar-contact-row mt-4">
                   <div class="col-12 mt-0 pe-0">

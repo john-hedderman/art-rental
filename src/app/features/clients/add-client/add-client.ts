@@ -15,8 +15,8 @@ import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
-import * as Constants from '../../../constants';
-import * as Messages from '../../../shared/messages';
+import * as Const from '../../../constants';
+import * as Msg from '../../../shared/messages';
 
 @Component({
   selector: 'app-add-client',
@@ -102,22 +102,17 @@ export class AddClient implements OnInit, OnDestroy {
   }
 
   signalClientStatus() {
-    this.signalStatus(this.clientStatus, Messages.SAVED_CLIENT, Messages.SAVE_CLIENT_FAILED);
+    this.signalStatus(this.clientStatus, Msg.SAVED_CLIENT, Msg.SAVE_CLIENT_FAILED);
   }
 
   signalContactsStatus(delay?: number) {
-    if (this.clientStatus === Constants.SUCCESS) {
-      this.signalStatus(
-        this.contactsStatus,
-        Messages.SAVED_CONTACTS,
-        Messages.SAVE_CONTACTS_FAILED,
-        delay
-      );
+    if (this.clientStatus === Const.SUCCESS) {
+      this.signalStatus(this.contactsStatus, Msg.SAVED_CONTACTS, Msg.SAVE_CONTACTS_FAILED, delay);
     }
   }
 
   signalResetStatus(delay?: number) {
-    if (this.clientStatus === Constants.SUCCESS && this.contactsStatus === Constants.SUCCESS) {
+    if (this.clientStatus === Const.SUCCESS && this.contactsStatus === Const.SUCCESS) {
       this.signalStatus('', '', '', delay);
     }
   }
@@ -139,7 +134,7 @@ export class AddClient implements OnInit, OnDestroy {
         this.clientForm.reset();
       }
 
-      if (this.clientStatus === Constants.SUCCESS || this.contactsStatus === Constants.SUCCESS) {
+      if (this.clientStatus === Const.SUCCESS || this.contactsStatus === Const.SUCCESS) {
         this.reloadFromDb();
       }
     }
@@ -154,8 +149,7 @@ export class AddClient implements OnInit, OnDestroy {
   async saveClient(clientFormData: any): Promise<string> {
     const collection = Collections.Clients;
     const formData = this.mergeContactIds(clientFormData);
-
-    let result = Constants.SUCCESS;
+    let result = Const.SUCCESS;
     try {
       let returnData;
       if (this.editMode) {
@@ -169,11 +163,11 @@ export class AddClient implements OnInit, OnDestroy {
         returnData = await this.dataService.saveDocument(formData, collection);
       }
       if (returnData.modifiedCount === 0) {
-        result = Constants.FAILURE;
+        result = Const.FAILURE;
       }
     } catch (error) {
       console.error('Save client error:', error);
-      result = Constants.FAILURE;
+      result = Const.FAILURE;
     }
     return result;
   }
@@ -181,15 +175,15 @@ export class AddClient implements OnInit, OnDestroy {
   async deleteContacts() {
     const collection = Collections.Contacts;
     let returnData;
-    let result = Constants.SUCCESS;
+    let result = Const.SUCCESS;
     try {
       returnData = await this.dataService.deleteDocuments(collection, this.clientId, 'client_id');
       if (returnData.message.indexOf('failed') !== -1) {
-        result = Constants.FAILURE;
+        result = Const.FAILURE;
       }
     } catch (error) {
       console.error('Error deleting contacts:', error);
-      result = Constants.FAILURE;
+      result = Const.FAILURE;
     }
     return result;
   }
@@ -197,16 +191,16 @@ export class AddClient implements OnInit, OnDestroy {
   async saveContacts(contactsFormData: any[]): Promise<string> {
     const collection = Collections.Contacts;
     let returnData;
-    let result = Constants.SUCCESS;
+    let result = Const.SUCCESS;
     for (const contactFormData of contactsFormData) {
       try {
         returnData = await this.dataService.saveDocument(contactFormData, collection);
         if (!returnData.insertedId) {
-          result = Constants.FAILURE;
+          result = Const.FAILURE;
         }
       } catch (error) {
         console.error('Error saving contact:', error);
-        result = Constants.FAILURE;
+        result = Const.FAILURE;
       }
     }
     return result;
@@ -216,24 +210,22 @@ export class AddClient implements OnInit, OnDestroy {
     return this.clientForm.get('contacts') as FormArray;
   }
 
-  newContact(contact_id?: number): FormGroup {
-    return this.fb.group({
-      contact_id: contact_id || Date.now(),
-      first_name: [''],
-      last_name: [''],
-      phone: [''],
-      title: [''],
-      email: [''],
-      client_id: this.clientId,
-    });
-  }
-
-  trackById(_index: number, v: AbstractControl) {
+  trackByContactId(_index: number, v: AbstractControl) {
     return v.value.contact_id;
   }
 
   addContact(contact_id?: number): void {
-    this.contacts.push(this.newContact(contact_id));
+    this.contacts.push(
+      this.fb.group({
+        contact_id: contact_id || Date.now(),
+        first_name: [''],
+        last_name: [''],
+        phone: [''],
+        title: [''],
+        email: [''],
+        client_id: this.clientId,
+      })
+    );
   }
 
   removeContact(index: number): void {
@@ -312,6 +304,15 @@ export class AddClient implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.clientId = Date.now();
+    this.editMode = false;
+
+    const clientId = this.route.snapshot.paramMap.get('id');
+    if (clientId) {
+      this.clientId = +clientId;
+      this.editMode = true;
+      this.populateForm();
+    }
+
     this.clientForm = this.fb.group({
       client_id: this.clientId,
       name: [''],
@@ -323,15 +324,6 @@ export class AddClient implements OnInit, OnDestroy {
       industry: [''],
       contacts: this.fb.array([]),
     });
-
-    this.editMode = false;
-    const clientId = this.route.snapshot.paramMap.get('id');
-    if (clientId) {
-      this.editMode = true;
-      this.clientId = +clientId;
-      this.clientForm.value.client_id = this.clientId;
-      this.populateForm();
-    }
   }
 
   ngOnDestroy(): void {
