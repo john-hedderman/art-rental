@@ -88,6 +88,8 @@ export class AddClient implements OnInit, OnDestroy {
   deleteContactsStatus = '';
   contactsStatus = '';
 
+  initialContactsCount = 0;
+
   reloadFromDb() {
     this.dataService
       .load('clients')
@@ -124,8 +126,12 @@ export class AddClient implements OnInit, OnDestroy {
       this.deleteContactsStatus = await this.deleteContacts();
       this.contactsStatus = await this.saveContacts(this.clientForm.value.contacts);
       this.signalClientStatus();
-      this.signalContactsStatus(1500);
-      this.signalResetStatus(1500 * 2);
+      if (this.initialContactsCount === 0 && this.clientForm.value.contacts.length === 0) {
+        this.signalResetStatus(1500);
+      } else {
+        this.signalContactsStatus(1500);
+        this.signalResetStatus(1500 * 2);
+      }
       this.submitted = false;
       if (this.editMode) {
         this.populateForm();
@@ -260,6 +266,7 @@ export class AddClient implements OnInit, OnDestroy {
   populateContactsData() {
     this.contacts.clear();
     const contact_ids = this.clientDBData.contact_ids;
+    this.initialContactsCount = contact_ids.length;
     for (const contact_id of contact_ids) {
       this.addContact(contact_id);
       this.populateContactData(contact_id);
@@ -305,6 +312,7 @@ export class AddClient implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.clientId = Date.now();
     this.editMode = false;
+    this.initialContactsCount = 0;
 
     const clientId = this.route.snapshot.paramMap.get('id');
     if (clientId) {
