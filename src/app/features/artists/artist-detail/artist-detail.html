@@ -34,11 +34,13 @@
 </div>
 
 <div
-  class="modal modal-first"
+  class="modal modal-first fade"
   id="confirmModal"
   tabindex="-1"
   aria-labelledby="confirmModalLabel"
   aria-hidden="true"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
 >
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -65,11 +67,13 @@
 </div>
 
 <div
-  class="modal modal-second"
+  class="modal modal-second fade"
   id="resultModal"
   tabindex="-1"
   aria-labelledby="resultModalLabel"
   aria-hidden="true"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
 >
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -78,7 +82,7 @@
         <button
           type="button"
           class="btn-close"
-          data-bs-dismiss="modal modal-second"
+          data-bs-dismiss="modal"
           aria-label="Close"
           (click)="goToArtistList()"
         ></button>
