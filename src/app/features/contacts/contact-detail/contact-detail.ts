@@ -66,11 +66,15 @@ export class ContactDetail {
   };
 
   contactId = 0;
+  clientId = 0;
 
   contact$: Observable<Contact> | undefined;
   client$: Observable<Client> | undefined;
 
+  clients: Client[] = [];
+
   deleteStatus = '';
+  clientStatus = '';
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
@@ -82,8 +86,14 @@ export class ContactDetail {
     this.signalStatus(this.deleteStatus, Msgs.DELETED_CONTACT, Msgs.DELETE_CONTACT_FAILED);
   }
 
-  signalResetStatus(delay?: number) {
+  signalClientStatus(delay?: number) {
     if (this.deleteStatus === Const.SUCCESS) {
+      this.signalStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED, delay);
+    }
+  }
+
+  signalResetStatus(delay?: number) {
+    if (this.clientStatus === Const.SUCCESS) {
       this.signalStatus('', '', '', delay);
     }
   }
@@ -95,28 +105,42 @@ export class ContactDetail {
   }
 
   async onClickDelete() {
-    this.deleteStatus = await this.deleteDocument();
+    this.deleteStatus = await this.operationsService.deleteDocument(
+      Collections.Contacts,
+      'contact_id',
+      this.contactId
+    );
+    this.clientStatus = await this.updateClient();
     this.signalContactStatus();
-    this.signalResetStatus(1500);
+    this.signalClientStatus(1500);
+    this.signalResetStatus(1500 * 2);
     if (this.deleteStatus === Const.SUCCESS) {
       this.reloadFromDb();
     }
   }
 
-  async deleteDocument(): Promise<string> {
-    const collectionName = Collections.Contacts;
+  async updateClient(): Promise<string> {
+    const client = this.clients.find((client) => client.client_id === this.clientId);
+    if (!client) {
+      console.error('Save client error, could not find the client');
+      return Const.FAILURE;
+    }
+    const collection = Collections.Clients;
     let result = Const.SUCCESS;
     try {
-      const returnData = await this.dataService.deleteDocument(
-        collectionName,
-        this.contactId,
-        'contact_id'
+      client.contact_ids = client.contact_ids.filter((contact_id) => contact_id !== this.contactId);
+      delete (client as any)._id; // necessary?
+      const returnData = await this.dataService.saveDocument(
+        client,
+        collection,
+        this.clientId,
+        'client_id'
       );
-      if (returnData.deletedCount === 0) {
+      if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
       }
     } catch (error) {
-      console.error('Delete error:', error);
+      console.error('Save client error:', error);
       result = Const.FAILURE;
     }
     return result;
@@ -140,12 +164,14 @@ export class ContactDetail {
       .pipe(take(1))
       .subscribe(({ contacts, clients, contactId }) => {
         this.contactId = contactId;
+        this.clients = clients;
         let contact = contacts.find((contact) => contact.contact_id === contactId)!;
         if (contact) {
-          let client = clients.find((client) => client.client_id === contact?.client_id);
+          let client = clients.find((client) => client.client_id === contact.client_id);
           if (client) {
             contact = { ...contact, client };
             this.client$ = of(client);
+            this.clientId = client.client_id;
           }
           this.contact$ = of(contact);
         }

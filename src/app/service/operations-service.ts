@@ -1,5 +1,7 @@
-import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { OperationStatus } from '../model/models';
+import * as Const from '../constants';
+import { DataService } from './data-service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +14,8 @@ export class OperationsService {
   });
 
   readonly operationStatus: Signal<OperationStatus> = this._status.asReadonly();
+
+  dataService = inject(DataService);
 
   private _setStatus(newStatus: OperationStatus): void {
     this._status.update(() => newStatus);
@@ -26,4 +30,20 @@ export class OperationsService {
       this._setStatus(newStatus);
     }
   }
+
+  async deleteDocument(collectionName: string, field: string, id: number): Promise<string> {
+    let result = Const.SUCCESS;
+    try {
+      const returnData = await this.dataService.deleteDocument(collectionName, id, field);
+      if (returnData.deletedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
+
+  // constructor(private dataService: DataService) {}
 }
