@@ -1,3 +1,9 @@
+export const SAVED_ART = 'Saved art';
+export const SAVE_ART_FAILED = 'Saving art failed';
+
+export const SAVED_ARTIST = 'Saved artist';
+export const SAVE_ARTIST_FAILED = 'Saving artist failed';
+
 export const SAVED_CLIENT = 'Saved client';
 export const SAVE_CLIENT_FAILED = 'Saving client failed';
 

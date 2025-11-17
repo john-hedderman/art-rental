@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
@@ -11,7 +11,8 @@ import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
-import * as Constants from '../../../constants';
+import * as Const from '../../../constants';
+import * as Msgs from '../../../shared/messages';
 
 @Component({
   selector: 'app-add-art',
@@ -20,7 +21,7 @@ import * as Constants from '../../../constants';
   styleUrl: './add-art.scss',
   standalone: true,
 })
-export class AddArt implements OnInit {
+export class AddArt implements OnInit, OnDestroy {
   goBack = () => {
     if (this.editMode) {
       this.router.navigate(['/art', this.artId]);
@@ -83,6 +84,20 @@ export class AddArt implements OnInit {
   artists$: Observable<Artist[]> | undefined;
   jobs$: Observable<Job[]> | undefined;
 
+  signalStatus(status: string, success: string, failure: string, delay?: number) {
+    this.operationsService.setStatus({ status, success, failure }, delay);
+  }
+
+  signalArtStatus() {
+    this.signalStatus(this.saveStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
+  }
+
+  signalResetStatus(delay?: number) {
+    if (this.saveStatus === Const.SUCCESS) {
+      this.signalStatus('', '', '', delay);
+    }
+  }
+
   async onSubmit() {
     let success = 'Art saved';
     const failure = 'Save failed';
@@ -91,19 +106,16 @@ export class AddArt implements OnInit {
     if (this.artForm.valid) {
       this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
       this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
-      if (this.editMode) {
-        success = 'Changes saved';
-        this.saveStatus = await this.saveDocument(this.artForm.value);
-        this.operationsService.setStatus({ status: this.saveStatus, success, failure });
-        this.operationsService.setStatus(statusReset, 1500);
-      } else {
+
+      if (!this.editMode) {
         this.artForm.value.art_id = Date.now();
-        this.saveStatus = await this.saveDocument(this.artForm.value);
-        this.operationsService.setStatus({ status: this.saveStatus, success, failure });
-        this.operationsService.setStatus(statusReset, 1500);
-        this.resetForm();
       }
-      if (this.saveStatus === Constants.SUCCESS) {
+      this.saveStatus = await this.saveDocument(this.artForm.value);
+      this.signalArtStatus();
+      this.signalResetStatus(1500);
+      this.submitted = false;
+      this.resetForm();
+      if (this.saveStatus === Const.SUCCESS) {
         this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
       }
     }
@@ -111,7 +123,7 @@ export class AddArt implements OnInit {
 
   async saveDocument(artData: any): Promise<string> {
     const collectionName = Collections.Art;
-    let result = Constants.SUCCESS;
+    let result = Const.SUCCESS;
     try {
       let returnData;
       if (this.editMode) {
@@ -125,11 +137,11 @@ export class AddArt implements OnInit {
         returnData = await this.dataService.saveDocument(artData, collectionName);
       }
       if (returnData.modifiedCount === 0) {
-        result = Constants.FAILURE;
+        result = Const.FAILURE;
       }
     } catch (error) {
       console.error('Save error:', error);
-      result = Constants.FAILURE;
+      result = Const.FAILURE;
     }
     return result;
   }
@@ -140,7 +152,6 @@ export class AddArt implements OnInit {
     } else {
       this.artForm.reset();
     }
-    this.submitted = false;
   }
 
   repopulateEditForm() {
@@ -222,5 +233,9 @@ export class AddArt implements OnInit {
     } else {
       this.editMode = false;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.signalResetStatus(1500);
   }
 }

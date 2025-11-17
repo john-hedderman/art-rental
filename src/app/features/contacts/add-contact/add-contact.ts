@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of, take } from 'rxjs';
@@ -21,7 +21,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './add-contact.scss',
   standalone: true,
 })
-export class AddContact implements OnInit {
+export class AddContact implements OnInit, OnDestroy {
   goToContactList = () => {
     this.router.navigate(['/contacts', 'list']);
   };
@@ -276,5 +276,9 @@ export class AddContact implements OnInit {
       email: [''],
       client_id: null,
     });
+  }
+
+  ngOnDestroy(): void {
+    this.signalResetStatus(1500);
   }
 }
