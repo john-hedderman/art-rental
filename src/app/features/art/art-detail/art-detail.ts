@@ -7,8 +7,9 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
-import * as Constants from '../../../constants';
 import { OperationsService } from '../../../service/operations-service';
+import * as Const from '../../../constants';
+import * as Msgs from '../../../shared/messages';
 
 @Component({
   selector: 'app-art-detail',
@@ -67,8 +68,22 @@ export class ArtDetail {
   artId = 0;
 
   deleteStatus = '';
-  readonly OP_SUCCESS = Constants.SUCCESS;
-  readonly OP_FAILURE = Constants.FAILURE;
+  readonly OP_SUCCESS = Const.SUCCESS;
+  readonly OP_FAILURE = Const.FAILURE;
+
+  signalStatus(status: string, success: string, failure: string, delay?: number) {
+    this.operationsService.setStatus({ status, success, failure }, delay);
+  }
+
+  signalArtStatus() {
+    this.signalStatus(this.deleteStatus, Msgs.DELETED_ART, Msgs.DELETE_ART_FAILED);
+  }
+
+  signalResetStatus(delay?: number) {
+    if (this.deleteStatus === Const.SUCCESS) {
+      this.signalStatus('', '', '', delay);
+    }
+  }
 
   async onClickDelete() {
     this.deleteStatus = await this.operationsService.deleteDocument(
@@ -76,7 +91,9 @@ export class ArtDetail {
       'art_id',
       this.artId
     );
-    if (this.deleteStatus === Constants.SUCCESS) {
+    this.signalArtStatus();
+    this.signalResetStatus(1500);
+    if (this.deleteStatus === Const.SUCCESS) {
       this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
     }
   }

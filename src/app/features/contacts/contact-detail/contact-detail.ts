@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -19,7 +19,7 @@ import * as Msgs from '../../../shared/messages';
   styleUrl: './contact-detail.scss',
   standalone: true,
 })
-export class ContactDetail {
+export class ContactDetail implements OnDestroy {
   goToEditContact = () => {
     this.router.navigate(['/contacts', this.contactId, 'edit']);
   };
@@ -176,5 +176,9 @@ export class ContactDetail {
           this.contact$ = of(contact);
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    this.signalResetStatus();
   }
 }

@@ -7,6 +7,9 @@ export const SAVE_CONTACT_FAILED = 'Saving contact failed';
 export const SAVED_CONTACTS = 'Saved contacts';
 export const SAVE_CONTACTS_FAILED = 'Saving contacts failed';
 
+export const DELETED_ART = 'Deleted art';
+export const DELETE_ART_FAILED = 'Deleting art failed';
+
 export const DELETED_CLIENT = 'Deleted client';
 export const DELETE_CLIENT_FAILED = 'Deleting client failed';
 
