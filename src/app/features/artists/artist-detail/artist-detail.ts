@@ -8,6 +8,7 @@ import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 import * as Constants from '../../../constants';
+import { OperationsService } from '../../../service/operations-service';
 
 @Component({
   selector: 'app-artist-detail',
@@ -70,31 +71,16 @@ export class ArtistDetail {
   readonly OP_FAILURE = Constants.FAILURE;
 
   async onClickDelete() {
-    this.deleteStatus = await this.deleteDocument();
+    this.deleteStatus = await this.operationsService.deleteDocument(
+      Collections.Artists,
+      'artist_id',
+      this.artistId
+    );
     if (this.deleteStatus === Constants.SUCCESS) {
       this.dataService
         .load('artists')
         .subscribe((artists) => this.dataService.artists$.next(artists));
     }
-  }
-
-  async deleteDocument(): Promise<string> {
-    const collectionName = Collections.Artists;
-    let result = Constants.SUCCESS;
-    try {
-      const returnData = await this.dataService.deleteDocument(
-        collectionName,
-        this.artistId,
-        'artist_id'
-      );
-      if (returnData.deletedCount === 0) {
-        result = Constants.FAILURE;
-      }
-    } catch (error) {
-      console.error('Delete error:', error);
-      result = Constants.FAILURE;
-    }
-    return result;
   }
 
   getArtistId(): Observable<number> {
@@ -104,7 +90,8 @@ export class ArtistDetail {
   constructor(
     private router: Router,
     private dataService: DataService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private operationsService: OperationsService
   ) {
     combineLatest({
       artists: this.dataService.artists$,
