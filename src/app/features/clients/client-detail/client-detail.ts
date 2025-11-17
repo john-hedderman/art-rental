@@ -121,49 +121,22 @@ export class ClientDetail implements OnInit, OnDestroy {
   }
 
   async onClickDelete() {
-    this.clientStatus = await this.deleteClient();
-    this.contactsStatus = await this.deleteContacts();
+    this.clientStatus = await this.operationsService.deleteDocument(
+      Collections.Clients,
+      'client_id',
+      this.clientId
+    );
+    this.contactsStatus = await this.operationsService.deleteDocument(
+      Collections.Contacts,
+      'client_id',
+      this.clientId
+    );
     this.signalClientStatus();
     this.signalContactsStatus(1500);
     this.signalResetStatus(1500 * 2);
     if (this.clientStatus === Constants.SUCCESS || this.contactsStatus === Constants.SUCCESS) {
       this.reloadFromDb();
     }
-  }
-
-  async deleteClient(): Promise<string> {
-    const collectionName = Collections.Clients;
-    let result = Constants.SUCCESS;
-    try {
-      const returnData = await this.dataService.deleteDocument(
-        collectionName,
-        this.clientId,
-        'client_id'
-      );
-      if (returnData.deletedCount === 0) {
-        result = Constants.FAILURE;
-      }
-    } catch (error) {
-      console.error('Delete error:', error);
-      result = Constants.FAILURE;
-    }
-    return result;
-  }
-
-  async deleteContacts(): Promise<string> {
-    const collectionName = Collections.Contacts;
-    let result = Constants.SUCCESS;
-    try {
-      const returnData = await this.dataService.deleteDocuments(
-        collectionName,
-        this.clientId,
-        'client_id'
-      );
-    } catch (error) {
-      console.error('Delete error:', error);
-      result = Constants.FAILURE;
-    }
-    return result;
   }
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
