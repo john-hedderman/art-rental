@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, map, Observable, take } from 'rxjs';
 
@@ -7,8 +7,9 @@ import { Artist, ButtonbarData, HeaderData } from '../../../model/models';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
-import * as Constants from '../../../constants';
 import { OperationsService } from '../../../service/operations-service';
+import * as Const from '../../../constants';
+import * as Msgs from '../../../shared/messages';
 
 @Component({
   selector: 'app-artist-detail',
@@ -17,7 +18,7 @@ import { OperationsService } from '../../../service/operations-service';
   styleUrl: './artist-detail.scss',
   standalone: true,
 })
-export class ArtistDetail {
+export class ArtistDetail implements OnDestroy {
   goToEditArtist = () => {
     this.router.navigate(['/artists', this.artistId, 'edit']);
   };
@@ -67,8 +68,22 @@ export class ArtistDetail {
   artistId = 0;
 
   deleteStatus = '';
-  readonly OP_SUCCESS = Constants.SUCCESS;
-  readonly OP_FAILURE = Constants.FAILURE;
+  readonly OP_SUCCESS = Const.SUCCESS;
+  readonly OP_FAILURE = Const.FAILURE;
+
+  signalStatus(status: string, success: string, failure: string, delay?: number) {
+    this.operationsService.setStatus({ status, success, failure }, delay);
+  }
+
+  signalArtistStatus() {
+    this.signalStatus(this.deleteStatus, Msgs.DELETED_ARTIST, Msgs.DELETE_ARTIST_FAILED);
+  }
+
+  signalResetStatus(delay?: number) {
+    if (this.deleteStatus === Const.SUCCESS) {
+      this.signalStatus('', '', '', delay);
+    }
+  }
 
   async onClickDelete() {
     this.deleteStatus = await this.operationsService.deleteDocument(
@@ -76,7 +91,9 @@ export class ArtistDetail {
       'artist_id',
       this.artistId
     );
-    if (this.deleteStatus === Constants.SUCCESS) {
+    this.signalArtistStatus();
+    this.signalResetStatus(1500);
+    if (this.deleteStatus === Const.SUCCESS) {
       this.dataService
         .load('artists')
         .subscribe((artists) => this.dataService.artists$.next(artists));
@@ -105,5 +122,9 @@ export class ArtistDetail {
           this.artist = artist;
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    this.signalResetStatus(1500);
   }
 }

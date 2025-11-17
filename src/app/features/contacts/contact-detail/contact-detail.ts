@@ -179,6 +179,6 @@ export class ContactDetail implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.signalResetStatus();
+    this.signalResetStatus(1500);
   }
 }

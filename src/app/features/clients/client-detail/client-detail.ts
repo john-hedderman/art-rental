@@ -205,6 +205,6 @@ export class ClientDetail implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.signalResetStatus();
+    this.signalResetStatus(1500);
   }
 }

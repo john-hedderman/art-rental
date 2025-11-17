@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, take } from 'rxjs';
 
@@ -18,7 +18,7 @@ import * as Msgs from '../../../shared/messages';
   styleUrl: './art-detail.scss',
   standalone: true,
 })
-export class ArtDetail {
+export class ArtDetail implements OnDestroy {
   goToEditArt = () => {
     this.router.navigate(['/art', this.artId, 'edit']);
   };
@@ -140,5 +140,9 @@ export class ArtDetail {
         }
         this.art = art!;
       });
+  }
+
+  ngOnDestroy(): void {
+    this.signalResetStatus(1500);
   }
 }
