@@ -171,7 +171,12 @@ export class AddArtist implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private operationsService: OperationsService,
     private http: HttpClient
-  ) {}
+  ) {
+    const segments = this.route.snapshot.url.map((x) => x.path);
+    if (segments[segments.length - 1] === 'edit') {
+      this.headerData.headerTitle = 'Edit Artist';
+    }
+  }
 
   ngOnInit(): void {
     this.artistId = Date.now();

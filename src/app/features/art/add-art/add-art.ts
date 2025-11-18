@@ -182,7 +182,7 @@ export class AddArt implements OnInit, OnDestroy {
   ) {
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {
-      this.headerData.headerTitle = 'Update Art';
+      this.headerData.headerTitle = 'Edit Art';
     }
     combineLatest({
       artists: this.dataService.load('artists'),

@@ -250,6 +250,10 @@ export class AddContact implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private http: HttpClient
   ) {
+    const segments = this.route.snapshot.url.map((x) => x.path);
+    if (segments[segments.length - 1] === 'edit') {
+      this.headerData.headerTitle = 'Edit Contact';
+    }
     this.dataService.clients$.pipe(take(1)).subscribe((clients) => {
       this.clients$ = of(clients);
       this.clients = clients;
