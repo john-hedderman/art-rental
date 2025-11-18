@@ -31,6 +31,20 @@ export class OperationsService {
     }
   }
 
+  async saveDocument(data: any, collectionName: string, id?: number, field?: string) {
+    let result = Const.SUCCESS;
+    try {
+      const returnData = await this.dataService.saveDocument(data, collectionName, id, field);
+      if (returnData.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Save error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
+
   async deleteDocument(collectionName: string, field: string, id: number): Promise<string> {
     let result = Const.SUCCESS;
     try {
@@ -44,6 +58,4 @@ export class OperationsService {
     }
     return result;
   }
-
-  // constructor(private dataService: DataService) {}
 }

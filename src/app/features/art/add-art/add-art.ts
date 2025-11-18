@@ -107,7 +107,14 @@ export class AddArt implements OnInit, OnDestroy {
     if (this.artForm.valid) {
       this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
       this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
-      this.saveStatus = await this.saveDocument(this.artForm.value);
+      const id = this.editMode ? this.artId : undefined;
+      const field = this.editMode ? 'art_id' : undefined;
+      this.saveStatus = await this.operationsService.saveDocument(
+        this.artForm.value,
+        Collections.Art,
+        id,
+        field
+      );
       this.signalArtStatus();
       this.signalResetStatus(1500);
       this.submitted = false;
@@ -120,31 +127,6 @@ export class AddArt implements OnInit, OnDestroy {
         this.reloadFromDb();
       }
     }
-  }
-
-  async saveDocument(artData: any): Promise<string> {
-    const collectionName = Collections.Art;
-    let result = Const.SUCCESS;
-    try {
-      let returnData;
-      if (this.editMode) {
-        returnData = await this.dataService.saveDocument(
-          artData,
-          collectionName,
-          artData.art_id,
-          'art_id'
-        );
-      } else {
-        returnData = await this.dataService.saveDocument(artData, collectionName);
-      }
-      if (returnData.modifiedCount === 0) {
-        result = Const.FAILURE;
-      }
-    } catch (error) {
-      console.error('Save error:', error);
-      result = Const.FAILURE;
-    }
-    return result;
   }
 
   populateArtData() {
