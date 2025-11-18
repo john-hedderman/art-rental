@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -9,7 +9,8 @@ import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
-import * as Constants from '../../../constants';
+import * as Const from '../../../constants';
+import * as Msgs from '../../../shared/messages';
 
 @Component({
   selector: 'app-add-artist',
@@ -18,7 +19,7 @@ import * as Constants from '../../../constants';
   styleUrl: './add-artist.scss',
   standalone: true,
 })
-export class AddArtist implements OnInit {
+export class AddArtist implements OnInit, OnDestroy {
   goBack = () => {
     if (this.editMode) {
       this.router.navigate(['/artists', this.artistId]);
@@ -68,45 +69,57 @@ export class AddArtist implements OnInit {
     ],
   };
 
-  editObj: Artist = {} as Artist;
-  editMode = false;
-
   artistForm!: FormGroup;
   submitted = false;
 
-  artistId = '';
-
   saveStatus = '';
 
+  artistDBData: Artist = {} as Artist;
+
+  artistId!: number;
+  editMode = false;
+
+  reloadFromDb() {
+    this.dataService
+      .load('artists')
+      .subscribe((artists) => this.dataService.artists$.next(artists));
+  }
+
+  signalStatus(status: string, success: string, failure: string, delay?: number) {
+    this.operationsService.setStatus({ status, success, failure }, delay);
+  }
+
+  signalArtistStatus() {
+    this.signalStatus(this.saveStatus, Msgs.SAVED_ARTIST, Msgs.SAVE_ARTIST_FAILED);
+  }
+
+  signalResetStatus(delay?: number) {
+    if (this.saveStatus === Const.SUCCESS) {
+      this.signalStatus('', '', '', delay);
+    }
+  }
+
   async onSubmit() {
-    let success = 'Artist saved';
-    const failure = 'Save failed';
-    const statusReset = { status: '', success: '', failure: '' };
     this.submitted = true;
     if (this.artistForm.valid) {
+      this.saveStatus = await this.saveDocument(this.artistForm.value);
+      this.signalArtistStatus();
+      this.signalResetStatus(1500);
+      this.submitted = false;
       if (this.editMode) {
-        success = 'Changes saved';
-        this.saveStatus = await this.saveDocument(this.artistForm.value);
-        this.operationsService.setStatus({ status: this.saveStatus, success, failure });
-        this.operationsService.setStatus(statusReset, 1500);
+        this.populateForm();
       } else {
-        this.artistForm.value.artist_id = Date.now();
-        this.saveStatus = await this.saveDocument(this.artistForm.value);
-        this.operationsService.setStatus({ status: this.saveStatus, success, failure });
-        this.operationsService.setStatus(statusReset, 1500);
-        this.resetForm();
+        this.artistForm.reset();
       }
-      if (this.saveStatus === Constants.SUCCESS) {
-        this.dataService
-          .load('artists')
-          .subscribe((artists) => this.dataService.artists$.next(artists));
+      if (this.saveStatus === Const.SUCCESS) {
+        this.reloadFromDb();
       }
     }
   }
 
   async saveDocument(artistData: any): Promise<string> {
     const collectionName = Collections.Artists;
-    let result = Constants.SUCCESS;
+    let result = Const.SUCCESS;
     try {
       let returnData;
       if (this.editMode) {
@@ -120,31 +133,35 @@ export class AddArtist implements OnInit {
         returnData = await this.dataService.saveDocument(artistData, collectionName);
       }
       if (returnData.modifiedCount === 0) {
-        result = Constants.FAILURE;
+        result = Const.FAILURE;
       }
     } catch (error) {
       console.error('Save error:', error);
-      result = Constants.FAILURE;
+      result = Const.FAILURE;
     }
     return result;
   }
 
-  resetForm() {
-    if (this.editMode) {
-      this.repopulateEditForm();
-    } else {
-      this.artistForm.reset();
-    }
-    this.submitted = false;
-  }
-
-  repopulateEditForm() {
+  populateArtistData() {
     // this also effectively touches the form fields, so the prepopulated fields that
     // the user has never touched can be considered valid, letting the form submission complete
-    this.artistForm.get('artist_id')?.setValue(this.editObj.artist_id);
-    this.artistForm.get('name')?.setValue(this.editObj.name);
-    this.artistForm.get('photo_path')?.setValue(this.editObj.photo_path);
-    this.artistForm.get('tags')?.setValue(this.editObj.tags);
+    this.artistForm.get('artist_id')?.setValue(this.artistDBData.artist_id);
+    this.artistForm.get('name')?.setValue(this.artistDBData.name);
+    this.artistForm.get('photo_path')?.setValue(this.artistDBData.photo_path);
+    this.artistForm.get('tags')?.setValue(this.artistDBData.tags);
+  }
+
+  populateForm() {
+    this.http
+      .get<Artist[]>(`http://localhost:3000/data/artists/${this.artistId}?recordId=artist_id`)
+      .subscribe((artists) => {
+        if (artists && artists.length === 1) {
+          this.artistDBData = artists[0];
+          if (this.artistDBData) {
+            this.populateArtistData();
+          }
+        }
+      });
   }
 
   constructor(
@@ -157,28 +174,25 @@ export class AddArtist implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.artistId = Date.now();
+    this.editMode = false;
+
+    const artistId = this.route.snapshot.paramMap.get('id');
+    if (artistId) {
+      this.artistId = +artistId;
+      this.editMode = true;
+      this.populateForm();
+    }
+
     this.artistForm = this.fb.group({
-      artist_id: [null],
+      artist_id: this.artistId,
       name: [''],
       photo_path: [''],
       tags: [''],
     });
+  }
 
-    this.artistId = this.route.snapshot.paramMap.get('id') ?? '';
-    if (this.artistId) {
-      this.editMode = true;
-      this.http
-        .get<Artist[]>(`http://localhost:3000/data/artists/${this.artistId}?recordId=artist_id`)
-        .subscribe((artists) => {
-          if (artists && artists.length === 1) {
-            this.editObj = artists[0];
-            if (this.editObj) {
-              this.repopulateEditForm();
-            }
-          }
-        });
-    } else {
-      this.editMode = false;
-    }
+  ngOnDestroy(): void {
+    this.signalResetStatus(1500);
   }
 }

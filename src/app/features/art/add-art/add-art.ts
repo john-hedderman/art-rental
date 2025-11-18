@@ -71,18 +71,22 @@ export class AddArt implements OnInit, OnDestroy {
     ],
   };
 
-  editObj: Art = {} as Art;
-  editMode = false;
-
   artForm!: FormGroup;
   submitted = false;
-
-  artId = '';
 
   saveStatus = '';
 
   artists$: Observable<Artist[]> | undefined;
   jobs$: Observable<Job[]> | undefined;
+
+  artDBData: Art = {} as Art;
+
+  artId!: number;
+  editMode = false;
+
+  reloadFromDb() {
+    this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
+  }
 
   signalStatus(status: string, success: string, failure: string, delay?: number) {
     this.operationsService.setStatus({ status, success, failure }, delay);
@@ -99,24 +103,21 @@ export class AddArt implements OnInit, OnDestroy {
   }
 
   async onSubmit() {
-    let success = 'Art saved';
-    const failure = 'Save failed';
-    const statusReset = { status: '', success: '', failure: '' };
     this.submitted = true;
     if (this.artForm.valid) {
       this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
       this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
-
-      if (!this.editMode) {
-        this.artForm.value.art_id = Date.now();
-      }
       this.saveStatus = await this.saveDocument(this.artForm.value);
       this.signalArtStatus();
       this.signalResetStatus(1500);
       this.submitted = false;
-      this.resetForm();
+      if (this.editMode) {
+        this.populateForm();
+      } else {
+        this.artForm.reset();
+      }
       if (this.saveStatus === Const.SUCCESS) {
-        this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
+        this.reloadFromDb();
       }
     }
   }
@@ -146,24 +147,29 @@ export class AddArt implements OnInit, OnDestroy {
     return result;
   }
 
-  resetForm() {
-    if (this.editMode) {
-      this.repopulateEditForm();
-    } else {
-      this.artForm.reset();
-    }
-  }
-
-  repopulateEditForm() {
+  populateArtData() {
     // this also effectively touches the form fields, so the prepopulated fields that
     // the user has never touched can be considered valid, letting the form submission complete
-    this.artForm.get('art_id')?.setValue(this.editObj.art_id);
-    this.artForm.get('title')?.setValue(this.editObj.title);
-    this.artForm.get('file_name')?.setValue(this.editObj.file_name);
-    this.artForm.get('full_size_image_url')?.setValue(this.editObj.full_size_image_url);
-    this.artForm.get('artist_id')?.setValue(this.editObj.artist_id);
-    this.artForm.get('job_id')?.setValue(this.editObj.job_id);
-    this.artForm.get('tags')?.setValue(this.editObj.tags);
+    this.artForm.get('art_id')?.setValue(this.artDBData.art_id);
+    this.artForm.get('title')?.setValue(this.artDBData.title);
+    this.artForm.get('file_name')?.setValue(this.artDBData.file_name);
+    this.artForm.get('full_size_image_url')?.setValue(this.artDBData.full_size_image_url);
+    this.artForm.get('artist_id')?.setValue(this.artDBData.artist_id);
+    this.artForm.get('job_id')?.setValue(this.artDBData.job_id);
+    this.artForm.get('tags')?.setValue(this.artDBData.tags);
+  }
+
+  populateForm() {
+    this.http
+      .get<Art[]>(`http://localhost:3000/data/art/${this.artId}?recordId=art_id`)
+      .subscribe((art) => {
+        if (art && art.length === 1) {
+          this.artDBData = art[0];
+          if (this.artDBData) {
+            this.populateArtData();
+          }
+        }
+      });
   }
 
   constructor(
@@ -207,8 +213,18 @@ export class AddArt implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.artId = Date.now();
+    this.editMode = false;
+
+    const artId = this.route.snapshot.paramMap.get('id');
+    if (artId) {
+      this.artId = +artId;
+      this.editMode = true;
+      this.populateForm();
+    }
+
     this.artForm = this.fb.group({
-      art_id: [null],
+      art_id: this.artId,
       title: [''],
       file_name: [''],
       full_size_image_url: [''],
@@ -216,23 +232,6 @@ export class AddArt implements OnInit, OnDestroy {
       job_id: [null],
       tags: [''],
     });
-
-    this.artId = this.route.snapshot.paramMap.get('id') ?? '';
-    if (this.artId) {
-      this.editMode = true;
-      this.http
-        .get<Art[]>(`http://localhost:3000/data/art/${this.artId}?recordId=art_id`)
-        .subscribe((art) => {
-          if (art && art.length === 1) {
-            this.editObj = art[0];
-            if (this.editObj) {
-              this.repopulateEditForm();
-            }
-          }
-        });
-    } else {
-      this.editMode = false;
-    }
   }
 
   ngOnDestroy(): void {
