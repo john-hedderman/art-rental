@@ -102,7 +102,14 @@ export class AddArtist implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.artistForm.valid) {
-      this.saveStatus = await this.saveDocument(this.artistForm.value);
+      const id = this.editMode ? this.artistId : undefined;
+      const field = this.editMode ? 'artist_id' : undefined;
+      this.saveStatus = await this.operationsService.saveDocument(
+        this.artistForm.value,
+        Collections.Artists,
+        id,
+        field
+      );
       this.signalArtistStatus();
       this.signalResetStatus(1500);
       this.submitted = false;
@@ -115,31 +122,6 @@ export class AddArtist implements OnInit, OnDestroy {
         this.reloadFromDb();
       }
     }
-  }
-
-  async saveDocument(artistData: any): Promise<string> {
-    const collectionName = Collections.Artists;
-    let result = Const.SUCCESS;
-    try {
-      let returnData;
-      if (this.editMode) {
-        returnData = await this.dataService.saveDocument(
-          artistData,
-          collectionName,
-          artistData.artist_id,
-          'artist_id'
-        );
-      } else {
-        returnData = await this.dataService.saveDocument(artistData, collectionName);
-      }
-      if (returnData.modifiedCount === 0) {
-        result = Const.FAILURE;
-      }
-    } catch (error) {
-      console.error('Save error:', error);
-      result = Const.FAILURE;
-    }
-    return result;
   }
 
   populateArtistData() {
