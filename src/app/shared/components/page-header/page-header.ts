@@ -15,6 +15,7 @@ import * as Constants from '../../../constants';
 })
 export class PageHeader {
   headerData = input<HeaderData>({
+    page: '',
     headerTitle: '',
     headerButtons: [],
     headerLinks: [],

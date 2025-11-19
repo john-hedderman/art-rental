@@ -11,6 +11,7 @@ import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
+import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-add-artist',
@@ -27,22 +28,16 @@ export class AddArtist implements OnInit, OnDestroy {
       this.router.navigate(['/artists', 'list']);
     }
   };
-  goToArtistsList = () => {
-    this.router.navigate(['/artists', 'list']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Add Artist',
-    headerButtons: [],
-    headerLinks: [
-      {
-        id: 'goToArtistsListLink',
-        label: 'Artists list',
-        routerLink: '/artists/list',
-        linkClass: '',
-        clickHandler: this.goToArtistsList,
-      },
-    ],
-  };
+  goToArtistsList = () => this.router.navigate(['/artists', 'list']);
+
+  artistListLink = new ActionLink(
+    'artistListLink',
+    'Artists',
+    '/artists/list',
+    '',
+    this.goToArtistsList
+  );
+  headerData = new HeaderActions('artist-add', 'Add Artist', [], [this.artistListLink.data]);
 
   buttonbarData: ButtonbarData = {
     buttons: [
@@ -156,7 +151,7 @@ export class AddArtist implements OnInit, OnDestroy {
   ) {
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {
-      this.headerData.headerTitle = 'Edit Artist';
+      this.headerData.data.headerTitle = 'Edit Artist';
     }
   }
 

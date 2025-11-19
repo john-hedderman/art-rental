@@ -8,6 +8,7 @@ import { ButtonbarData, Contact, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
+import { HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-contact-list',
@@ -34,14 +35,9 @@ export class ContactList implements OnInit {
     Util.showHideRowDetail();
   }
 
-  goToAddContact = () => {
-    this.router.navigate(['/contacts', 'add']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Contacts',
-    headerButtons: [],
-    headerLinks: [],
-  };
+  goToAddContact = () => this.router.navigate(['/contacts', 'add']);
+
+  headerData = new HeaderActions('contact-list', 'Contacts', [], []);
 
   buttonbarData: ButtonbarData = {
     buttons: [

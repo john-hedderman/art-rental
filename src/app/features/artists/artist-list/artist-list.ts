@@ -7,6 +7,7 @@ import { Card } from '../../../shared/components/card/card';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
+import { HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-artist-list',
@@ -21,17 +22,10 @@ import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 export class ArtistList {
   artists: Artist[] = [];
 
-  goToArtistDetail = (id: number) => {
-    this.router.navigate(['/artists', id]);
-  };
-  goToAddArtist = () => {
-    this.router.navigate(['/artists', 'add']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Artists',
-    headerButtons: [],
-    headerLinks: [],
-  };
+  goToArtistDetail = (id: number) => this.router.navigate(['/artists', id]);
+  goToAddArtist = () => this.router.navigate(['/artists', 'add']);
+
+  headerData = new HeaderActions('artist-list', 'Artists', [], []);
 
   buttonbarData: ButtonbarData = {
     buttons: [

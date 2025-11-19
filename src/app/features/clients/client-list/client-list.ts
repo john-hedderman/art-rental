@@ -8,6 +8,7 @@ import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
+import { HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-client-list',
@@ -32,14 +33,9 @@ export class ClientList implements OnInit {
     Util.showHideRowDetail();
   }
 
-  goToAddClient = () => {
-    this.router.navigate(['/clients', 'add']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Clients',
-    headerButtons: [],
-    headerLinks: [],
-  };
+  goToAddClient = () => this.router.navigate(['/clients', 'add']);
+
+  headerData = new HeaderActions('client-list', 'Clients', [], []);
 
   buttonbarData: ButtonbarData = {
     buttons: [

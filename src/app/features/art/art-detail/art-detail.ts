@@ -10,6 +10,7 @@ import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
+import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-art-detail',
@@ -19,25 +20,11 @@ import * as Msgs from '../../../shared/messages';
   standalone: true,
 })
 export class ArtDetail implements OnDestroy {
-  goToEditArt = () => {
-    this.router.navigate(['/art', this.artId, 'edit']);
-  };
-  goToArtList = () => {
-    this.router.navigate(['/art', 'list']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Art detail',
-    headerButtons: [],
-    headerLinks: [
-      {
-        id: 'goToArtListLink',
-        label: 'Art list',
-        routerLink: '/art/list',
-        linkClass: '',
-        clickHandler: this.goToArtList,
-      },
-    ],
-  };
+  goToEditArt = () => this.router.navigate(['/art', this.artId, 'edit']);
+  goToArtList = () => this.router.navigate(['/art', 'list']);
+
+  artListLink = new ActionLink('artListLink', 'Art', '/art/list', '', this.goToArtList);
+  headerData = new HeaderActions('art-detail', 'Art detail', [], [this.artListLink.data]);
 
   buttonbarData: ButtonbarData = {
     buttons: [

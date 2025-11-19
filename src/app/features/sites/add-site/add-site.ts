@@ -8,6 +8,7 @@ import { Client, HeaderData, Job } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
 import { AsyncPipe } from '@angular/common';
+import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-add-site',
@@ -17,23 +18,10 @@ import { AsyncPipe } from '@angular/common';
   standalone: true,
 })
 export class AddSite implements OnInit {
-  goToSiteList = () => {
-    this.router.navigate(['/sites', 'list']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Add Site',
-    headerButtons: [
-      {
-        id: 'goToSiteListBtn',
-        label: 'Site list',
-        type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
-        disabled: false,
-        clickHandler: this.goToSiteList,
-      },
-    ],
-    headerLinks: [],
-  };
+  goToSiteList = () => this.router.navigate(['/sites', 'list']);
+
+  siteListLink = new ActionLink('siteListLink', 'Sites', '/sites/list', '', this.goToSiteList);
+  headerData = new HeaderActions('site-add', 'Add Site', [], [this.siteListLink.data]);
 
   siteForm!: FormGroup;
   submitted = false;

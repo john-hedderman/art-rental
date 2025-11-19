@@ -10,6 +10,7 @@ import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
+import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-artist-detail',
@@ -19,25 +20,17 @@ import * as Msgs from '../../../shared/messages';
   standalone: true,
 })
 export class ArtistDetail implements OnDestroy {
-  goToEditArtist = () => {
-    this.router.navigate(['/artists', this.artistId, 'edit']);
-  };
-  goToArtistList = () => {
-    this.router.navigate(['/artists', 'list']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Artist detail',
-    headerButtons: [],
-    headerLinks: [
-      {
-        id: 'goToArtistListLink',
-        label: 'Artists list',
-        routerLink: '/art/list',
-        linkClass: '',
-        clickHandler: this.goToArtistList,
-      },
-    ],
-  };
+  goToEditArtist = () => this.router.navigate(['/artists', this.artistId, 'edit']);
+  goToArtistList = () => this.router.navigate(['/artists', 'list']);
+
+  artistListLink = new ActionLink(
+    'artistListLink',
+    'Artists',
+    '/artists/list',
+    '',
+    this.goToArtistList
+  );
+  headerData = new HeaderActions('artist-detail', 'Artist detail', [], [this.artistListLink.data]);
 
   buttonbarData: ButtonbarData = {
     buttons: [

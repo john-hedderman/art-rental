@@ -4,9 +4,10 @@ import { combineLatest, take } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { HeaderData, Site } from '../../../model/models';
+import { ButtonbarData, HeaderData, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
+import { HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-site-list',
@@ -31,22 +32,23 @@ export class SiteList implements OnInit {
     Util.showHideRowDetail();
   }
 
-  goToAddSite = () => {
-    this.router.navigate(['/sites', 'add']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Sites',
-    headerButtons: [
+  goToAddSite = () => this.router.navigate(['/sites', 'add']);
+
+  headerData = new HeaderActions('site-list', 'Sites', [], []);
+
+  buttonbarData: ButtonbarData = {
+    buttons: [
       {
-        id: 'goToAddSiteBtn',
+        id: 'addSiteBtn',
         label: 'Add Site',
         type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
+        buttonClass: 'btn btn-primary',
         disabled: false,
+        dataBsToggle: null,
+        dataBsTarget: null,
         clickHandler: this.goToAddSite,
       },
     ],
-    headerLinks: [],
   };
 
   rows: Site[] = [];

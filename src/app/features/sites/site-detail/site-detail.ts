@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { HeaderData } from '../../../model/models';
 import { Router } from '@angular/router';
+import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-site-detail',
@@ -12,23 +13,13 @@ import { Router } from '@angular/router';
   standalone: true,
 })
 export class SiteDetail {
-  navigateToSiteList = () => {
-    this.router.navigate(['/sites', 'list']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Site detail',
-    headerButtons: [
-      {
-        id: 'returnToSiteListBtn',
-        label: 'Site list',
-        type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
-        disabled: false,
-        clickHandler: this.navigateToSiteList,
-      },
-    ],
-    headerLinks: [],
-  };
+  goToEditSite = () => this.router.navigate(['/sites', this.siteId, 'edit']);
+  goToSiteList = () => this.router.navigate(['/sites', 'list']);
+
+  siteListLink = new ActionLink('siteListLink', 'Sites', '/sites/list', '', this.goToSiteList);
+  headerData = new HeaderActions('site-detail', 'Site detail', [], [this.siteListLink.data]);
+
+  siteId = 0;
 
   constructor(private router: Router) {}
 }

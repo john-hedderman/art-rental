@@ -8,6 +8,7 @@ import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
+import { HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-job-list',
@@ -34,14 +35,9 @@ export class JobList implements OnInit {
     Util.showHideRowDetail();
   }
 
-  goToAddJob = () => {
-    this.router.navigate(['/jobs', 'add']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Jobs',
-    headerButtons: [],
-    headerLinks: [],
-  };
+  goToAddJob = () => this.router.navigate(['/jobs', 'add']);
+
+  headerData = new HeaderActions('job-list', 'Jobs', [], []);
 
   buttonbarData: ButtonbarData = {
     buttons: [

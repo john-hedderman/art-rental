@@ -13,6 +13,7 @@ import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
 import { HttpClient } from '@angular/common/http';
+import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-add-contact',
@@ -22,22 +23,16 @@ import { HttpClient } from '@angular/common/http';
   standalone: true,
 })
 export class AddContact implements OnInit, OnDestroy {
-  goToContactList = () => {
-    this.router.navigate(['/contacts', 'list']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Add Contact',
-    headerButtons: [],
-    headerLinks: [
-      {
-        id: 'goToContactListLink',
-        label: 'Contact list',
-        routerLink: '/contacts/list',
-        linkClass: '',
-        clickHandler: this.goToContactList,
-      },
-    ],
-  };
+  goToContactList = () => this.router.navigate(['/contacts', 'list']);
+
+  contactListLink = new ActionLink(
+    'contactListLink',
+    'Contacts',
+    '/contacts/list',
+    '',
+    this.goToContactList
+  );
+  headerData = new HeaderActions('contact-add', 'Add Contact', [], [this.contactListLink.data]);
 
   buttonbarData: ButtonbarData = {
     buttons: [
@@ -252,7 +247,7 @@ export class AddContact implements OnInit, OnDestroy {
   ) {
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {
-      this.headerData.headerTitle = 'Edit Contact';
+      this.headerData.data.headerTitle = 'Edit Contact';
     }
     this.dataService.clients$.pipe(take(1)).subscribe((clients) => {
       this.clients$ = of(clients);

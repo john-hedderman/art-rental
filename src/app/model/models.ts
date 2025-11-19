@@ -88,6 +88,7 @@ export interface HeaderLink {
 }
 
 export interface HeaderData {
+  page: string;
   headerTitle: string;
   headerButtons: HeaderButton[];
   headerLinks: HeaderLink[];

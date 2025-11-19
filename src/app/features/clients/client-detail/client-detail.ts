@@ -13,6 +13,7 @@ import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Constants from '../../../constants';
 import * as Messages from '../../../shared/messages';
+import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-client-detail',
@@ -24,26 +25,17 @@ import * as Messages from '../../../shared/messages';
 export class ClientDetail implements OnInit, OnDestroy {
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
 
-  goToEditClient = () => {
-    this.router.navigate(['/clients', this.clientId, 'edit']);
-  };
-  goToClientList = () => {
-    this.router.navigate(['/clients', 'list']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Client detail',
-    headerButtons: [
-      {
-        id: 'returnToClientListBtn',
-        label: 'Client list',
-        type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
-        disabled: false,
-        clickHandler: this.goToClientList,
-      },
-    ],
-    headerLinks: [],
-  };
+  goToEditClient = () => this.router.navigate(['/clients', this.clientId, 'edit']);
+  goToClientList = () => this.router.navigate(['/clients', 'list']);
+
+  clientListLink = new ActionLink(
+    'clientListLink',
+    'Clients',
+    '/clients/list',
+    '',
+    this.goToClientList
+  );
+  headerData = new HeaderActions('client-detail', 'Client detail', [], [this.clientListLink.data]);
 
   buttonbarData: ButtonbarData = {
     buttons: [

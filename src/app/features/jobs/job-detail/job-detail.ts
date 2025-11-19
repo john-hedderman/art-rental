@@ -10,6 +10,7 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Card } from '../../../shared/components/card/card';
 import { Util } from '../../../shared/util/util';
 import { ContactsTable } from '../../../shared/components/contacts-table/contacts-table';
+import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-job-detail',
@@ -21,28 +22,16 @@ import { ContactsTable } from '../../../shared/components/contacts-table/contact
 export class JobDetail implements OnInit {
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
 
-  navigateToArtDetail = (id: number) => {
-    this.router.navigate(['/art', id]);
-  };
-  navigateToJobList = () => {
-    this.router.navigate(['/jobs', 'list']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Job detail',
-    headerButtons: [
-      {
-        id: 'returnToJobListBtn',
-        label: 'Job list',
-        type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
-        disabled: false,
-        clickHandler: this.navigateToJobList,
-      },
-    ],
-    headerLinks: [],
-  };
+  goToArtDetail = (id: number) => this.router.navigate(['/art', id]);
+  goToEditJob = () => this.router.navigate(['/jobs', this.jobId, 'edit']);
+  goToJobList = () => this.router.navigate(['/jobs', 'list']);
+
+  jobListLink = new ActionLink('jobListLink', 'Jobs', '/jobs/list', '', this.goToJobList);
+  headerData = new HeaderActions('job-detail', 'Job detail', [], [this.jobListLink.data]);
 
   thumbnail_path = 'images/art/';
+
+  jobId = 0;
 
   job$: Observable<Job> | undefined;
   art$: Observable<Art[]> | undefined;
@@ -76,6 +65,7 @@ export class JobDetail implements OnInit {
     })
       .pipe(take(1))
       .subscribe(({ clients, contacts, artwork, sites, jobId, jobs }) => {
+        this.jobId = jobId;
         const job = jobs.find((job) => job.job_id === jobId);
         if (job) {
           job.client = clients.find((client) => client.client_id === job.client_id);

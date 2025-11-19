@@ -8,6 +8,7 @@ import { Art, Client, Contact, HeaderData, Site } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
+import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-add-job',
@@ -17,23 +18,10 @@ import { DataService } from '../../../service/data-service';
   standalone: true,
 })
 export class AddJob implements OnInit {
-  goToJobList = () => {
-    this.router.navigate(['/jobs', 'list']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Add Job',
-    headerButtons: [
-      {
-        id: 'goToJobListBtn',
-        label: 'Job list',
-        type: 'button',
-        buttonClass: 'btn btn-primary btn-sm',
-        disabled: false,
-        clickHandler: this.goToJobList,
-      },
-    ],
-    headerLinks: [],
-  };
+  goToJobList = () => this.router.navigate(['/jobs', 'list']);
+
+  jobListLink = new ActionLink('jobListLink', 'Jobs', '/jobs/list', '', this.goToJobList);
+  headerData: HeaderActions = new HeaderActions('job-add', 'Add Job', [], [this.jobListLink.data]);
 
   jobForm!: FormGroup;
   submitted = false;

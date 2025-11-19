@@ -11,6 +11,7 @@ import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
+import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-contact-detail',
@@ -20,25 +21,22 @@ import * as Msgs from '../../../shared/messages';
   standalone: true,
 })
 export class ContactDetail implements OnDestroy {
-  goToEditContact = () => {
-    this.router.navigate(['/contacts', this.contactId, 'edit']);
-  };
-  goToContactList = () => {
-    this.router.navigate(['/contacts', 'list']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Contact detail',
-    headerButtons: [],
-    headerLinks: [
-      {
-        id: 'goToContactListLink',
-        label: 'Contacts list',
-        routerLink: '/contacts/list',
-        linkClass: '',
-        clickHandler: this.goToContactList,
-      },
-    ],
-  };
+  goToEditContact = () => this.router.navigate(['/contacts', this.contactId, 'edit']);
+  goToContactList = () => this.router.navigate(['/contacts', 'list']);
+
+  contactListLink = new ActionLink(
+    'contactListLink',
+    'Contacts',
+    '/contacts/list',
+    '',
+    this.goToContactList
+  );
+  headerData = new HeaderActions(
+    'contact-detail',
+    'Contact detail',
+    [],
+    [this.contactListLink.data]
+  );
 
   buttonbarData: ButtonbarData = {
     buttons: [

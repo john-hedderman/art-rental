@@ -17,6 +17,7 @@ import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msg from '../../../shared/messages';
+import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-add-client',
@@ -33,22 +34,16 @@ export class AddClient implements OnInit, OnDestroy {
       this.router.navigate(['/clients', 'list']);
     }
   };
-  goToClientList = () => {
-    this.router.navigate(['/clients', 'list']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Add Client',
-    headerButtons: [],
-    headerLinks: [
-      {
-        id: 'goToClientListLink',
-        label: 'Client list',
-        routerLink: '/clients/list',
-        linkClass: '',
-        clickHandler: this.goToClientList,
-      },
-    ],
-  };
+  goToClientList = () => this.router.navigate(['/clients', 'list']);
+
+  clientListLink = new ActionLink(
+    'clientListLink',
+    'Clients',
+    '/clients/list',
+    '',
+    this.goToClientList
+  );
+  headerData = new HeaderActions('client-add', 'Add Client', [], [this.clientListLink.data]);
 
   buttonbarData: ButtonbarData = {
     buttons: [

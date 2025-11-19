@@ -6,13 +6,14 @@ import { AsyncPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Art, Artist, ButtonbarData, HeaderData, Job } from '../../../model/models';
+import { Art, Artist, ButtonbarData, HeaderData, HeaderLink, Job } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
+import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-add-art',
@@ -29,22 +30,10 @@ export class AddArt implements OnInit, OnDestroy {
       this.router.navigate(['/art', 'list']);
     }
   };
-  goToArtList = () => {
-    this.router.navigate(['/art', 'list']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Add Art',
-    headerButtons: [],
-    headerLinks: [
-      {
-        id: 'goToArtListLink',
-        label: 'Art list',
-        routerLink: '/art/list',
-        linkClass: '',
-        clickHandler: this.goToArtList,
-      },
-    ],
-  };
+  goToArtList = () => this.router.navigate(['/art', 'list']);
+
+  artListLink = new ActionLink('artListLink', 'Art', '/art/list', '', this.goToArtList);
+  headerData = new HeaderActions('art-add', 'Add Art', [], [this.artListLink.data]);
 
   buttonbarData: ButtonbarData = {
     buttons: [
@@ -164,7 +153,7 @@ export class AddArt implements OnInit, OnDestroy {
   ) {
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {
-      this.headerData.headerTitle = 'Edit Art';
+      this.headerData.data.headerTitle = 'Edit Art';
     }
     combineLatest({
       artists: this.dataService.load('artists'),

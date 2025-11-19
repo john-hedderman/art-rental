@@ -8,6 +8,7 @@ import { Art, ButtonbarData, HeaderData } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
+import { HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-art-list',
@@ -21,17 +22,10 @@ export class ArtList {
 
   thumbnail_path = 'images/art/';
 
-  goToArtDetail = (id: number) => {
-    this.router.navigate(['/art', id]);
-  };
-  goToAddArt = () => {
-    this.router.navigate(['/art', 'add']);
-  };
-  headerData: HeaderData = {
-    headerTitle: 'Art',
-    headerButtons: [],
-    headerLinks: [],
-  };
+  goToArtDetail = (id: number) => this.router.navigate(['/art', id]);
+  goToAddArt = () => this.router.navigate(['/art', 'add']);
+
+  headerData = new HeaderActions('art-list', 'Art', [], []);
 
   buttonbarData: ButtonbarData = {
     buttons: [
