@@ -70,6 +70,13 @@ export interface Site {
   job?: Job;
 }
 
+export interface HeaderData {
+  page: string;
+  headerTitle: string;
+  headerButtons: HeaderButton[];
+  headerLinks: HeaderLink[];
+}
+
 export interface HeaderButton {
   id: string;
   label: string;
@@ -87,13 +94,6 @@ export interface HeaderLink {
   clickHandler: any;
 }
 
-export interface HeaderData {
-  page: string;
-  headerTitle: string;
-  headerButtons: HeaderButton[];
-  headerLinks: HeaderLink[];
-}
-
 export interface ButtonbarButton {
   id: string;
   label: string;
@@ -106,6 +106,7 @@ export interface ButtonbarButton {
 }
 
 export interface ButtonbarData {
+  page?: string;
   buttons: ButtonbarButton[];
 }
 

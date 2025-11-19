@@ -6,14 +6,16 @@ import { AsyncPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Art, Artist, ButtonbarData, HeaderData, HeaderLink, Job } from '../../../model/models';
+import { Art, Artist, Job } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
-import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
+import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { SaveButton } from '../../../shared/components/save-button/save-button';
+import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 
 @Component({
   selector: 'app-add-art',
@@ -23,42 +25,11 @@ import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
   standalone: true,
 })
 export class AddArt implements OnInit, OnDestroy {
-  goBack = () => {
-    if (this.editMode) {
-      this.router.navigate(['/art', this.artId]);
-    } else {
-      this.router.navigate(['/art', 'list']);
-    }
-  };
   goToArtList = () => this.router.navigate(['/art', 'list']);
 
   artListLink = new ActionLink('artListLink', 'Art', '/art/list', '', this.goToArtList);
   headerData = new HeaderActions('art-add', 'Add Art', [], [this.artListLink.data]);
-
-  buttonbarData: ButtonbarData = {
-    buttons: [
-      {
-        id: 'saveBtn',
-        label: 'Save',
-        type: 'submit',
-        buttonClass: 'btn btn-primary',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: null,
-      },
-      {
-        id: 'cancelBtn',
-        label: 'Cancel',
-        type: 'button',
-        buttonClass: 'btn btn-outline-secondary ms-3',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: this.goBack,
-      },
-    ],
-  };
+  footerData = new FooterActions([new SaveButton(), new CancelButton()]);
 
   artForm!: FormGroup;
   submitted = false;

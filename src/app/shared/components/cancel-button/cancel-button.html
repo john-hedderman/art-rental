@@ -1,0 +1,10 @@
+<button
+  id="{{ id }}"
+  type="{{ type }}"
+  class="{{ buttonClass }}"
+  [disabled]="disabled"
+  [attr.data-bs-toggle]="dataBsToggle"
+  [attr.data-bs-target]="dataBsTarget"
+  [innerHTML]="label"
+  (click)="clickHandler()"
+></button>

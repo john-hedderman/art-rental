@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { ButtonbarData } from '../../../model/models';
+import { FooterActions } from '../../actions/action-data';
 
 @Component({
   selector: 'app-buttonbar',
@@ -9,7 +9,7 @@ import { ButtonbarData } from '../../../model/models';
   standalone: true,
 })
 export class Buttonbar {
-  buttonbarData = input<ButtonbarData>({
+  buttonbarData = input<FooterActions>({
     buttons: [],
   });
 }

@@ -1,4 +1,4 @@
-import { HeaderButton, HeaderData, HeaderLink } from '../../model/models';
+import { HeaderData, HeaderButton, HeaderLink } from '../../model/models';
 
 export class HeaderActions {
   data: HeaderData;
@@ -24,5 +24,33 @@ export class ActionLink {
       linkClass,
       clickHandler,
     };
+  }
+}
+
+export class ActionButton {
+  constructor(
+    public id: string,
+    public label: string,
+    public type: string,
+    public buttonClass: string,
+    public disabled: boolean,
+    public dataBsToggle: string | null,
+    public dataBsTarget: string | null,
+    public clickHandler: any
+  ) {
+    this.id = id;
+    this.label = label;
+    this.type = type;
+    this.buttonClass = buttonClass;
+    this.disabled = disabled;
+    this.dataBsToggle = dataBsToggle;
+    this.dataBsTarget = dataBsTarget;
+    this.clickHandler = clickHandler;
+  }
+}
+
+export class FooterActions {
+  constructor(public buttons: ActionButton[]) {
+    this.buttons = buttons;
   }
 }
