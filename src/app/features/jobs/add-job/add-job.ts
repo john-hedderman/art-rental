@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -11,7 +11,7 @@ import { DataService } from '../../../service/data-service';
 
 @Component({
   selector: 'app-add-job',
-  imports: [PageHeader, ReactiveFormsModule, AsyncPipe],
+  imports: [PageHeader, ReactiveFormsModule, AsyncPipe, RouterLink],
   templateUrl: './add-job.html',
   styleUrl: './add-job.scss',
   standalone: true,
@@ -82,10 +82,17 @@ export class AddJob implements OnInit {
 
   onSelectClient(event: any) {
     const clientId = event.target.value;
-    this.selectedClientId = +clientId;
-    this.enableMenu('site_id');
-    this.enableMenu('contact_ids');
-    this.enableMenu('art_ids');
+    if (clientId !== '') {
+      this.selectedClientId = +clientId;
+      this.enableMenu('site_id');
+      this.enableMenu('contact_ids');
+      this.enableMenu('art_ids');
+    } else {
+      this.selectedClientId = undefined;
+      this.jobForm.get('site_id')?.disable();
+      this.disableMenu('contact_ids');
+      this.disableMenu('art_ids');
+    }
   }
 
   disableMenu(menuId: string) {

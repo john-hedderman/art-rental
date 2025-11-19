@@ -1,7 +1,10 @@
 <app-page-header [headerData]="headerData"></app-page-header>
 <div class="container-fluid p-3 ar-page-content overflow-y-auto">
   <p>Please complete all required fields (<span class="text-danger">*</span>).</p>
-  <p>Jobs are assigned to clients. You must create a client before you can create a job.</p>
+  <p>
+    Jobs are assigned to clients. You must
+    <a href="#" [routerLink]="'/clients/add'">add a client</a> before you can create a job.
+  </p>
   <form
     [formGroup]="jobForm"
     (ngSubmit)="onSubmit()"
@@ -37,6 +40,7 @@
           (change)="onSelectClient($event)"
           required
         >
+          <option value="">Select a client...</option>
           @if (clients$ | async; as clients) { @for (client of clients; track $index) {
           <option value="{{ client.client_id }}">{{ client.name }}</option>
           } }
