@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, take } from 'rxjs';
 
-import { Art, ButtonbarData, HeaderData } from '../../../model/models';
+import { Art } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
@@ -10,7 +10,13 @@ import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
-import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
+import {
+  ActionButton,
+  ActionLink,
+  FooterActions,
+  HeaderActions,
+} from '../../../shared/actions/action-data';
+import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
 
 @Component({
   selector: 'app-art-detail',
@@ -26,30 +32,17 @@ export class ArtDetail implements OnDestroy {
   artListLink = new ActionLink('artListLink', 'Art', '/art/list', '', this.goToArtList);
   headerData = new HeaderActions('art-detail', 'Art detail', [], [this.artListLink.data]);
 
-  buttonbarData: ButtonbarData = {
-    buttons: [
-      {
-        id: 'editArtBtn',
-        label: 'Edit',
-        type: 'button',
-        buttonClass: 'btn btn-primary',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: this.goToEditArt,
-      },
-      {
-        id: 'deleteArtBtn',
-        label: 'Delete',
-        type: 'button',
-        buttonClass: 'btn btn-danger ms-3',
-        disabled: false,
-        dataBsToggle: 'modal',
-        dataBsTarget: '#confirmModal',
-        clickHandler: null,
-      },
-    ],
-  };
+  editButton = new ActionButton(
+    'editBtn',
+    'Edit',
+    'button',
+    'btn btn-primary',
+    false,
+    null,
+    null,
+    this.goToEditArt
+  );
+  footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
   art: Art = {} as Art;
   artId = 0;

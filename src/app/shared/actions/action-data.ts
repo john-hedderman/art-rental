@@ -37,16 +37,7 @@ export class ActionButton {
     public dataBsToggle: string | null,
     public dataBsTarget: string | null,
     public clickHandler: any
-  ) {
-    this.id = id;
-    this.label = label;
-    this.type = type;
-    this.buttonClass = buttonClass;
-    this.disabled = disabled;
-    this.dataBsToggle = dataBsToggle;
-    this.dataBsTarget = dataBsTarget;
-    this.clickHandler = clickHandler;
-  }
+  ) {}
 }
 
 export class FooterActions {
