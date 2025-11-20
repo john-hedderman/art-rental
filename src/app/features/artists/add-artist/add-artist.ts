@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
-import { Artist, ButtonbarData, HeaderData } from '../../../model/models';
+import { Artist } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
@@ -11,7 +11,9 @@ import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
-import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
+import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { SaveButton } from '../../../shared/components/save-button/save-button';
+import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 
 @Component({
   selector: 'app-add-artist',
@@ -21,48 +23,17 @@ import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
   standalone: true,
 })
 export class AddArtist implements OnInit, OnDestroy {
-  goBack = () => {
-    if (this.editMode) {
-      this.router.navigate(['/artists', this.artistId]);
-    } else {
-      this.router.navigate(['/artists', 'list']);
-    }
-  };
-  goToArtistsList = () => this.router.navigate(['/artists', 'list']);
+  goToArtistList = () => this.router.navigate(['/artists', 'list']);
 
   artistListLink = new ActionLink(
     'artistListLink',
     'Artists',
     '/artists/list',
     '',
-    this.goToArtistsList
+    this.goToArtistList
   );
-  headerData = new HeaderActions('artist-add', 'Add Artist', [], [this.artistListLink.data]);
-
-  buttonbarData: ButtonbarData = {
-    buttons: [
-      {
-        id: 'saveBtn',
-        label: 'Save',
-        type: 'submit',
-        buttonClass: 'btn btn-primary',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: null,
-      },
-      {
-        id: 'cancelBtn',
-        label: 'Cancel',
-        type: 'button',
-        buttonClass: 'btn btn-outline-secondary ms-3',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: this.goBack,
-      },
-    ],
-  };
+  headerData = new HeaderActions('art-add', 'Add Art', [], [this.artistListLink.data]);
+  footerData = new FooterActions([new SaveButton(), new CancelButton()]);
 
   artistForm!: FormGroup;
   submitted = false;

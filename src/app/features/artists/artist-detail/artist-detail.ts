@@ -3,14 +3,20 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, map, Observable, take } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Artist, ButtonbarData, HeaderData } from '../../../model/models';
+import { Artist, ButtonbarData } from '../../../model/models';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
-import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
+import {
+  ActionButton,
+  ActionLink,
+  FooterActions,
+  HeaderActions,
+} from '../../../shared/actions/action-data';
+import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
 
 @Component({
   selector: 'app-artist-detail',
@@ -32,30 +38,17 @@ export class ArtistDetail implements OnDestroy {
   );
   headerData = new HeaderActions('artist-detail', 'Artist detail', [], [this.artistListLink.data]);
 
-  buttonbarData: ButtonbarData = {
-    buttons: [
-      {
-        id: 'editArtistBtn',
-        label: 'Edit',
-        type: 'button',
-        buttonClass: 'btn btn-primary',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: this.goToEditArtist,
-      },
-      {
-        id: 'deleteArtistBtn',
-        label: 'Delete',
-        type: 'button',
-        buttonClass: 'btn btn-danger ms-3',
-        disabled: false,
-        dataBsToggle: 'modal',
-        dataBsTarget: '#confirmModal',
-        clickHandler: null,
-      },
-    ],
-  };
+  editButton = new ActionButton(
+    'editBtn',
+    'Edit',
+    'button',
+    'btn btn-primary',
+    false,
+    null,
+    null,
+    this.goToEditArtist
+  );
+  footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
   artist: Artist = {} as Artist;
   artistId = 0;
