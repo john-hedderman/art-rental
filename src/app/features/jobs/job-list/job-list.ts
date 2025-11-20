@@ -3,12 +3,12 @@ import { Router } from '@angular/router';
 import { combineLatest, take } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { ButtonbarData, HeaderData, Job } from '../../../model/models';
+import { Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
-import { HeaderActions } from '../../../shared/actions/action-data';
+import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-job-list',
@@ -39,20 +39,17 @@ export class JobList implements OnInit {
 
   headerData = new HeaderActions('job-list', 'Jobs', [], []);
 
-  buttonbarData: ButtonbarData = {
-    buttons: [
-      {
-        id: 'addJobBtn',
-        label: 'Add Job',
-        type: 'button',
-        buttonClass: 'btn btn-primary',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: this.goToAddJob,
-      },
-    ],
-  };
+  addButton = new ActionButton(
+    'addBtn',
+    'Add Contact',
+    'button',
+    'btn btn-primary',
+    false,
+    null,
+    null,
+    this.goToAddJob
+  );
+  footerData = new FooterActions([this.addButton]);
 
   rows: Job[] = [];
   columns: TableColumn[] = [];
