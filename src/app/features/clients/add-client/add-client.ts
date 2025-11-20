@@ -10,14 +10,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { ButtonbarData, Client, Contact, HeaderData } from '../../../model/models';
+import { Client, Contact } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msg from '../../../shared/messages';
-import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
+import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { SaveButton } from '../../../shared/components/save-button/save-button';
+import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 
 @Component({
   selector: 'app-add-client',
@@ -27,13 +29,6 @@ import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
   standalone: true,
 })
 export class AddClient implements OnInit, OnDestroy {
-  goBack = () => {
-    if (this.editMode) {
-      this.router.navigate(['/clients', this.clientId]);
-    } else {
-      this.router.navigate(['/clients', 'list']);
-    }
-  };
   goToClientList = () => this.router.navigate(['/clients', 'list']);
 
   clientListLink = new ActionLink(
@@ -44,31 +39,7 @@ export class AddClient implements OnInit, OnDestroy {
     this.goToClientList
   );
   headerData = new HeaderActions('client-add', 'Add Client', [], [this.clientListLink.data]);
-
-  buttonbarData: ButtonbarData = {
-    buttons: [
-      {
-        id: 'saveBtn',
-        label: 'Save',
-        type: 'submit',
-        buttonClass: 'btn btn-primary',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: null,
-      },
-      {
-        id: 'cancelBtn',
-        label: 'Cancel',
-        type: 'button',
-        buttonClass: 'btn btn-outline-secondary ms-3',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: this.goBack,
-      },
-    ],
-  };
+  footerData = new FooterActions([new SaveButton(), new CancelButton()]);
 
   clientDBData: Client = {} as Client;
   contactsDBData: Contact[] = [];

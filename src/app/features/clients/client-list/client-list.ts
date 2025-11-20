@@ -3,12 +3,12 @@ import { Router } from '@angular/router';
 import { NgxDatatableModule, TableColumn, DatatableComponent } from '@swimlane/ngx-datatable';
 import { take } from 'rxjs';
 
-import { ButtonbarData, Client, HeaderData } from '../../../model/models';
+import { Client } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
-import { HeaderActions } from '../../../shared/actions/action-data';
+import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-client-list',
@@ -37,20 +37,17 @@ export class ClientList implements OnInit {
 
   headerData = new HeaderActions('client-list', 'Clients', [], []);
 
-  buttonbarData: ButtonbarData = {
-    buttons: [
-      {
-        id: 'addClientBtn',
-        label: 'Add Client',
-        type: 'button',
-        buttonClass: 'btn btn-primary',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: this.goToAddClient,
-      },
-    ],
-  };
+  addButton = new ActionButton(
+    'addBtn',
+    'Add Artist',
+    'button',
+    'btn btn-primary',
+    false,
+    null,
+    null,
+    this.goToAddClient
+  );
+  footerData = new FooterActions([this.addButton]);
 
   rows: Client[] = [];
   columns: TableColumn[] = [];

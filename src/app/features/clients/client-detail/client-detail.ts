@@ -13,7 +13,13 @@ import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Constants from '../../../constants';
 import * as Messages from '../../../shared/messages';
-import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
+import {
+  ActionButton,
+  ActionLink,
+  FooterActions,
+  HeaderActions,
+} from '../../../shared/actions/action-data';
+import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
 
 @Component({
   selector: 'app-client-detail',
@@ -37,30 +43,17 @@ export class ClientDetail implements OnInit, OnDestroy {
   );
   headerData = new HeaderActions('client-detail', 'Client detail', [], [this.clientListLink.data]);
 
-  buttonbarData: ButtonbarData = {
-    buttons: [
-      {
-        id: 'editClientBtn',
-        label: 'Edit',
-        type: 'button',
-        buttonClass: 'btn btn-primary',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: this.goToEditClient,
-      },
-      {
-        id: 'deleteClientBtn',
-        label: 'Delete',
-        type: 'button',
-        buttonClass: 'btn btn-danger ms-3',
-        disabled: false,
-        dataBsToggle: 'modal',
-        dataBsTarget: '#confirmModal',
-        clickHandler: null,
-      },
-    ],
-  };
+  editButton = new ActionButton(
+    'editBtn',
+    'Edit',
+    'button',
+    'btn btn-primary',
+    false,
+    null,
+    null,
+    this.goToEditClient
+  );
+  footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
   client$: Observable<Client> | undefined;
   jobs$: Observable<Job[]> | undefined;
