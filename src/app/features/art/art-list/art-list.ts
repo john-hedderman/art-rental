@@ -4,11 +4,11 @@ import { Router } from '@angular/router';
 import { combineLatest, take } from 'rxjs';
 
 import { Card } from '../../../shared/components/card/card';
-import { Art, ButtonbarData, HeaderData } from '../../../model/models';
+import { Art } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
-import { HeaderActions } from '../../../shared/actions/action-data';
+import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-art-list',
@@ -18,29 +18,26 @@ import { HeaderActions } from '../../../shared/actions/action-data';
   standalone: true,
 })
 export class ArtList {
-  artwork: Art[] = [];
-
-  thumbnail_path = 'images/art/';
-
   goToArtDetail = (id: number) => this.router.navigate(['/art', id]);
   goToAddArt = () => this.router.navigate(['/art', 'add']);
 
   headerData = new HeaderActions('art-list', 'Art', [], []);
 
-  buttonbarData: ButtonbarData = {
-    buttons: [
-      {
-        id: 'addArtBtn',
-        label: 'Add art',
-        type: 'button',
-        buttonClass: 'btn btn-primary',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: this.goToAddArt,
-      },
-    ],
-  };
+  addButton = new ActionButton(
+    'addBtn',
+    'Add Art',
+    'button',
+    'btn btn-primary',
+    false,
+    null,
+    null,
+    this.goToAddArt
+  );
+  footerData = new FooterActions([this.addButton]);
+
+  artwork: Art[] = [];
+
+  thumbnail_path = 'images/art/';
 
   constructor(private dataService: DataService, private router: Router) {
     combineLatest({
