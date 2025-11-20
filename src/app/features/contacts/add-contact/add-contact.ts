@@ -3,17 +3,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { ButtonbarData, Client, Contact, HeaderData } from '../../../model/models';
+import { Client, Contact } from '../../../model/models';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
-import { HttpClient } from '@angular/common/http';
-import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
+import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { SaveButton } from '../../../shared/components/save-button/save-button';
+import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 
 @Component({
   selector: 'app-add-contact',
@@ -33,31 +35,7 @@ export class AddContact implements OnInit, OnDestroy {
     this.goToContactList
   );
   headerData = new HeaderActions('contact-add', 'Add Contact', [], [this.contactListLink.data]);
-
-  buttonbarData: ButtonbarData = {
-    buttons: [
-      {
-        id: 'saveBtn',
-        label: 'Save',
-        type: 'submit',
-        buttonClass: 'btn btn-primary',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: null,
-      },
-      {
-        id: 'cancelBtn',
-        label: 'Cancel',
-        type: 'button',
-        buttonClass: 'btn btn-outline-secondary ms-3',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: this.goToContactList,
-      },
-    ],
-  };
+  footerData = new FooterActions([new SaveButton(), new CancelButton()]);
 
   contactForm!: FormGroup;
   submitted = false;

@@ -4,11 +4,11 @@ import { Router } from '@angular/router';
 import { combineLatest, take } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { ButtonbarData, Contact, HeaderData } from '../../../model/models';
+import { Contact } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
-import { HeaderActions } from '../../../shared/actions/action-data';
+import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 
 @Component({
   selector: 'app-contact-list',
@@ -39,20 +39,17 @@ export class ContactList implements OnInit {
 
   headerData = new HeaderActions('contact-list', 'Contacts', [], []);
 
-  buttonbarData: ButtonbarData = {
-    buttons: [
-      {
-        id: 'addContactBtn',
-        label: 'Add Contact',
-        type: 'button',
-        buttonClass: 'btn btn-primary',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: this.goToAddContact,
-      },
-    ],
-  };
+  addButton = new ActionButton(
+    'addBtn',
+    'Add Contact',
+    'button',
+    'btn btn-primary',
+    false,
+    null,
+    null,
+    this.goToAddContact
+  );
+  footerData = new FooterActions([this.addButton]);
 
   rows: Contact[] = [];
   columns: TableColumn[] = [];

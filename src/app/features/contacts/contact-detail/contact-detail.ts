@@ -4,14 +4,20 @@ import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { ButtonbarData, Client, Contact, HeaderData } from '../../../model/models';
+import { Client, Contact } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
-import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
+import {
+  ActionButton,
+  ActionLink,
+  FooterActions,
+  HeaderActions,
+} from '../../../shared/actions/action-data';
+import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
 
 @Component({
   selector: 'app-contact-detail',
@@ -38,30 +44,17 @@ export class ContactDetail implements OnDestroy {
     [this.contactListLink.data]
   );
 
-  buttonbarData: ButtonbarData = {
-    buttons: [
-      {
-        id: 'editContactBtn',
-        label: 'Edit',
-        type: 'button',
-        buttonClass: 'btn btn-primary',
-        disabled: false,
-        dataBsToggle: null,
-        dataBsTarget: null,
-        clickHandler: this.goToEditContact,
-      },
-      {
-        id: 'deleteContactBtn',
-        label: 'Delete',
-        type: 'button',
-        buttonClass: 'btn btn-danger ms-3',
-        disabled: false,
-        dataBsToggle: 'modal',
-        dataBsTarget: '#confirmModal',
-        clickHandler: null,
-      },
-    ],
-  };
+  editButton = new ActionButton(
+    'editBtn',
+    'Edit',
+    'button',
+    'btn btn-primary',
+    false,
+    null,
+    null,
+    this.goToEditContact
+  );
+  footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
   contactId = 0;
   clientId = 0;
