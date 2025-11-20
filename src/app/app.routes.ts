@@ -124,6 +124,10 @@ export const routes: Routes = [
         component: JobDetail,
       },
       {
+        path: ':id/edit',
+        component: AddJob,
+      },
+      {
         path: '',
         redirectTo: 'list',
         pathMatch: 'full',

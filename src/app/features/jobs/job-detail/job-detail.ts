@@ -4,17 +4,28 @@ import { AsyncPipe } from '@angular/common';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { Art, Contact, HeaderData, Job } from '../../../model/models';
+import { Art, Client, Contact, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Card } from '../../../shared/components/card/card';
 import { Util } from '../../../shared/util/util';
 import { ContactsTable } from '../../../shared/components/contacts-table/contacts-table';
-import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
+import {
+  ActionButton,
+  ActionLink,
+  FooterActions,
+  HeaderActions,
+} from '../../../shared/actions/action-data';
+import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
+import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
+import * as Const from '../../../constants';
+import * as Msgs from '../../../shared/messages';
+import { OperationsService } from '../../../service/operations-service';
+import { Collections } from '../../../shared/enums/collections';
 
 @Component({
   selector: 'app-job-detail',
-  imports: [AsyncPipe, PageHeader, RouterLink, Card, NgxDatatableModule, ContactsTable],
+  imports: [AsyncPipe, PageHeader, RouterLink, Card, NgxDatatableModule, ContactsTable, Buttonbar],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.scss',
   standalone: true,
@@ -29,15 +40,131 @@ export class JobDetail implements OnInit {
   jobListLink = new ActionLink('jobListLink', 'Jobs', '/jobs/list', '', this.goToJobList);
   headerData = new HeaderActions('job-detail', 'Job detail', [], [this.jobListLink.data]);
 
+  editButton = new ActionButton(
+    'editBtn',
+    'Edit',
+    'button',
+    'btn btn-primary',
+    false,
+    null,
+    null,
+    this.goToEditJob
+  );
+  footerData = new FooterActions([this.editButton, new DeleteButton()]);
+
   thumbnail_path = 'images/art/';
 
   jobId = 0;
+  clientId: number | undefined = 0;
 
   job$: Observable<Job> | undefined;
   art$: Observable<Art[]> | undefined;
 
   rows: Contact[] = [];
   columns: TableColumn[] = [];
+
+  job: Job | undefined;
+  clients: Client[] = [];
+  artwork: Art[] = [];
+
+  deleteStatus = '';
+  clientStatus = '';
+  artStatus = '';
+  readonly OP_SUCCESS = Const.SUCCESS;
+  readonly OP_FAILURE = Const.FAILURE;
+
+  reloadFromDb() {
+    this.dataService.load('jobs').subscribe((jobs) => this.dataService.jobs$.next(jobs));
+  }
+
+  signalStatus(status: string, success: string, failure: string, delay?: number) {
+    this.operationsService.setStatus({ status, success, failure }, delay);
+  }
+
+  signalJobStatus() {
+    this.signalStatus(this.deleteStatus, Msgs.DELETED_JOB, Msgs.DELETE_JOB_FAILED);
+  }
+
+  signalClientStatus(delay?: number) {
+    if (this.deleteStatus === Const.SUCCESS) {
+      this.signalStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED, delay);
+    }
+  }
+
+  signalArtStatus(delay?: number) {
+    if (this.deleteStatus === Const.SUCCESS && this.clientStatus === Const.SUCCESS) {
+      this.signalStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED, delay);
+    }
+  }
+
+  signalResetStatus(delay?: number) {
+    if (this.deleteStatus === Const.SUCCESS) {
+      this.signalStatus('', '', '', delay);
+    }
+  }
+
+  async onClickDelete() {
+    this.deleteStatus = await this.operationsService.deleteDocument(
+      Collections.Jobs,
+      'job_id',
+      this.jobId
+    );
+    this.clientStatus = await this.updateClient();
+    this.artStatus = await this.updateArt();
+    this.signalJobStatus();
+    this.signalClientStatus(1500);
+    this.signalArtStatus(1500 * 2);
+    this.signalResetStatus(1500 * 3);
+    if (this.deleteStatus === Const.SUCCESS) {
+      this.reloadFromDb();
+    }
+  }
+
+  async updateClient(): Promise<string> {
+    const client = this.clients.find((client) => client.client_id === this.clientId);
+    if (!client) {
+      console.error('Save client error, could not find the client');
+      return Const.FAILURE;
+    }
+    const collection = Collections.Clients;
+    let result = Const.SUCCESS;
+    try {
+      client.job_ids = client.job_ids.filter((job_id) => job_id !== this.jobId);
+      delete (client as any)._id; // necessary?
+      const data = await this.dataService.saveDocument(
+        client,
+        collection,
+        this.clientId,
+        'client_id'
+      );
+      if (data.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Save client error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
+
+  async updateArt(): Promise<string> {
+    const collection = Collections.Art;
+    let compositeResult = Const.SUCCESS;
+    const artwork = this.artwork.filter((art) => art.job_id === this.jobId);
+    for (const art of artwork) {
+      art.job_id = Const.NO_JOB;
+      try {
+        const data = await this.dataService.saveDocument(art, collection, art.art_id, 'art_id');
+        if (data.modifiedCount === 0) {
+          compositeResult = Const.FAILURE;
+        }
+      } catch (error) {
+        console.error('Save art error:', error);
+        compositeResult = Const.FAILURE;
+      }
+    }
+    return compositeResult;
+  }
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
     const nameA = `${rowA['first_name']} ${rowA['last_name']}`;
@@ -53,7 +180,8 @@ export class JobDetail implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private dataService: DataService,
-    public util: Util
+    public util: Util,
+    private operationsService: OperationsService
   ) {
     combineLatest({
       clients: this.dataService.clients$,
@@ -66,9 +194,13 @@ export class JobDetail implements OnInit {
       .pipe(take(1))
       .subscribe(({ clients, contacts, artwork, sites, jobId, jobs }) => {
         this.jobId = jobId;
+        this.clients = clients;
+        this.artwork = artwork;
         const job = jobs.find((job) => job.job_id === jobId);
         if (job) {
+          this.job = job;
           job.client = clients.find((client) => client.client_id === job.client_id);
+          this.clientId = job.client?.client_id;
           job.contacts = contacts
             .filter((contact) => contact.client_id === job.client_id)
             .map((contact) => {

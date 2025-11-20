@@ -1,53 +1,133 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
-<div class="container-fluid p-3 ar-page-content overflow-y-auto">
-  @if (job$ | async; as job) {
-  <div class="row">
-    <div class="col-md-6 col-sm-12">
-      <h5 class="fw-bold pb-2 ar-heading">Job ID:</h5>
-      <p class="pb-4">{{ job.job_number }}</p>
-      <h5 class="fw-bold pb-2 ar-heading">Job Site:</h5>
-      <p class="pb-4">
-        @if (job.site) { @if (job.site.name) {
-        {{ job.site.name }}<br />
-        }
-        {{ job.site.address1 }}<br />
-        @if (job.site.address2) {
-        {{ job.site.address2 }}<br />
-        }
-        {{ job.site.city }}, {{ job.site.state }} {{ job.site.zip_code }}
-        }
-      </p>
-    </div>
-    <div class="col-md-6 col-sm-12">
-      <h5 class="fw-bold pb-2 ar-heading">Client:</h5>
-      <p class="pb-4">
-        <a href="#" [routerLink]="`/clients/${job.client_id}` ">{{ job.client?.name }}</a>
-      </p>
-    </div>
-  </div>
-  <div class="row">
+<div class="container-fluid">
+  <div class="row p-3 ar-page-content overflow-y-auto">
     <div class="col">
-      <app-contacts-table [rows]="rows" [columns]="columns"></app-contacts-table>
-      <p class="pb-4"></p>
-      <h5 class="fw-bold pb-2 ar-heading">Art:</h5>
-      @if (art$ | async; as artwork) {
-      <div class="card-group ar-card-group overflow-y-auto">
-        @for (art of artwork; track $index) {
-        <app-card
-          [cardData]="{
+      @if (job$ | async; as job) {
+      <div class="row">
+        <div class="col-md-6">
+          <h5 class="fw-bold pb-2 ar-heading">Job ID:</h5>
+          <p class="pb-4">{{ job.job_number }}</p>
+          <h5 class="fw-bold pb-2 ar-heading">Job Site:</h5>
+          <p class="pb-4">
+            @if (job.site) { @if (job.site.name) {
+            {{ job.site.name }}<br />
+            }
+            {{ job.site.address1 }}<br />
+            @if (job.site.address2) {
+            {{ job.site.address2 }}<br />
+            }
+            {{ job.site.city }}, {{ job.site.state }} {{ job.site.zip_code }}
+            }
+          </p>
+        </div>
+        <div class="col-md-6">
+          <h5 class="fw-bold pb-2 ar-heading">Client:</h5>
+          <p class="pb-4">
+            <a href="#" [routerLink]="`/clients/${job.client_id}` ">{{ job.client?.name }}</a>
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <app-contacts-table [rows]="rows" [columns]="columns"></app-contacts-table>
+          <p class="pb-4"></p>
+          <h5 class="fw-bold pb-2 ar-heading">Art:</h5>
+          @if (art$ | async; as artwork) {
+          <div class="card-group ar-card-group overflow-y-auto">
+            @for (art of artwork; track $index) {
+            <app-card
+              [cardData]="{
             imageData: { source: `${thumbnail_path}${art.file_name}`, alt: art.title, title: art.title },
             title: art.title,
             text: art.artist?.name,
             clickHandler: goToArtDetail.bind(null, art.art_id)
           }"
-          class="mt-3 ms-3"
-        ></app-card>
-        }
+              class="mt-3 ms-3"
+            ></app-card>
+            }
+          </div>
+          }
+        </div>
       </div>
       }
     </div>
   </div>
-  }
+  <app-buttonbar [buttonbarData]="footerData"></app-buttonbar>
+</div>
+
+<div
+  class="modal modal-first"
+  id="confirmModal"
+  tabindex="-1"
+  aria-labelledby="confirmModalLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmModalLabel">Are you sure?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">Are you sure you want to delete this job from the system?</div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal modal-first"
+          (click)="onClickDelete()"
+          data-bs-toggle="modal"
+          data-bs-target="#resultModal"
+        >
+          Yes, delete
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal modal-second"
+  id="resultModal"
+  tabindex="-1"
+  aria-labelledby="resultModalLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmModalLabel">Delete</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="goToJobList()"
+        ></button>
+      </div>
+      @if (deleteStatus === '') {
+      <div class="modal-body">&nbsp;</div>
+      } @else if (deleteStatus === OP_SUCCESS) {
+      <div class="modal-body">The job was successfully deleted.</div>
+      } @else {
+      <div class="modal-body">There was an error, and the job was not deleted.</div>
+      }
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          (click)="goToJobList()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <ng-template #nameTemplate let-row="row">

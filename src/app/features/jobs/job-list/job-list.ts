@@ -41,7 +41,7 @@ export class JobList implements OnInit {
 
   addButton = new ActionButton(
     'addBtn',
-    'Add Contact',
+    'Add Job',
     'button',
     'btn btn-primary',
     false,
