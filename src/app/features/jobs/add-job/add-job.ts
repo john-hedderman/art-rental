@@ -4,18 +4,21 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { Art, Client, Contact, HeaderData, Site } from '../../../model/models';
+import { Art, Client, Contact, Site } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
-import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
+import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
 import { OperationsService } from '../../../service/operations-service';
+import { SaveButton } from '../../../shared/components/save-button/save-button';
+import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
+import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 
 @Component({
   selector: 'app-add-job',
-  imports: [PageHeader, ReactiveFormsModule, AsyncPipe, RouterLink],
+  imports: [PageHeader, ReactiveFormsModule, AsyncPipe, RouterLink, Buttonbar],
   templateUrl: './add-job.html',
   styleUrl: './add-job.scss',
   standalone: true,
@@ -25,6 +28,7 @@ export class AddJob implements OnInit {
 
   jobListLink = new ActionLink('jobListLink', 'Jobs', '/jobs/list', '', this.goToJobList);
   headerData: HeaderActions = new HeaderActions('job-add', 'Add Job', [], [this.jobListLink.data]);
+  footerData = new FooterActions([new SaveButton(), new CancelButton()]);
 
   jobForm!: FormGroup;
   submitted = false;
