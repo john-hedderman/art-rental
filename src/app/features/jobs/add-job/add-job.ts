@@ -9,6 +9,9 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { DataService } from '../../../service/data-service';
 import { ActionLink, HeaderActions } from '../../../shared/actions/action-data';
+import * as Const from '../../../constants';
+import * as Msgs from '../../../shared/messages';
+import { OperationsService } from '../../../service/operations-service';
 
 @Component({
   selector: 'app-add-job',
@@ -25,8 +28,9 @@ export class AddJob implements OnInit {
 
   jobForm!: FormGroup;
   submitted = false;
-  job_id!: number;
+  jobId!: number;
 
+  clients: Client[] = [];
   sites: Site[] = [];
   contacts: Contact[] = [];
   art: Art[] = [];
@@ -36,28 +40,175 @@ export class AddJob implements OnInit {
   contacts$: Observable<Contact[]> | undefined;
   art$: Observable<Art[]> | undefined;
 
-  selectedClientId: number | undefined;
+  clientId: number | undefined;
 
-  onSubmit() {
-    this.jobForm.value.job_id = Date.now();
+  jobStatus = '';
+  clientStatus = '';
+  artStatus = '';
+  siteStatus = '';
+
+  signalStatus(status: string, success: string, failure: string, delay?: number) {
+    this.operationsService.setStatus({ status, success, failure }, delay);
+  }
+
+  signalJobStatus() {
+    this.signalStatus(this.jobStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED);
+  }
+
+  signalClientStatus(delay?: number) {
+    if (this.jobStatus === Const.SUCCESS) {
+      this.signalStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED, delay);
+    }
+  }
+
+  signalArtStatus(delay?: number) {
+    if (this.jobStatus === Const.SUCCESS && this.clientStatus === Const.SUCCESS) {
+      this.signalStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED, delay);
+    }
+  }
+
+  signalSiteStatus(delay?: number) {
+    if (
+      this.jobStatus === Const.SUCCESS &&
+      this.clientStatus === Const.SUCCESS &&
+      this.artStatus === Const.SUCCESS
+    ) {
+      this.signalStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED, delay);
+    }
+  }
+
+  signalResetStatus(delay?: number) {
+    if (
+      this.jobStatus === Const.SUCCESS &&
+      this.clientStatus === Const.SUCCESS &&
+      this.artStatus === Const.SUCCESS
+    ) {
+      this.signalStatus('', '', '', delay);
+    }
+  }
+
+  async onSubmit() {
     this.submitted = true;
     if (this.jobForm.valid) {
-      this.jobForm.value.client_id = parseInt(this.jobForm.value.client_id);
-      this.jobForm.value.site_id = parseInt(this.jobForm.value.site_id);
-      for (let i = 0; i < this.jobForm.value.contact_ids.length; i++) {
-        this.jobForm.value.contact_ids[i] = parseInt(this.jobForm.value.contact_ids[i]);
-      }
-      for (let i = 0; i < this.jobForm.value.art_ids.length; i++) {
-        this.jobForm.value.art_ids[i] = parseInt(this.jobForm.value.art_ids[i]);
-      }
-      this.saveJob(this.jobForm.value);
+      this.jobStatus = await this.saveJob(this.jobForm.value);
+      this.clientStatus = await this.updateClient(this.jobForm.value);
+      this.artStatus = await this.updateArt(this.jobForm.value);
+      this.siteStatus = await this.updateSite(this.jobForm.value);
+      this.signalJobStatus();
+      this.signalClientStatus(1500);
+      this.signalArtStatus(1500 * 2);
+      this.signalSiteStatus(1500 * 3);
+      this.signalResetStatus(1500 * 4);
+      this.submitted = false;
       this.resetForm();
     }
   }
 
-  saveJob(jobData: any) {
-    const collectionName = Collections.Jobs;
-    this.dataService.saveDocument(jobData, collectionName);
+  convertIds() {
+    const form = this.jobForm.value;
+    form.client_id = parseInt(form.client_id);
+    form.site_id = parseInt(form.site_id);
+    form.contact_ids = form.contact_ids.map((id: any) => parseInt(id));
+    form.art_ids = form.art_ids.map((id: any) => parseInt(id));
+  }
+
+  async saveJob(jobData: any): Promise<string> {
+    this.convertIds();
+    const collection = Collections.Jobs;
+    let result = Const.SUCCESS;
+    try {
+      const returnData = await this.dataService.saveDocument(jobData, collection);
+      if (returnData.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Save job error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
+
+  async updateClient(jobData: any): Promise<string> {
+    const client = this.clients.find((client) => client.client_id === jobData.client_id);
+    if (!client) {
+      console.error('Save job error, could not find the selected client');
+      return Const.FAILURE;
+    }
+    const collection = Collections.Clients;
+    let result = Const.SUCCESS;
+    try {
+      client.job_ids.push(jobData.job_id);
+      delete (client as any)._id;
+      const returnData = await this.dataService.saveDocument(
+        client,
+        collection,
+        jobData.client_id,
+        'client_id'
+      );
+      if (returnData.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Save client error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
+
+  async updateArt(jobData: any): Promise<string> {
+    const artwork = this.art.filter((art) => jobData.art_ids.indexOf(art.art_id) !== -1);
+    if (!artwork) {
+      console.error('Save job error, could not find the selected artwork');
+      return Const.FAILURE;
+    }
+    const collection = Collections.Art;
+    let result = Const.SUCCESS;
+    try {
+      for (const art of artwork) {
+        art.job_id = jobData.job_id;
+        delete (art as any)._id;
+        const returnData = await this.dataService.saveDocument(
+          art,
+          collection,
+          art.art_id,
+          'art_id'
+        );
+        if (returnData.modifiedCount === 0) {
+          result = Const.FAILURE;
+        }
+      }
+    } catch (error) {
+      console.error('Save art error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
+
+  async updateSite(jobData: any): Promise<string> {
+    const site = this.sites.find((site) => site.site_id === jobData.site_id);
+    if (!site) {
+      console.error('Save job error, could not find the selected site');
+      return Const.FAILURE;
+    }
+    const collection = Collections.Sites;
+    let result = Const.SUCCESS;
+    try {
+      site.job_id = jobData.job_id;
+      delete (site as any)._id;
+      const returnData = await this.dataService.saveDocument(
+        site,
+        collection,
+        jobData.site_id,
+        'site_id'
+      );
+      if (returnData.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Save site error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
   }
 
   resetForm() {
@@ -65,18 +216,17 @@ export class AddJob implements OnInit {
     this.jobForm.get('site_id')?.disable();
     this.disableMenu('contact_ids');
     this.disableMenu('art_ids');
-    this.submitted = false;
   }
 
   onSelectClient(event: any) {
     const clientId = event.target.value;
     if (clientId !== '') {
-      this.selectedClientId = +clientId;
+      this.clientId = +clientId;
       this.enableMenu('site_id');
       this.enableMenu('contact_ids');
       this.enableMenu('art_ids');
     } else {
-      this.selectedClientId = undefined;
+      this.clientId = undefined;
       this.jobForm.get('site_id')?.disable();
       this.disableMenu('contact_ids');
       this.disableMenu('art_ids');
@@ -117,7 +267,7 @@ export class AddJob implements OnInit {
     menu?.add(newOption);
     newOption = new Option('TBD', 'tbd');
     menu?.add(newOption);
-    const clientSites = this.sites.filter((site) => site.client_id === this.selectedClientId);
+    const clientSites = this.sites.filter((site) => site.client_id === this.clientId);
     for (const clientSite of clientSites) {
       newOption = new Option(clientSite.name, clientSite.site_id.toString());
       menu?.add(newOption);
@@ -128,9 +278,7 @@ export class AddJob implements OnInit {
     const menu = document.getElementById('contact_ids') as HTMLSelectElement;
     let newOption = new Option('TBD', 'tbd');
     menu?.add(newOption);
-    const clientContacts = this.contacts.filter(
-      (contact) => contact.client_id === this.selectedClientId
-    );
+    const clientContacts = this.contacts.filter((contact) => contact.client_id === this.clientId);
     for (const clientContact of clientContacts) {
       newOption = new Option(
         `${clientContact.first_name} ${clientContact.last_name}`,
@@ -150,7 +298,12 @@ export class AddJob implements OnInit {
     }
   }
 
-  constructor(private router: Router, private dataService: DataService, private fb: FormBuilder) {
+  constructor(
+    private router: Router,
+    private dataService: DataService,
+    private fb: FormBuilder,
+    private operationsService: OperationsService
+  ) {
     combineLatest({
       clients: this.dataService.clients$,
       sites: this.dataService.sites$,
@@ -159,6 +312,7 @@ export class AddJob implements OnInit {
     })
       .pipe(take(1))
       .subscribe(({ clients, sites, contacts, art }) => {
+        this.clients = clients;
         this.clients$ = of(clients);
         this.sites = sites;
         this.sites$ = of(sites);
@@ -170,8 +324,9 @@ export class AddJob implements OnInit {
   }
 
   ngOnInit(): void {
+    this.jobId = Date.now();
     this.jobForm = this.fb.group({
-      job_id: this.job_id,
+      job_id: this.jobId,
       job_number: [''],
       client_id: [''],
       site_id: [{ value: '', disabled: true }],

@@ -39,7 +39,7 @@ export class ClientList implements OnInit {
 
   addButton = new ActionButton(
     'addBtn',
-    'Add Artist',
+    'Add Client',
     'button',
     'btn btn-primary',
     false,

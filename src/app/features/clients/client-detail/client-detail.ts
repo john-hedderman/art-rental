@@ -154,9 +154,7 @@ export class ClientDetail implements OnInit, OnDestroy {
         if (client) {
           this.contactIds = client.contact_ids;
           const fullJobs = jobs
-            .filter((job) => {
-              return client.job_ids.indexOf(job.job_id) >= 0;
-            })
+            .filter((job) => client.job_ids.indexOf(job.job_id) >= 0)
             .map((job) => {
               const site = sites.find((site) => site.site_id === job.site_id);
               return { ...job, site };

@@ -13,6 +13,12 @@ export const SAVE_CONTACT_FAILED = 'Saving contact failed';
 export const SAVED_CONTACTS = 'Saved contacts';
 export const SAVE_CONTACTS_FAILED = 'Saving contacts failed';
 
+export const SAVED_JOB = 'Saved job';
+export const SAVE_JOB_FAILED = 'Saving job failed';
+
+export const SAVED_SITE = 'Saved site';
+export const SAVE_SITE_FAILED = 'Saving site failed';
+
 export const DELETED_ART = 'Deleted art';
 export const DELETE_ART_FAILED = 'Deleting art failed';
 
