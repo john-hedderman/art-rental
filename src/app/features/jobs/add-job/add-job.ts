@@ -47,6 +47,15 @@ export class AddJob implements OnInit {
   artStatus = '';
   siteStatus = '';
 
+  reloadFromDb() {
+    this.dataService.load('jobs').subscribe((jobs) => this.dataService.jobs$.next(jobs));
+    this.dataService
+      .load('clients')
+      .subscribe((clients) => this.dataService.clients$.next(clients));
+    this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
+    this.dataService.load('sites').subscribe((sites) => this.dataService.sites$.next(sites));
+  }
+
   signalStatus(status: string, success: string, failure: string, delay?: number) {
     this.operationsService.setStatus({ status, success, failure }, delay);
   }
@@ -101,6 +110,15 @@ export class AddJob implements OnInit {
       this.signalResetStatus(1500 * 4);
       this.submitted = false;
       this.resetForm();
+
+      if (
+        this.jobStatus === Const.SUCCESS ||
+        this.clientStatus === Const.SUCCESS ||
+        this.artStatus === Const.SUCCESS ||
+        this.siteStatus === Const.SUCCESS
+      ) {
+        this.reloadFromDb();
+      }
     }
   }
 
