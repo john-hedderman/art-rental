@@ -95,11 +95,7 @@ export class ClientDetail implements OnInit, OnDestroy {
       'client_id',
       this.clientId
     );
-    this.contactsStatus = await this.operationsService.deleteDocument(
-      Collections.Contacts,
-      'client_id',
-      this.clientId
-    );
+    this.contactsStatus = await this.deleteContacts();
     this.showOpStatus(this.clientStatus, Msgs.DELETED_CLIENT, Msgs.DELETE_CLIENT_FAILED);
     this.showOpStatus(
       this.contactsStatus,
@@ -108,9 +104,23 @@ export class ClientDetail implements OnInit, OnDestroy {
       Const.STD_DELAY
     );
     this.clearOpStatus(this.contactsStatus, Const.STD_DELAY * 2);
-    if (this.clientStatus === Const.SUCCESS || this.contactsStatus === Const.SUCCESS) {
-      this.reloadFromDb();
+    this.reloadFromDb();
+  }
+
+  async deleteContacts() {
+    const collection = Collections.Contacts;
+    let returnData;
+    let result = Const.SUCCESS;
+    try {
+      returnData = await this.dataService.deleteDocuments(collection, this.clientId, 'client_id');
+      if (returnData.message.indexOf('failed') !== -1) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Error deleting contacts:', error);
+      result = Const.FAILURE;
     }
+    return result;
   }
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
