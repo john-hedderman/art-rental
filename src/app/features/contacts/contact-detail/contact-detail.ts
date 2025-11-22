@@ -69,24 +69,13 @@ export class ContactDetail implements OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  signalStatus(status: string, success: string, failure: string, delay?: number) {
+  showOpStatus(status: string, success: string, failure: string, delay?: number) {
     this.operationsService.setStatus({ status, success, failure }, delay);
   }
 
-  signalContactStatus() {
-    this.signalStatus(this.deleteStatus, Msgs.DELETED_CONTACT, Msgs.DELETE_CONTACT_FAILED);
-  }
-
-  signalClientStatus(delay?: number) {
-    if (this.deleteStatus === Const.SUCCESS) {
-      this.signalStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED, delay);
-    }
-  }
-
-  signalResetStatus(delay?: number) {
-    if (this.clientStatus === Const.SUCCESS) {
-      this.signalStatus('', '', '', delay);
-    }
+  clearOpStatus(status: string, desiredDelay?: number) {
+    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
+    this.showOpStatus('', '', '', delay);
   }
 
   reloadFromDb() {
@@ -102,10 +91,15 @@ export class ContactDetail implements OnDestroy {
       this.contactId
     );
     this.clientStatus = await this.updateClient();
-    this.signalContactStatus();
-    this.signalClientStatus(1500);
-    this.signalResetStatus(1500 * 2);
-    if (this.deleteStatus === Const.SUCCESS) {
+    this.showOpStatus(this.deleteStatus, Msgs.DELETED_CONTACT, Msgs.DELETE_CONTACT_FAILED);
+    this.showOpStatus(
+      this.clientStatus,
+      Msgs.SAVED_CLIENT,
+      Msgs.SAVE_CLIENT_FAILED,
+      Const.STD_DELAY
+    );
+    this.clearOpStatus(this.clientStatus, Const.STD_DELAY * 2);
+    if (this.deleteStatus === Const.SUCCESS || this.clientStatus === Const.SUCCESS) {
       this.reloadFromDb();
     }
   }
@@ -120,7 +114,7 @@ export class ContactDetail implements OnDestroy {
     let result = Const.SUCCESS;
     try {
       client.contact_ids = client.contact_ids.filter((contact_id) => contact_id !== this.contactId);
-      delete (client as any)._id; // necessary?
+      delete (client as any)._id;
       const returnData = await this.dataService.saveDocument(
         client,
         collection,
@@ -170,6 +164,6 @@ export class ContactDetail implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.signalResetStatus(1500);
+    this.clearOpStatus('');
   }
 }

@@ -51,18 +51,13 @@ export class ArtDetail implements OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  signalStatus(status: string, success: string, failure: string, delay?: number) {
+  showOpStatus(status: string, success: string, failure: string, delay?: number) {
     this.operationsService.setStatus({ status, success, failure }, delay);
   }
 
-  signalArtStatus() {
-    this.signalStatus(this.deleteStatus, Msgs.DELETED_ART, Msgs.DELETE_ART_FAILED);
-  }
-
-  signalResetStatus(delay?: number) {
-    if (this.deleteStatus === Const.SUCCESS) {
-      this.signalStatus('', '', '', delay);
-    }
+  clearOpStatus(status: string, desiredDelay?: number) {
+    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
+    this.showOpStatus('', '', '', delay);
   }
 
   async onClickDelete() {
@@ -71,8 +66,8 @@ export class ArtDetail implements OnDestroy {
       'art_id',
       this.artId
     );
-    this.signalArtStatus();
-    this.signalResetStatus(1500);
+    this.showOpStatus(this.deleteStatus, Msgs.DELETED_ART, Msgs.DELETE_ART_FAILED);
+    this.clearOpStatus(this.deleteStatus, Const.STD_DELAY);
     if (this.deleteStatus === Const.SUCCESS) {
       this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
     }
@@ -123,6 +118,6 @@ export class ArtDetail implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.signalResetStatus(1500);
+    this.clearOpStatus('');
   }
 }

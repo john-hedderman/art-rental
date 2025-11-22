@@ -32,7 +32,7 @@ export class AddArtist implements OnInit, OnDestroy {
     '',
     this.goToArtistList
   );
-  headerData = new HeaderActions('art-add', 'Add Art', [], [this.artistListLink.data]);
+  headerData = new HeaderActions('artist-add', 'Add Artist', [], [this.artistListLink.data]);
   footerData = new FooterActions([new SaveButton(), new CancelButton()]);
 
   artistForm!: FormGroup;
@@ -51,18 +51,13 @@ export class AddArtist implements OnInit, OnDestroy {
       .subscribe((artists) => this.dataService.artists$.next(artists));
   }
 
-  signalStatus(status: string, success: string, failure: string, delay?: number) {
+  showOpStatus(status: string, success: string, failure: string, delay?: number) {
     this.operationsService.setStatus({ status, success, failure }, delay);
   }
 
-  signalArtistStatus() {
-    this.signalStatus(this.saveStatus, Msgs.SAVED_ARTIST, Msgs.SAVE_ARTIST_FAILED);
-  }
-
-  signalResetStatus(delay?: number) {
-    if (this.saveStatus === Const.SUCCESS) {
-      this.signalStatus('', '', '', delay);
-    }
+  resetOpStatus(status: string, desiredDelay?: number) {
+    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
+    this.showOpStatus('', '', '', delay);
   }
 
   async onSubmit() {
@@ -76,8 +71,8 @@ export class AddArtist implements OnInit, OnDestroy {
         id,
         field
       );
-      this.signalArtistStatus();
-      this.signalResetStatus(1500);
+      this.showOpStatus(this.saveStatus, Msgs.SAVED_ARTIST, Msgs.SAVE_ARTIST_FAILED);
+      this.resetOpStatus(this.saveStatus, Const.STD_DELAY);
       this.submitted = false;
       if (this.editMode) {
         this.populateForm();
@@ -146,6 +141,6 @@ export class AddArtist implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.signalResetStatus(1500);
+    this.resetOpStatus('');
   }
 }

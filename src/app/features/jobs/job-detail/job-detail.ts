@@ -130,7 +130,7 @@ export class JobDetail implements OnInit {
     let result = Const.SUCCESS;
     try {
       client.job_ids = client.job_ids.filter((job_id) => job_id !== this.jobId);
-      delete (client as any)._id; // necessary?
+      delete (client as any)._id;
       const data = await this.dataService.saveDocument(
         client,
         collection,

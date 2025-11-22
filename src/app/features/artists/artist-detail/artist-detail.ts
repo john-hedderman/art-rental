@@ -57,18 +57,19 @@ export class ArtistDetail implements OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  signalStatus(status: string, success: string, failure: string, delay?: number) {
+  reloadFromDb() {
+    this.dataService
+      .load('artists')
+      .subscribe((artists) => this.dataService.artists$.next(artists));
+  }
+
+  showOpStatus(status: string, success: string, failure: string, delay?: number) {
     this.operationsService.setStatus({ status, success, failure }, delay);
   }
 
-  signalArtistStatus() {
-    this.signalStatus(this.deleteStatus, Msgs.DELETED_ARTIST, Msgs.DELETE_ARTIST_FAILED);
-  }
-
-  signalResetStatus(delay?: number) {
-    if (this.deleteStatus === Const.SUCCESS) {
-      this.signalStatus('', '', '', delay);
-    }
+  resetOpStatus(status: string, desiredDelay?: number) {
+    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
+    this.showOpStatus('', '', '', delay);
   }
 
   async onClickDelete() {
@@ -77,12 +78,10 @@ export class ArtistDetail implements OnDestroy {
       'artist_id',
       this.artistId
     );
-    this.signalArtistStatus();
-    this.signalResetStatus(1500);
+    this.showOpStatus(this.deleteStatus, Msgs.DELETED_ARTIST, Msgs.DELETE_ARTIST_FAILED);
+    this.resetOpStatus(this.deleteStatus, Const.STD_DELAY);
     if (this.deleteStatus === Const.SUCCESS) {
-      this.dataService
-        .load('artists')
-        .subscribe((artists) => this.dataService.artists$.next(artists));
+      this.reloadFromDb();
     }
   }
 
@@ -111,6 +110,6 @@ export class ArtistDetail implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.signalResetStatus(1500);
+    this.resetOpStatus('');
   }
 }

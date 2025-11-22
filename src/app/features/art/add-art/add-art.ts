@@ -48,18 +48,13 @@ export class AddArt implements OnInit, OnDestroy {
     this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
   }
 
-  signalStatus(status: string, success: string, failure: string, delay?: number) {
+  showOpStatus(status: string, success: string, failure: string, delay?: number) {
     this.operationsService.setStatus({ status, success, failure }, delay);
   }
 
-  signalArtStatus() {
-    this.signalStatus(this.saveStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
-  }
-
-  signalResetStatus(delay?: number) {
-    if (this.saveStatus === Const.SUCCESS) {
-      this.signalStatus('', '', '', delay);
-    }
+  clearOpStatus(status: string, desiredDelay?: number) {
+    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
+    this.showOpStatus('', '', '', delay);
   }
 
   async onSubmit() {
@@ -75,8 +70,8 @@ export class AddArt implements OnInit, OnDestroy {
         id,
         field
       );
-      this.signalArtStatus();
-      this.signalResetStatus(1500);
+      this.showOpStatus(this.saveStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
+      this.clearOpStatus(this.saveStatus, Const.STD_DELAY);
       this.submitted = false;
       if (this.editMode) {
         this.populateForm();
@@ -177,6 +172,6 @@ export class AddArt implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.signalResetStatus(1500);
+    this.clearOpStatus('');
   }
 }

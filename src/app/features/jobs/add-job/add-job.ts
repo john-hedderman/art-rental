@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
@@ -23,7 +23,7 @@ import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
   styleUrl: './add-job.scss',
   standalone: true,
 })
-export class AddJob implements OnInit {
+export class AddJob implements OnInit, OnDestroy {
   goToJobList = () => this.router.navigate(['/jobs', 'list']);
 
   jobListLink = new ActionLink('jobListLink', 'Jobs', '/jobs/list', '', this.goToJobList);
@@ -60,44 +60,13 @@ export class AddJob implements OnInit {
     this.dataService.load('sites').subscribe((sites) => this.dataService.sites$.next(sites));
   }
 
-  signalStatus(status: string, success: string, failure: string, delay?: number) {
+  showOpStatus(status: string, success: string, failure: string, delay?: number) {
     this.operationsService.setStatus({ status, success, failure }, delay);
   }
 
-  signalJobStatus() {
-    this.signalStatus(this.jobStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED);
-  }
-
-  signalClientStatus(delay?: number) {
-    if (this.jobStatus === Const.SUCCESS) {
-      this.signalStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED, delay);
-    }
-  }
-
-  signalArtStatus(delay?: number) {
-    if (this.jobStatus === Const.SUCCESS && this.clientStatus === Const.SUCCESS) {
-      this.signalStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED, delay);
-    }
-  }
-
-  signalSiteStatus(delay?: number) {
-    if (
-      this.jobStatus === Const.SUCCESS &&
-      this.clientStatus === Const.SUCCESS &&
-      this.artStatus === Const.SUCCESS
-    ) {
-      this.signalStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED, delay);
-    }
-  }
-
-  signalResetStatus(delay?: number) {
-    if (
-      this.jobStatus === Const.SUCCESS &&
-      this.clientStatus === Const.SUCCESS &&
-      this.artStatus === Const.SUCCESS
-    ) {
-      this.signalStatus('', '', '', delay);
-    }
+  clearOpStatus(status: string, desiredDelay?: number) {
+    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
+    this.showOpStatus('', '', '', delay);
   }
 
   async onSubmit() {
@@ -107,11 +76,21 @@ export class AddJob implements OnInit {
       this.clientStatus = await this.updateClient(this.jobForm.value);
       this.artStatus = await this.updateArt(this.jobForm.value);
       this.siteStatus = await this.updateSite(this.jobForm.value);
-      this.signalJobStatus();
-      this.signalClientStatus(1500);
-      this.signalArtStatus(1500 * 2);
-      this.signalSiteStatus(1500 * 3);
-      this.signalResetStatus(1500 * 4);
+      this.showOpStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
+      this.showOpStatus(
+        this.clientStatus,
+        Msgs.SAVED_CLIENT,
+        Msgs.SAVE_CLIENT_FAILED,
+        Const.STD_DELAY
+      );
+      this.showOpStatus(
+        this.siteStatus,
+        Msgs.SAVED_SITE,
+        Msgs.SAVE_SITE_FAILED,
+        Const.STD_DELAY * 2
+      );
+      this.showOpStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED, Const.STD_DELAY * 3);
+      this.clearOpStatus(this.artStatus, Const.STD_DELAY * 4);
       this.submitted = false;
       this.resetForm();
 
@@ -207,6 +186,9 @@ export class AddJob implements OnInit {
   }
 
   async updateSite(jobData: any): Promise<string> {
+    if (jobData.site_id === 0) {
+      return Const.SUCCESS; // site is TBD
+    }
     const site = this.sites.find((site) => site.site_id === jobData.site_id);
     if (!site) {
       console.error('Save job error, could not find the selected site');
@@ -287,7 +269,7 @@ export class AddJob implements OnInit {
     const menu = document.getElementById('site_id') as HTMLSelectElement;
     let newOption = new Option('Select a job site...', '');
     menu?.add(newOption);
-    newOption = new Option('TBD', 'tbd');
+    newOption = new Option('TBD', '0');
     menu?.add(newOption);
     const clientSites = this.sites.filter((site) => site.client_id === this.clientId);
     for (const clientSite of clientSites) {
@@ -355,5 +337,9 @@ export class AddJob implements OnInit {
       contact_ids: [{ value: '', disabled: true }],
       art_ids: [{ value: '', disabled: true }],
     });
+  }
+
+  ngOnDestroy(): void {
+    this.clearOpStatus('');
   }
 }

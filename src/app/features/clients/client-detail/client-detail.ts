@@ -2,17 +2,17 @@ import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/c
 import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
+import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { ButtonbarData, Client, Contact, HeaderData, Job } from '../../../model/models';
+import { Client, Contact, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 import { ContactsTable } from '../../../shared/components/contacts-table/contacts-table';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
-import * as Constants from '../../../constants';
-import * as Messages from '../../../shared/messages';
+import * as Const from '../../../constants';
+import * as Msgs from '../../../shared/messages';
 import {
   ActionButton,
   ActionLink,
@@ -68,8 +68,8 @@ export class ClientDetail implements OnInit, OnDestroy {
 
   clientStatus = '';
   contactsStatus = '';
-  readonly OP_SUCCESS = Constants.SUCCESS;
-  readonly OP_FAILURE = Constants.FAILURE;
+  readonly OP_SUCCESS = Const.SUCCESS;
+  readonly OP_FAILURE = Const.FAILURE;
 
   reloadFromDb() {
     this.dataService
@@ -80,29 +80,13 @@ export class ClientDetail implements OnInit, OnDestroy {
       .subscribe((contacts) => this.dataService.contacts$.next(contacts));
   }
 
-  signalStatus(status: string, success: string, failure: string, delay?: number) {
+  showOpStatus(status: string, success: string, failure: string, delay?: number) {
     this.operationsService.setStatus({ status, success, failure }, delay);
   }
 
-  signalClientStatus() {
-    this.signalStatus(this.clientStatus, Messages.DELETED_CLIENT, Messages.DELETE_CLIENT_FAILED);
-  }
-
-  signalContactsStatus(delay?: number) {
-    if (this.clientStatus === Constants.SUCCESS) {
-      this.signalStatus(
-        this.contactsStatus,
-        Messages.DELETED_CONTACTS,
-        Messages.DELETE_CONTACTS_FAILED,
-        delay
-      );
-    }
-  }
-
-  signalResetStatus(delay?: number) {
-    if (this.clientStatus === Constants.SUCCESS && this.contactsStatus === Constants.SUCCESS) {
-      this.signalStatus('', '', '', delay);
-    }
+  clearOpStatus(status: string, desiredDelay?: number) {
+    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
+    this.showOpStatus('', '', '', delay);
   }
 
   async onClickDelete() {
@@ -116,10 +100,15 @@ export class ClientDetail implements OnInit, OnDestroy {
       'client_id',
       this.clientId
     );
-    this.signalClientStatus();
-    this.signalContactsStatus(1500);
-    this.signalResetStatus(1500 * 2);
-    if (this.clientStatus === Constants.SUCCESS || this.contactsStatus === Constants.SUCCESS) {
+    this.showOpStatus(this.clientStatus, Msgs.DELETED_CLIENT, Msgs.DELETE_CLIENT_FAILED);
+    this.showOpStatus(
+      this.contactsStatus,
+      Msgs.DELETED_CONTACTS,
+      Msgs.DELETE_CONTACTS_FAILED,
+      Const.STD_DELAY
+    );
+    this.clearOpStatus(this.contactsStatus, Const.STD_DELAY * 2);
+    if (this.clientStatus === Const.SUCCESS || this.contactsStatus === Const.SUCCESS) {
       this.reloadFromDb();
     }
   }
@@ -188,6 +177,6 @@ export class ClientDetail implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.signalResetStatus(1500);
+    this.clearOpStatus('');
   }
 }

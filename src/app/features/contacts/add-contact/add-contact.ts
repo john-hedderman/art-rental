@@ -58,24 +58,13 @@ export class AddContact implements OnInit, OnDestroy {
       .subscribe((contacts) => this.dataService.contacts$.next(contacts));
   }
 
-  signalStatus(status: string, success: string, failure: string, delay?: number) {
+  showOpStatus(status: string, success: string, failure: string, delay?: number) {
     this.operationsService.setStatus({ status, success, failure }, delay);
   }
 
-  signalContactStatus() {
-    this.signalStatus(this.contactStatus, Msgs.SAVED_CONTACT, Msgs.SAVE_CONTACT_FAILED);
-  }
-
-  signalClientStatus(delay?: number) {
-    if (this.contactStatus === Const.SUCCESS) {
-      this.signalStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED, delay);
-    }
-  }
-
-  signalResetStatus(delay?: number) {
-    if (this.contactStatus === Const.SUCCESS) {
-      this.signalStatus('', '', '', delay);
-    }
+  clearOpStatus(status: string, desiredDelay?: number) {
+    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
+    this.showOpStatus('', '', '', delay);
   }
 
   async onSubmit() {
@@ -90,9 +79,14 @@ export class AddContact implements OnInit, OnDestroy {
         );
       }
       this.clientStatus = await this.updateClient(this.contactForm.value);
-      this.signalContactStatus();
-      this.signalClientStatus(1500);
-      this.signalResetStatus(1500 * 2);
+      this.showOpStatus(this.contactStatus, Msgs.SAVED_CONTACT, Msgs.SAVE_CONTACT_FAILED);
+      this.showOpStatus(
+        this.clientStatus,
+        Msgs.SAVED_CLIENT,
+        Msgs.SAVE_CLIENT_FAILED,
+        Const.STD_DELAY
+      );
+      this.clearOpStatus(this.contactStatus, Const.STD_DELAY * 2);
       this.submitted = false;
       if (this.editMode) {
         this.populateForm();
@@ -146,7 +140,7 @@ export class AddContact implements OnInit, OnDestroy {
       oldClient.contact_ids = oldClient.contact_ids.filter(
         (contact_id) => contact_id !== this.contactId
       );
-      delete (oldClient as any)._id; // necessary?
+      delete (oldClient as any)._id;
       const returnData = await this.dataService.saveDocument(
         oldClient,
         collection,
@@ -173,7 +167,7 @@ export class AddContact implements OnInit, OnDestroy {
     let result = Const.SUCCESS;
     try {
       client.contact_ids.push(formData.contact_id);
-      delete (client as any)._id; // necessary?
+      delete (client as any)._id;
       const returnData = await this.dataService.saveDocument(
         client,
         collection,
@@ -256,6 +250,6 @@ export class AddContact implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.signalResetStatus(1500);
+    this.clearOpStatus('');
   }
 }

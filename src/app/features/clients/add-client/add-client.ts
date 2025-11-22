@@ -16,7 +16,7 @@ import { Collections } from '../../../shared/enums/collections';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
-import * as Msg from '../../../shared/messages';
+import * as Msgs from '../../../shared/messages';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
@@ -65,24 +65,13 @@ export class AddClient implements OnInit, OnDestroy {
       .subscribe((contacts) => this.dataService.contacts$.next(contacts));
   }
 
-  signalStatus(status: string, success: string, failure: string, delay?: number) {
+  showOpStatus(status: string, success: string, failure: string, delay?: number) {
     this.operationsService.setStatus({ status, success, failure }, delay);
   }
 
-  signalClientStatus() {
-    this.signalStatus(this.clientStatus, Msg.SAVED_CLIENT, Msg.SAVE_CLIENT_FAILED);
-  }
-
-  signalContactsStatus(delay?: number) {
-    if (this.clientStatus === Const.SUCCESS) {
-      this.signalStatus(this.contactsStatus, Msg.SAVED_CONTACTS, Msg.SAVE_CONTACTS_FAILED, delay);
-    }
-  }
-
-  signalResetStatus(delay?: number) {
-    if (this.clientStatus === Const.SUCCESS && this.contactsStatus === Const.SUCCESS) {
-      this.signalStatus('', '', '', delay);
-    }
+  clearOpStatus(status: string, desiredDelay?: number) {
+    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
+    this.showOpStatus('', '', '', delay);
   }
 
   async onSubmit() {
@@ -91,12 +80,17 @@ export class AddClient implements OnInit, OnDestroy {
       this.clientStatus = await this.saveClient(this.clientForm.value);
       this.deleteContactsStatus = await this.deleteContacts();
       this.contactsStatus = await this.saveContacts(this.clientForm.value.contacts);
-      this.signalClientStatus();
+      this.showOpStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED);
       if (this.initialContactsCount === 0 && this.clientForm.value.contacts.length === 0) {
-        this.signalResetStatus(1500);
+        this.clearOpStatus(this.clientStatus, 1500);
       } else {
-        this.signalContactsStatus(1500);
-        this.signalResetStatus(1500 * 2);
+        this.showOpStatus(
+          this.contactsStatus,
+          Msgs.SAVED_CONTACTS,
+          Msgs.SAVE_CONTACTS_FAILED,
+          Const.STD_DELAY
+        );
+        this.clearOpStatus('', Const.STD_DELAY * 2);
       }
       this.submitted = false;
       if (this.editMode) {
@@ -301,6 +295,6 @@ export class AddClient implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.signalResetStatus();
+    this.clearOpStatus('');
   }
 }
