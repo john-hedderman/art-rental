@@ -1,10 +1,10 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { Art, Client, Contact, Job } from '../../../model/models';
+import { Art, Client, Contact, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Card } from '../../../shared/components/card/card';
@@ -30,7 +30,7 @@ import { Collections } from '../../../shared/enums/collections';
   styleUrl: './job-detail.scss',
   standalone: true,
 })
-export class JobDetail implements OnInit {
+export class JobDetail implements OnInit, OnDestroy {
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
 
   goToArtDetail = (id: number) => this.router.navigate(['/art', id]);
@@ -65,10 +65,12 @@ export class JobDetail implements OnInit {
 
   job: Job | undefined;
   clients: Client[] = [];
+  sites: Site[] = [];
   artwork: Art[] = [];
 
   deleteStatus = '';
   clientStatus = '';
+  siteStatus = '';
   artStatus = '';
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
@@ -77,30 +79,13 @@ export class JobDetail implements OnInit {
     this.dataService.load('jobs').subscribe((jobs) => this.dataService.jobs$.next(jobs));
   }
 
-  signalStatus(status: string, success: string, failure: string, delay?: number) {
+  showOpStatus(status: string, success: string, failure: string, delay?: number) {
     this.operationsService.setStatus({ status, success, failure }, delay);
   }
 
-  signalJobStatus() {
-    this.signalStatus(this.deleteStatus, Msgs.DELETED_JOB, Msgs.DELETE_JOB_FAILED);
-  }
-
-  signalClientStatus(delay?: number) {
-    if (this.deleteStatus === Const.SUCCESS) {
-      this.signalStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED, delay);
-    }
-  }
-
-  signalArtStatus(delay?: number) {
-    if (this.deleteStatus === Const.SUCCESS && this.clientStatus === Const.SUCCESS) {
-      this.signalStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED, delay);
-    }
-  }
-
-  signalResetStatus(delay?: number) {
-    if (this.deleteStatus === Const.SUCCESS) {
-      this.signalStatus('', '', '', delay);
-    }
+  clearOpStatus(status: string, desiredDelay?: number) {
+    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
+    this.showOpStatus('', '', '', delay);
   }
 
   async onClickDelete() {
@@ -110,14 +95,19 @@ export class JobDetail implements OnInit {
       this.jobId
     );
     this.clientStatus = await this.updateClient();
+    this.siteStatus = await this.updateSite();
     this.artStatus = await this.updateArt();
-    this.signalJobStatus();
-    this.signalClientStatus(1500);
-    this.signalArtStatus(1500 * 2);
-    this.signalResetStatus(1500 * 3);
-    if (this.deleteStatus === Const.SUCCESS) {
-      this.reloadFromDb();
-    }
+    this.showOpStatus(this.deleteStatus, Msgs.DELETED_JOB, Msgs.DELETE_JOB_FAILED);
+    this.showOpStatus(
+      this.clientStatus,
+      Msgs.SAVED_CLIENT,
+      Msgs.SAVE_CLIENT_FAILED,
+      Const.STD_DELAY
+    );
+    this.showOpStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED, Const.STD_DELAY * 2);
+    this.showOpStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED, Const.STD_DELAY * 3);
+    this.clearOpStatus(this.artStatus, Const.STD_DELAY * 4);
+    this.reloadFromDb();
   }
 
   async updateClient(): Promise<string> {
@@ -147,6 +137,31 @@ export class JobDetail implements OnInit {
     return result;
   }
 
+  async updateSite(): Promise<string> {
+    if (this.job?.site_id === 0) {
+      return Const.SUCCESS; // site is TBD
+    }
+    const site = this.sites.find((site) => site.job_id === this.jobId);
+    if (!site) {
+      console.error('Save site error, could not find the job site');
+      return Const.FAILURE;
+    }
+    const collection = Collections.Sites;
+    let result = Const.SUCCESS;
+    try {
+      site.job_id = Const.NO_JOB;
+      delete (site as any)._id;
+      const data = await this.dataService.saveDocument(site, collection, site.site_id, 'site_id');
+      if (data.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Save site error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
+
   async updateArt(): Promise<string> {
     const collection = Collections.Art;
     let compositeResult = Const.SUCCESS;
@@ -154,6 +169,7 @@ export class JobDetail implements OnInit {
     for (const art of artwork) {
       art.job_id = Const.NO_JOB;
       try {
+        delete (art as any)._id;
         const data = await this.dataService.saveDocument(art, collection, art.art_id, 'art_id');
         if (data.modifiedCount === 0) {
           compositeResult = Const.FAILURE;
@@ -195,6 +211,7 @@ export class JobDetail implements OnInit {
       .subscribe(({ clients, contacts, artwork, sites, jobId, jobs }) => {
         this.jobId = jobId;
         this.clients = clients;
+        this.sites = sites;
         this.artwork = artwork;
         const job = jobs.find((job) => job.job_id === jobId);
         if (job) {
@@ -232,5 +249,9 @@ export class JobDetail implements OnInit {
         name: 'Phone',
       },
     ];
+  }
+
+  ngOnDestroy(): void {
+    this.clearOpStatus('');
   }
 }
