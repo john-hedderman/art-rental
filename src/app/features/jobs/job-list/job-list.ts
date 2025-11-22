@@ -91,7 +91,7 @@ export class JobList implements OnInit {
             return job;
           })
           .map((job) => {
-            const site = sites.find((site) => site.job_id === job.job_id);
+            const site = sites.find((site) => site.site_id === job.site_id);
             if (site) {
               return { ...job, site };
             }
