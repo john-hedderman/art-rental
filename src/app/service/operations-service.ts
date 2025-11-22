@@ -58,4 +58,15 @@ export class OperationsService {
     }
     return result;
   }
+
+  async deleteDocuments(collectionName: string, field: string, id: number): Promise<string> {
+    let result = Const.SUCCESS;
+    try {
+      await this.dataService.deleteDocuments(collectionName, field, id);
+    } catch (error) {
+      console.error('Delete error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
 }

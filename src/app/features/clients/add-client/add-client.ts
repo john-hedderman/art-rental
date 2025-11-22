@@ -143,7 +143,7 @@ export class AddClient implements OnInit, OnDestroy {
     let returnData;
     let result = Const.SUCCESS;
     try {
-      returnData = await this.dataService.deleteDocuments(collection, this.clientId, 'client_id');
+      returnData = await this.dataService.deleteDocuments(collection, 'client_id', this.clientId);
       if (returnData.message.indexOf('failed') !== -1) {
         result = Const.FAILURE;
       }

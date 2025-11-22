@@ -103,7 +103,7 @@ export class DataService {
     }
   }
 
-  async deleteDocuments(collectionName: string, id: number, recordId: string): Promise<any> {
+  async deleteDocuments(collectionName: string, recordId: string, id: number): Promise<any> {
     try {
       const paramsObj = {} as any;
       paramsObj['id'] = id;
