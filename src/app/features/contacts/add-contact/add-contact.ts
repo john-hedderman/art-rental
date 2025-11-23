@@ -70,6 +70,12 @@ export class AddContact implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.contactForm.valid) {
+      this.contactId = Date.now();
+      const contactId = this.route.snapshot.paramMap.get('id');
+      if (contactId) {
+        this.contactId = +contactId;
+      }
+      this.contactForm.value.contact_id = this.contactId;
       this.contactForm.value.client_id = parseInt(this.contactForm.value.client_id);
       this.contactStatus = await this.saveContact(this.contactForm.value);
       if (this.editMode) {

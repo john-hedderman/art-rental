@@ -77,6 +77,12 @@ export class AddClient implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.clientForm.valid) {
+      this.clientId = Date.now();
+      const clientId = this.route.snapshot.paramMap.get('id');
+      if (clientId) {
+        this.clientId = +clientId;
+      }
+      this.clientForm.value.client_id = this.clientId;
       this.clientStatus = await this.saveClient(this.clientForm.value);
       this.deleteContactsStatus = await this.deleteContacts();
       this.contactsStatus = await this.saveContacts(this.clientForm.value.contacts);

@@ -63,6 +63,12 @@ export class AddArtist implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.artistForm.valid) {
+      this.artistId = Date.now();
+      const artistId = this.route.snapshot.paramMap.get('id');
+      if (artistId) {
+        this.artistId = +artistId;
+      }
+      this.artistForm.value.artist_id = this.artistId;
       const id = this.editMode ? this.artistId : undefined;
       const field = this.editMode ? 'artist_id' : undefined;
       this.saveStatus = await this.operationsService.saveDocument(

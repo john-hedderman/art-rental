@@ -60,6 +60,12 @@ export class AddArt implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.artForm.valid) {
+      this.artId = Date.now();
+      const artId = this.route.snapshot.paramMap.get('id');
+      if (artId) {
+        this.artId = +artId;
+      }
+      this.artForm.value.art_id = this.artId;
       this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
       this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
       const id = this.editMode ? this.artId : undefined;

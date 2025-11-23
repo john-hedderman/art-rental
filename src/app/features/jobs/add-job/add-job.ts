@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -72,6 +72,12 @@ export class AddJob implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.jobForm.valid) {
+      this.jobId = Date.now();
+      const jobId = this.route.snapshot.paramMap.get('id');
+      if (jobId) {
+        this.jobId = +jobId;
+      }
+      this.jobForm.value.job_id = this.jobId;
       this.jobStatus = await this.saveJob(this.jobForm.value);
       this.clientStatus = await this.updateClient(this.jobForm.value);
       this.artStatus = await this.updateArt(this.jobForm.value);
@@ -306,7 +312,8 @@ export class AddJob implements OnInit, OnDestroy {
     private router: Router,
     private dataService: DataService,
     private fb: FormBuilder,
-    private operationsService: OperationsService
+    private operationsService: OperationsService,
+    private route: ActivatedRoute
   ) {
     combineLatest({
       clients: this.dataService.clients$,
