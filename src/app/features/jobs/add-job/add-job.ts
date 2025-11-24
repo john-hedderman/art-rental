@@ -4,17 +4,16 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { Art, Client, Contact, Site } from '../../../model/models';
+import { Art, Client, Contact, Job, Site } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
-import { DataService } from '../../../service/data-service';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
-import { OperationsService } from '../../../service/operations-service';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
+import { AddBase } from '../../../shared/components/base/add-base/add-base';
 
 @Component({
   selector: 'app-add-job',
@@ -23,7 +22,7 @@ import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
   styleUrl: './add-job.scss',
   standalone: true,
 })
-export class AddJob implements OnInit, OnDestroy {
+export class AddJob extends AddBase implements OnInit, OnDestroy {
   goToJobList = () => this.router.navigate(['/jobs', 'list']);
 
   jobListLink = new ActionLink('jobListLink', 'Jobs', '/jobs/list', '', this.goToJobList);
@@ -33,6 +32,8 @@ export class AddJob implements OnInit, OnDestroy {
   jobForm!: FormGroup;
   submitted = false;
   jobId!: number;
+
+  dbData: Job = {} as Job;
 
   clients: Client[] = [];
   sites: Site[] = [];
@@ -50,24 +51,6 @@ export class AddJob implements OnInit, OnDestroy {
   clientStatus = '';
   artStatus = '';
   siteStatus = '';
-
-  reloadFromDb() {
-    this.dataService.load('jobs').subscribe((jobs) => this.dataService.jobs$.next(jobs));
-    this.dataService
-      .load('clients')
-      .subscribe((clients) => this.dataService.clients$.next(clients));
-    this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
-    this.dataService.load('sites').subscribe((sites) => this.dataService.sites$.next(sites));
-  }
-
-  showOpStatus(status: string, success: string, failure: string, delay?: number) {
-    this.operationsService.setStatus({ status, success, failure }, delay);
-  }
-
-  clearOpStatus(status: string, desiredDelay?: number) {
-    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
-    this.showOpStatus('', '', '', delay);
-  }
 
   async onSubmit() {
     this.submitted = true;
@@ -106,7 +89,12 @@ export class AddJob implements OnInit, OnDestroy {
         this.artStatus === Const.SUCCESS ||
         this.siteStatus === Const.SUCCESS
       ) {
-        this.reloadFromDb();
+        this.reloadFromDb([
+          Collections.Jobs,
+          Collections.Clients,
+          Collections.Art,
+          Collections.Sites,
+        ]);
       }
     }
   }
@@ -308,13 +296,10 @@ export class AddJob implements OnInit, OnDestroy {
     }
   }
 
-  constructor(
-    private router: Router,
-    private dataService: DataService,
-    private fb: FormBuilder,
-    private operationsService: OperationsService,
-    private route: ActivatedRoute
-  ) {
+  populateData(): void {}
+
+  constructor(private router: Router, private fb: FormBuilder, private route: ActivatedRoute) {
+    super();
     combineLatest({
       clients: this.dataService.clients$,
       sites: this.dataService.sites$,

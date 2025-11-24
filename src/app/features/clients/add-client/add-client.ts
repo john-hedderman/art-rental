@@ -7,19 +7,17 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Contact } from '../../../model/models';
-import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
-import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
+import { AddBase } from '../../../shared/components/base/add-base/add-base';
 
 @Component({
   selector: 'app-add-client',
@@ -28,7 +26,7 @@ import { CancelButton } from '../../../shared/components/cancel-button/cancel-bu
   styleUrl: './add-client.scss',
   standalone: true,
 })
-export class AddClient implements OnInit, OnDestroy {
+export class AddClient extends AddBase implements OnInit, OnDestroy {
   goToClientList = () => this.router.navigate(['/clients', 'list']);
 
   clientListLink = new ActionLink(
@@ -41,7 +39,7 @@ export class AddClient implements OnInit, OnDestroy {
   headerData = new HeaderActions('client-add', 'Add Client', [], [this.clientListLink.data]);
   footerData = new FooterActions([new SaveButton(), new CancelButton()]);
 
-  clientDBData: Client = {} as Client;
+  dbData: Client = {} as Client;
   contactsDBData: Contact[] = [];
   editMode = false;
 
@@ -55,24 +53,6 @@ export class AddClient implements OnInit, OnDestroy {
   contactsStatus = '';
 
   initialContactsCount = 0;
-
-  reloadFromDb() {
-    this.dataService
-      .load('clients')
-      .subscribe((clients) => this.dataService.clients$.next(clients));
-    this.dataService
-      .load('contacts')
-      .subscribe((contacts) => this.dataService.contacts$.next(contacts));
-  }
-
-  showOpStatus(status: string, success: string, failure: string, delay?: number) {
-    this.operationsService.setStatus({ status, success, failure }, delay);
-  }
-
-  clearOpStatus(status: string, desiredDelay?: number) {
-    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
-    this.showOpStatus('', '', '', delay);
-  }
 
   async onSubmit() {
     this.submitted = true;
@@ -100,14 +80,14 @@ export class AddClient implements OnInit, OnDestroy {
       }
       this.submitted = false;
       if (this.editMode) {
-        this.populateForm();
+        this.populateForm(Collections.Clients, 'client_id', this.clientId);
       } else {
         this.contacts.clear();
         this.clientForm.reset();
       }
 
       if (this.clientStatus === Const.SUCCESS || this.contactsStatus === Const.SUCCESS) {
-        this.reloadFromDb();
+        this.reloadFromDb([Collections.Clients, Collections.Contacts]);
       }
     }
   }
@@ -212,8 +192,7 @@ export class AddClient implements OnInit, OnDestroy {
           const contactDBData = contacts[0];
           if (contactDBData) {
             this.contactsDBData.push(contactDBData);
-            const contactsControls = this.contacts.controls;
-            const contactControl = contactsControls.find(
+            const contactControl = this.contacts.controls.find(
               (control) => control.value.contact_id === contactDBData.contact_id
             );
             if (contactControl) {
@@ -231,7 +210,7 @@ export class AddClient implements OnInit, OnDestroy {
 
   populateContactsData() {
     this.contacts.clear();
-    const contact_ids = this.clientDBData.contact_ids;
+    const contact_ids = this.dbData.contact_ids;
     this.initialContactsCount = contact_ids.length;
     for (const contact_id of contact_ids) {
       this.addContact(contact_id);
@@ -239,41 +218,24 @@ export class AddClient implements OnInit, OnDestroy {
     }
   }
 
-  populateClientData() {
+  populateData() {
     // this also effectively touches the form fields, so the prepopulated fields that
     // the user has never touched can be considered valid, letting the form submission complete
-    this.clientForm.get('client_id')?.setValue(this.clientDBData.client_id);
-    this.clientForm.get('name')?.setValue(this.clientDBData.name);
-    this.clientForm.get('address1')?.setValue(this.clientDBData.address1);
-    this.clientForm.get('address2')?.setValue(this.clientDBData.address2);
-    this.clientForm.get('city')?.setValue(this.clientDBData.city);
-    this.clientForm.get('state')?.setValue(this.clientDBData.state);
-    this.clientForm.get('zip_code')?.setValue(this.clientDBData.zip_code);
-    this.clientForm.get('industry')?.setValue(this.clientDBData.industry);
+    this.clientForm.get('client_id')?.setValue(this.dbData.client_id);
+    this.clientForm.get('name')?.setValue(this.dbData.name);
+    this.clientForm.get('address1')?.setValue(this.dbData.address1);
+    this.clientForm.get('address2')?.setValue(this.dbData.address2);
+    this.clientForm.get('city')?.setValue(this.dbData.city);
+    this.clientForm.get('state')?.setValue(this.dbData.state);
+    this.clientForm.get('zip_code')?.setValue(this.dbData.zip_code);
+    this.clientForm.get('industry')?.setValue(this.dbData.industry);
+
+    this.populateContactsData();
   }
 
-  populateForm() {
-    this.http
-      .get<Client[]>(`http://localhost:3000/data/clients/${this.clientId}?recordId=client_id`)
-      .subscribe((clients) => {
-        if (clients && clients.length === 1) {
-          this.clientDBData = clients[0];
-          if (this.clientDBData) {
-            this.populateClientData();
-            this.populateContactsData();
-          }
-        }
-      });
+  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute) {
+    super();
   }
-
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private dataService: DataService,
-    private route: ActivatedRoute,
-    private http: HttpClient,
-    private operationsService: OperationsService
-  ) {}
 
   ngOnInit(): void {
     this.clientId = Date.now();
@@ -284,7 +246,7 @@ export class AddClient implements OnInit, OnDestroy {
     if (clientId) {
       this.clientId = +clientId;
       this.editMode = true;
-      this.populateForm();
+      this.populateForm(Collections.Clients, 'client_id', this.clientId);
     }
 
     this.clientForm = this.fb.group({

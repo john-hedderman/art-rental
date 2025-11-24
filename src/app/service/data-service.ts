@@ -32,8 +32,6 @@ export class DataService {
   load(dataType: 'contacts'): Observable<Contact[]>;
   load(dataType: 'sites'): Observable<Site[]>;
 
-  load(dataType: 'contacts'): Observable<Contact[]>;
-
   load(dataType: string): Observable<unknown[]> {
     // load data from a separate server
     // see project art-rental-server

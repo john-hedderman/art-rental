@@ -3,19 +3,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Contact } from '../../../model/models';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { Collections } from '../../../shared/enums/collections';
-import { DataService } from '../../../service/data-service';
-import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
+import { AddBase } from '../../../shared/components/base/add-base/add-base';
 
 @Component({
   selector: 'app-add-contact',
@@ -24,7 +22,7 @@ import { CancelButton } from '../../../shared/components/cancel-button/cancel-bu
   styleUrl: './add-contact.scss',
   standalone: true,
 })
-export class AddContact implements OnInit, OnDestroy {
+export class AddContact extends AddBase implements OnInit, OnDestroy {
   goToContactList = () => this.router.navigate(['/contacts', 'list']);
 
   contactListLink = new ActionLink(
@@ -47,25 +45,10 @@ export class AddContact implements OnInit, OnDestroy {
   clients: Client[] = [];
   clients$: Observable<Client[]> | undefined;
 
-  contactDBData: Contact = {} as Contact;
+  dbData: Contact = {} as Contact;
 
   contactId!: number;
   editMode = false;
-
-  reloadFromDb() {
-    this.dataService
-      .load('contacts')
-      .subscribe((contacts) => this.dataService.contacts$.next(contacts));
-  }
-
-  showOpStatus(status: string, success: string, failure: string, delay?: number) {
-    this.operationsService.setStatus({ status, success, failure }, delay);
-  }
-
-  clearOpStatus(status: string, desiredDelay?: number) {
-    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
-    this.showOpStatus('', '', '', delay);
-  }
 
   async onSubmit() {
     this.submitted = true;
@@ -79,10 +62,7 @@ export class AddContact implements OnInit, OnDestroy {
       this.contactForm.value.client_id = parseInt(this.contactForm.value.client_id);
       this.contactStatus = await this.saveContact(this.contactForm.value);
       if (this.editMode) {
-        this.oldClientStatus = await this.updateOldClient(
-          this.contactDBData,
-          this.contactForm.value
-        );
+        this.oldClientStatus = await this.updateOldClient(this.dbData, this.contactForm.value);
       }
       this.clientStatus = await this.updateClient(this.contactForm.value);
       this.showOpStatus(this.contactStatus, Msgs.SAVED_CONTACT, Msgs.SAVE_CONTACT_FAILED);
@@ -95,12 +75,12 @@ export class AddContact implements OnInit, OnDestroy {
       this.clearOpStatus(this.contactStatus, Const.STD_DELAY * 2);
       this.submitted = false;
       if (this.editMode) {
-        this.populateForm();
+        this.populateForm(Collections.Contacts, 'contact_id', this.contactId);
       } else {
         this.contactForm.reset();
       }
       if (this.contactStatus === Const.SUCCESS) {
-        this.reloadFromDb();
+        this.reloadFromDb([Collections.Contacts]);
       }
     }
   }
@@ -190,39 +170,20 @@ export class AddContact implements OnInit, OnDestroy {
     return result;
   }
 
-  populateContactData() {
+  populateData() {
     // this also effectively touches the form fields, so the prepopulated fields that
     // the user has never touched can be considered valid, letting the form submission complete
-    this.contactForm.get('contact_id')?.setValue(this.contactDBData.contact_id);
-    this.contactForm.get('first_name')?.setValue(this.contactDBData.first_name);
-    this.contactForm.get('last_name')?.setValue(this.contactDBData.last_name);
-    this.contactForm.get('phone')?.setValue(this.contactDBData.phone);
-    this.contactForm.get('title')?.setValue(this.contactDBData.title);
-    this.contactForm.get('email')?.setValue(this.contactDBData.email);
-    this.contactForm.get('client_id')?.setValue(this.contactDBData.client_id);
+    this.contactForm.get('contact_id')?.setValue(this.dbData.contact_id);
+    this.contactForm.get('first_name')?.setValue(this.dbData.first_name);
+    this.contactForm.get('last_name')?.setValue(this.dbData.last_name);
+    this.contactForm.get('phone')?.setValue(this.dbData.phone);
+    this.contactForm.get('title')?.setValue(this.dbData.title);
+    this.contactForm.get('email')?.setValue(this.dbData.email);
+    this.contactForm.get('client_id')?.setValue(this.dbData.client_id);
   }
 
-  populateForm() {
-    this.http
-      .get<Contact[]>(`http://localhost:3000/data/contacts/${this.contactId}?recordId=contact_id`)
-      .subscribe((contacts) => {
-        if (contacts && contacts.length === 1) {
-          this.contactDBData = contacts[0];
-          if (this.contactDBData) {
-            this.populateContactData();
-          }
-        }
-      });
-  }
-
-  constructor(
-    private router: Router,
-    private fb: FormBuilder,
-    private dataService: DataService,
-    private operationsService: OperationsService,
-    private route: ActivatedRoute,
-    private http: HttpClient
-  ) {
+  constructor(private router: Router, private fb: FormBuilder, private route: ActivatedRoute) {
+    super();
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {
       this.headerData.data.headerTitle = 'Edit Contact';
@@ -241,7 +202,7 @@ export class AddContact implements OnInit, OnDestroy {
     if (contactId) {
       this.contactId = +contactId;
       this.editMode = true;
-      this.populateForm();
+      this.populateForm(Collections.Contacts, 'contact_id', this.contactId);
     }
 
     this.contactForm = this.fb.group({

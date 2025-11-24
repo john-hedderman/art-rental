@@ -1,19 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 
 import { Artist } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
-import { DataService } from '../../../service/data-service';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
-import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
+import { AddBase } from '../../../shared/components/base/add-base/add-base';
 
 @Component({
   selector: 'app-add-artist',
@@ -22,7 +20,7 @@ import { CancelButton } from '../../../shared/components/cancel-button/cancel-bu
   styleUrl: './add-artist.scss',
   standalone: true,
 })
-export class AddArtist implements OnInit, OnDestroy {
+export class AddArtist extends AddBase implements OnInit, OnDestroy {
   goToArtistList = () => this.router.navigate(['/artists', 'list']);
 
   artistListLink = new ActionLink(
@@ -40,25 +38,10 @@ export class AddArtist implements OnInit, OnDestroy {
 
   saveStatus = '';
 
-  artistDBData: Artist = {} as Artist;
+  dbData: Artist = {} as Artist;
 
   artistId!: number;
   editMode = false;
-
-  reloadFromDb() {
-    this.dataService
-      .load('artists')
-      .subscribe((artists) => this.dataService.artists$.next(artists));
-  }
-
-  showOpStatus(status: string, success: string, failure: string, delay?: number) {
-    this.operationsService.setStatus({ status, success, failure }, delay);
-  }
-
-  resetOpStatus(status: string, desiredDelay?: number) {
-    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
-    this.showOpStatus('', '', '', delay);
-  }
 
   async onSubmit() {
     this.submitted = true;
@@ -78,49 +61,30 @@ export class AddArtist implements OnInit, OnDestroy {
         field
       );
       this.showOpStatus(this.saveStatus, Msgs.SAVED_ARTIST, Msgs.SAVE_ARTIST_FAILED);
-      this.resetOpStatus(this.saveStatus, Const.STD_DELAY);
+      this.clearOpStatus(this.saveStatus, Const.STD_DELAY);
       this.submitted = false;
       if (this.editMode) {
-        this.populateForm();
+        this.populateForm(Collections.Artists, 'artist_id', this.artistId);
       } else {
         this.artistForm.reset();
       }
       if (this.saveStatus === Const.SUCCESS) {
-        this.reloadFromDb();
+        this.reloadFromDb([Collections.Artists]);
       }
     }
   }
 
-  populateArtistData() {
+  populateData() {
     // this also effectively touches the form fields, so the prepopulated fields that
     // the user has never touched can be considered valid, letting the form submission complete
-    this.artistForm.get('artist_id')?.setValue(this.artistDBData.artist_id);
-    this.artistForm.get('name')?.setValue(this.artistDBData.name);
-    this.artistForm.get('photo_path')?.setValue(this.artistDBData.photo_path);
-    this.artistForm.get('tags')?.setValue(this.artistDBData.tags);
+    this.artistForm.get('artist_id')?.setValue(this.dbData.artist_id);
+    this.artistForm.get('name')?.setValue(this.dbData.name);
+    this.artistForm.get('photo_path')?.setValue(this.dbData.photo_path);
+    this.artistForm.get('tags')?.setValue(this.dbData.tags);
   }
 
-  populateForm() {
-    this.http
-      .get<Artist[]>(`http://localhost:3000/data/artists/${this.artistId}?recordId=artist_id`)
-      .subscribe((artists) => {
-        if (artists && artists.length === 1) {
-          this.artistDBData = artists[0];
-          if (this.artistDBData) {
-            this.populateArtistData();
-          }
-        }
-      });
-  }
-
-  constructor(
-    private router: Router,
-    private fb: FormBuilder,
-    private dataService: DataService,
-    private route: ActivatedRoute,
-    private operationsService: OperationsService,
-    private http: HttpClient
-  ) {
+  constructor(private router: Router, private fb: FormBuilder, private route: ActivatedRoute) {
+    super();
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {
       this.headerData.data.headerTitle = 'Edit Artist';
@@ -135,7 +99,7 @@ export class AddArtist implements OnInit, OnDestroy {
     if (artistId) {
       this.artistId = +artistId;
       this.editMode = true;
-      this.populateForm();
+      this.populateForm(Collections.Artists, 'artist_id', this.artistId);
     }
 
     this.artistForm = this.fb.group({
@@ -147,6 +111,6 @@ export class AddArtist implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.resetOpStatus('');
+    this.clearOpStatus('');
   }
 }

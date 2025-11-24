@@ -3,14 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 
+import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Art, Artist, Job } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
-import { DataService } from '../../../service/data-service';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
-import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/messages';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -24,7 +22,7 @@ import { CancelButton } from '../../../shared/components/cancel-button/cancel-bu
   styleUrl: './add-art.scss',
   standalone: true,
 })
-export class AddArt implements OnInit, OnDestroy {
+export class AddArt extends AddBase implements OnInit, OnDestroy {
   goToArtList = () => this.router.navigate(['/art', 'list']);
 
   artListLink = new ActionLink('artListLink', 'Art', '/art/list', '', this.goToArtList);
@@ -39,23 +37,10 @@ export class AddArt implements OnInit, OnDestroy {
   artists$: Observable<Artist[]> | undefined;
   jobs$: Observable<Job[]> | undefined;
 
-  artDBData: Art = {} as Art;
+  dbData: Art = {} as Art;
 
   artId!: number;
   editMode = false;
-
-  reloadFromDb() {
-    this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
-  }
-
-  showOpStatus(status: string, success: string, failure: string, delay?: number) {
-    this.operationsService.setStatus({ status, success, failure }, delay);
-  }
-
-  clearOpStatus(status: string, desiredDelay?: number) {
-    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
-    this.showOpStatus('', '', '', delay);
-  }
 
   async onSubmit() {
     this.submitted = true;
@@ -80,49 +65,46 @@ export class AddArt implements OnInit, OnDestroy {
       this.clearOpStatus(this.saveStatus, Const.STD_DELAY);
       this.submitted = false;
       if (this.editMode) {
-        this.populateForm();
+        this.populateForm(Collections.Art, 'art_id', this.artId);
       } else {
         this.artForm.reset();
       }
       if (this.saveStatus === Const.SUCCESS) {
-        this.reloadFromDb();
+        this.reloadFromDb([Collections.Art]);
       }
     }
   }
 
-  populateArtData() {
+  populateData() {
     // this also effectively touches the form fields, so the prepopulated fields that
     // the user has never touched can be considered valid, letting the form submission complete
-    this.artForm.get('art_id')?.setValue(this.artDBData.art_id);
-    this.artForm.get('title')?.setValue(this.artDBData.title);
-    this.artForm.get('file_name')?.setValue(this.artDBData.file_name);
-    this.artForm.get('full_size_image_url')?.setValue(this.artDBData.full_size_image_url);
-    this.artForm.get('artist_id')?.setValue(this.artDBData.artist_id);
-    this.artForm.get('job_id')?.setValue(this.artDBData.job_id);
-    this.artForm.get('tags')?.setValue(this.artDBData.tags);
+
+    // console.log('populateData, this.dbData:', this.dbData);
+    // console.log("populateData, this.dbData['art_id']:", this.dbData['art_id']);
+    // const id = 'art_id';
+    // console.log('populateData, typeof id:', typeof id);
+    // console.log('populateData, this.dbData[id]:', this.dbData[id]);
+    // console.log('populateData, this.artForm.controls:', this.artForm.controls);
+    // for (const control in this.artForm.controls) {
+    //   console.log('populateData, control:', control);
+    //   console.log('populateData, typeof control:', typeof control);
+    //   const x = this.artForm.controls[control];
+    //   console.log('populateData, x:', x);
+    //   console.log('populateData, this.dbData[control]:', this.dbData[control]);
+    //   // this.artForm.get(control)?.setValue(this.dbData[control])
+    // }
+
+    this.artForm.get('art_id')?.setValue(this.dbData.art_id);
+    this.artForm.get('title')?.setValue(this.dbData.title);
+    this.artForm.get('file_name')?.setValue(this.dbData.file_name);
+    this.artForm.get('full_size_image_url')?.setValue(this.dbData.full_size_image_url);
+    this.artForm.get('artist_id')?.setValue(this.dbData.artist_id);
+    this.artForm.get('job_id')?.setValue(this.dbData.job_id);
+    this.artForm.get('tags')?.setValue(this.dbData.tags);
   }
 
-  populateForm() {
-    this.http
-      .get<Art[]>(`http://localhost:3000/data/art/${this.artId}?recordId=art_id`)
-      .subscribe((art) => {
-        if (art && art.length === 1) {
-          this.artDBData = art[0];
-          if (this.artDBData) {
-            this.populateArtData();
-          }
-        }
-      });
-  }
-
-  constructor(
-    private router: Router,
-    private dataService: DataService,
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private http: HttpClient,
-    private operationsService: OperationsService
-  ) {
+  constructor(private router: Router, private fb: FormBuilder, private route: ActivatedRoute) {
+    super();
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {
       this.headerData.data.headerTitle = 'Edit Art';
@@ -163,7 +145,7 @@ export class AddArt implements OnInit, OnDestroy {
     if (artId) {
       this.artId = +artId;
       this.editMode = true;
-      this.populateForm();
+      this.populateForm<Art>(Collections.Art, 'art_id', this.artId);
     }
 
     this.artForm = this.fb.group({
