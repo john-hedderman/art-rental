@@ -13,7 +13,7 @@
         <div class="row flex-grow-1">
           <div class="col-12">
             <div class="row">
-              <div class="col-md-6 mt-3">
+              <div class="col-md-5 mt-3">
                 <label for="title" class="col-form-label"
                   >Title <span class="text-danger">*</span></label
                 >
@@ -27,10 +27,19 @@
                 />
                 <div class="invalid-feedback">Please provide a title.</div>
               </div>
-              <div class="col-md-6 mt-3">
-                <label for="file_name" class="col-form-label"
+              <div class="col-md-7 mt-3">
+                <label for="file_name" class="col-form-label me-3"
                   >Image file name <span class="text-danger">*</span></label
                 >
+                <input
+                  type="checkbox"
+                  class="form-check-input m-2"
+                  value="spacer.gif"
+                  id="file_name_tbd"
+                  (change)="onSelectFileNameTBD()"
+                  #fileNameTBD
+                />
+                <label for="file_name_tbd" class="form-check-label">TBD</label>
                 <input
                   type="text"
                   id="file_name"
@@ -39,7 +48,9 @@
                   class="form-control"
                   required
                 />
-                <div class="invalid-feedback">Please provide an image file name.</div>
+                <div class="invalid-feedback">
+                  Please provide an image file name or check "TBD" to do it later.
+                </div>
               </div>
               <div class="col-12 mt-3">
                 <label for="full_size_image_url" class="col-form-label">Full size image URL</label>

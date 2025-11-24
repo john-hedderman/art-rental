@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
@@ -23,6 +23,8 @@ import { CancelButton } from '../../../shared/components/cancel-button/cancel-bu
   standalone: true,
 })
 export class AddArt extends AddBase implements OnInit, OnDestroy {
+  @ViewChild('fileNameTBD') fileNameTBD: ElementRef | undefined;
+
   goToArtList = () => this.router.navigate(['/art', 'list']);
 
   artListLink = new ActionLink('artListLink', 'Art', '/art/list', '', this.goToArtList);
@@ -45,14 +47,15 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.artForm.valid) {
-      this.artId = Date.now();
       const artId = this.route.snapshot.paramMap.get('id');
-      if (artId) {
-        this.artId = +artId;
-      }
+      this.artId = artId ? +artId : Date.now();
       this.artForm.value.art_id = this.artId;
       this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
       this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
+      const filenameTBDEl = this.fileNameTBD?.nativeElement as HTMLInputElement;
+      if (filenameTBDEl.checked) {
+        this.artForm.value.file_name = 'spacer.gif';
+      }
       const id = this.editMode ? this.artId : undefined;
       const field = this.editMode ? 'art_id' : undefined;
       this.saveStatus = await this.operationsService.saveDocument(
@@ -75,28 +78,34 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     }
   }
 
+  onSelectFileNameTBD() {
+    const checkboxEl = this.fileNameTBD?.nativeElement as HTMLInputElement;
+    if (checkboxEl.checked) {
+      this.artForm.get('file_name')?.setValue('');
+      this.artForm.get('file_name')?.disable();
+    } else {
+      this.artForm.get('file_name')?.enable();
+    }
+  }
+
   populateData() {
     // this also effectively touches the form fields, so the prepopulated fields that
     // the user has never touched can be considered valid, letting the form submission complete
 
-    // console.log('populateData, this.dbData:', this.dbData);
-    // console.log("populateData, this.dbData['art_id']:", this.dbData['art_id']);
-    // const id = 'art_id';
-    // console.log('populateData, typeof id:', typeof id);
-    // console.log('populateData, this.dbData[id]:', this.dbData[id]);
-    // console.log('populateData, this.artForm.controls:', this.artForm.controls);
-    // for (const control in this.artForm.controls) {
-    //   console.log('populateData, control:', control);
-    //   console.log('populateData, typeof control:', typeof control);
-    //   const x = this.artForm.controls[control];
-    //   console.log('populateData, x:', x);
-    //   console.log('populateData, this.dbData[control]:', this.dbData[control]);
-    //   // this.artForm.get(control)?.setValue(this.dbData[control])
-    // }
-
     this.artForm.get('art_id')?.setValue(this.dbData.art_id);
     this.artForm.get('title')?.setValue(this.dbData.title);
-    this.artForm.get('file_name')?.setValue(this.dbData.file_name);
+
+    const filenameTBDEl = this.fileNameTBD?.nativeElement as HTMLInputElement;
+    if (this.dbData.file_name === 'spacer.gif') {
+      filenameTBDEl.checked = true;
+      this.artForm.get('file_name')?.setValue('');
+      this.artForm.get('file_name')?.disable();
+    } else {
+      filenameTBDEl.checked = false;
+      this.artForm.get('file_name')?.enable();
+      this.artForm.get('file_name')?.setValue(this.dbData.file_name);
+    }
+
     this.artForm.get('full_size_image_url')?.setValue(this.dbData.full_size_image_url);
     this.artForm.get('artist_id')?.setValue(this.dbData.artist_id);
     this.artForm.get('job_id')?.setValue(this.dbData.job_id);
