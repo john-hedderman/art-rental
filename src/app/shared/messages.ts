@@ -36,3 +36,6 @@ export const DELETE_CONTACTS_FAILED = 'Deleting contacts failed';
 
 export const DELETED_JOB = 'Deleted job';
 export const DELETE_JOB_FAILED = 'Deleting job failed';
+
+export const DELETED_SITE = 'Deleted site';
+export const DELETE_SITE_FAILED = 'Deleting site failed';
