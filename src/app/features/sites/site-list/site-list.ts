@@ -7,11 +7,12 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { ButtonbarData, HeaderData, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
-import { HeaderActions } from '../../../shared/actions/action-data';
+import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 
 @Component({
   selector: 'app-site-list',
-  imports: [PageHeader, NgxDatatableModule],
+  imports: [PageHeader, NgxDatatableModule, Buttonbar],
   templateUrl: './site-list.html',
   styleUrl: './site-list.scss',
   standalone: true,
@@ -36,8 +37,18 @@ export class SiteList implements OnInit {
   }
 
   goToAddSite = () => this.router.navigate(['/sites', 'add']);
-
   headerData = new HeaderActions('site-list', 'Sites', [], []);
+  addButton = new ActionButton(
+    'addBtn',
+    'Add Site',
+    'button',
+    'btn btn-primary',
+    false,
+    null,
+    null,
+    this.goToAddSite
+  );
+  footerData = new FooterActions([this.addButton]);
 
   buttonbarData: ButtonbarData = {
     buttons: [
