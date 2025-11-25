@@ -23,6 +23,9 @@ export class SiteList implements OnInit {
   @ViewChild('sitesTable') table!: DatatableComponent<Site>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
+  @ViewChild('clientNameHeaderTemplate', { static: true })
+  clientNameHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('siteNameTemplate', { static: true }) siteNameTemplate!: TemplateRef<any>;
   @ViewChild('siteAddressHeaderTemplate', { static: true })
   siteAddressHeaderTemplate!: TemplateRef<any>;
   @ViewChild('siteAddressTemplate', { static: true }) siteAddressTemplate!: TemplateRef<any>;
@@ -99,16 +102,25 @@ export class SiteList implements OnInit {
         cellTemplate: this.arrowTemplate,
       },
       {
+        width: 200,
         prop: '',
-        name: 'Client',
-        cellTemplate: this.clientNameTemplate,
+        name: 'Site',
+        cellTemplate: this.siteNameTemplate,
       },
       {
+        width: 250,
         prop: '',
         name: 'Site Address',
         headerTemplate: this.siteAddressHeaderTemplate,
         cellTemplate: this.siteAddressTemplate,
         comparator: this.addressComparator,
+      },
+      {
+        width: 200,
+        prop: '',
+        name: 'Client',
+        headerTemplate: this.clientNameHeaderTemplate,
+        cellTemplate: this.clientNameTemplate,
       },
     ];
   }
