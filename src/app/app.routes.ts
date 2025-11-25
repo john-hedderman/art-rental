@@ -178,6 +178,10 @@ export const routes: Routes = [
         component: SiteDetail,
       },
       {
+        path: ':id/edit',
+        component: AddSite,
+      },
+      {
         path: '',
         redirectTo: 'list',
         pathMatch: 'full',
