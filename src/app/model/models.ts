@@ -28,6 +28,8 @@ export interface Client {
   industry?: string;
   contact_ids: number[];
   contacts?: Contact[];
+  site_ids: number[];
+  sites?: Site[];
   job_ids: number[];
   jobs?: Job[];
 }

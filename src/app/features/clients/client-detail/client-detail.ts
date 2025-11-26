@@ -69,16 +69,15 @@ export class ClientDetail implements OnInit, OnDestroy {
 
   clientStatus = '';
   contactsStatus = '';
+  sitesStatus = '';
+
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
   reloadFromDb() {
-    this.dataService
-      .load('clients')
-      .subscribe((clients) => this.dataService.clients$.next(clients));
-    this.dataService
-      .load('contacts')
-      .subscribe((contacts) => this.dataService.contacts$.next(contacts));
+    this.dataService.load('clients').subscribe((data) => this.dataService.clients$.next(data));
+    this.dataService.load('contacts').subscribe((data) => this.dataService.contacts$.next(data));
+    this.dataService.load('sites').subscribe((sites) => this.dataService.sites$.next(sites));
   }
 
   showOpStatus(status: string, success: string, failure: string, delay?: number) {
@@ -101,6 +100,11 @@ export class ClientDetail implements OnInit, OnDestroy {
       'client_id',
       this.clientId
     );
+    this.sitesStatus = await this.operationsService.deleteDocuments(
+      Collections.Sites,
+      'client_id',
+      this.clientId
+    );
     this.showOpStatus(this.clientStatus, Msgs.DELETED_CLIENT, Msgs.DELETE_CLIENT_FAILED);
     this.showOpStatus(
       this.contactsStatus,
@@ -108,7 +112,13 @@ export class ClientDetail implements OnInit, OnDestroy {
       Msgs.DELETE_CONTACTS_FAILED,
       Const.STD_DELAY
     );
-    this.clearOpStatus(this.contactsStatus, Const.STD_DELAY * 2);
+    this.showOpStatus(
+      this.sitesStatus,
+      Msgs.DELETED_SITES,
+      Msgs.DELETE_SITES_FAILED,
+      Const.STD_DELAY * 2
+    );
+    this.clearOpStatus(this.contactsStatus, Const.STD_DELAY * 3);
     this.reloadFromDb();
   }
 

@@ -37,7 +37,10 @@ export class AddSite extends AddBase implements OnInit {
   clients$: Observable<Client[]> | undefined;
   jobs$: Observable<Job[]> | undefined;
 
+  clients: Client[] = [];
+
   siteStatus = '';
+  clientStatus = '';
 
   selectedClientId: number | undefined;
 
@@ -54,13 +57,18 @@ export class AddSite extends AddBase implements OnInit {
       this.siteForm.value.site_id = this.siteId;
       this.siteForm.value.job_id = Const.NO_JOB;
       this.siteStatus = await this.save(this.siteForm.value);
+      this.clientStatus = await this.updateClient(this.siteForm.value);
       this.showOpStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED);
-      this.clearOpStatus(this.siteStatus, Const.STD_DELAY);
+      this.showOpStatus(
+        this.clientStatus,
+        Msgs.SAVED_CLIENT,
+        Msgs.SAVE_CLIENT_FAILED,
+        Const.STD_DELAY
+      );
+      this.clearOpStatus(this.siteStatus, Const.STD_DELAY * 2);
       this.submitted = false;
       this.resetForm();
-      if (this.siteStatus === Const.SUCCESS) {
-        this.reloadFromDb([Collections.Sites]);
-      }
+      this.reloadFromDb([Collections.Sites, Collections.Clients]);
     }
   }
 
@@ -79,6 +87,33 @@ export class AddSite extends AddBase implements OnInit {
       }
     } catch (error) {
       console.error('Save job error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
+
+  async updateClient(formData: any): Promise<string> {
+    const client = this.clients.find((client) => client.client_id === formData.client_id);
+    if (!client) {
+      console.error('Save client error, could not find the selected client');
+      return Const.FAILURE;
+    }
+    const collection = Collections.Clients;
+    let result = Const.SUCCESS;
+    try {
+      client.site_ids.push(formData.site_id);
+      delete (client as any)._id;
+      const returnData = await this.dataService.saveDocument(
+        client,
+        collection,
+        formData.client_id,
+        'client_id'
+      );
+      if (returnData.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Save client error:', error);
       result = Const.FAILURE;
     }
     return result;
@@ -110,37 +145,6 @@ export class AddSite extends AddBase implements OnInit {
     }
   }
 
-  disableMenu(menuId: string) {
-    this.siteForm.get(menuId)?.disable();
-    this.depopulateMenu(menuId);
-  }
-
-  enableMenu(menuId: string) {
-    this.siteForm.get(menuId)?.enable();
-    this.depopulateMenu(menuId);
-    this.populateJobsMenu();
-  }
-
-  depopulateMenu(menuId: string) {
-    const menu = document.getElementById(menuId) as HTMLSelectElement;
-    while (menu.options.length > 0) {
-      menu.remove(0);
-    }
-  }
-
-  populateJobsMenu() {
-    const menu = document.getElementById('job_id') as HTMLSelectElement;
-    let newOption = new Option('Select a job...', '');
-    menu?.add(newOption);
-    newOption = new Option('Not on a job', '0');
-    menu?.add(newOption);
-    const clientJobs = this.jobs.filter((job) => job.client_id === this.selectedClientId);
-    for (const clientJob of clientJobs) {
-      newOption = new Option(clientJob.job_number, clientJob.job_id.toString());
-      menu?.add(newOption);
-    }
-  }
-
   populateData(): void {}
 
   constructor(private router: Router, private fb: FormBuilder, private route: ActivatedRoute) {
@@ -152,6 +156,7 @@ export class AddSite extends AddBase implements OnInit {
       .pipe(take(1))
       .subscribe(({ clients, jobs }) => {
         this.clients$ = of(clients);
+        this.clients = clients;
         this.jobs$ = of(jobs);
         this.jobs = jobs;
       });

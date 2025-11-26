@@ -55,7 +55,7 @@
 </ng-template>
 
 <ng-template #clientNameTemplate let-row="row">
-  @if (row.client.name) {
+  @if (row.client?.name) {
   <span class="mobile-hidden">{{ row.client.name }}</span>
   }
 </ng-template>

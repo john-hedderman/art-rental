@@ -54,16 +54,20 @@ export class SiteDetail implements OnDestroy {
   job$: Observable<Job> | undefined;
 
   site: Site | undefined;
+  clients: Client[] = [];
   jobs: Job[] = [];
 
   deleteStatus = '';
   jobStatus = '';
+  clientStatus = '';
+
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
   reloadFromDb() {
-    this.dataService.load('sites').subscribe((sites) => this.dataService.sites$.next(sites));
-    this.dataService.load('jobs').subscribe((jobs) => this.dataService.jobs$.next(jobs));
+    this.dataService.load('sites').subscribe((data) => this.dataService.sites$.next(data));
+    this.dataService.load('jobs').subscribe((data) => this.dataService.jobs$.next(data));
+    this.dataService.load('clients').subscribe((data) => this.dataService.clients$.next(data));
   }
 
   showOpStatus(status: string, success: string, failure: string, delay?: number) {
@@ -82,12 +86,17 @@ export class SiteDetail implements OnDestroy {
       this.siteId
     );
     this.jobStatus = await this.updateJob();
+    this.clientStatus = await this.updateClient();
     this.showOpStatus(this.deleteStatus, Msgs.DELETED_SITE, Msgs.DELETE_SITE_FAILED);
     this.showOpStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED, Const.STD_DELAY);
-    this.clearOpStatus(this.deleteStatus, Const.STD_DELAY * 2);
-    if (this.deleteStatus === Const.SUCCESS) {
-      this.reloadFromDb();
-    }
+    this.showOpStatus(
+      this.clientStatus,
+      Msgs.SAVED_CLIENT,
+      Msgs.SAVE_CLIENT_FAILED,
+      Const.STD_DELAY * 2
+    );
+    this.clearOpStatus(this.deleteStatus, Const.STD_DELAY * 3);
+    this.reloadFromDb();
   }
 
   async updateJob(): Promise<string> {
@@ -114,6 +123,35 @@ export class SiteDetail implements OnDestroy {
     return result;
   }
 
+  async updateClient(): Promise<string> {
+    const client = this.clients.find((client) => client.client_id === this.clientId);
+    if (!client) {
+      console.error("Save client error, could not find the site' client");
+      return Const.FAILURE;
+    }
+    if (client.site_ids.indexOf(this.siteId) === -1) {
+      return Const.SUCCESS;
+    }
+    let result = Const.SUCCESS;
+    try {
+      client.site_ids = client.site_ids.filter((site_id) => site_id !== this.siteId);
+      delete (client as any)._id;
+      const returnData = await this.dataService.saveDocument(
+        client,
+        Collections.Clients,
+        this.clientId,
+        'client_id'
+      );
+      if (returnData.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Save client error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
+
   getSiteId(): Observable<number> {
     return this.route.paramMap.pipe(map((params) => +params.get('id')!));
   }
@@ -132,6 +170,7 @@ export class SiteDetail implements OnDestroy {
     })
       .pipe(take(1))
       .subscribe(({ sites, clients, jobs, siteId }) => {
+        this.clients = clients;
         this.jobs = jobs;
         this.siteId = siteId;
         let site = sites.find((site) => site.site_id === siteId);

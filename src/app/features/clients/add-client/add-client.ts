@@ -95,7 +95,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
   mergeContactIds(clientFormData: any): any {
     const { contacts, ...allButContacts } = clientFormData;
     const contact_ids = contacts.map((contact: Contact) => contact.contact_id);
-    return { ...allButContacts, contact_ids, job_ids: [] };
+    return { ...allButContacts, contact_ids, job_ids: [], site_ids: [] };
   }
 
   async saveClient(clientFormData: any): Promise<string> {
