@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { Client, Contact, Job } from '../../../model/models';
+import { Client, Contact, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { ContactsTable } from '../../../shared/components/contacts-table/contacts-table';
@@ -57,6 +57,7 @@ export class ClientDetail implements OnInit, OnDestroy {
 
   client$: Observable<Client> | undefined;
   jobs$: Observable<Job[]> | undefined;
+  sites$: Observable<Site[]> | undefined;
 
   rows: Contact[] = [];
   columns: TableColumn[] = [];
@@ -155,8 +156,9 @@ export class ClientDetail implements OnInit, OnDestroy {
               const client = clients.find((client) => client.client_id === contact.client_id);
               return { ...contact, client };
             });
-
-          this.client$ = of(client); // for template
+          this.client$ = of(client);
+          const clientSites = sites.filter((site) => site.client_id === this.clientId);
+          this.sites$ = of(clientSites);
           this.rows = [...this.contacts]; // for table of contacts
         }
       });
