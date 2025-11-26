@@ -219,7 +219,7 @@ export class JobDetail implements OnInit, OnDestroy {
           job.client = clients.find((client) => client.client_id === job.client_id);
           this.clientId = job.client?.client_id;
           job.contacts = contacts
-            .filter((contact) => contact.client_id === job.client_id)
+            .filter((contact) => job.contact_ids.indexOf(contact.contact_id) !== -1)
             .map((contact) => {
               const client = clients.find((client) => client.client_id === contact.client_id);
               return { ...contact, client };
