@@ -52,6 +52,7 @@ export class AddSite extends AddBase implements OnInit {
         this.siteId = +siteId;
       }
       this.siteForm.value.site_id = this.siteId;
+      this.siteForm.value.job_id = Const.NO_JOB;
       this.siteStatus = await this.save(this.siteForm.value);
       this.showOpStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED);
       this.clearOpStatus(this.siteStatus, Const.STD_DELAY);
@@ -65,7 +66,6 @@ export class AddSite extends AddBase implements OnInit {
 
   convertIds() {
     this.siteForm.value.client_id = parseInt(this.siteForm.value.client_id);
-    this.siteForm.value.job_id = parseInt(this.siteForm.value.job_id);
   }
 
   async save(siteData: any): Promise<string> {
@@ -86,7 +86,6 @@ export class AddSite extends AddBase implements OnInit {
 
   resetForm() {
     this.siteForm.reset();
-    this.siteForm.get('job_id')?.disable();
     this.submitted = false;
   }
 
@@ -94,7 +93,6 @@ export class AddSite extends AddBase implements OnInit {
     const clientId = event.target.value;
     if (clientId !== '') {
       this.selectedClientId = +clientId;
-      this.enableMenu('job_id');
       this.siteForm.get('name')?.enable();
       this.siteForm.get('address1')?.enable();
       this.siteForm.get('address2')?.enable();
@@ -103,7 +101,6 @@ export class AddSite extends AddBase implements OnInit {
       this.siteForm.get('zip_code')?.enable();
     } else {
       this.selectedClientId = undefined;
-      this.disableMenu('job_id');
       this.siteForm.get('name')?.disable();
       this.siteForm.get('address1')?.disable();
       this.siteForm.get('address2')?.disable();
