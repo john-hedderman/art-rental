@@ -1,7 +1,8 @@
-import { Component, Input, input, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
+import { Component, HostListener, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { Contact } from '../../../model/models';
+import { Util } from '../../util/util';
 
 @Component({
   selector: 'app-contacts-table',
@@ -11,29 +12,68 @@ import { Contact } from '../../../model/models';
   standalone: true,
 })
 export class ContactsTable implements OnInit {
+  @ViewChild('contactsTable') table!: DatatableComponent<Contact>;
+  @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
+  @ViewChild('clientNameHeaderTemplate', { static: true })
+  clientNameHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
+  @ViewChild('phoneHeaderTemplate', { static: true }) phoneHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('phoneTemplate', { static: true }) phoneTemplate!: TemplateRef<any>;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    Util.showHideRowDetail();
+  }
+
   @Input() rows: Contact[] = [];
   @Input() columns: TableColumn[] = [];
+
+  toggleExpandRow(row: Contact) {
+    this.table.rowDetail!.toggleExpandRow(row);
+  }
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
     const nameA = `${rowA['first_name']} ${rowA['last_name']}`;
     const nameB = `${rowB['first_name']} ${rowB['last_name']}`;
     return nameA.localeCompare(nameB);
   }
+
+  clientNameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
+    const clientNameA = `${rowA['client']['name']}`;
+    const clientNameB = `${rowB['client']['name']}`;
+    return clientNameA.localeCompare(clientNameB);
+  }
+
   ngOnInit(): void {
     this.columns = [
       {
+        width: 50,
+        resizeable: false,
+        sortable: false,
+        draggable: false,
+        canAutoResize: false,
+        cellTemplate: this.arrowTemplate,
+      },
+      {
+        width: 250,
         name: 'Name',
         cellTemplate: this.nameTemplate,
         comparator: this.nameComparator,
       },
       {
-        prop: 'title',
-        name: 'Title',
+        width: 200,
+        name: 'Client',
+        headerTemplate: this.clientNameHeaderTemplate,
+        cellTemplate: this.clientNameTemplate,
+        comparator: this.clientNameComparator,
       },
       {
+        width: 150,
         prop: 'phone',
         name: 'Phone',
+        headerTemplate: this.phoneHeaderTemplate,
+        cellTemplate: this.phoneTemplate,
       },
     ];
   }

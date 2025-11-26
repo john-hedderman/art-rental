@@ -147,9 +147,15 @@ export class ClientDetail implements OnInit, OnDestroy {
               return { ...job, site };
             });
           this.jobs$ = of(fullJobs);
-          this.contacts = contacts.filter((contact) => {
-            return client.contact_ids.indexOf(contact.contact_id) >= 0;
-          });
+          this.contacts = contacts
+            .filter((contact) => {
+              return client.contact_ids.indexOf(contact.contact_id) >= 0;
+            })
+            .map((contact) => {
+              const client = clients.find((client) => client.client_id === contact.client_id);
+              return { ...contact, client };
+            });
+
           this.client$ = of(client); // for template
           this.rows = [...this.contacts]; // for table of contacts
         }
