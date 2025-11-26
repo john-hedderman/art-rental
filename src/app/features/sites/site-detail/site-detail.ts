@@ -92,19 +92,18 @@ export class SiteDetail implements OnDestroy {
 
   async updateJob(): Promise<string> {
     if (this.site?.job_id === Const.NO_JOB) {
-      return Const.SUCCESS; // already not on a job
+      return Const.SUCCESS; // site not being used for a job
     }
     const job = this.jobs.find((job) => job.job_id === this.jobId);
     if (!job) {
       console.error('Save site error, could not find the job');
       return Const.FAILURE;
     }
-    const collection = Collections.Jobs;
     let result = Const.SUCCESS;
     try {
-      job.site_id = Const.NO_JOB;
+      job.site_id = Const.NO_SITE;
       delete (job as any)._id;
-      const data = await this.dataService.saveDocument(job, collection, job.job_id, 'job_id');
+      const data = await this.dataService.saveDocument(job, Collections.Jobs, job.job_id, 'job_id');
       if (data.modifiedCount === 0) {
         result = Const.FAILURE;
       }
