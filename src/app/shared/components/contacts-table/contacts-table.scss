@@ -10,10 +10,7 @@
 
 @media (max-width: 767px) {
   ::ng-deep ngx-datatable {
-    // hide Client and Phone sort arrows because ngx-datatable is broken and doesn't do this
-    // WARNING: BRITTLE! must adjust if columns change - haven't found an unbrittle solution
-    .datatable-header-cell:nth-of-type(3) .sort-btn,
-    .datatable-header-cell:nth-of-type(4) .sort-btn {
+    .datatable-header-cell:nth-of-type(n + 3) .sort-btn {
       display: none;
     }
 
@@ -21,8 +18,7 @@
     .datatable-body-cell:nth-of-type(2) {
       flex-grow: 1 !important;
     }
-    .datatable-body-cell:nth-of-type(3),
-    .datatable-body-cell:nth-of-type(4) {
+    .datatable-body-cell:nth-of-type(n + 3) {
       width: 0 !important;
       padding: 0 !important;
     }
