@@ -31,8 +31,9 @@
           art.job.job_number
         }}</a>
       </p>
-      <p class="mb-0">{{ art.job.client?.name }}</p>
+      <p class="mb-0">Client {{ art.job.client?.name }}</p>
       @if (art.job.site) {
+      <p class="mb-0">{{ art.job.site.name }}</p>
       <p class="mb-0">{{ art.job.site.address1 }}</p>
       @if (art.job.site.address2) {
       <p class="mb-0">{{ art.job.site.address2 }}</p>
