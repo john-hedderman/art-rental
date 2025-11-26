@@ -41,6 +41,12 @@
   .ar-card-footer {
     height: var(--ar-card-footer-height);
     line-height: var(--ar-card-footer-line-height);
+
+    .ar-card-footer-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   .ar-form-check-input {
