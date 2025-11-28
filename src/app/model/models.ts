@@ -114,6 +114,5 @@ export interface ButtonbarData {
 
 export interface OperationStatus {
   status: string;
-  success: string;
-  failure: string;
+  message: string;
 }

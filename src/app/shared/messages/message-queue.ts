@@ -1,4 +1,5 @@
 import * as Const from '../../constants';
+import { OperationStatus } from '../../model/models';
 
 function _sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -7,7 +8,7 @@ function _sleep(ms: number): Promise<void> {
 export class MessageQueue {
   output!: any;
   delay = Const.STD_DELAY;
-  queue: string[] = [];
+  queue: OperationStatus[] = [];
   isProcessing = false;
 
   constructor(outputFunction: any, delay = Const.STD_DELAY) {
@@ -17,7 +18,7 @@ export class MessageQueue {
     this.isProcessing = false;
   }
 
-  addMessage(message: string) {
+  addMessage(message: OperationStatus) {
     this.queue.push(message);
     if (!this.isProcessing) {
       this.processQueue();

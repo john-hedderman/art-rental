@@ -4,23 +4,17 @@
       <h5 class="mt-1 mb-0">{{ headerData().headerTitle }}</h5>
     </div>
     <div class="me-2">
-      @if (operationStatus() !== '') {
+      @if (operationStatus().status === OP_SUCCESS) {
       <div>
         <span class="bi bi-check-circle d-inline-block me-2 text-success"></span
-        ><span class="text-success">{{ operationStatus() }}</span>
+        ><span class="text-success">{{ operationStatus().message }}</span>
       </div>
-      }
-      <!-- @if (opStatus().status === OP_SUCCESS) { -->
-      <!-- <div>
-        <span class="bi bi-check-circle d-inline-block me-2 text-success"></span
-        ><span class="text-success">{{ opStatus() }}</span>
-      </div> -->
-      <!-- } @else if (opStatus().status === OP_FAILURE) {
+      } @else if (operationStatus().status === OP_FAILURE) {
       <div>
         <span class="bi bi-exclamation-circle d-inline-block me-2 text-danger"></span
-        ><span class="text-danger">{{ opStatus().failure }}</span>
+        ><span class="text-danger">{{ operationStatus().message }}</span>
       </div>
-      } -->
+      }
     </div>
     @if (headerData().headerLinks.length > 0) {
     <div class="ms-3 me-2">

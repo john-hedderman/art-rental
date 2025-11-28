@@ -7,13 +7,13 @@ import { DataService } from './data-service';
   providedIn: 'root',
 })
 export class OperationsService {
-  private _status: WritableSignal<string> = signal('');
+  private _status: WritableSignal<OperationStatus> = signal({ status: '', message: '' });
 
-  readonly operationStatus: Signal<string> = this._status.asReadonly();
+  readonly operationStatus: Signal<OperationStatus> = this._status.asReadonly();
 
   dataService = inject(DataService);
 
-  public showStatus(status: string) {
+  public showStatus(status: OperationStatus) {
     this._status.update(() => status);
   }
 
