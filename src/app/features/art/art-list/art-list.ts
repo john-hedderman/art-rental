@@ -7,12 +7,12 @@ import { Card } from '../../../shared/components/card/card';
 import { Art } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 
 @Component({
   selector: 'app-art-list',
-  imports: [Card, PageHeader, FormsModule, Buttonbar],
+  imports: [Card, PageHeader, FormsModule, PageFooter],
   templateUrl: './art-list.html',
   styleUrl: './art-list.scss',
   standalone: true,

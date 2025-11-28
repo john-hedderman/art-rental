@@ -30,7 +30,7 @@
 
   --ar-table-header-height: 50px;
 
-  --ar-page-buttonbar-height: 4.5rem;
+  --ar-page-footer-height: 4.5rem;
 }
 
 * {
@@ -51,7 +51,7 @@ body {
 
 .ar-page-content {
   height: calc(
-    100vh - var(--ar-navbar-height) - var(--ar-page-header-height) - var(--ar-page-buttonbar-height)
+    100vh - var(--ar-navbar-height) - var(--ar-page-header-height) - var(--ar-page-footer-height)
   );
 }
 

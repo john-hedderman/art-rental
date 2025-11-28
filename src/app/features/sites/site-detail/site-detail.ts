@@ -13,16 +13,16 @@ import {
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
 import { DataService } from '../../../service/data-service';
-import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
 import { OperationsService } from '../../../service/operations-service';
 import { Collections } from '../../../shared/enums/collections';
 import { MessagesService } from '../../../service/messages-service';
+import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 
 @Component({
   selector: 'app-site-detail',
-  imports: [PageHeader, AsyncPipe, Buttonbar, RouterLink],
+  imports: [PageHeader, AsyncPipe, PageFooter, RouterLink],
   providers: [MessagesService],
   templateUrl: './site-detail.html',
   styleUrl: './site-detail.scss',

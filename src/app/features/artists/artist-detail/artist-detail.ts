@@ -3,8 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, map, Observable, take } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Artist, ButtonbarData } from '../../../model/models';
-import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
+import { Artist } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
@@ -18,10 +17,11 @@ import {
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
 import { MessagesService } from '../../../service/messages-service';
+import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 
 @Component({
   selector: 'app-artist-detail',
-  imports: [PageHeader, Buttonbar],
+  imports: [PageHeader, PageFooter],
   providers: [MessagesService],
   templateUrl: './artist-detail.html',
   styleUrl: './artist-detail.scss',

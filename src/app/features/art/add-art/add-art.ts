@@ -8,17 +8,17 @@ import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Art, Artist, Job } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
-import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 import { MessagesService } from '../../../service/messages-service';
+import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 
 @Component({
   selector: 'app-add-art',
-  imports: [PageHeader, ReactiveFormsModule, AsyncPipe, Buttonbar],
+  imports: [PageHeader, ReactiveFormsModule, AsyncPipe, PageFooter],
   providers: [MessagesService],
   templateUrl: './add-art.html',
   styleUrl: './add-art.scss',

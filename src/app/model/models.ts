@@ -96,22 +96,6 @@ export interface HeaderLink {
   clickHandler: any;
 }
 
-export interface ButtonbarButton {
-  id: string;
-  label: string;
-  type: string;
-  buttonClass: string;
-  disabled: boolean;
-  dataBsToggle: string | null;
-  dataBsTarget: string | null;
-  clickHandler: any;
-}
-
-export interface ButtonbarData {
-  page?: string;
-  buttons: ButtonbarButton[];
-}
-
 export interface OperationStatus {
   status: string;
   message: string;

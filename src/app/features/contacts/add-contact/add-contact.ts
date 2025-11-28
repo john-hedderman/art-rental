@@ -6,7 +6,6 @@ import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Contact } from '../../../model/models';
-import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -15,10 +14,11 @@ import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { MessagesService } from '../../../service/messages-service';
+import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 
 @Component({
   selector: 'app-add-contact',
-  imports: [PageHeader, ReactiveFormsModule, Buttonbar, AsyncPipe],
+  imports: [PageHeader, ReactiveFormsModule, PageFooter, AsyncPipe],
   providers: [MessagesService],
   templateUrl: './add-contact.html',
   styleUrl: './add-contact.scss',

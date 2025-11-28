@@ -6,7 +6,6 @@ import { AsyncPipe } from '@angular/common';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Contact } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
-import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
@@ -19,10 +18,11 @@ import {
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
 import { MessagesService } from '../../../service/messages-service';
+import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 
 @Component({
   selector: 'app-contact-detail',
-  imports: [PageHeader, AsyncPipe, Buttonbar],
+  imports: [PageHeader, AsyncPipe, PageFooter],
   providers: [MessagesService],
   templateUrl: './contact-detail.html',
   styleUrl: './contact-detail.scss',

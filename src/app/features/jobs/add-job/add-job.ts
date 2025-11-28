@@ -12,13 +12,13 @@ import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
-import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { MessagesService } from '../../../service/messages-service';
+import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 
 @Component({
   selector: 'app-add-job',
-  imports: [PageHeader, ReactiveFormsModule, AsyncPipe, RouterLink, Buttonbar],
+  imports: [PageHeader, ReactiveFormsModule, AsyncPipe, RouterLink, PageFooter],
   providers: [MessagesService],
   templateUrl: './add-job.html',
   styleUrl: './add-job.scss',

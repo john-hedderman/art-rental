@@ -2,16 +2,16 @@ import { Component } from '@angular/core';
 import { take } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { Artist, ButtonbarData, HeaderData } from '../../../model/models';
+import { Artist } from '../../../model/models';
 import { Card } from '../../../shared/components/card/card';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 
 @Component({
   selector: 'app-artist-list',
-  imports: [Card, PageHeader, Buttonbar],
+  imports: [Card, PageHeader, PageFooter],
   templateUrl: './artist-list.html',
   styleUrl: './artist-list.scss',
   standalone: true,

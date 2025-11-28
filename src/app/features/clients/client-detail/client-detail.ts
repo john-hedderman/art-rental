@@ -8,7 +8,6 @@ import { Client, Contact, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { ContactsTable } from '../../../shared/components/contacts-table/contacts-table';
-import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
@@ -21,10 +20,11 @@ import {
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
 import { MessagesService } from '../../../service/messages-service';
+import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 
 @Component({
   selector: 'app-client-detail',
-  imports: [AsyncPipe, PageHeader, RouterLink, NgxDatatableModule, ContactsTable, Buttonbar],
+  imports: [AsyncPipe, PageHeader, RouterLink, NgxDatatableModule, ContactsTable, PageFooter],
   providers: [MessagesService],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',

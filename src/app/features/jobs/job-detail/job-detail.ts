@@ -16,17 +16,17 @@ import {
   FooterActions,
   HeaderActions,
 } from '../../../shared/actions/action-data';
-import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
 import { OperationsService } from '../../../service/operations-service';
 import { Collections } from '../../../shared/enums/collections';
 import { MessagesService } from '../../../service/messages-service';
+import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 
 @Component({
   selector: 'app-job-detail',
-  imports: [AsyncPipe, PageHeader, RouterLink, Card, NgxDatatableModule, ContactsTable, Buttonbar],
+  imports: [AsyncPipe, PageHeader, RouterLink, Card, NgxDatatableModule, ContactsTable, PageFooter],
   providers: [MessagesService],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.scss',

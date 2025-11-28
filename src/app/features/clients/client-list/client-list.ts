@@ -7,12 +7,12 @@ import { Client } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
-import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 
 @Component({
   selector: 'app-client-list',
-  imports: [NgxDatatableModule, PageHeader, Buttonbar],
+  imports: [NgxDatatableModule, PageHeader, PageFooter],
   templateUrl: './client-list.html',
   styleUrl: './client-list.scss',
   standalone: true,

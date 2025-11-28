@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Buttonbar } from './buttonbar';
+import { PageFooter } from './page-footer';
 
-describe('Buttonbar', () => {
-  let component: Buttonbar;
-  let fixture: ComponentFixture<Buttonbar>;
+describe('PageFooter', () => {
+  let component: PageFooter;
+  let fixture: ComponentFixture<PageFooter>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Buttonbar]
+      imports: [PageFooter]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Buttonbar);
+    fixture = TestBed.createComponent(PageFooter);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
