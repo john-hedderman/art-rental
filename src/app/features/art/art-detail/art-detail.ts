@@ -9,7 +9,7 @@ import { Collections } from '../../../shared/enums/collections';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/messages';
+import * as Msgs from '../../../shared/strings';
 import {
   ActionButton,
   ActionLink,
@@ -17,10 +17,12 @@ import {
   HeaderActions,
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
+import { MessagesService } from '../../../service/messages-service';
 
 @Component({
   selector: 'app-art-detail',
   imports: [PageHeader, RouterLink, Buttonbar],
+  providers: [MessagesService],
   templateUrl: './art-detail.html',
   styleUrl: './art-detail.scss',
   standalone: true,
@@ -51,23 +53,14 @@ export class ArtDetail implements OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  showOpStatus(status: string, success: string, failure: string, delay?: number) {
-    this.operationsService.setStatus({ status, success, failure }, delay);
-  }
-
-  clearOpStatus(status: string, desiredDelay?: number) {
-    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
-    this.showOpStatus('', '', '', delay);
-  }
-
   async onClickDelete() {
     this.deleteStatus = await this.operationsService.deleteDocument(
       Collections.Art,
       'art_id',
       this.artId
     );
-    this.showOpStatus(this.deleteStatus, Msgs.DELETED_ART, Msgs.DELETE_ART_FAILED);
-    this.clearOpStatus(this.deleteStatus, Const.STD_DELAY);
+    this.messagesService.showStatus(this.deleteStatus, Msgs.DELETED_ART, Msgs.DELETE_ART_FAILED);
+    this.messagesService.clearStatus();
     if (this.deleteStatus === Const.SUCCESS) {
       this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
     }
@@ -81,7 +74,8 @@ export class ArtDetail implements OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private dataService: DataService,
-    private operationsService: OperationsService
+    private operationsService: OperationsService,
+    private messagesService: MessagesService
   ) {
     combineLatest({
       artwork: this.dataService.art$,
@@ -118,6 +112,6 @@ export class ArtDetail implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.clearOpStatus('');
+    this.messagesService.clearStatus();
   }
 }

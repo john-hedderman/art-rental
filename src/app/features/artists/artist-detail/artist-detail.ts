@@ -9,7 +9,7 @@ import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/messages';
+import * as Msgs from '../../../shared/strings';
 import {
   ActionButton,
   ActionLink,
@@ -17,10 +17,12 @@ import {
   HeaderActions,
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
+import { MessagesService } from '../../../service/messages-service';
 
 @Component({
   selector: 'app-artist-detail',
   imports: [PageHeader, Buttonbar],
+  providers: [MessagesService],
   templateUrl: './artist-detail.html',
   styleUrl: './artist-detail.scss',
   standalone: true,
@@ -63,23 +65,18 @@ export class ArtistDetail implements OnDestroy {
       .subscribe((artists) => this.dataService.artists$.next(artists));
   }
 
-  showOpStatus(status: string, success: string, failure: string, delay?: number) {
-    this.operationsService.setStatus({ status, success, failure }, delay);
-  }
-
-  resetOpStatus(status: string, desiredDelay?: number) {
-    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
-    this.showOpStatus('', '', '', delay);
-  }
-
   async onClickDelete() {
     this.deleteStatus = await this.operationsService.deleteDocument(
       Collections.Artists,
       'artist_id',
       this.artistId
     );
-    this.showOpStatus(this.deleteStatus, Msgs.DELETED_ARTIST, Msgs.DELETE_ARTIST_FAILED);
-    this.resetOpStatus(this.deleteStatus, Const.STD_DELAY);
+    this.messagesService.showStatus(
+      this.deleteStatus,
+      Msgs.DELETED_ARTIST,
+      Msgs.DELETE_ARTIST_FAILED
+    );
+    this.messagesService.clearStatus();
     if (this.deleteStatus === Const.SUCCESS) {
       this.reloadFromDb();
     }
@@ -93,7 +90,8 @@ export class ArtistDetail implements OnDestroy {
     private router: Router,
     private dataService: DataService,
     private route: ActivatedRoute,
-    private operationsService: OperationsService
+    private operationsService: OperationsService,
+    private messagesService: MessagesService
   ) {
     combineLatest({
       artists: this.dataService.artists$,
@@ -110,6 +108,6 @@ export class ArtistDetail implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.resetOpStatus('');
+    this.messagesService.clearStatus();
   }
 }

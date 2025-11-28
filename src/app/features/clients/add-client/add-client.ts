@@ -13,22 +13,23 @@ import { Client, Contact } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/messages';
+import * as Msgs from '../../../shared/strings';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
+import { MessagesService } from '../../../service/messages-service';
 
 @Component({
   selector: 'app-add-client',
   imports: [PageHeader, ReactiveFormsModule, Buttonbar],
+  providers: [MessagesService],
   templateUrl: './add-client.html',
   styleUrl: './add-client.scss',
   standalone: true,
 })
 export class AddClient extends AddBase implements OnInit, OnDestroy {
   goToClientList = () => this.router.navigate(['/clients', 'list']);
-
   clientListLink = new ActionLink(
     'clientListLink',
     'Clients',
@@ -66,18 +67,19 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
       this.clientStatus = await this.saveClient(this.clientForm.value);
       this.deleteContactsStatus = await this.deleteContacts();
       this.contactsStatus = await this.saveContacts(this.clientForm.value.contacts);
-      this.showOpStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED);
-      if (this.initialContactsCount === 0 && this.clientForm.value.contacts.length === 0) {
-        this.clearOpStatus(this.clientStatus, 1500);
-      } else {
-        this.showOpStatus(
+      this.messagesService.showStatus(
+        this.clientStatus,
+        Msgs.SAVED_CLIENT,
+        Msgs.SAVE_CLIENT_FAILED
+      );
+      if (this.initialContactsCount !== 0 || this.clientForm.value.contacts.length !== 0) {
+        this.messagesService.showStatus(
           this.contactsStatus,
           Msgs.SAVED_CONTACTS,
-          Msgs.SAVE_CONTACTS_FAILED,
-          Const.STD_DELAY
+          Msgs.SAVE_CONTACTS_FAILED
         );
-        this.clearOpStatus('', Const.STD_DELAY * 2);
       }
+      this.messagesService.clearStatus();
       this.submitted = false;
       if (this.editMode) {
         this.populateForm(Collections.Clients, 'client_id', this.clientId);
@@ -145,6 +147,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     let returnData;
     let result = Const.SUCCESS;
     for (const contactFormData of contactsFormData) {
+      contactFormData.client_id = this.clientId;
       try {
         returnData = await this.dataService.saveDocument(contactFormData, collection);
         if (!returnData.insertedId) {
@@ -233,12 +236,17 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     this.populateContactsData();
   }
 
-  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
+    private messagesService: MessagesService
+  ) {
     super();
   }
 
   ngOnInit(): void {
-    this.clientId = Date.now();
+    this.clientId = 0;
     this.editMode = false;
     this.initialContactsCount = 0;
 
@@ -263,6 +271,6 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.clearOpStatus('');
+    this.messagesService.clearStatus();
   }
 }

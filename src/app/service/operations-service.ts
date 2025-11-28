@@ -7,28 +7,14 @@ import { DataService } from './data-service';
   providedIn: 'root',
 })
 export class OperationsService {
-  private _status: WritableSignal<OperationStatus> = signal({
-    status: '',
-    success: '',
-    failure: '',
-  });
+  private _status: WritableSignal<string> = signal('');
 
-  readonly operationStatus: Signal<OperationStatus> = this._status.asReadonly();
+  readonly operationStatus: Signal<string> = this._status.asReadonly();
 
   dataService = inject(DataService);
 
-  private _setStatus(newStatus: OperationStatus): void {
-    this._status.update(() => newStatus);
-  }
-
-  public setStatus(newStatus: OperationStatus, delay?: number): void {
-    if (delay) {
-      setTimeout(() => {
-        this._setStatus(newStatus);
-      }, delay);
-    } else {
-      this._setStatus(newStatus);
-    }
+  public showStatus(status: string) {
+    this._status.update(() => status);
   }
 
   async saveDocument(data: any, collectionName: string, id?: number, field?: string) {

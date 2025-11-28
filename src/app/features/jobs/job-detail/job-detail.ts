@@ -19,13 +19,15 @@ import {
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/messages';
+import * as Msgs from '../../../shared/strings';
 import { OperationsService } from '../../../service/operations-service';
 import { Collections } from '../../../shared/enums/collections';
+import { MessagesService } from '../../../service/messages-service';
 
 @Component({
   selector: 'app-job-detail',
   imports: [AsyncPipe, PageHeader, RouterLink, Card, NgxDatatableModule, ContactsTable, Buttonbar],
+  providers: [MessagesService],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.scss',
   standalone: true,
@@ -79,15 +81,6 @@ export class JobDetail implements OnInit, OnDestroy {
     this.dataService.load('jobs').subscribe((jobs) => this.dataService.jobs$.next(jobs));
   }
 
-  showOpStatus(status: string, success: string, failure: string, delay?: number) {
-    this.operationsService.setStatus({ status, success, failure }, delay);
-  }
-
-  clearOpStatus(status: string, desiredDelay?: number) {
-    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
-    this.showOpStatus('', '', '', delay);
-  }
-
   async onClickDelete() {
     this.deleteStatus = await this.operationsService.deleteDocument(
       Collections.Jobs,
@@ -97,16 +90,11 @@ export class JobDetail implements OnInit, OnDestroy {
     this.clientStatus = await this.updateClient();
     this.siteStatus = await this.updateSite();
     this.artStatus = await this.updateArt();
-    this.showOpStatus(this.deleteStatus, Msgs.DELETED_JOB, Msgs.DELETE_JOB_FAILED);
-    this.showOpStatus(
-      this.clientStatus,
-      Msgs.SAVED_CLIENT,
-      Msgs.SAVE_CLIENT_FAILED,
-      Const.STD_DELAY
-    );
-    this.showOpStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED, Const.STD_DELAY * 2);
-    this.showOpStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED, Const.STD_DELAY * 3);
-    this.clearOpStatus(this.artStatus, Const.STD_DELAY * 4);
+    this.messagesService.showStatus(this.deleteStatus, Msgs.DELETED_JOB, Msgs.DELETE_JOB_FAILED);
+    this.messagesService.showStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED);
+    this.messagesService.showStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED);
+    this.messagesService.showStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
+    this.messagesService.clearStatus();
     this.reloadFromDb();
   }
 
@@ -197,7 +185,8 @@ export class JobDetail implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private dataService: DataService,
     public util: Util,
-    private operationsService: OperationsService
+    private operationsService: OperationsService,
+    private messagesService: MessagesService
   ) {
     combineLatest({
       clients: this.dataService.clients$,
@@ -252,6 +241,6 @@ export class JobDetail implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.clearOpStatus('');
+    this.messagesService.clearStatus();
   }
 }

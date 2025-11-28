@@ -12,7 +12,7 @@ import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/messages';
+import * as Msgs from '../../../shared/strings';
 import {
   ActionButton,
   ActionLink,
@@ -20,10 +20,12 @@ import {
   HeaderActions,
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
+import { MessagesService } from '../../../service/messages-service';
 
 @Component({
   selector: 'app-client-detail',
   imports: [AsyncPipe, PageHeader, RouterLink, NgxDatatableModule, ContactsTable, Buttonbar],
+  providers: [MessagesService],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
   standalone: true,
@@ -33,7 +35,6 @@ export class ClientDetail implements OnInit, OnDestroy {
 
   goToEditClient = () => this.router.navigate(['/clients', this.clientId, 'edit']);
   goToClientList = () => this.router.navigate(['/clients', 'list']);
-
   clientListLink = new ActionLink(
     'clientListLink',
     'Clients',
@@ -80,15 +81,6 @@ export class ClientDetail implements OnInit, OnDestroy {
     this.dataService.load('sites').subscribe((sites) => this.dataService.sites$.next(sites));
   }
 
-  showOpStatus(status: string, success: string, failure: string, delay?: number) {
-    this.operationsService.setStatus({ status, success, failure }, delay);
-  }
-
-  clearOpStatus(status: string, desiredDelay?: number) {
-    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
-    this.showOpStatus('', '', '', delay);
-  }
-
   async onClickDelete() {
     this.clientStatus = await this.operationsService.deleteDocument(
       Collections.Clients,
@@ -105,20 +97,18 @@ export class ClientDetail implements OnInit, OnDestroy {
       'client_id',
       this.clientId
     );
-    this.showOpStatus(this.clientStatus, Msgs.DELETED_CLIENT, Msgs.DELETE_CLIENT_FAILED);
-    this.showOpStatus(
+    this.messagesService.showStatus(
+      this.clientStatus,
+      Msgs.DELETED_CLIENT,
+      Msgs.DELETE_CLIENT_FAILED
+    );
+    this.messagesService.showStatus(
       this.contactsStatus,
       Msgs.DELETED_CONTACTS,
-      Msgs.DELETE_CONTACTS_FAILED,
-      Const.STD_DELAY
+      Msgs.DELETE_CONTACTS_FAILED
     );
-    this.showOpStatus(
-      this.sitesStatus,
-      Msgs.DELETED_SITES,
-      Msgs.DELETE_SITES_FAILED,
-      Const.STD_DELAY * 2
-    );
-    this.clearOpStatus(this.contactsStatus, Const.STD_DELAY * 3);
+    this.messagesService.showStatus(this.sitesStatus, Msgs.DELETED_SITES, Msgs.DELETE_SITES_FAILED);
+    this.messagesService.clearStatus();
     this.reloadFromDb();
   }
 
@@ -136,7 +126,8 @@ export class ClientDetail implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private dataService: DataService,
-    private operationsService: OperationsService
+    private operationsService: OperationsService,
+    private messagesService: MessagesService
   ) {
     combineLatest({
       clients: this.dataService.clients$,
@@ -193,6 +184,6 @@ export class ClientDetail implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.clearOpStatus('');
+    this.messagesService.clearStatus();
   }
 }

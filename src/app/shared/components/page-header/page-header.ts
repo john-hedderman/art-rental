@@ -24,7 +24,7 @@ export class PageHeader {
   readonly OP_SUCCESS = Constants.SUCCESS;
   readonly OP_FAILURE = Constants.FAILURE;
 
-  operationStatus: Signal<OperationStatus>;
+  operationStatus: Signal<string>;
 
   constructor(private operationsService: OperationsService) {
     this.operationStatus = computed(() => this.operationsService.operationStatus());

@@ -9,22 +9,23 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/messages';
+import * as Msgs from '../../../shared/strings';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
+import { MessagesService } from '../../../service/messages-service';
 
 @Component({
   selector: 'app-add-job',
   imports: [PageHeader, ReactiveFormsModule, AsyncPipe, RouterLink, Buttonbar],
+  providers: [MessagesService],
   templateUrl: './add-job.html',
   styleUrl: './add-job.scss',
   standalone: true,
 })
 export class AddJob extends AddBase implements OnInit, OnDestroy {
   goToJobList = () => this.router.navigate(['/jobs', 'list']);
-
   jobListLink = new ActionLink('jobListLink', 'Jobs', '/jobs/list', '', this.goToJobList);
   headerData: HeaderActions = new HeaderActions('job-add', 'Add Job', [], [this.jobListLink.data]);
   footerData = new FooterActions([new SaveButton(), new CancelButton()]);
@@ -65,21 +66,15 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       this.clientStatus = await this.updateClient(this.jobForm.value);
       this.artStatus = await this.updateArt(this.jobForm.value);
       this.siteStatus = await this.updateSite(this.jobForm.value);
-      this.showOpStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
-      this.showOpStatus(
+      this.messagesService.showStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
+      this.messagesService.showStatus(
         this.clientStatus,
         Msgs.SAVED_CLIENT,
-        Msgs.SAVE_CLIENT_FAILED,
-        Const.STD_DELAY
+        Msgs.SAVE_CLIENT_FAILED
       );
-      this.showOpStatus(
-        this.siteStatus,
-        Msgs.SAVED_SITE,
-        Msgs.SAVE_SITE_FAILED,
-        Const.STD_DELAY * 2
-      );
-      this.showOpStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED, Const.STD_DELAY * 3);
-      this.clearOpStatus(this.artStatus, Const.STD_DELAY * 4);
+      this.messagesService.showStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED);
+      this.messagesService.showStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
+      this.messagesService.clearStatus();
       this.submitted = false;
       this.resetForm();
 
@@ -298,7 +293,12 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
 
   populateData(): void {}
 
-  constructor(private router: Router, private fb: FormBuilder, private route: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private messagesService: MessagesService
+  ) {
     super();
     combineLatest({
       clients: this.dataService.clients$,
@@ -332,6 +332,6 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.clearOpStatus('');
+    this.messagesService.clearStatus();
   }
 }

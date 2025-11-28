@@ -10,14 +10,16 @@ import { Art, Artist, Job } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/messages';
+import * as Msgs from '../../../shared/strings';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
+import { MessagesService } from '../../../service/messages-service';
 
 @Component({
   selector: 'app-add-art',
   imports: [PageHeader, ReactiveFormsModule, AsyncPipe, Buttonbar],
+  providers: [MessagesService],
   templateUrl: './add-art.html',
   styleUrl: './add-art.scss',
   standalone: true,
@@ -26,7 +28,6 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
   @ViewChild('fileNameTBD') fileNameTBD: ElementRef | undefined;
 
   goToArtList = () => this.router.navigate(['/art', 'list']);
-
   artListLink = new ActionLink('artListLink', 'Art', '/art/list', '', this.goToArtList);
   headerData = new HeaderActions('art-add', 'Add Art', [], [this.artListLink.data]);
   footerData = new FooterActions([new SaveButton(), new CancelButton()]);
@@ -64,8 +65,8 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
         id,
         field
       );
-      this.showOpStatus(this.saveStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
-      this.clearOpStatus(this.saveStatus, Const.STD_DELAY);
+      this.messagesService.showStatus(this.saveStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
+      this.messagesService.clearStatus();
       this.submitted = false;
       if (this.editMode) {
         this.populateForm(Collections.Art, 'art_id', this.artId);
@@ -112,7 +113,12 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     this.artForm.get('tags')?.setValue(this.dbData.tags);
   }
 
-  constructor(private router: Router, private fb: FormBuilder, private route: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private messagesService: MessagesService
+  ) {
     super();
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {
@@ -169,6 +175,6 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.clearOpStatus('');
+    this.messagesService.clearStatus();
   }
 }

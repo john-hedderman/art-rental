@@ -9,22 +9,23 @@ import { Client, Contact } from '../../../model/models';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/messages';
+import * as Msgs from '../../../shared/strings';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
+import { MessagesService } from '../../../service/messages-service';
 
 @Component({
   selector: 'app-add-contact',
   imports: [PageHeader, ReactiveFormsModule, Buttonbar, AsyncPipe],
+  providers: [MessagesService],
   templateUrl: './add-contact.html',
   styleUrl: './add-contact.scss',
   standalone: true,
 })
 export class AddContact extends AddBase implements OnInit, OnDestroy {
   goToContactList = () => this.router.navigate(['/contacts', 'list']);
-
   contactListLink = new ActionLink(
     'contactListLink',
     'Contacts',
@@ -65,14 +66,17 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
         this.oldClientStatus = await this.updateOldClient(this.dbData, this.contactForm.value);
       }
       this.clientStatus = await this.updateClient(this.contactForm.value);
-      this.showOpStatus(this.contactStatus, Msgs.SAVED_CONTACT, Msgs.SAVE_CONTACT_FAILED);
-      this.showOpStatus(
+      this.messagesService.showStatus(
+        this.contactStatus,
+        Msgs.SAVED_CONTACT,
+        Msgs.SAVE_CONTACT_FAILED
+      );
+      this.messagesService.showStatus(
         this.clientStatus,
         Msgs.SAVED_CLIENT,
-        Msgs.SAVE_CLIENT_FAILED,
-        Const.STD_DELAY
+        Msgs.SAVE_CLIENT_FAILED
       );
-      this.clearOpStatus(this.contactStatus, Const.STD_DELAY * 2);
+      this.messagesService.clearStatus();
       this.submitted = false;
       if (this.editMode) {
         this.populateForm(Collections.Contacts, 'contact_id', this.contactId);
@@ -182,7 +186,12 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     this.contactForm.get('client_id')?.setValue(this.dbData.client_id);
   }
 
-  constructor(private router: Router, private fb: FormBuilder, private route: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private messagesService: MessagesService
+  ) {
     super();
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {
@@ -217,6 +226,6 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.clearOpStatus('');
+    this.messagesService.clearStatus();
   }
 }

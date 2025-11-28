@@ -15,13 +15,15 @@ import { DeleteButton } from '../../../shared/components/buttons/delete-button/d
 import { DataService } from '../../../service/data-service';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/messages';
+import * as Msgs from '../../../shared/strings';
 import { OperationsService } from '../../../service/operations-service';
 import { Collections } from '../../../shared/enums/collections';
+import { MessagesService } from '../../../service/messages-service';
 
 @Component({
   selector: 'app-site-detail',
   imports: [PageHeader, AsyncPipe, Buttonbar, RouterLink],
+  providers: [MessagesService],
   templateUrl: './site-detail.html',
   styleUrl: './site-detail.scss',
   standalone: true,
@@ -70,15 +72,6 @@ export class SiteDetail implements OnDestroy {
     this.dataService.load('clients').subscribe((data) => this.dataService.clients$.next(data));
   }
 
-  showOpStatus(status: string, success: string, failure: string, delay?: number) {
-    this.operationsService.setStatus({ status, success, failure }, delay);
-  }
-
-  clearOpStatus(status: string, desiredDelay?: number) {
-    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
-    this.showOpStatus('', '', '', delay);
-  }
-
   async onClickDelete() {
     this.deleteStatus = await this.operationsService.deleteDocument(
       Collections.Sites,
@@ -87,15 +80,10 @@ export class SiteDetail implements OnDestroy {
     );
     this.jobStatus = await this.updateJob();
     this.clientStatus = await this.updateClient();
-    this.showOpStatus(this.deleteStatus, Msgs.DELETED_SITE, Msgs.DELETE_SITE_FAILED);
-    this.showOpStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED, Const.STD_DELAY);
-    this.showOpStatus(
-      this.clientStatus,
-      Msgs.SAVED_CLIENT,
-      Msgs.SAVE_CLIENT_FAILED,
-      Const.STD_DELAY * 2
-    );
-    this.clearOpStatus(this.deleteStatus, Const.STD_DELAY * 3);
+    this.messagesService.showStatus(this.deleteStatus, Msgs.DELETED_SITE, Msgs.DELETE_SITE_FAILED);
+    this.messagesService.showStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
+    this.messagesService.showStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED);
+    this.messagesService.clearStatus();
     this.reloadFromDb();
   }
 
@@ -160,7 +148,8 @@ export class SiteDetail implements OnDestroy {
     private router: Router,
     private dataService: DataService,
     private route: ActivatedRoute,
-    private operationsService: OperationsService
+    private operationsService: OperationsService,
+    private messagesService: MessagesService
   ) {
     combineLatest({
       sites: this.dataService.sites$,
@@ -194,6 +183,6 @@ export class SiteDetail implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.clearOpStatus('');
+    this.messagesService.clearStatus();
   }
 }

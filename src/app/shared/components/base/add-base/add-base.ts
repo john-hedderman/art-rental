@@ -21,15 +21,6 @@ export abstract class AddBase {
 
   abstract populateData(): void;
 
-  showOpStatus(status: string, success: string, failure: string, delay?: number) {
-    this.operationsService.setStatus({ status, success, failure }, delay);
-  }
-
-  clearOpStatus(status: string, desiredDelay?: number) {
-    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
-    this.showOpStatus('', '', '', delay);
-  }
-
   reloadFromDb(collections: string[]) {
     for (const coll of collections) {
       if (coll === 'art') {

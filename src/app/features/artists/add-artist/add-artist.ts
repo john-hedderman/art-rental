@@ -7,22 +7,23 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/messages';
+import * as Msgs from '../../../shared/strings';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
+import { MessagesService } from '../../../service/messages-service';
 
 @Component({
   selector: 'app-add-artist',
   imports: [PageHeader, ReactiveFormsModule, Buttonbar],
+  providers: [MessagesService],
   templateUrl: './add-artist.html',
   styleUrl: './add-artist.scss',
   standalone: true,
 })
 export class AddArtist extends AddBase implements OnInit, OnDestroy {
   goToArtistList = () => this.router.navigate(['/artists', 'list']);
-
   artistListLink = new ActionLink(
     'artistListLink',
     'Artists',
@@ -60,8 +61,8 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
         id,
         field
       );
-      this.showOpStatus(this.saveStatus, Msgs.SAVED_ARTIST, Msgs.SAVE_ARTIST_FAILED);
-      this.clearOpStatus(this.saveStatus, Const.STD_DELAY);
+      this.messagesService.showStatus(this.saveStatus, Msgs.SAVED_ARTIST, Msgs.SAVE_ARTIST_FAILED);
+      this.messagesService.clearStatus();
       this.submitted = false;
       if (this.editMode) {
         this.populateForm(Collections.Artists, 'artist_id', this.artistId);
@@ -83,7 +84,12 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
     this.artistForm.get('tags')?.setValue(this.dbData.tags);
   }
 
-  constructor(private router: Router, private fb: FormBuilder, private route: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private messagesService: MessagesService
+  ) {
     super();
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {
@@ -111,6 +117,6 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.clearOpStatus('');
+    this.messagesService.clearStatus();
   }
 }

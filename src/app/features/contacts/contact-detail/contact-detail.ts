@@ -10,7 +10,7 @@ import { Buttonbar } from '../../../shared/components/buttonbar/buttonbar';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/messages';
+import * as Msgs from '../../../shared/strings';
 import {
   ActionButton,
   ActionLink,
@@ -18,10 +18,12 @@ import {
   HeaderActions,
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
+import { MessagesService } from '../../../service/messages-service';
 
 @Component({
   selector: 'app-contact-detail',
   imports: [PageHeader, AsyncPipe, Buttonbar],
+  providers: [MessagesService],
   templateUrl: './contact-detail.html',
   styleUrl: './contact-detail.scss',
   standalone: true,
@@ -69,15 +71,6 @@ export class ContactDetail implements OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  showOpStatus(status: string, success: string, failure: string, delay?: number) {
-    this.operationsService.setStatus({ status, success, failure }, delay);
-  }
-
-  clearOpStatus(status: string, desiredDelay?: number) {
-    const delay = status === Const.SUCCESS ? desiredDelay : Const.CLEAR_ERROR_DELAY;
-    this.showOpStatus('', '', '', delay);
-  }
-
   reloadFromDb() {
     this.dataService
       .load('contacts')
@@ -91,14 +84,13 @@ export class ContactDetail implements OnDestroy {
       this.contactId
     );
     this.clientStatus = await this.updateClient();
-    this.showOpStatus(this.deleteStatus, Msgs.DELETED_CONTACT, Msgs.DELETE_CONTACT_FAILED);
-    this.showOpStatus(
-      this.clientStatus,
-      Msgs.SAVED_CLIENT,
-      Msgs.SAVE_CLIENT_FAILED,
-      Const.STD_DELAY
+    this.messagesService.showStatus(
+      this.deleteStatus,
+      Msgs.DELETED_CONTACT,
+      Msgs.DELETE_CONTACT_FAILED
     );
-    this.clearOpStatus(this.clientStatus, Const.STD_DELAY * 2);
+    this.messagesService.showStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED);
+    this.messagesService.clearStatus();
     if (this.deleteStatus === Const.SUCCESS || this.clientStatus === Const.SUCCESS) {
       this.reloadFromDb();
     }
@@ -139,7 +131,8 @@ export class ContactDetail implements OnDestroy {
     private router: Router,
     private dataService: DataService,
     private route: ActivatedRoute,
-    private operationsService: OperationsService
+    private operationsService: OperationsService,
+    private messagesService: MessagesService
   ) {
     combineLatest({
       contacts: this.dataService.contacts$,
@@ -164,6 +157,6 @@ export class ContactDetail implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.clearOpStatus('');
+    this.messagesService.clearStatus();
   }
 }

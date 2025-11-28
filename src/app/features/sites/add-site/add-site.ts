@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
@@ -13,16 +13,18 @@ import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/messages';
+import * as Msgs from '../../../shared/strings';
+import { MessagesService } from '../../../service/messages-service';
 
 @Component({
   selector: 'app-add-site',
   imports: [PageHeader, ReactiveFormsModule, AsyncPipe, RouterLink, Buttonbar],
+  providers: [MessagesService],
   templateUrl: './add-site.html',
   styleUrl: './add-site.scss',
   standalone: true,
 })
-export class AddSite extends AddBase implements OnInit {
+export class AddSite extends AddBase implements OnInit, OnDestroy {
   goToSiteList = () => this.router.navigate(['/sites', 'list']);
   siteListLink = new ActionLink('siteListLink', 'Sites', '/sites/list', '', this.goToSiteList);
   headerData = new HeaderActions('site-add', 'Add Site', [], [this.siteListLink.data]);
@@ -58,14 +60,13 @@ export class AddSite extends AddBase implements OnInit {
       this.siteForm.value.job_id = Const.NO_JOB;
       this.siteStatus = await this.save(this.siteForm.value);
       this.clientStatus = await this.updateClient(this.siteForm.value);
-      this.showOpStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED);
-      this.showOpStatus(
+      this.messagesService.showStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED);
+      this.messagesService.showStatus(
         this.clientStatus,
         Msgs.SAVED_CLIENT,
-        Msgs.SAVE_CLIENT_FAILED,
-        Const.STD_DELAY
+        Msgs.SAVE_CLIENT_FAILED
       );
-      this.clearOpStatus(this.siteStatus, Const.STD_DELAY * 2);
+      this.messagesService.clearStatus();
       this.submitted = false;
       this.resetForm();
       this.reloadFromDb([Collections.Sites, Collections.Clients]);
@@ -147,7 +148,12 @@ export class AddSite extends AddBase implements OnInit {
 
   populateData(): void {}
 
-  constructor(private router: Router, private fb: FormBuilder, private route: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private messagesService: MessagesService
+  ) {
     super();
     combineLatest({
       clients: this.dataService.clients$,
@@ -174,5 +180,9 @@ export class AddSite extends AddBase implements OnInit {
       client_id: [''],
       job_id: [{ value: '', disabled: true }],
     });
+  }
+
+  ngOnDestroy(): void {
+    this.messagesService.clearStatus();
   }
 }
