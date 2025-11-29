@@ -26,9 +26,9 @@ export class JobList implements OnInit {
   @ViewChild('clientNameHeaderTemplate', { static: true })
   clientNameHeaderTemplate!: TemplateRef<any>;
   @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
-  @ViewChild('jobAddressHeaderTemplate', { static: true })
-  jobAddressHeaderTemplate!: TemplateRef<any>;
-  @ViewChild('jobAddressTemplate', { static: true }) jobAddressTemplate!: TemplateRef<any>;
+  @ViewChild('siteAddressHeaderTemplate', { static: true })
+  siteAddressHeaderTemplate!: TemplateRef<any>;
+  @ViewChild('siteAddressTemplate', { static: true }) siteAddressTemplate!: TemplateRef<any>;
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
@@ -111,20 +111,20 @@ export class JobList implements OnInit {
         canAutoResize: false,
         cellTemplate: this.arrowTemplate,
       },
-      { width: 200, prop: 'job_number', name: 'Job Number' },
+      { width: 100, prop: 'job_number', name: 'Job Number' },
       {
-        width: 300,
+        width: 200,
         prop: '',
         name: 'Client',
         headerTemplate: this.clientNameHeaderTemplate,
         cellTemplate: this.clientNameTemplate,
       },
       {
-        width: 400,
+        width: 450,
         prop: '',
-        name: 'Address',
-        headerTemplate: this.jobAddressHeaderTemplate,
-        cellTemplate: this.jobAddressTemplate,
+        name: 'Site',
+        headerTemplate: this.siteAddressHeaderTemplate,
+        cellTemplate: this.siteAddressTemplate,
         comparator: this.addressComparator,
       },
     ];

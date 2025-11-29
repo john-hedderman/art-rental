@@ -51,15 +51,15 @@
   </span>
 </ng-template>
 
-<ng-template #jobAddressHeaderTemplate let-column="column">
+<ng-template #siteAddressHeaderTemplate let-column="column">
   <span class="mobile-hidden">{{ column.name }}</span>
 </ng-template>
 
-<ng-template #jobAddressTemplate let-row="row">
+<ng-template #siteAddressTemplate let-row="row">
   <span class="mobile-hidden">
-    @if (row.site && row.site.city && row.site.state && row.site.zip_code) {
-    {{ row.site.address1 }}, @if (row.site.address2) { {{ row.site.address2 }}, }
-    {{ row.site.city }}, {{ row.site.state }}
+    @if (row.site) {
+    {{ row.site.name }}, {{ row.site.address1 }}, @if (row.site.address2) { {{ row.site.address2 }},
+    } {{ row.site.city }}, {{ row.site.state }}
     {{ row.site.zip_code }}
     }
   </span>
