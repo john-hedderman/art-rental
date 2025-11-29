@@ -21,8 +21,6 @@ export class DataService {
     this.load('jobs').subscribe((jobs) => this.jobs$.next(jobs));
     this.load('contacts').subscribe((contacts) => this.contacts$.next(contacts));
     this.load('sites').subscribe((sites) => this.sites$.next(sites));
-
-    this.load('contacts').subscribe((contacts) => this.contacts$.next(contacts));
   }
 
   load(dataType: 'art'): Observable<Art[]>;
@@ -31,7 +29,6 @@ export class DataService {
   load(dataType: 'jobs'): Observable<Job[]>;
   load(dataType: 'contacts'): Observable<Contact[]>;
   load(dataType: 'sites'): Observable<Site[]>;
-
   load(dataType: string): Observable<unknown[]> {
     // load data from a separate server
     // see project art-rental-server
