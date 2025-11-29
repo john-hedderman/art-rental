@@ -200,17 +200,21 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       .subscribe(({ artists, jobs, clients, sites }) => {
         this.artists$ = of(artists);
         this.jobs = jobs;
-        const fullJobs = jobs.map((job) => {
-          const client = clients.find((client) => client.client_id === job.client_id);
-          if (client) {
-            return { ...job, client };
-          }
-          const site = sites.find((site) => site.site_id === job.site_id);
-          if (site) {
-            return { ...job, site };
-          }
-          return job;
-        });
+        const fullJobs = jobs
+          .map((job) => {
+            const client = clients.find((client) => client.client_id === job.client_id);
+            if (client) {
+              return { ...job, client };
+            }
+            return job;
+          })
+          .map((job) => {
+            const site = sites.find((site) => site.site_id === job.site_id);
+            if (site) {
+              return { ...job, site };
+            }
+            return job;
+          });
         this.jobs$ = of(fullJobs);
       });
   }
