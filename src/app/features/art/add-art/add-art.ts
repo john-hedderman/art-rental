@@ -82,9 +82,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       } else {
         this.artForm.reset();
       }
-      if (this.saveStatus === Const.SUCCESS) {
-        this.reloadFromDb([Collections.Art]);
-      }
+      this.dataService.reload();
     }
   }
 

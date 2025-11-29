@@ -77,15 +77,6 @@ export class JobDetail implements OnInit, OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  reloadFromDb(callback?: any) {
-    this.dataService.load('jobs').subscribe((jobs) => {
-      this.dataService.jobs$.next(jobs);
-      if (callback) {
-        callback();
-      }
-    });
-  }
-
   async onClickDelete() {
     this.deleteStatus = await this.operationsService.deleteDocument(
       Collections.Jobs,
@@ -100,7 +91,7 @@ export class JobDetail implements OnInit, OnDestroy {
     this.messagesService.showStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED);
     this.messagesService.showStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
     this.messagesService.clearStatus();
-    this.reloadFromDb(this.goToJobList);
+    this.dataService.reload(this.goToJobList);
   }
 
   async updateClient(): Promise<string> {

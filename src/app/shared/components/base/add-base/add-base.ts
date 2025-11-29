@@ -21,24 +21,6 @@ export abstract class AddBase {
 
   abstract populateData(): void;
 
-  reloadFromDb(collections: string[]) {
-    for (const coll of collections) {
-      if (coll === 'art') {
-        this.dataService.load(coll).subscribe((data) => this.dataService.art$.next(data));
-      } else if (coll === 'artists') {
-        this.dataService.load(coll).subscribe((data) => this.dataService.artists$.next(data));
-      } else if (coll === 'clients') {
-        this.dataService.load(coll).subscribe((data) => this.dataService.clients$.next(data));
-      } else if (coll === 'contacts') {
-        this.dataService.load(coll).subscribe((data) => this.dataService.contacts$.next(data));
-      } else if (coll === 'jobs') {
-        this.dataService.load(coll).subscribe((data) => this.dataService.jobs$.next(data));
-      } else if (coll === 'sites') {
-        this.dataService.load(coll).subscribe((data) => this.dataService.sites$.next(data));
-      }
-    }
-  }
-
   populateForm<T>(collection: string, recordId: string, id: number) {
     this.http
       .get<T[]>(`http://localhost:3000/data/${collection}/${id}?recordId=${recordId}`)

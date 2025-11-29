@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, ReplaySubject } from 'rxjs';
+import { combineLatest, Observable, ReplaySubject, take } from 'rxjs';
 import { Art, Artist, Client, Contact, Job, Site } from '../model/models';
 
 @Injectable({
@@ -36,6 +36,29 @@ export class DataService {
     // load data from a separate server
     // see project art-rental-server
     return this.http.get<unknown[]>(`http://localhost:3000/data/${dataType}`);
+  }
+
+  reload(callback?: any) {
+    combineLatest({
+      art: this.load('art'),
+      artists: this.load('artists'),
+      clients: this.load('clients'),
+      contacts: this.load('contacts'),
+      jobs: this.load('jobs'),
+      sites: this.load('sites'),
+    })
+      .pipe(take(1))
+      .subscribe(({ art, artists, clients, contacts, jobs, sites }) => {
+        this.art$.next(art);
+        this.artists$.next(artists);
+        this.clients$.next(clients);
+        this.contacts$.next(contacts);
+        this.jobs$.next(jobs);
+        this.sites$.next(sites);
+        if (callback) {
+          callback();
+        }
+      });
   }
 
   async saveDocument(

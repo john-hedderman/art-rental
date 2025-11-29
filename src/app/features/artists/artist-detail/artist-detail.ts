@@ -59,15 +59,6 @@ export class ArtistDetail implements OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  reloadFromDb(callback?: any) {
-    this.dataService.load('artists').subscribe((artists) => {
-      this.dataService.artists$.next(artists);
-      if (callback) {
-        callback();
-      }
-    });
-  }
-
   async onClickDelete() {
     this.deleteStatus = await this.operationsService.deleteDocument(
       Collections.Artists,
@@ -80,9 +71,7 @@ export class ArtistDetail implements OnDestroy {
       Msgs.DELETE_ARTIST_FAILED
     );
     this.messagesService.clearStatus();
-    if (this.deleteStatus === Const.SUCCESS) {
-      this.reloadFromDb(this.goToArtistList);
-    }
+    this.dataService.reload(this.goToArtistList);
   }
 
   getArtistId(): Observable<number> {

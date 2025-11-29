@@ -77,20 +77,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       this.messagesService.clearStatus();
       this.submitted = false;
       this.resetForm();
-
-      if (
-        this.jobStatus === Const.SUCCESS ||
-        this.clientStatus === Const.SUCCESS ||
-        this.artStatus === Const.SUCCESS ||
-        this.siteStatus === Const.SUCCESS
-      ) {
-        this.reloadFromDb([
-          Collections.Jobs,
-          Collections.Clients,
-          Collections.Art,
-          Collections.Sites,
-        ]);
-      }
+      this.dataService.reload();
     }
   }
 

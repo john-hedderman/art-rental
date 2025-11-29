@@ -71,15 +71,6 @@ export class ContactDetail implements OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  reloadFromDb(callback?: any) {
-    this.dataService.load('contacts').subscribe((contacts) => {
-      this.dataService.contacts$.next(contacts);
-      if (callback) {
-        callback();
-      }
-    });
-  }
-
   async onClickDelete() {
     this.deleteStatus = await this.operationsService.deleteDocument(
       Collections.Contacts,
@@ -94,9 +85,7 @@ export class ContactDetail implements OnDestroy {
     );
     this.messagesService.showStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED);
     this.messagesService.clearStatus();
-    if (this.deleteStatus === Const.SUCCESS || this.clientStatus === Const.SUCCESS) {
-      this.reloadFromDb(this.goToContactList);
-    }
+    this.dataService.reload(this.goToContactList);
   }
 
   async updateClient(): Promise<string> {

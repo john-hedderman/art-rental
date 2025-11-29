@@ -83,9 +83,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
       } else {
         this.contactForm.reset();
       }
-      if (this.contactStatus === Const.SUCCESS) {
-        this.reloadFromDb([Collections.Contacts]);
-      }
+      this.dataService.reload();
     }
   }
 
