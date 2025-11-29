@@ -35,13 +35,11 @@
 </div>
 
 <div
-  class="modal modal-first"
+  class="modal"
   id="confirmModal"
   tabindex="-1"
   aria-labelledby="confirmModalLabel"
   aria-hidden="true"
-  data-bs-backdrop="static"
-  data-bs-keyboard="false"
 >
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -54,54 +52,12 @@
         <button
           type="button"
           class="btn btn-danger"
-          data-bs-dismiss="modal modal-first"
+          data-bs-dismiss="modal"
           (click)="onClickDelete()"
-          data-bs-toggle="modal"
-          data-bs-target="#resultModal"
         >
           Yes, delete
         </button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div
-  class="modal modal-second"
-  id="resultModal"
-  tabindex="-1"
-  aria-labelledby="resultModalLabel"
-  aria-hidden="true"
-  data-bs-backdrop="static"
-  data-bs-keyboard="false"
->
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="confirmModalLabel">Delete</h1>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-          (click)="goToContactList()"
-        ></button>
-      </div>
-      @if (deleteStatus === OP_SUCCESS) {
-      <div class="modal-body">The contact was successfully deleted.</div>
-      } @else {
-      <div class="modal-body">There was an error, and the contact was not deleted.</div>
-      }
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-primary"
-          data-bs-dismiss="modal"
-          (click)="goToContactList()"
-        >
-          Close
-        </button>
       </div>
     </div>
   </div>

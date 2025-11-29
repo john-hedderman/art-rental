@@ -57,14 +57,18 @@
   <app-page-footer [footerData]="footerData"></app-page-footer>
 </div>
 
+<ng-template #nameTemplate let-row="row">
+  @if (row.first_name && row.last_name) {
+  {{ row.first_name }} {{ row.last_name }}
+  }
+</ng-template>
+
 <div
-  class="modal modal-first"
+  class="modal"
   id="confirmModal"
   tabindex="-1"
   aria-labelledby="confirmModalLabel"
   aria-hidden="true"
-  data-bs-backdrop="static"
-  data-bs-keyboard="false"
 >
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -77,10 +81,8 @@
         <button
           type="button"
           class="btn btn-danger"
-          data-bs-dismiss="modal modal-first"
+          data-bs-dismiss="modal"
           (click)="onClickDelete()"
-          data-bs-toggle="modal"
-          data-bs-target="#resultModal"
         >
           Yes, delete
         </button>
@@ -89,53 +91,3 @@
     </div>
   </div>
 </div>
-
-<div
-  class="modal modal-second"
-  id="resultModal"
-  tabindex="-1"
-  aria-labelledby="resultModalLabel"
-  aria-hidden="true"
-  data-bs-backdrop="static"
-  data-bs-keyboard="false"
->
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="confirmModalLabel">Delete</h1>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-          (click)="goToClientList()"
-        ></button>
-      </div>
-      @if (clientStatus === '' || contactsStatus === '') {
-      <div class="modal-body">&nbsp;</div>
-      } @else if (clientStatus === OP_SUCCESS && contactsStatus === OP_SUCCESS) {
-      <div class="modal-body">The client was successfully deleted.</div>
-      } @else if (clientStatus === OP_FAILURE) {
-      <div class="modal-body">There was an error, and the client was not deleted.</div>
-      } @else {
-      <div class="modal-body">There was an error, and the contacts were not deleted.</div>
-      }
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-primary"
-          data-bs-dismiss="modal"
-          (click)="goToClientList()"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<ng-template #nameTemplate let-row="row">
-  @if (row.first_name && row.last_name) {
-  {{ row.first_name }} {{ row.last_name }}
-  }
-</ng-template>

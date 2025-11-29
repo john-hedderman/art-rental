@@ -75,10 +75,21 @@ export class ClientDetail implements OnInit, OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  reloadFromDb() {
-    this.dataService.load('clients').subscribe((data) => this.dataService.clients$.next(data));
-    this.dataService.load('contacts').subscribe((data) => this.dataService.contacts$.next(data));
-    this.dataService.load('sites').subscribe((sites) => this.dataService.sites$.next(sites));
+  reloadFromDb(callback?: any) {
+    combineLatest({
+      clients: this.dataService.load('clients'),
+      contacts: this.dataService.load('contacts'),
+      sites: this.dataService.load('sites'),
+    })
+      .pipe(take(1))
+      .subscribe(({ clients, contacts, sites }) => {
+        this.dataService.clients$.next(clients);
+        this.dataService.contacts$.next(contacts);
+        this.dataService.sites$.next(sites);
+        if (callback) {
+          callback();
+        }
+      });
   }
 
   async onClickDelete() {
@@ -109,7 +120,7 @@ export class ClientDetail implements OnInit, OnDestroy {
     );
     this.messagesService.showStatus(this.sitesStatus, Msgs.DELETED_SITES, Msgs.DELETE_SITES_FAILED);
     this.messagesService.clearStatus();
-    this.reloadFromDb();
+    this.reloadFromDb(this.goToClientList);
   }
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {

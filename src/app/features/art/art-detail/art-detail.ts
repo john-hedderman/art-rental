@@ -53,6 +53,15 @@ export class ArtDetail implements OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
+  reloadFromDb(callback?: any) {
+    this.dataService.load('art').subscribe((art) => {
+      this.dataService.art$.next(art);
+      if (callback) {
+        callback();
+      }
+    });
+  }
+
   async onClickDelete() {
     this.deleteStatus = await this.operationsService.deleteDocument(
       Collections.Art,
@@ -62,7 +71,7 @@ export class ArtDetail implements OnDestroy {
     this.messagesService.showStatus(this.deleteStatus, Msgs.DELETED_ART, Msgs.DELETE_ART_FAILED);
     this.messagesService.clearStatus();
     if (this.deleteStatus === Const.SUCCESS) {
-      this.dataService.load('art').subscribe((art) => this.dataService.art$.next(art));
+      this.reloadFromDb(this.goToArtList);
     }
   }
 

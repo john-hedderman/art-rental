@@ -59,10 +59,13 @@ export class ArtistDetail implements OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  reloadFromDb() {
-    this.dataService
-      .load('artists')
-      .subscribe((artists) => this.dataService.artists$.next(artists));
+  reloadFromDb(callback?: any) {
+    this.dataService.load('artists').subscribe((artists) => {
+      this.dataService.artists$.next(artists);
+      if (callback) {
+        callback();
+      }
+    });
   }
 
   async onClickDelete() {
@@ -78,7 +81,7 @@ export class ArtistDetail implements OnDestroy {
     );
     this.messagesService.clearStatus();
     if (this.deleteStatus === Const.SUCCESS) {
-      this.reloadFromDb();
+      this.reloadFromDb(this.goToArtistList);
     }
   }
 

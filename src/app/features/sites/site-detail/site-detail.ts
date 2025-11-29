@@ -66,7 +66,22 @@ export class SiteDetail implements OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  reloadFromDb() {
+  reloadFromDb(callback?: any) {
+    combineLatest({
+      sites: this.dataService.load('sites'),
+      jobs: this.dataService.load('jobs'),
+      clients: this.dataService.load('clients'),
+    })
+      .pipe(take(1))
+      .subscribe(({ sites, jobs, clients }) => {
+        this.dataService.sites$.next(sites);
+        this.dataService.jobs$.next(jobs);
+        this.dataService.clients$.next(clients);
+        if (callback) {
+          callback();
+        }
+      });
+
     this.dataService.load('sites').subscribe((data) => this.dataService.sites$.next(data));
     this.dataService.load('jobs').subscribe((data) => this.dataService.jobs$.next(data));
     this.dataService.load('clients').subscribe((data) => this.dataService.clients$.next(data));
@@ -84,7 +99,7 @@ export class SiteDetail implements OnDestroy {
     this.messagesService.showStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
     this.messagesService.showStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED);
     this.messagesService.clearStatus();
-    this.reloadFromDb();
+    this.reloadFromDb(this.goToSiteList);
   }
 
   async updateJob(): Promise<string> {
