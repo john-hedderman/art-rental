@@ -49,29 +49,25 @@ export class ArtList {
     })
       .pipe(take(1))
       .subscribe(({ artwork, jobs, clients, artists, sites }) => {
-        this.artwork = artwork
-          .map((art) => {
-            let job = jobs.find((job) => job.job_id === art.job_id);
-            if (job) {
-              const client = clients.find((client) => client.client_id === job?.client_id);
-              if (client) {
-                job = { ...job, client };
-              }
-              const site = sites.find((site) => site.site_id === job?.site_id);
-              if (site) {
-                job = { ...job, site };
-              }
-              return { ...art, job };
+        this.artwork = artwork.map((art) => {
+          let job = jobs.find((job) => job.job_id === art.job_id);
+          if (job) {
+            const client = clients.find((client) => client.client_id === job?.client_id);
+            if (client) {
+              job = { ...job, client };
             }
-            return art;
-          })
-          .map((art) => {
-            const artist = artists.find((artist) => artist.artist_id === art.artist_id);
-            if (artist) {
-              return { ...art, artist };
+            const site = sites.find((site) => site.site_id === job?.site_id);
+            if (site) {
+              job = { ...job, site };
             }
-            return art;
-          });
+            return { ...art, job };
+          }
+          const artist = artists.find((artist) => artist.artist_id === art.artist_id);
+          if (artist) {
+            return { ...art, artist };
+          }
+          return art;
+        });
       });
   }
 }

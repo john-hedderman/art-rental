@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, take } from 'rxjs';
 
-import { Art } from '../../../model/models';
+import { Art, Job } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
@@ -47,9 +47,13 @@ export class ArtDetail implements OnDestroy {
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
   art: Art = {} as Art;
+  jobs: Job[] = [];
+
   artId = 0;
 
   deleteStatus = '';
+  jobStatus = '';
+
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
@@ -68,11 +72,35 @@ export class ArtDetail implements OnDestroy {
       'art_id',
       this.artId
     );
+    this.jobStatus = await this.updateJob();
     this.messagesService.showStatus(this.deleteStatus, Msgs.DELETED_ART, Msgs.DELETE_ART_FAILED);
+    this.messagesService.showStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
     this.messagesService.clearStatus();
     if (this.deleteStatus === Const.SUCCESS) {
       this.reloadFromDb(this.goToArtList);
     }
+  }
+
+  async updateJob(): Promise<string> {
+    const job = this.jobs.find((job) => job.job_id === this.art.job_id);
+    if (!job) {
+      console.error('Delete art error, could not find the job');
+      return Const.FAILURE;
+    }
+    const collection = Collections.Jobs;
+    let result = Const.SUCCESS;
+    try {
+      job.art_ids = job.art_ids.filter((art_id) => art_id !== this.artId);
+      delete (job as any)._id;
+      const returnData = await this.dataService.saveDocument(job, collection, job.job_id, 'job_id');
+      if (returnData.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Save art error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
   }
 
   getArtId(): Observable<number> {
@@ -97,6 +125,7 @@ export class ArtDetail implements OnDestroy {
       .pipe(take(1))
       .subscribe(({ artwork, artId, jobs, clients, artists, sites }) => {
         this.artId = artId;
+        this.jobs = jobs;
         let art = artwork.find((piece) => piece.art_id === artId);
         if (art) {
           let job = jobs.find((job) => job.job_id === art?.job_id);

@@ -36,9 +36,13 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
   submitted = false;
 
   saveStatus = '';
+  oldJobStatus = '';
+  jobStatus = '';
 
   artists$: Observable<Artist[]> | undefined;
   jobs$: Observable<Job[]> | undefined;
+
+  jobs: Job[] = [];
 
   dbData: Art = {} as Art;
 
@@ -65,7 +69,12 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
         id,
         field
       );
+      if (this.editMode) {
+        this.oldJobStatus = await this.updateOldJob(this.dbData, this.artForm.value);
+      }
+      this.jobStatus = await this.updateJob(this.artForm.value);
       this.messagesService.showStatus(this.saveStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
+      this.messagesService.showStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
       this.messagesService.clearStatus();
       this.submitted = false;
       if (this.editMode) {
@@ -77,6 +86,63 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
         this.reloadFromDb([Collections.Art]);
       }
     }
+  }
+
+  async updateOldJob(dbData: any, formData: any): Promise<string> {
+    if (dbData.job_id === formData.job_id) {
+      return Const.SUCCESS;
+    }
+    const oldJob = this.jobs.find((job) => job.job_id === dbData.job_id);
+    if (!oldJob) {
+      console.error('Save art error, could not find the previous job');
+      return Const.FAILURE;
+    }
+    const collection = Collections.Jobs;
+    let result = Const.SUCCESS;
+    try {
+      oldJob.contact_ids = oldJob.art_ids.filter((art_id) => art_id !== formData.job_id);
+      delete (oldJob as any)._id;
+      const returnData = await this.dataService.saveDocument(
+        oldJob,
+        collection,
+        dbData.job_id,
+        'job_id'
+      );
+      if (returnData.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Save job error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
+
+  async updateJob(formData: any): Promise<string> {
+    const job = this.jobs.find((job) => job.job_id === formData.job_id);
+    if (!job) {
+      console.error('Save art error, could not find the selected job');
+      return Const.FAILURE;
+    }
+    const collection = Collections.Jobs;
+    let result = Const.SUCCESS;
+    try {
+      job.art_ids.push(formData.art_id);
+      delete (job as any)._id;
+      const returnData = await this.dataService.saveDocument(
+        job,
+        collection,
+        formData.job_id,
+        'job_id'
+      );
+      if (returnData.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Save client error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
   }
 
   onSelectFileNameTBD() {
@@ -133,22 +199,19 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       .pipe(take(1))
       .subscribe(({ artists, jobs, clients, sites }) => {
         this.artists$ = of(artists);
-        const jobsWithClient = jobs
-          .map((job) => {
-            const client = clients.find((client) => client.client_id === job.client_id);
-            if (client) {
-              return { ...job, client };
-            }
-            return job;
-          })
-          .map((job) => {
-            const site = sites.find((site) => site.site_id === job.site_id);
-            if (site) {
-              return { ...job, site };
-            }
-            return job;
-          });
-        this.jobs$ = of(jobsWithClient);
+        this.jobs = jobs;
+        const fullJobs = jobs.map((job) => {
+          const client = clients.find((client) => client.client_id === job.client_id);
+          if (client) {
+            return { ...job, client };
+          }
+          const site = sites.find((site) => site.site_id === job.site_id);
+          if (site) {
+            return { ...job, site };
+          }
+          return job;
+        });
+        this.jobs$ = of(fullJobs);
       });
   }
 
