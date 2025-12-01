@@ -77,7 +77,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       this.messagesService.clearStatus();
       this.submitted = false;
       this.resetForm();
-      this.dataService.reload();
+      this.dataService.getData();
     }
   }
 

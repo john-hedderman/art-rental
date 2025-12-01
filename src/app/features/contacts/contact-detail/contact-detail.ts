@@ -85,7 +85,7 @@ export class ContactDetail implements OnDestroy {
     );
     this.messagesService.showStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED);
     this.messagesService.clearStatus();
-    this.dataService.reload(this.goToContactList);
+    this.dataService.getData(this.goToContactList);
   }
 
   async updateClient(): Promise<string> {

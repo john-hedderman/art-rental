@@ -74,7 +74,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
       } else {
         this.siteForm.reset();
       }
-      this.dataService.reload();
+      this.dataService.getData();
     }
   }
 

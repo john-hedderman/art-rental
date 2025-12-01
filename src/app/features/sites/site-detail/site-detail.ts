@@ -78,7 +78,7 @@ export class SiteDetail implements OnDestroy {
     this.messagesService.showStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
     this.messagesService.showStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED);
     this.messagesService.clearStatus();
-    this.dataService.reload(this.goToSiteList);
+    this.dataService.getData(this.goToSiteList);
   }
 
   async updateJob(): Promise<string> {

@@ -14,15 +14,6 @@ export class DataService {
   public contacts$: ReplaySubject<Contact[]> = new ReplaySubject(1);
   public sites$: ReplaySubject<Site[]> = new ReplaySubject(1);
 
-  constructor(private http: HttpClient) {
-    this.load('art').subscribe((art) => this.art$.next(art));
-    this.load('artists').subscribe((artists) => this.artists$.next(artists));
-    this.load('clients').subscribe((clients) => this.clients$.next(clients));
-    this.load('jobs').subscribe((jobs) => this.jobs$.next(jobs));
-    this.load('contacts').subscribe((contacts) => this.contacts$.next(contacts));
-    this.load('sites').subscribe((sites) => this.sites$.next(sites));
-  }
-
   load(dataType: 'art'): Observable<Art[]>;
   load(dataType: 'artists'): Observable<Artist[]>;
   load(dataType: 'clients'): Observable<Client[]>;
@@ -30,12 +21,12 @@ export class DataService {
   load(dataType: 'contacts'): Observable<Contact[]>;
   load(dataType: 'sites'): Observable<Site[]>;
   load(dataType: string): Observable<unknown[]> {
-    // load data from a separate server
+    // load data from a separate local server at this time
     // see project art-rental-server
     return this.http.get<unknown[]>(`http://localhost:3000/data/${dataType}`);
   }
 
-  reload(callback?: any) {
+  getData(callback?: any) {
     combineLatest({
       art: this.load('art'),
       artists: this.load('artists'),
@@ -144,5 +135,9 @@ export class DataService {
       console.error('Delete failed. Fetch error:', error.message);
       throw error;
     }
+  }
+
+  constructor(private http: HttpClient) {
+    this.getData();
   }
 }

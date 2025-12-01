@@ -67,7 +67,7 @@ export class ArtDetail implements OnDestroy {
     this.messagesService.showStatus(this.deleteStatus, Msgs.DELETED_ART, Msgs.DELETE_ART_FAILED);
     this.messagesService.showStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
     this.messagesService.clearStatus();
-    this.dataService.reload(this.goToArtList);
+    this.dataService.getData(this.goToArtList);
   }
 
   async updateJob(): Promise<string> {
