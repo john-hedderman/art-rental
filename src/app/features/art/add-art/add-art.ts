@@ -72,7 +72,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       if (this.editMode) {
         this.oldJobStatus = await this.updateOldJob(this.dbData, this.artForm.value);
       }
-      this.jobStatus = await this.updateJob(this.artForm.value);
+      this.jobStatus = await this.updateJob(this.dbData, this.artForm.value);
       this.messagesService.showStatus(this.saveStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
       this.messagesService.showStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
       this.messagesService.clearStatus();
@@ -87,7 +87,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
   }
 
   async updateOldJob(dbData: any, formData: any): Promise<string> {
-    if (dbData.job_id === formData.job_id) {
+    if (dbData.job_id === formData.job_id || dbData.job_id === Const.NO_JOB) {
       return Const.SUCCESS;
     }
     const oldJob = this.jobs.find((job) => job.job_id === dbData.job_id);
@@ -98,7 +98,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     const collection = Collections.Jobs;
     let result = Const.SUCCESS;
     try {
-      oldJob.contact_ids = oldJob.art_ids.filter((art_id) => art_id !== formData.job_id);
+      oldJob.art_ids = oldJob.art_ids.filter((art_id) => art_id !== formData.art_id);
       delete (oldJob as any)._id;
       const returnData = await this.dataService.saveDocument(
         oldJob,
@@ -116,7 +116,10 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
-  async updateJob(formData: any): Promise<string> {
+  async updateJob(dbData: any, formData: any): Promise<string> {
+    if (dbData.job_id === formData.job_id || formData.job_id === Const.NO_JOB) {
+      return Const.SUCCESS;
+    }
     const job = this.jobs.find((job) => job.job_id === formData.job_id);
     if (!job) {
       console.error('Save art error, could not find the selected job');
