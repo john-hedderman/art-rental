@@ -8,7 +8,7 @@
         imageData: { source: `${thumbnail_path}${art.file_name}`, alt: art.title, title: art.title },
         title: art.title,
         text: art.artist?.name,
-        footerText: art.job?.client ? `<strong>Job:</strong> ${art.job?.client?.name} (${art.job?.site?.name})` : '',
+        footerText: art.job?.client ? `<strong>Job:</strong> ${art.job?.client?.name} (${art.job?.site?.name || 'Site TBD'})` : '',
         clickHandler: goToArtDetail.bind(null, art.art_id)
       }"
         class="mt-3 ms-3"
