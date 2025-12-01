@@ -32,9 +32,6 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
 
   siteForm!: FormGroup;
   submitted = false;
-  siteId!: number;
-
-  dbData: Site = {} as Site;
 
   clients$: Observable<Client[]> | undefined;
   jobs$: Observable<Job[]> | undefined;
@@ -44,50 +41,64 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
   siteStatus = '';
   clientStatus = '';
 
-  selectedClientId: number | undefined;
-
   jobs: Job[] = [];
+
+  dbData: Site = {} as Site;
+
+  siteId!: number;
+  editMode = false;
 
   async onSubmit() {
     this.submitted = true;
     if (this.siteForm.valid) {
-      this.siteId = Date.now();
       const siteId = this.route.snapshot.paramMap.get('id');
-      if (siteId) {
-        this.siteId = +siteId;
-      }
+      this.siteId = siteId ? +siteId : Date.now();
       this.siteForm.value.site_id = this.siteId;
       this.siteForm.value.job_id = Const.NO_JOB;
-      this.siteStatus = await this.save(this.siteForm.value);
-      this.clientStatus = await this.updateClient(this.siteForm.value);
+      this.siteStatus = await this.saveSite(this.siteForm.value);
+      if (!this.editMode) {
+        this.clientStatus = await this.updateClient(this.siteForm.value);
+      }
       this.messagesService.showStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED);
-      this.messagesService.showStatus(
-        this.clientStatus,
-        Msgs.SAVED_CLIENT,
-        Msgs.SAVE_CLIENT_FAILED
-      );
+      if (!this.editMode) {
+        this.messagesService.showStatus(
+          this.clientStatus,
+          Msgs.SAVED_CLIENT,
+          Msgs.SAVE_CLIENT_FAILED
+        );
+      }
       this.messagesService.clearStatus();
       this.submitted = false;
-      this.resetForm();
+      if (this.editMode) {
+        this.populateForm<Site>(Collections.Sites, 'site_id', this.siteId);
+      } else {
+        this.siteForm.reset();
+      }
       this.dataService.reload();
     }
   }
 
   convertIds() {
-    this.siteForm.value.client_id = parseInt(this.siteForm.value.client_id);
+    if (this.editMode) {
+      this.siteForm.value.client_id = this.dbData.client_id;
+    } else {
+      this.siteForm.value.client_id = parseInt(this.siteForm.value.client_id);
+    }
   }
 
-  async save(siteData: any): Promise<string> {
+  async saveSite(formData: any): Promise<string> {
     this.convertIds();
     const collectionName = Collections.Sites;
     let result = Const.SUCCESS;
     try {
-      const returnData = await this.dataService.saveDocument(siteData, collectionName);
+      const id = this.editMode ? this.siteId : undefined;
+      const field = this.editMode ? 'site_id' : undefined;
+      const returnData = await this.dataService.saveDocument(formData, collectionName, id, field);
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
       }
     } catch (error) {
-      console.error('Save job error:', error);
+      console.error('Save site error:', error);
       result = Const.FAILURE;
     }
     return result;
@@ -120,15 +131,9 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
-  resetForm() {
-    this.siteForm.reset();
-    this.submitted = false;
-  }
-
   onSelectClient(event: any) {
     const clientId = event.target.value;
     if (clientId !== '') {
-      this.selectedClientId = +clientId;
       this.siteForm.get('name')?.enable();
       this.siteForm.get('address1')?.enable();
       this.siteForm.get('address2')?.enable();
@@ -136,7 +141,6 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
       this.siteForm.get('state')?.enable();
       this.siteForm.get('zip_code')?.enable();
     } else {
-      this.selectedClientId = undefined;
       this.siteForm.get('name')?.disable();
       this.siteForm.get('address1')?.disable();
       this.siteForm.get('address2')?.disable();
@@ -146,7 +150,19 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
     }
   }
 
-  populateData(): void {}
+  populateData(): void {
+    // this also effectively touches the form fields, so the prepopulated fields that
+    // the user has never touched can be considered valid, letting the form submission complete
+    this.siteForm.get('site_id')?.setValue(this.dbData.site_id);
+    this.siteForm.get('name')?.setValue(this.dbData.name);
+    this.siteForm.get('address1')?.setValue(this.dbData.address1);
+    this.siteForm.get('address2')?.setValue(this.dbData.address2);
+    this.siteForm.get('city')?.setValue(this.dbData.city);
+    this.siteForm.get('state')?.setValue(this.dbData.state);
+    this.siteForm.get('zip_code')?.setValue(this.dbData.zip_code);
+    this.siteForm.get('client_id')?.setValue(this.dbData.client_id);
+    this.siteForm.get('job_id')?.setValue(this.dbData.job_id);
+  }
 
   constructor(
     private router: Router,
@@ -155,6 +171,10 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
     private messagesService: MessagesService
   ) {
     super();
+    const segments = this.route.snapshot.url.map((x) => x.path);
+    if (segments[segments.length - 1] === 'edit') {
+      this.headerData.data.headerTitle = 'Edit Site';
+    }
     combineLatest({
       clients: this.dataService.clients$,
       jobs: this.dataService.jobs$,
@@ -169,16 +189,26 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.siteId = Date.now();
+    this.editMode = false;
+
+    const siteId = this.route.snapshot.paramMap.get('id');
+    if (siteId) {
+      this.siteId = +siteId;
+      this.editMode = true;
+      this.populateForm<Site>(Collections.Sites, 'site_id', this.siteId);
+    }
+
     this.siteForm = this.fb.group({
       site_id: this.siteId,
-      name: [{ value: '', disabled: true }],
-      address1: [{ value: '', disabled: true }],
-      address2: [{ value: '', disabled: true }],
-      city: [{ value: '', disabled: true }],
-      state: [{ value: '', disabled: true }],
-      zip_code: [{ value: '', disabled: true }],
+      name: [{ value: '', disabled: this.editMode ? false : true }],
+      address1: [{ value: '', disabled: this.editMode ? false : true }],
+      address2: [{ value: '', disabled: this.editMode ? false : true }],
+      city: [{ value: '', disabled: this.editMode ? false : true }],
+      state: [{ value: '', disabled: this.editMode ? false : true }],
+      zip_code: [{ value: '', disabled: this.editMode ? false : true }],
       client_id: [''],
-      job_id: [{ value: '', disabled: true }],
+      job_id: [{ value: '', disabled: this.editMode ? false : true }],
     });
   }
 
