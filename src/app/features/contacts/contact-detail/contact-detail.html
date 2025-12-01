@@ -10,7 +10,9 @@
             @if (client$ | async; as client) {
             <tr>
               <td class="pb-2 pe-3"><strong>Client:</strong></td>
-              <td class="pb-2">{{ client.name }}</td>
+              <td class="pb-2">
+                <a href="#" [routerLink]="`/clients/${client.client_id}`">{{ client.name }}</a>
+              </td>
             </tr>
             }
             <tr>

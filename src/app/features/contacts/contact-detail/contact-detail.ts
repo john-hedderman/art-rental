@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
@@ -22,7 +22,7 @@ import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 
 @Component({
   selector: 'app-contact-detail',
-  imports: [PageHeader, AsyncPipe, PageFooter],
+  imports: [PageHeader, AsyncPipe, PageFooter, RouterLink],
   providers: [MessagesService],
   templateUrl: './contact-detail.html',
   styleUrl: './contact-detail.scss',
