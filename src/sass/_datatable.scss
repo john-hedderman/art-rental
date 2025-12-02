@@ -14,6 +14,12 @@
           var(--ar-table-header-height)
       ) !important;
       overflow: hidden auto;
+
+      .datatable-body-cell-label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
   }
 
