@@ -5,7 +5,7 @@
       @if (site$ | async; as site) {
       <div class="row">
         <div class="col-md-6">
-          <h5 class="fw-bold pb-2 ar-heading">Site:</h5>
+          <h5 class="fw-bold pb-2 ar-heading">Site</h5>
           <p class="mb-0">{{ site.name }}</p>
           <p class="mb-0">{{ site.address1 }}</p>
           @if (site.address2) {
@@ -14,7 +14,7 @@
           <p class="pb-4">{{ site.city }}, {{ site.state }} {{ site.zip_code }}</p>
         </div>
         <div class="col-md-6">
-          <h5 class="fw-bold pb-2 ar-heading">Client:</h5>
+          <h5 class="fw-bold pb-2 ar-heading">Client</h5>
           @if (client$ | async; as client) {
           <p class="pb-4">
             <a [routerLink]="`/clients/${client.client_id}`">{{ client.name }}</a>
@@ -23,7 +23,7 @@
         </div>
         <div class="row">
           <div class="col-md-6">
-            <h5 class="fw-bold pb-2 ar-heading">Job:</h5>
+            <h5 class="fw-bold pb-2 ar-heading">Job</h5>
             @if (job$ | async; as job) {
             <p class="pb-4">{{ job.job_number }}</p>
             } @else {
