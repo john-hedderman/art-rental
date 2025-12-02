@@ -15,6 +15,10 @@
       ) !important;
       overflow: hidden auto;
 
+      .datatable-body-row {
+        cursor: pointer;
+      }
+
       .datatable-body-cell-label {
         white-space: nowrap;
         overflow: hidden;
