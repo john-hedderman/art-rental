@@ -192,10 +192,10 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       this.headerData.data.headerTitle = 'Edit Art';
     }
     combineLatest({
-      artists: this.dataService.load('artists'),
-      jobs: this.dataService.load('jobs'),
-      clients: this.dataService.load('clients'),
-      sites: this.dataService.load('sites'),
+      artists: this.dataService.artists$,
+      jobs: this.dataService.jobs$,
+      clients: this.dataService.clients$,
+      sites: this.dataService.sites$,
     })
       .pipe(take(1))
       .subscribe(({ artists, jobs, clients, sites }) => {
