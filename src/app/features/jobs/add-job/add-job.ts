@@ -32,9 +32,11 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
 
   jobForm!: FormGroup;
   submitted = false;
+  editMode = false;
   jobId!: number;
 
   dbData: Job = {} as Job;
+  contactsDBData: Contact[] = [];
 
   clients: Client[] = [];
   sites: Site[] = [];
@@ -56,11 +58,8 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.jobForm.valid) {
-      this.jobId = Date.now();
       const jobId = this.route.snapshot.paramMap.get('id');
-      if (jobId) {
-        this.jobId = +jobId;
-      }
+      this.jobId = jobId ? +jobId : Date.now();
       this.jobForm.value.job_id = this.jobId;
       this.jobStatus = await this.saveJob(this.jobForm.value);
       this.clientStatus = await this.updateClient(this.jobForm.value);
@@ -76,7 +75,13 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       this.messagesService.showStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
       this.messagesService.clearStatus();
       this.submitted = false;
-      this.resetForm();
+
+      if (this.editMode) {
+        this.populateForm<Job>(Collections.Jobs, 'job_id', this.jobId);
+      } else {
+        this.resetForm();
+      }
+
       this.dataService.getData();
     }
   }
@@ -89,12 +94,14 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     form.art_ids = form.art_ids.map((id: any) => parseInt(id));
   }
 
-  async saveJob(jobData: any): Promise<string> {
+  async saveJob(formData: any): Promise<string> {
     this.convertIds();
     const collection = Collections.Jobs;
     let result = Const.SUCCESS;
     try {
-      const returnData = await this.dataService.saveDocument(jobData, collection);
+      const id = this.editMode ? this.jobId : undefined;
+      const field = this.editMode ? 'job_id' : undefined;
+      const returnData = await this.dataService.saveDocument(formData, collection, id, field);
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
       }
@@ -105,21 +112,21 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
-  async updateClient(jobData: any): Promise<string> {
-    const client = this.clients.find((client) => client.client_id === jobData.client_id);
+  async updateClient(formData: any): Promise<string> {
+    const client = this.clients.find((client) => client.client_id === formData.client_id);
     if (!client) {
-      console.error('Save job error, could not find the selected client');
+      console.error('Save client error, could not find the selected client');
       return Const.FAILURE;
     }
     const collection = Collections.Clients;
     let result = Const.SUCCESS;
     try {
-      client.job_ids.push(jobData.job_id);
+      client.job_ids.push(formData.job_id);
       delete (client as any)._id;
       const returnData = await this.dataService.saveDocument(
         client,
         collection,
-        jobData.client_id,
+        formData.client_id,
         'client_id'
       );
       if (returnData.modifiedCount === 0) {
@@ -132,17 +139,17 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
-  async updateArt(jobData: any): Promise<string> {
-    const artwork = this.art.filter((art) => jobData.art_ids.indexOf(art.art_id) !== -1);
+  async updateArt(formData: any): Promise<string> {
+    const artwork = this.art.filter((art) => formData.art_ids.indexOf(art.art_id) !== -1);
     if (!artwork) {
-      console.error('Save job error, could not find the selected artwork');
+      console.error('Save art error, could not find the selected art');
       return Const.FAILURE;
     }
     const collection = Collections.Art;
     let result = Const.SUCCESS;
     try {
       for (const art of artwork) {
-        art.job_id = jobData.job_id;
+        art.job_id = formData.job_id;
         delete (art as any)._id;
         const returnData = await this.dataService.saveDocument(
           art,
@@ -161,24 +168,24 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
-  async updateSite(jobData: any): Promise<string> {
-    if (jobData.site_id === 0) {
+  async updateSite(formData: any): Promise<string> {
+    if (formData.site_id === Const.TBD) {
       return Const.SUCCESS; // site is TBD
     }
-    const site = this.sites.find((site) => site.site_id === jobData.site_id);
+    const site = this.sites.find((site) => site.site_id === formData.site_id);
     if (!site) {
-      console.error('Save job error, could not find the selected site');
+      console.error('Save site error, could not find the selected site');
       return Const.FAILURE;
     }
     const collection = Collections.Sites;
     let result = Const.SUCCESS;
     try {
-      site.job_id = jobData.job_id;
+      site.job_id = formData.job_id;
       delete (site as any)._id;
       const returnData = await this.dataService.saveDocument(
         site,
         collection,
-        jobData.site_id,
+        formData.site_id,
         'site_id'
       );
       if (returnData.modifiedCount === 0) {
@@ -258,8 +265,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     const menu = document.getElementById('contact_ids') as HTMLSelectElement;
     let newOption = new Option('TBD', 'tbd');
     menu?.add(newOption);
-    const clientContacts = this.contacts.filter((contact) => contact.client_id === this.clientId);
-    for (const clientContact of clientContacts) {
+    for (const clientContact of this.contacts) {
       newOption = new Option(
         `${clientContact.first_name} ${clientContact.last_name}`,
         clientContact.contact_id.toString()
@@ -278,7 +284,46 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     }
   }
 
-  populateData(): void {}
+  populateData(): void {
+    // this also effectively touches the form fields, so the prepopulated fields that
+    // the user has never touched can be considered valid, letting the form submission complete
+    this.jobForm.get('job_id')?.setValue(this.dbData.job_id);
+    this.jobForm.get('job_number')?.setValue(this.dbData.job_number);
+    this.jobForm.get('client_id')?.setValue(this.dbData.client_id);
+    this.clientId = this.dbData.client_id;
+
+    const clientSelectEl = document.getElementById('client_id') as HTMLSelectElement;
+    clientSelectEl.value = this.dbData.client_id.toString();
+    clientSelectEl.dispatchEvent(new Event('change')); // triggers onSelectClient
+
+    const siteSelectEl = document.getElementById('site_id') as HTMLSelectElement;
+    siteSelectEl.value = this.dbData.site_id.toString();
+    siteSelectEl.dispatchEvent(new Event('change'));
+
+    const contactsSelectEl = document.getElementById('contact_ids') as HTMLSelectElement;
+    let contactsAssigned = false;
+    for (const option of contactsSelectEl.options) {
+      if (this.dbData.contact_ids.includes(+option.value)) {
+        contactsAssigned = true;
+        option.selected = true;
+        option.dispatchEvent(new Event('change'));
+      }
+    }
+    if (!contactsAssigned) {
+      contactsSelectEl.options[0].selected = true;
+      contactsSelectEl.options[0].dispatchEvent(new Event('change'));
+    }
+    contactsSelectEl.dispatchEvent(new Event('change'));
+
+    const artSelectEl = document.getElementById('art_ids') as HTMLSelectElement;
+    for (const option of artSelectEl.options) {
+      if (this.dbData.art_ids.includes(+option.value)) {
+        option.selected = true;
+        option.dispatchEvent(new Event('change'));
+      }
+    }
+    artSelectEl.dispatchEvent(new Event('change'));
+  }
 
   constructor(
     private router: Router,
@@ -287,6 +332,10 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     private messagesService: MessagesService
   ) {
     super();
+    const segments = this.route.snapshot.url.map((x) => x.path);
+    if (segments[segments.length - 1] === 'edit') {
+      this.headerData.data.headerTitle = 'Edit Job';
+    }
     combineLatest({
       clients: this.dataService.clients$,
       sites: this.dataService.sites$,
@@ -308,13 +357,22 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.jobId = Date.now();
+    this.editMode = false;
+
+    const jobId = this.route.snapshot.paramMap.get('id');
+    if (jobId) {
+      this.jobId = +jobId;
+      this.editMode = true;
+      this.populateForm<Job>(Collections.Jobs, 'job_id', this.jobId);
+    }
+
     this.jobForm = this.fb.group({
       job_id: this.jobId,
       job_number: [''],
       client_id: [''],
-      site_id: [{ value: '', disabled: true }],
-      contact_ids: [{ value: '', disabled: true }],
-      art_ids: [{ value: '', disabled: true }],
+      site_id: [{ value: '', disabled: this.editMode ? false : true }],
+      contact_ids: [{ value: '', disabled: this.editMode ? false : true }],
+      art_ids: [{ value: '', disabled: this.editMode ? false : true }],
     });
   }
 
