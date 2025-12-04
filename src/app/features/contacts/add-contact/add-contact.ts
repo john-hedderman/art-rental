@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -9,7 +9,12 @@ import { Client, Contact } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
-import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import {
+  ActionButton,
+  ActionLink,
+  FooterActions,
+  HeaderActions,
+} from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
@@ -18,7 +23,7 @@ import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 
 @Component({
   selector: 'app-add-contact',
-  imports: [PageHeader, ReactiveFormsModule, PageFooter, AsyncPipe],
+  imports: [PageHeader, ReactiveFormsModule, PageFooter, AsyncPipe, RouterLink],
   providers: [MessagesService],
   templateUrl: './add-contact.html',
   styleUrl: './add-contact.scss',
@@ -34,7 +39,17 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     this.goToContactList
   );
   headerData = new HeaderActions('contact-add', 'Add Contact', [], [this.contactListLink.data]);
-  footerData = new FooterActions([new SaveButton(), new CancelButton()]);
+  resetButton = new ActionButton(
+    'resetBtn',
+    'Reset',
+    'button',
+    'btn btn-outline-secondary ms-3',
+    false,
+    null,
+    null,
+    this.onClickReset.bind(this)
+  );
+  footerData = new FooterActions([new SaveButton(), this.resetButton, new CancelButton()]);
 
   contactForm!: FormGroup;
   submitted = false;
@@ -50,6 +65,33 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
 
   contactId!: number;
   editMode = false;
+
+  onClickReset() {
+    this.resetForm();
+    const clientSelectEl = document.getElementById('client_id') as HTMLSelectElement;
+    if (this.editMode) {
+      const clientDbId = this.dbData.client_id.toString();
+      for (const option of clientSelectEl.options) {
+        if (option.value === clientDbId) {
+          option.selected = true;
+        } else {
+          option.selected = false;
+        }
+      }
+    } else {
+      clientSelectEl.options[0].selected = true;
+    }
+    clientSelectEl.dispatchEvent(new Event('change')); // triggers onSelectClient
+  }
+
+  resetForm() {
+    this.submitted = false;
+    if (this.editMode) {
+      this.populateForm<Contact>(Collections.Contacts, 'contact_id', this.contactId);
+    } else {
+      this.contactForm.reset();
+    }
+  }
 
   async onSubmit() {
     this.submitted = true;
@@ -77,12 +119,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
         Msgs.SAVE_CLIENT_FAILED
       );
       this.messagesService.clearStatus();
-      this.submitted = false;
-      if (this.editMode) {
-        this.populateForm(Collections.Contacts, 'contact_id', this.contactId);
-      } else {
-        this.contactForm.reset();
-      }
+      this.resetForm();
       this.dataService.getData();
     }
   }
@@ -172,6 +209,26 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
+  onSelectClient(event: any) {
+    const clientId = event.target.value;
+    if (clientId !== '') {
+      this.contactForm.get('first_name')?.enable();
+      this.contactForm.get('last_name')?.enable();
+      this.contactForm.get('phone')?.enable();
+      this.contactForm.get('title')?.enable();
+      this.contactForm.get('email')?.enable();
+    } else {
+      this.contactForm.reset();
+      this.contactForm.get('first_name')?.disable();
+      this.contactForm.get('last_name')?.disable();
+      this.contactForm.get('phone')?.disable();
+      this.contactForm.get('title')?.disable();
+      this.contactForm.get('email')?.disable();
+      const clientSelectEl = document.getElementById('client_id') as HTMLSelectElement;
+      clientSelectEl.options[0].selected = true;
+    }
+  }
+
   populateData() {
     // this also effectively touches the form fields, so the prepopulated fields that
     // the user has never touched can be considered valid, letting the form submission complete
@@ -209,17 +266,17 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     if (contactId) {
       this.contactId = +contactId;
       this.editMode = true;
-      this.populateForm(Collections.Contacts, 'contact_id', this.contactId);
+      this.populateForm<Contact>(Collections.Contacts, 'contact_id', this.contactId);
     }
 
     this.contactForm = this.fb.group({
       contact_id: this.contactId,
-      first_name: [''],
-      last_name: [''],
-      phone: [''],
-      title: [''],
-      email: [''],
-      client_id: null,
+      first_name: [{ value: '', disabled: this.editMode ? false : true }],
+      last_name: [{ value: '', disabled: this.editMode ? false : true }],
+      phone: [{ value: '', disabled: this.editMode ? false : true }],
+      title: [{ value: '', disabled: this.editMode ? false : true }],
+      email: [{ value: '', disabled: this.editMode ? false : true }],
+      client_id: [''],
     });
   }
 
