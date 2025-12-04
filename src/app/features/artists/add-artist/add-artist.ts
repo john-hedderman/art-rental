@@ -69,7 +69,7 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
       } else {
         this.artistForm.reset();
       }
-      this.dataService.getData();
+      this.dataService.reloadData(['artists']);
     }
   }
 

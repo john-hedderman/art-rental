@@ -89,10 +89,8 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       this.messagesService.showStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED);
       this.messagesService.showStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
       this.messagesService.clearStatus();
-
       this.resetForm();
-
-      this.dataService.getData();
+      this.dataService.reloadData(['jobs', 'clients', 'sites', 'art']);
     }
   }
 

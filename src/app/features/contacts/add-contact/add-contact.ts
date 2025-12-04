@@ -120,7 +120,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
       );
       this.messagesService.clearStatus();
       this.resetForm();
-      this.dataService.getData();
+      this.dataService.reloadData(['contacts', 'clients']);
     }
   }
 

@@ -91,7 +91,7 @@ export class JobDetail implements OnInit, OnDestroy {
     this.messagesService.showStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED);
     this.messagesService.showStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
     this.messagesService.clearStatus();
-    this.dataService.getData(this.goToJobList);
+    this.dataService.reloadData(['jobs', 'clients', 'sites', 'art'], this.goToJobList);
   }
 
   async updateClient(): Promise<string> {

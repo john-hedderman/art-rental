@@ -85,7 +85,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
         this.contacts.clear();
         this.clientForm.reset();
       }
-      this.dataService.getData();
+      this.dataService.reloadData(['clients', 'contacts']);
     }
   }
 

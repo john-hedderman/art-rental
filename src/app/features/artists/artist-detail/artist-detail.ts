@@ -71,7 +71,7 @@ export class ArtistDetail implements OnDestroy {
       Msgs.DELETE_ARTIST_FAILED
     );
     this.messagesService.clearStatus();
-    this.dataService.getData(this.goToArtistList);
+    this.dataService.reloadData(['artists'], this.goToArtistList);
   }
 
   getArtistId(): Observable<number> {

@@ -103,7 +103,7 @@ export class ClientDetail implements OnInit, OnDestroy {
     );
     this.messagesService.showStatus(this.sitesStatus, Msgs.DELETED_SITES, Msgs.DELETE_SITES_FAILED);
     this.messagesService.clearStatus();
-    this.dataService.getData(this.goToClientList);
+    this.dataService.reloadData(['clients', 'contacts', 'sites'], this.goToClientList);
   }
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {

@@ -3,6 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { combineLatest, Observable, ReplaySubject, take } from 'rxjs';
 import { Art, Artist, Client, Contact, Job, Site } from '../model/models';
 
+type Source = {
+  art: Observable<Art[]>;
+  artists: Observable<Artist[]>;
+  clients: Observable<Client[]>;
+  jobs: Observable<Job[]>;
+  contacts: Observable<Contact[]>;
+  sites: Observable<Site[]>;
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -14,35 +23,48 @@ export class DataService {
   public contacts$: ReplaySubject<Contact[]> = new ReplaySubject(1);
   public sites$: ReplaySubject<Site[]> = new ReplaySubject(1);
 
-  load(dataType: 'art'): Observable<Art[]>;
-  load(dataType: 'artists'): Observable<Artist[]>;
-  load(dataType: 'clients'): Observable<Client[]>;
-  load(dataType: 'jobs'): Observable<Job[]>;
-  load(dataType: 'contacts'): Observable<Contact[]>;
-  load(dataType: 'sites'): Observable<Site[]>;
-  load(dataType: string): Observable<unknown[]> {
-    // load data from a separate local server at this time
-    // see project art-rental-server
-    return this.http.get<unknown[]>(`http://localhost:3000/data/${dataType}`);
+  loadData<T>(dataType: string): Observable<T[]> {
+    return this.http.get<T[]>(`http://localhost:3000/data/${dataType}`);
   }
 
-  getData(callback?: any) {
-    combineLatest({
-      art: this.load('art'),
-      artists: this.load('artists'),
-      clients: this.load('clients'),
-      contacts: this.load('contacts'),
-      jobs: this.load('jobs'),
-      sites: this.load('sites'),
-    })
+  reloadData(collections: string[], callback?: any) {
+    const source = {} as Source;
+    for (const coll of collections) {
+      if (coll === 'art') {
+        source[coll] = this.loadData<Art>(coll);
+      } else if (coll === 'artists') {
+        source[coll] = this.loadData<Artist>(coll);
+      } else if (coll === 'clients') {
+        source[coll] = this.loadData<Client>(coll);
+      } else if (coll === 'contacts') {
+        source[coll] = this.loadData<Contact>(coll);
+      } else if (coll === 'jobs') {
+        source[coll] = this.loadData<Job>(coll);
+      } else if (coll === 'sites') {
+        source[coll] = this.loadData<Site>(coll);
+      }
+    }
+    combineLatest(source)
       .pipe(take(1))
-      .subscribe(({ art, artists, clients, contacts, jobs, sites }) => {
-        this.art$.next(art);
-        this.artists$.next(artists);
-        this.clients$.next(clients);
-        this.contacts$.next(contacts);
-        this.jobs$.next(jobs);
-        this.sites$.next(sites);
+      .subscribe(({ ...args }) => {
+        if (collections.includes('art')) {
+          this.art$.next(args['art']);
+        }
+        if (collections.includes('artists')) {
+          this.artists$.next(args['artists']);
+        }
+        if (collections.includes('clients')) {
+          this.clients$.next(args['clients']);
+        }
+        if (collections.includes('contacts')) {
+          this.contacts$.next(args['contacts']);
+        }
+        if (collections.includes('jobs')) {
+          this.jobs$.next(args['jobs']);
+        }
+        if (collections.includes('sites')) {
+          this.sites$.next(args['sites']);
+        }
         if (callback) {
           callback();
         }
@@ -138,6 +160,6 @@ export class DataService {
   }
 
   constructor(private http: HttpClient) {
-    this.getData();
+    this.reloadData(['art', 'artists', 'clients', 'contacts', 'jobs', 'sites']);
   }
 }
