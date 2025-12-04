@@ -72,13 +72,11 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
         Msgs.SAVED_CLIENT,
         Msgs.SAVE_CLIENT_FAILED
       );
-      if (this.initialContactsCount !== 0 || this.clientForm.value.contacts.length !== 0) {
-        this.messagesService.showStatus(
-          this.contactsStatus,
-          Msgs.SAVED_CONTACTS,
-          Msgs.SAVE_CONTACTS_FAILED
-        );
-      }
+      this.messagesService.showStatus(
+        this.contactsStatus,
+        Msgs.SAVED_CONTACTS,
+        Msgs.SAVE_CONTACTS_FAILED
+      );
       this.messagesService.clearStatus();
       this.submitted = false;
       if (this.editMode) {
