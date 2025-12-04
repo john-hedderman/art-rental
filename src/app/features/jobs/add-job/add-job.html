@@ -61,12 +61,16 @@
                   name="site_id"
                   id="site_id"
                   formControlName="site_id"
+                  (change)="onSelectSite($event)"
                   required
                 >
                   <option value="">Select a job site...</option>
                 </select>
                 <div class="invalid-feedback">Please select a job site.</div>
               </div>
+            </div>
+            <div class="row">
+              <h5 class="fw-bold pb-2 pt-4 ar-heading ar-inset">Step 3</h5>
               <div class="col-md-6">
                 <label for="contact_ids" class="col-form-label"
                   >Contacts for the job <span class="text-danger">*</span></label

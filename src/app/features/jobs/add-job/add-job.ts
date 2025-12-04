@@ -7,7 +7,12 @@ import { AsyncPipe } from '@angular/common';
 import { Art, Client, Contact, Job, Site } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
-import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import {
+  ActionButton,
+  ActionLink,
+  FooterActions,
+  HeaderActions,
+} from '../../../shared/actions/action-data';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
@@ -28,7 +33,17 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
   goToJobList = () => this.router.navigate(['/jobs', 'list']);
   jobListLink = new ActionLink('jobListLink', 'Jobs', '/jobs/list', '', this.goToJobList);
   headerData: HeaderActions = new HeaderActions('job-add', 'Add Job', [], [this.jobListLink.data]);
-  footerData = new FooterActions([new SaveButton(), new CancelButton()]);
+  resetButton = new ActionButton(
+    'resetBtn',
+    'Reset',
+    'button',
+    'btn btn-outline-secondary ms-3',
+    false,
+    null,
+    null,
+    this.onClickReset.bind(this)
+  );
+  footerData = new FooterActions([new SaveButton(), this.resetButton, new CancelButton()]);
 
   jobForm!: FormGroup;
   submitted = false;
@@ -63,8 +78,8 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       this.jobForm.value.job_id = this.jobId;
       this.jobStatus = await this.saveJob(this.jobForm.value);
       this.clientStatus = await this.updateClient(this.jobForm.value);
-      this.artStatus = await this.updateArt(this.jobForm.value);
       this.siteStatus = await this.updateSite(this.jobForm.value);
+      this.artStatus = await this.updateArt(this.jobForm.value);
       this.messagesService.showStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
       this.messagesService.showStatus(
         this.clientStatus,
@@ -74,13 +89,8 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       this.messagesService.showStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED);
       this.messagesService.showStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
       this.messagesService.clearStatus();
-      this.submitted = false;
 
-      if (this.editMode) {
-        this.populateForm<Job>(Collections.Jobs, 'job_id', this.jobId);
-      } else {
-        this.resetForm();
-      }
+      this.resetForm();
 
       this.dataService.getData();
     }
@@ -140,25 +150,26 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
   }
 
   async updateArt(formData: any): Promise<string> {
-    const artwork = this.art.filter((art) => formData.art_ids.indexOf(art.art_id) !== -1);
-    if (!artwork) {
-      console.error('Save art error, could not find the selected art');
-      return Const.FAILURE;
-    }
     const collection = Collections.Art;
     let result = Const.SUCCESS;
     try {
-      for (const art of artwork) {
-        art.job_id = formData.job_id;
-        delete (art as any)._id;
-        const returnData = await this.dataService.saveDocument(
-          art,
-          collection,
-          art.art_id,
-          'art_id'
-        );
-        if (returnData.modifiedCount === 0) {
-          result = Const.FAILURE;
+      for (const art of this.art) {
+        const oldJobId = art.job_id;
+        const newJobId = formData.art_ids.includes(art.art_id) ? formData.job_id : Const.NO_JOB;
+        if (newJobId === oldJobId) {
+          result = Const.SUCCESS;
+        } else {
+          art.job_id = newJobId;
+          delete (art as any)._id;
+          const returnData = await this.dataService.saveDocument(
+            art,
+            collection,
+            art.art_id,
+            'art_id'
+          );
+          if (returnData.modifiedCount === 0) {
+            result = Const.FAILURE;
+          }
         }
       }
     } catch (error) {
@@ -198,11 +209,24 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
+  onClickReset() {
+    this.resetForm();
+    const clientSelectEl = document.getElementById('client_id') as HTMLSelectElement;
+    clientSelectEl.options[0].selected = true;
+  }
+
   resetForm() {
+    this.submitted = false;
+    if (this.editMode) {
+      this.populateForm<Job>(Collections.Jobs, 'job_id', this.jobId);
+    } else {
+      this.clearForm();
+    }
+  }
+
+  clearForm() {
     this.jobForm.reset();
-    this.jobForm.get('site_id')?.disable();
-    this.disableMenu('contact_ids');
-    this.disableMenu('art_ids');
+    this.resetMenus();
   }
 
   onSelectClient(event: any) {
@@ -210,11 +234,30 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     if (clientId !== '') {
       this.clientId = +clientId;
       this.enableMenu('site_id');
+      this.disableMenu('contact_ids');
+      this.disableMenu('art_ids');
+    } else {
+      this.resetMenus();
+    }
+  }
+
+  resetMenus() {
+    this.clientId = undefined;
+    this.depopulateMenu('site_id');
+    const menu = document.getElementById('site_id') as HTMLSelectElement;
+    let newOption = new Option('Select a job site...', '');
+    menu?.add(newOption);
+    this.jobForm.get('site_id')?.disable();
+    this.disableMenu('contact_ids');
+    this.disableMenu('art_ids');
+  }
+
+  onSelectSite(event: any) {
+    const siteId = event.target.value;
+    if (siteId !== '') {
       this.enableMenu('contact_ids');
       this.enableMenu('art_ids');
     } else {
-      this.clientId = undefined;
-      this.jobForm.get('site_id')?.disable();
       this.disableMenu('contact_ids');
       this.disableMenu('art_ids');
     }
@@ -265,7 +308,10 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     const menu = document.getElementById('contact_ids') as HTMLSelectElement;
     let newOption = new Option('TBD', 'tbd');
     menu?.add(newOption);
-    for (const clientContact of this.contacts) {
+    const availableContacts = this.contacts.filter(
+      (contact: Contact) => contact.client_id === this.clientId
+    );
+    for (const clientContact of availableContacts) {
       newOption = new Option(
         `${clientContact.first_name} ${clientContact.last_name}`,
         clientContact.contact_id.toString()
@@ -278,7 +324,10 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     const menu = document.getElementById('art_ids') as HTMLSelectElement;
     let newOption = new Option('TBD', 'tbd');
     menu?.add(newOption);
-    for (const art of this.art) {
+    const availableArt = this.art.filter(
+      (art) => art.job_id === Const.NO_JOB || art.job_id === this.jobId
+    );
+    for (const art of availableArt) {
       newOption = new Option(art.title, art.art_id.toString());
       menu?.add(newOption);
     }
@@ -307,6 +356,8 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
         contactsAssigned = true;
         option.selected = true;
         option.dispatchEvent(new Event('change'));
+      } else {
+        option.selected = false;
       }
     }
     if (!contactsAssigned) {
@@ -316,11 +367,19 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     contactsSelectEl.dispatchEvent(new Event('change'));
 
     const artSelectEl = document.getElementById('art_ids') as HTMLSelectElement;
+    let artAssigned = false;
     for (const option of artSelectEl.options) {
       if (this.dbData.art_ids.includes(+option.value)) {
+        artAssigned = true;
         option.selected = true;
         option.dispatchEvent(new Event('change'));
+      } else {
+        option.selected = false;
       }
+    }
+    if (!artAssigned) {
+      artSelectEl.options[0].selected = true;
+      artSelectEl.options[0].dispatchEvent(new Event('change'));
     }
     artSelectEl.dispatchEvent(new Event('change'));
   }
