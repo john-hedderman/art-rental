@@ -45,9 +45,9 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     'button',
     'btn btn-outline-secondary ms-3',
     false,
-    null,
-    null,
-    this.onClickReset.bind(this)
+    'modal',
+    '#confirmModal',
+    null
   );
   footerData = new FooterActions([new SaveButton(), this.resetButton, new CancelButton()]);
 

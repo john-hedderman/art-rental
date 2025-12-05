@@ -7,7 +7,12 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Job, Site } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { AsyncPipe } from '@angular/common';
-import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import {
+  ActionButton,
+  ActionLink,
+  FooterActions,
+  HeaderActions,
+} from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
@@ -28,7 +33,17 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
   goToSiteList = () => this.router.navigate(['/sites', 'list']);
   siteListLink = new ActionLink('siteListLink', 'Sites', '/sites/list', '', this.goToSiteList);
   headerData = new HeaderActions('site-add', 'Add Site', [], [this.siteListLink.data]);
-  footerData = new FooterActions([new SaveButton(), new CancelButton()]);
+  resetButton = new ActionButton(
+    'resetBtn',
+    'Reset',
+    'button',
+    'btn btn-outline-secondary ms-3',
+    false,
+    'modal',
+    '#confirmModal',
+    null
+  );
+  footerData = new FooterActions([new SaveButton(), this.resetButton, new CancelButton()]);
 
   siteForm!: FormGroup;
   submitted = false;
@@ -68,12 +83,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
         );
       }
       this.messagesService.clearStatus();
-      this.submitted = false;
-      if (this.editMode) {
-        this.populateForm<Site>(Collections.Sites, 'site_id', this.siteId);
-      } else {
-        this.siteForm.reset();
-      }
+      this.resetForm();
       this.dataService.reloadData(['sites', 'clients']);
     }
   }
@@ -148,6 +158,28 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
       this.siteForm.get('state')?.disable();
       this.siteForm.get('zip_code')?.disable();
     }
+  }
+
+  onClickReset() {
+    this.resetForm();
+    if (!this.editMode) {
+      const clientSelectEl = document.getElementById('client_id') as HTMLSelectElement;
+      clientSelectEl.options[0].selected = true;
+      clientSelectEl.dispatchEvent(new Event('change'));
+    }
+  }
+
+  resetForm() {
+    this.submitted = false;
+    if (this.editMode) {
+      this.populateForm<Site>(Collections.Sites, 'site_id', this.siteId);
+    } else {
+      this.clearForm();
+    }
+  }
+
+  clearForm() {
+    this.siteForm.reset();
   }
 
   populateData(): void {

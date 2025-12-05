@@ -5,9 +5,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Artist } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
-import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
-import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import {
+  ActionButton,
+  ActionLink,
+  FooterActions,
+  HeaderActions,
+} from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
@@ -32,7 +36,17 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
     this.goToArtistList
   );
   headerData = new HeaderActions('artist-add', 'Add Artist', [], [this.artistListLink.data]);
-  footerData = new FooterActions([new SaveButton(), new CancelButton()]);
+  resetButton = new ActionButton(
+    'resetBtn',
+    'Reset',
+    'button',
+    'btn btn-outline-secondary ms-3',
+    false,
+    'modal',
+    '#confirmModal',
+    null
+  );
+  footerData = new FooterActions([new SaveButton(), this.resetButton, new CancelButton()]);
 
   artistForm!: FormGroup;
   submitted = false;
@@ -63,14 +77,26 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
       );
       this.messagesService.showStatus(this.saveStatus, Msgs.SAVED_ARTIST, Msgs.SAVE_ARTIST_FAILED);
       this.messagesService.clearStatus();
-      this.submitted = false;
-      if (this.editMode) {
-        this.populateForm(Collections.Artists, 'artist_id', this.artistId);
-      } else {
-        this.artistForm.reset();
-      }
+      this.resetForm();
       this.dataService.reloadData(['artists']);
     }
+  }
+
+  onClickReset() {
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.submitted = false;
+    if (this.editMode) {
+      this.populateForm<Artist>(Collections.Artists, 'artist_id', this.artistId);
+    } else {
+      this.clearForm();
+    }
+  }
+
+  clearForm() {
+    this.artistForm.reset();
   }
 
   populateData() {

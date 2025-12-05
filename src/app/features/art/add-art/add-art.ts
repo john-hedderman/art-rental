@@ -10,7 +10,12 @@ import { Art, Artist, Job } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
-import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import {
+  ActionButton,
+  ActionLink,
+  FooterActions,
+  HeaderActions,
+} from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 import { MessagesService } from '../../../service/messages-service';
@@ -30,7 +35,17 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
   goToArtList = () => this.router.navigate(['/art', 'list']);
   artListLink = new ActionLink('artListLink', 'Art', '/art/list', '', this.goToArtList);
   headerData = new HeaderActions('art-add', 'Add Art', [], [this.artListLink.data]);
-  footerData = new FooterActions([new SaveButton(), new CancelButton()]);
+  resetButton = new ActionButton(
+    'resetBtn',
+    'Reset',
+    'button',
+    'btn btn-outline-secondary ms-3',
+    false,
+    'modal',
+    '#confirmModal',
+    null
+  );
+  footerData = new FooterActions([new SaveButton(), this.resetButton, new CancelButton()]);
 
   artForm!: FormGroup;
   submitted = false;
@@ -76,12 +91,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       this.messagesService.showStatus(this.saveStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
       this.messagesService.showStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
       this.messagesService.clearStatus();
-      this.submitted = false;
-      if (this.editMode) {
-        this.populateForm(Collections.Art, 'art_id', this.artId);
-      } else {
-        this.artForm.reset();
-      }
+      this.resetForm();
       this.dataService.reloadData(['art', 'jobs']);
     }
   }
@@ -154,6 +164,30 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     } else {
       this.artForm.get('file_name')?.enable();
     }
+  }
+
+  onClickReset() {
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.submitted = false;
+    if (this.editMode) {
+      this.populateForm<Art>(Collections.Art, 'art_id', this.artId);
+    } else {
+      this.clearForm();
+    }
+  }
+
+  clearForm() {
+    this.artForm.reset();
+    this.clearFilename();
+  }
+
+  clearFilename() {
+    const filenameTBDEl = this.fileNameTBD?.nativeElement as HTMLInputElement;
+    filenameTBDEl.checked = false;
+    this.artForm.get('file_name')?.enable();
   }
 
   populateData() {

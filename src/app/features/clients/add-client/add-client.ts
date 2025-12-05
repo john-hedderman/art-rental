@@ -13,7 +13,12 @@ import { Client, Contact } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
-import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import {
+  ActionButton,
+  ActionLink,
+  FooterActions,
+  HeaderActions,
+} from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
@@ -38,7 +43,17 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     this.goToClientList
   );
   headerData = new HeaderActions('client-add', 'Add Client', [], [this.clientListLink.data]);
-  footerData = new FooterActions([new SaveButton(), new CancelButton()]);
+  resetButton = new ActionButton(
+    'resetBtn',
+    'Reset',
+    'button',
+    'btn btn-outline-secondary ms-3',
+    false,
+    'modal',
+    '#confirmModal',
+    null
+  );
+  footerData = new FooterActions([new SaveButton(), this.resetButton, new CancelButton()]);
 
   dbData: Client = {} as Client;
   contactsDBData: Contact[] = [];
@@ -52,8 +67,6 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
   clientStatus = '';
   deleteContactsStatus = '';
   contactsStatus = '';
-
-  initialContactsCount = 0;
 
   async onSubmit() {
     this.submitted = true;
@@ -78,13 +91,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
         Msgs.SAVE_CONTACTS_FAILED
       );
       this.messagesService.clearStatus();
-      this.submitted = false;
-      if (this.editMode) {
-        this.populateForm(Collections.Clients, 'client_id', this.clientId);
-      } else {
-        this.contacts.clear();
-        this.clientForm.reset();
-      }
+      this.resetForm();
       this.dataService.reloadData(['clients', 'contacts']);
     }
   }
@@ -209,11 +216,30 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
   populateContactsData() {
     this.contacts.clear();
     const contact_ids = this.dbData.contact_ids;
-    this.initialContactsCount = contact_ids.length;
-    for (const contact_id of contact_ids) {
-      this.addContact(contact_id);
-      this.populateContactData(contact_id);
+    setTimeout(() => {
+      for (const contact_id of contact_ids) {
+        this.addContact(contact_id);
+        this.populateContactData(contact_id);
+      }
+    }, 100);
+  }
+
+  onClickReset() {
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.submitted = false;
+    if (this.editMode) {
+      this.populateForm<Client>(Collections.Clients, 'client_id', this.clientId);
+    } else {
+      this.clearForm();
+      this.contacts.clear();
     }
+  }
+
+  clearForm() {
+    this.clientForm.reset();
   }
 
   populateData() {
@@ -243,7 +269,6 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.clientId = 0;
     this.editMode = false;
-    this.initialContactsCount = 0;
 
     const clientId = this.route.snapshot.paramMap.get('id');
     if (clientId) {
