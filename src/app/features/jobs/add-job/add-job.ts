@@ -74,6 +74,8 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.jobForm.valid) {
+      const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
+      saveBtn.disabled = true;
       const jobId = this.route.snapshot.paramMap.get('id');
       this.jobId = jobId ? +jobId : Date.now();
       this.jobForm.value.job_id = this.jobId;
@@ -103,6 +105,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       );
       this.messagesService.clearStatus();
       this.resetForm();
+      saveBtn.disabled = false;
       this.dataService.reloadData(['jobs', 'clients', 'sites', 'art']);
     }
   }

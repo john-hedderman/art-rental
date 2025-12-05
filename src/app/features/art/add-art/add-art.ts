@@ -68,6 +68,8 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.artForm.valid) {
+      const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
+      saveBtn.disabled = true;
       const artId = this.route.snapshot.paramMap.get('id');
       this.artId = artId ? +artId : Date.now();
       this.artForm.value.art_id = this.artId;
@@ -101,6 +103,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       );
       this.messagesService.clearStatus();
       this.resetForm();
+      saveBtn.disabled = false;
       this.dataService.reloadData(['art', 'jobs']);
     }
   }

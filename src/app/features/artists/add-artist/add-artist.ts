@@ -62,6 +62,8 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.artistForm.valid) {
+      const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
+      saveBtn.disabled = true;
       this.artistId = Date.now();
       const artistId = this.route.snapshot.paramMap.get('id');
       if (artistId) {
@@ -83,6 +85,7 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
       );
       this.messagesService.clearStatus();
       this.resetForm();
+      saveBtn.disabled = false;
       this.dataService.reloadData(['artists']);
     }
   }

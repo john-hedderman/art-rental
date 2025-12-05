@@ -97,6 +97,8 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.contactForm.valid) {
+      const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
+      saveBtn.disabled = true;
       this.contactId = Date.now();
       const contactId = this.route.snapshot.paramMap.get('id');
       if (contactId) {
@@ -121,6 +123,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
       );
       this.messagesService.clearStatus();
       this.resetForm();
+      saveBtn.disabled = false;
       this.dataService.reloadData(['contacts', 'clients']);
     }
   }

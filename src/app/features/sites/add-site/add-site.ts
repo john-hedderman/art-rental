@@ -67,6 +67,8 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.siteForm.valid) {
+      const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
+      saveBtn.disabled = true;
       const siteId = this.route.snapshot.paramMap.get('id');
       this.siteId = siteId ? +siteId : Date.now();
       this.siteForm.value.site_id = this.siteId;
@@ -89,6 +91,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
       }
       this.messagesService.clearStatus();
       this.resetForm();
+      saveBtn.disabled = false;
       this.dataService.reloadData(['sites', 'clients']);
     }
   }

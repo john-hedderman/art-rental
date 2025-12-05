@@ -72,6 +72,8 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
   async onSubmit() {
     this.submitted = true;
     if (this.clientForm.valid) {
+      const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
+      saveBtn.disabled = true;
       this.clientId = Date.now();
       const clientId = this.route.snapshot.paramMap.get('id');
       if (clientId) {
@@ -93,6 +95,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
       );
       this.messagesService.clearStatus();
       this.resetForm();
+      saveBtn.disabled = false;
       this.dataService.reloadData(['clients', 'contacts']);
     }
   }
