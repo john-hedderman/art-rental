@@ -44,3 +44,13 @@
     background-color: transparent;
   }
 }
+
+@media (min-width: 768px) {
+  ::ng-deep ngx-datatable {
+    .datatable-body-row .datatable-body-cell:first-of-type,
+    .datatable-header .datatable-header-cell:first-of-type {
+      width: 0 !important;
+      padding: 0 !important;
+    }
+  }
+}
