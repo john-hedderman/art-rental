@@ -18,6 +18,7 @@ import {
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-art-detail',
@@ -64,8 +65,16 @@ export class ArtDetail implements OnDestroy {
       this.artId
     );
     this.jobStatus = await this.updateJob();
-    this.messagesService.showStatus(this.deleteStatus, Msgs.DELETED_ART, Msgs.DELETE_ART_FAILED);
-    this.messagesService.showStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
+    this.messagesService.showStatus(
+      this.deleteStatus,
+      Util.replaceTokens(Msgs.DELETED, { entity: 'art' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'art' })
+    );
+    this.messagesService.showStatus(
+      this.jobStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'job' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'job' })
+    );
     this.messagesService.clearStatus();
     this.dataService.reloadData(['art', 'jobs'], this.goToArtList);
   }

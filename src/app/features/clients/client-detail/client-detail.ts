@@ -21,6 +21,7 @@ import {
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-client-detail',
@@ -93,15 +94,19 @@ export class ClientDetail implements OnInit, OnDestroy {
     );
     this.messagesService.showStatus(
       this.clientStatus,
-      Msgs.DELETED_CLIENT,
-      Msgs.DELETE_CLIENT_FAILED
+      Util.replaceTokens(Msgs.DELETED, { entity: 'client' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'client' })
     );
     this.messagesService.showStatus(
       this.contactsStatus,
-      Msgs.DELETED_CONTACTS,
-      Msgs.DELETE_CONTACTS_FAILED
+      Util.replaceTokens(Msgs.DELETED, { entity: 'contacts' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'contacts' })
     );
-    this.messagesService.showStatus(this.sitesStatus, Msgs.DELETED_SITES, Msgs.DELETE_SITES_FAILED);
+    this.messagesService.showStatus(
+      this.sitesStatus,
+      Util.replaceTokens(Msgs.DELETED, { entity: 'sites' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'sites' })
+    );
     this.messagesService.clearStatus();
     this.dataService.reloadData(['clients', 'contacts', 'sites'], this.goToClientList);
   }

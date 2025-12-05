@@ -20,6 +20,7 @@ import { SaveButton } from '../../../shared/components/save-button/save-button';
 import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-add-art',
@@ -88,8 +89,16 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
         this.oldJobStatus = await this.updateOldJob(this.dbData, this.artForm.value);
       }
       this.jobStatus = await this.updateJob(this.dbData, this.artForm.value);
-      this.messagesService.showStatus(this.saveStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
-      this.messagesService.showStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
+      this.messagesService.showStatus(
+        this.saveStatus,
+        Util.replaceTokens(Msgs.SAVED, { entity: 'art' }),
+        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' })
+      );
+      this.messagesService.showStatus(
+        this.jobStatus,
+        Util.replaceTokens(Msgs.SAVED, { entity: 'job' }),
+        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'job' })
+      );
       this.messagesService.clearStatus();
       this.resetForm();
       this.dataService.reloadData(['art', 'jobs']);

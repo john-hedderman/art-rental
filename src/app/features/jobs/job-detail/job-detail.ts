@@ -86,10 +86,26 @@ export class JobDetail implements OnInit, OnDestroy {
     this.clientStatus = await this.updateClient();
     this.siteStatus = await this.updateSite();
     this.artStatus = await this.updateArt();
-    this.messagesService.showStatus(this.deleteStatus, Msgs.DELETED_JOB, Msgs.DELETE_JOB_FAILED);
-    this.messagesService.showStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED);
-    this.messagesService.showStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED);
-    this.messagesService.showStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
+    this.messagesService.showStatus(
+      this.deleteStatus,
+      Util.replaceTokens(Msgs.DELETED, { entity: 'job' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'job' })
+    );
+    this.messagesService.showStatus(
+      this.clientStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
+    );
+    this.messagesService.showStatus(
+      this.siteStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'site' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'site' })
+    );
+    this.messagesService.showStatus(
+      this.artStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'art' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' })
+    );
     this.messagesService.clearStatus();
     this.dataService.reloadData(['jobs', 'clients', 'sites', 'art'], this.goToJobList);
   }

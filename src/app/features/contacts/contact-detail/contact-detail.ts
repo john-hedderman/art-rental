@@ -19,6 +19,7 @@ import {
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-contact-detail',
@@ -80,10 +81,14 @@ export class ContactDetail implements OnDestroy {
     this.clientStatus = await this.updateClient();
     this.messagesService.showStatus(
       this.deleteStatus,
-      Msgs.DELETED_CONTACT,
-      Msgs.DELETE_CONTACT_FAILED
+      Util.replaceTokens(Msgs.DELETED, { entity: 'contact' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'contact' })
     );
-    this.messagesService.showStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED);
+    this.messagesService.showStatus(
+      this.clientStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
+    );
     this.messagesService.clearStatus();
     this.dataService.reloadData(['contacts', 'clients'], this.goToContactList);
   }

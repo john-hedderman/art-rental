@@ -20,6 +20,7 @@ import { CancelButton } from '../../../shared/components/cancel-button/cancel-bu
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-add-job',
@@ -80,14 +81,26 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       this.clientStatus = await this.updateClient(this.jobForm.value);
       this.siteStatus = await this.updateSite(this.jobForm.value);
       this.artStatus = await this.updateArt(this.jobForm.value);
-      this.messagesService.showStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
+      this.messagesService.showStatus(
+        this.jobStatus,
+        Util.replaceTokens(Msgs.SAVED, { entity: 'job' }),
+        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'job' })
+      );
       this.messagesService.showStatus(
         this.clientStatus,
-        Msgs.SAVED_CLIENT,
-        Msgs.SAVE_CLIENT_FAILED
+        Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
+        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
       );
-      this.messagesService.showStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED);
-      this.messagesService.showStatus(this.artStatus, Msgs.SAVED_ART, Msgs.SAVE_ART_FAILED);
+      this.messagesService.showStatus(
+        this.siteStatus,
+        Util.replaceTokens(Msgs.SAVED, { entity: 'site' }),
+        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'site' })
+      );
+      this.messagesService.showStatus(
+        this.artStatus,
+        Util.replaceTokens(Msgs.SAVED, { entity: 'art' }),
+        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' })
+      );
       this.messagesService.clearStatus();
       this.resetForm();
       this.dataService.reloadData(['jobs', 'clients', 'sites', 'art']);

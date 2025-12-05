@@ -20,6 +20,7 @@ import { CancelButton } from '../../../shared/components/cancel-button/cancel-bu
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-add-contact',
@@ -110,13 +111,13 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
       this.clientStatus = await this.updateClient(this.contactForm.value);
       this.messagesService.showStatus(
         this.contactStatus,
-        Msgs.SAVED_CONTACT,
-        Msgs.SAVE_CONTACT_FAILED
+        Util.replaceTokens(Msgs.SAVED, { entity: 'contact' }),
+        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'contact' })
       );
       this.messagesService.showStatus(
         this.clientStatus,
-        Msgs.SAVED_CLIENT,
-        Msgs.SAVE_CLIENT_FAILED
+        Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
+        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
       );
       this.messagesService.clearStatus();
       this.resetForm();

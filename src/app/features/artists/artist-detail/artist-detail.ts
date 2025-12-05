@@ -18,6 +18,7 @@ import {
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-artist-detail',
@@ -67,8 +68,8 @@ export class ArtistDetail implements OnDestroy {
     );
     this.messagesService.showStatus(
       this.deleteStatus,
-      Msgs.DELETED_ARTIST,
-      Msgs.DELETE_ARTIST_FAILED
+      Util.replaceTokens(Msgs.DELETED, { entity: 'artist' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'artist' })
     );
     this.messagesService.clearStatus();
     this.dataService.reloadData(['artists'], this.goToArtistList);

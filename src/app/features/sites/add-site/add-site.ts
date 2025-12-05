@@ -20,6 +20,7 @@ import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-add-site',
@@ -74,12 +75,16 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
       if (!this.editMode) {
         this.clientStatus = await this.updateClient(this.siteForm.value);
       }
-      this.messagesService.showStatus(this.siteStatus, Msgs.SAVED_SITE, Msgs.SAVE_SITE_FAILED);
+      this.messagesService.showStatus(
+        this.siteStatus,
+        Util.replaceTokens(Msgs.SAVED, { entity: 'site' }),
+        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'site' })
+      );
       if (!this.editMode) {
         this.messagesService.showStatus(
           this.clientStatus,
-          Msgs.SAVED_CLIENT,
-          Msgs.SAVE_CLIENT_FAILED
+          Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
+          Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
         );
       }
       this.messagesService.clearStatus();

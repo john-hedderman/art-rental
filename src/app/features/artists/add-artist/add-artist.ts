@@ -17,6 +17,7 @@ import { CancelButton } from '../../../shared/components/cancel-button/cancel-bu
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-add-artist',
@@ -75,7 +76,11 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
         id,
         field
       );
-      this.messagesService.showStatus(this.saveStatus, Msgs.SAVED_ARTIST, Msgs.SAVE_ARTIST_FAILED);
+      this.messagesService.showStatus(
+        this.saveStatus,
+        Util.replaceTokens(Msgs.SAVED, { entity: 'artist' }),
+        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'artist' })
+      );
       this.messagesService.clearStatus();
       this.resetForm();
       this.dataService.reloadData(['artists']);

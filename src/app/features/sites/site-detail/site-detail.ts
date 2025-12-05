@@ -19,6 +19,7 @@ import { OperationsService } from '../../../service/operations-service';
 import { Collections } from '../../../shared/enums/collections';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { Util } from '../../../shared/util/util';
 
 @Component({
   selector: 'app-site-detail',
@@ -74,9 +75,21 @@ export class SiteDetail implements OnDestroy {
     );
     this.jobStatus = await this.updateJob();
     this.clientStatus = await this.updateClient();
-    this.messagesService.showStatus(this.deleteStatus, Msgs.DELETED_SITE, Msgs.DELETE_SITE_FAILED);
-    this.messagesService.showStatus(this.jobStatus, Msgs.SAVED_JOB, Msgs.SAVE_JOB_FAILED);
-    this.messagesService.showStatus(this.clientStatus, Msgs.SAVED_CLIENT, Msgs.SAVE_CLIENT_FAILED);
+    this.messagesService.showStatus(
+      this.deleteStatus,
+      Util.replaceTokens(Msgs.DELETED, { entity: 'site' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'site' })
+    );
+    this.messagesService.showStatus(
+      this.jobStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'job' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'job' })
+    );
+    this.messagesService.showStatus(
+      this.clientStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
+    );
     this.messagesService.clearStatus();
     this.dataService.reloadData(['sites', 'jobs', 'clients'], this.goToSiteList);
   }
