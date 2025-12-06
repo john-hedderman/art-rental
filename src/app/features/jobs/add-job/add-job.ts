@@ -66,48 +66,39 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
 
   clientId: number | undefined;
 
-  jobStatus = '';
-  clientStatus = '';
-  artStatus = '';
-  siteStatus = '';
+  saveStatus = '';
 
-  async onSubmit() {
-    this.submitted = true;
-    if (this.jobForm.valid) {
-      const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
-      saveBtn.disabled = true;
-      const jobId = this.route.snapshot.paramMap.get('id');
-      this.jobId = jobId ? +jobId : Date.now();
-      this.jobForm.value.job_id = this.jobId;
-      this.jobStatus = await this.saveJob(this.jobForm.value);
-      this.clientStatus = await this.updateClient(this.jobForm.value);
-      this.siteStatus = await this.updateSite(this.jobForm.value);
-      this.artStatus = await this.updateArt(this.jobForm.value);
-      this.messagesService.showStatus(
-        this.jobStatus,
-        Util.replaceTokens(Msgs.SAVED, { entity: 'job' }),
-        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'job' })
-      );
-      this.messagesService.showStatus(
-        this.clientStatus,
-        Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
-        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
-      );
-      this.messagesService.showStatus(
-        this.siteStatus,
-        Util.replaceTokens(Msgs.SAVED, { entity: 'site' }),
-        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'site' })
-      );
-      this.messagesService.showStatus(
-        this.artStatus,
-        Util.replaceTokens(Msgs.SAVED, { entity: 'art' }),
-        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' })
-      );
-      this.messagesService.clearStatus();
-      this.resetForm();
-      saveBtn.disabled = false;
-      this.dataService.reloadData(['jobs', 'clients', 'sites', 'art']);
+  preSave() {
+    this.disableSaveBtn();
+    const jobId = this.route.snapshot.paramMap.get('id');
+    this.jobId = jobId ? +jobId : Date.now();
+    this.jobForm.value.job_id = this.jobId;
+  }
+
+  async save(): Promise<string> {
+    const jobStatus = await this.saveJob();
+    const clientStatus = await this.updateClient();
+    const siteStatus = await this.updateSite();
+    const artStatus = await this.updateArt();
+    if ([jobStatus, clientStatus, siteStatus, artStatus].includes(Const.FAILURE)) {
+      return Const.FAILURE;
     }
+    return Const.SUCCESS;
+  }
+
+  postSave() {
+    this.messagesService.showStatus(
+      this.saveStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'job' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'job' })
+    );
+    this.messagesService.clearStatus();
+    this.resetForm();
+    this.enableSaveBtn();
+  }
+
+  async onSubmit(): Promise<void> {
+    this.submitForm(this.jobForm, ['jobs', 'clients', 'sites', 'art']);
   }
 
   convertIds() {
@@ -118,7 +109,8 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     form.art_ids = form.art_ids.map((id: any) => parseInt(id));
   }
 
-  async saveJob(formData: any): Promise<string> {
+  async saveJob(): Promise<string> {
+    const formData = this.jobForm.value;
     this.convertIds();
     const collection = Collections.Jobs;
     let result = Const.SUCCESS;
@@ -136,7 +128,8 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
-  async updateClient(formData: any): Promise<string> {
+  async updateClient(): Promise<string> {
+    const formData = this.jobForm.value;
     const client = this.clients.find((client) => client.client_id === formData.client_id);
     if (!client) {
       console.error('Save client error, could not find the selected client');
@@ -163,7 +156,8 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
-  async updateArt(formData: any): Promise<string> {
+  async updateArt(): Promise<string> {
+    const formData = this.jobForm.value;
     const collection = Collections.Art;
     let result = Const.SUCCESS;
     try {
@@ -193,7 +187,8 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
-  async updateSite(formData: any): Promise<string> {
+  async updateSite(): Promise<string> {
+    const formData = this.jobForm.value;
     if (formData.site_id === Const.TBD) {
       return Const.SUCCESS; // site is TBD
     }
@@ -401,7 +396,6 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    private route: ActivatedRoute,
     private messagesService: MessagesService
   ) {
     super();

@@ -65,39 +65,35 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
 
   clientId!: number;
 
-  clientStatus = '';
-  deleteContactsStatus = '';
-  contactsStatus = '';
+  saveStatus = '';
 
-  async onSubmit() {
-    this.submitted = true;
-    if (this.clientForm.valid) {
-      const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
-      saveBtn.disabled = true;
-      this.clientId = Date.now();
-      const clientId = this.route.snapshot.paramMap.get('id');
-      if (clientId) {
-        this.clientId = +clientId;
-      }
-      this.clientForm.value.client_id = this.clientId;
-      this.clientStatus = await this.saveClient(this.clientForm.value);
-      this.deleteContactsStatus = await this.deleteContacts();
-      this.contactsStatus = await this.saveContacts(this.clientForm.value.contacts);
-      this.messagesService.showStatus(
-        this.clientStatus,
-        Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
-        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
-      );
-      this.messagesService.showStatus(
-        this.contactsStatus,
-        Util.replaceTokens(Msgs.SAVED, { entity: 'contacts' }),
-        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'contacts' })
-      );
-      this.messagesService.clearStatus();
-      this.resetForm();
-      saveBtn.disabled = false;
-      this.dataService.reloadData(['clients', 'contacts']);
-    }
+  preSave() {
+    this.disableSaveBtn();
+    const clientId = this.route.snapshot.paramMap.get('id');
+    this.clientId = clientId ? +clientId : Date.now();
+    this.clientForm.value.client_id = this.clientId;
+  }
+
+  async save(): Promise<string> {
+    const clientStatus = await this.saveClient();
+    const deleteContactsStatus = await this.deleteContacts();
+    const contactsStatus = await this.saveContacts();
+    return this.jobResult([clientStatus, deleteContactsStatus, contactsStatus]);
+  }
+
+  postSave() {
+    this.messagesService.showStatus(
+      this.saveStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
+    );
+    this.messagesService.clearStatus();
+    this.resetForm();
+    this.enableSaveBtn();
+  }
+
+  async onSubmit(): Promise<void> {
+    this.submitForm(this.clientForm, ['clients', 'contacts']);
   }
 
   mergeContactIds(clientFormData: any): any {
@@ -106,9 +102,9 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     return { ...allButContacts, contact_ids, job_ids: [], site_ids: [] };
   }
 
-  async saveClient(clientFormData: any): Promise<string> {
+  async saveClient(): Promise<string> {
+    const formData = this.mergeContactIds(this.clientForm.value);
     const collection = Collections.Clients;
-    const formData = this.mergeContactIds(clientFormData);
     let result = Const.SUCCESS;
     try {
       let returnData;
@@ -148,7 +144,8 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
-  async saveContacts(contactsFormData: any[]): Promise<string> {
+  async saveContacts(): Promise<string> {
+    const contactsFormData = this.clientForm.value.contacts;
     const collection = Collections.Contacts;
     let returnData;
     let result = Const.SUCCESS;
@@ -264,7 +261,6 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private route: ActivatedRoute,
     private messagesService: MessagesService
   ) {
     super();

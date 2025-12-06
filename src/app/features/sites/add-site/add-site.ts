@@ -54,8 +54,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
 
   clients: Client[] = [];
 
-  siteStatus = '';
-  clientStatus = '';
+  saveStatus = '';
 
   jobs: Job[] = [];
 
@@ -64,36 +63,36 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
   siteId!: number;
   editMode = false;
 
-  async onSubmit() {
-    this.submitted = true;
-    if (this.siteForm.valid) {
-      const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
-      saveBtn.disabled = true;
-      const siteId = this.route.snapshot.paramMap.get('id');
-      this.siteId = siteId ? +siteId : Date.now();
-      this.siteForm.value.site_id = this.siteId;
-      this.siteForm.value.job_id = Const.NO_JOB;
-      this.siteStatus = await this.saveSite(this.siteForm.value);
-      if (!this.editMode) {
-        this.clientStatus = await this.updateClient(this.siteForm.value);
-      }
-      this.messagesService.showStatus(
-        this.siteStatus,
-        Util.replaceTokens(Msgs.SAVED, { entity: 'site' }),
-        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'site' })
-      );
-      if (!this.editMode) {
-        this.messagesService.showStatus(
-          this.clientStatus,
-          Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
-          Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
-        );
-      }
-      this.messagesService.clearStatus();
-      this.resetForm();
-      saveBtn.disabled = false;
-      this.dataService.reloadData(['sites', 'clients']);
+  preSave() {
+    this.disableSaveBtn();
+    const siteId = this.route.snapshot.paramMap.get('id');
+    this.siteId = siteId ? +siteId : Date.now();
+    this.siteForm.value.site_id = this.siteId;
+    this.siteForm.value.job_id = Const.NO_JOB;
+  }
+
+  async save(): Promise<string> {
+    const siteStatus = await this.saveSite();
+    const clientStatus = this.editMode ? Const.SUCCESS : await this.updateClient();
+    if ([siteStatus, clientStatus].includes(Const.FAILURE)) {
+      return Const.FAILURE;
     }
+    return Const.SUCCESS;
+  }
+
+  postSave() {
+    this.messagesService.showStatus(
+      this.saveStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'site' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'site' })
+    );
+    this.messagesService.clearStatus();
+    this.resetForm();
+    this.enableSaveBtn();
+  }
+
+  async onSubmit(): Promise<void> {
+    this.submitForm(this.siteForm, ['sites', 'clients']);
   }
 
   convertIds() {
@@ -104,7 +103,8 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
     }
   }
 
-  async saveSite(formData: any): Promise<string> {
+  async saveSite(): Promise<string> {
+    const formData = this.siteForm.value;
     this.convertIds();
     const collectionName = Collections.Sites;
     let result = Const.SUCCESS;
@@ -122,7 +122,8 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
-  async updateClient(formData: any): Promise<string> {
+  async updateClient(): Promise<string> {
+    const formData = this.siteForm.value;
     const client = this.clients.find((client) => client.client_id === formData.client_id);
     if (!client) {
       console.error('Save client error, could not find the selected client');
@@ -207,7 +208,6 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    private route: ActivatedRoute,
     private messagesService: MessagesService
   ) {
     super();

@@ -52,8 +52,6 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
   submitted = false;
 
   saveStatus = '';
-  oldJobStatus = '';
-  jobStatus = '';
 
   artists$: Observable<Artist[]> | undefined;
   jobs$: Observable<Job[]> | undefined;
@@ -65,50 +63,53 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
   artId!: number;
   editMode = false;
 
-  async onSubmit() {
-    this.submitted = true;
-    if (this.artForm.valid) {
-      const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
-      saveBtn.disabled = true;
-      const artId = this.route.snapshot.paramMap.get('id');
-      this.artId = artId ? +artId : Date.now();
-      this.artForm.value.art_id = this.artId;
-      this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
-      this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
-      const filenameTBDEl = this.fileNameTBD?.nativeElement as HTMLInputElement;
-      if (filenameTBDEl.checked) {
-        this.artForm.value.file_name = 'spacer.gif';
-      }
-      const id = this.editMode ? this.artId : undefined;
-      const field = this.editMode ? 'art_id' : undefined;
-      this.saveStatus = await this.operationsService.saveDocument(
-        this.artForm.value,
-        Collections.Art,
-        id,
-        field
-      );
-      if (this.editMode) {
-        this.oldJobStatus = await this.updateOldJob(this.dbData, this.artForm.value);
-      }
-      this.jobStatus = await this.updateJob(this.dbData, this.artForm.value);
-      this.messagesService.showStatus(
-        this.saveStatus,
-        Util.replaceTokens(Msgs.SAVED, { entity: 'art' }),
-        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' })
-      );
-      this.messagesService.showStatus(
-        this.jobStatus,
-        Util.replaceTokens(Msgs.SAVED, { entity: 'job' }),
-        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'job' })
-      );
-      this.messagesService.clearStatus();
-      this.resetForm();
-      saveBtn.disabled = false;
-      this.dataService.reloadData(['art', 'jobs']);
+  preSave() {
+    this.disableSaveBtn();
+    const artId = this.route.snapshot.paramMap.get('id');
+    this.artId = artId ? +artId : Date.now();
+    this.artForm.value.art_id = this.artId;
+    this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
+    this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
+    const filenameTBDEl = this.fileNameTBD?.nativeElement as HTMLInputElement;
+    if (filenameTBDEl.checked) {
+      this.artForm.value.file_name = 'spacer.gif';
     }
   }
 
-  async updateOldJob(dbData: any, formData: any): Promise<string> {
+  async save(): Promise<string> {
+    const artStatus = await this.saveArt();
+    const oldJobStatus = this.editMode ? await this.updateOldJob() : Const.SUCCESS;
+    const jobStatus = await this.updateJob();
+    return this.jobResult([artStatus, oldJobStatus, jobStatus]);
+  }
+
+  postSave() {
+    this.messagesService.showStatus(
+      this.saveStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'art' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' })
+    );
+    this.messagesService.clearStatus();
+    this.resetForm();
+    this.enableSaveBtn();
+  }
+
+  async onSubmit(): Promise<void> {
+    this.submitForm(this.artForm, ['art', 'jobs']);
+  }
+
+  async saveArt(): Promise<string> {
+    return await this.operationsService.saveDocument(
+      this.artForm.value,
+      Collections.Art,
+      this.editMode ? this.artId : undefined,
+      this.editMode ? 'art_id' : undefined
+    );
+  }
+
+  async updateOldJob(): Promise<string> {
+    const dbData = this.dbData;
+    const formData = this.artForm.value;
     if (dbData.job_id === formData.job_id || dbData.job_id === Const.NO_JOB) {
       return Const.SUCCESS;
     }
@@ -138,7 +139,9 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
-  async updateJob(dbData: any, formData: any): Promise<string> {
+  async updateJob(): Promise<string> {
+    const dbData = this.dbData;
+    const formData = this.artForm.value;
     if (dbData.job_id === formData.job_id || formData.job_id === Const.NO_JOB) {
       return Const.SUCCESS;
     }
@@ -229,7 +232,6 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    private route: ActivatedRoute,
     private messagesService: MessagesService
   ) {
     super();

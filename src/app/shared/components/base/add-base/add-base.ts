@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { OperationsService } from '../../../../service/operations-service';
 import * as Const from '../../../../constants';
 import { DataService } from '../../../../service/data-service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-add-base',
@@ -16,10 +17,17 @@ export abstract class AddBase {
   operationsService = inject(OperationsService);
   dataService = inject(DataService);
   http = inject(HttpClient);
+  route = inject(ActivatedRoute);
 
   abstract dbData: any;
-
   abstract populateData(): void;
+  abstract submitted: boolean;
+  abstract editMode: boolean;
+  abstract preSave(): void;
+  abstract save(): Promise<string>;
+  abstract saveStatus: string;
+  abstract postSave(): void;
+  abstract resetForm(): void;
 
   populateForm<T>(collection: string, recordId: string, id: number) {
     this.http
@@ -32,6 +40,32 @@ export abstract class AddBase {
           }
         }
       });
+  }
+
+  get saveBtn() {
+    return document.getElementById('saveBtn') as HTMLButtonElement;
+  }
+
+  disableSaveBtn() {
+    this.saveBtn.disabled = true;
+  }
+
+  enableSaveBtn() {
+    this.saveBtn.disabled = false;
+  }
+
+  async submitForm(form: any, modifiedCollections: string[]) {
+    this.submitted = true;
+    if (form.valid) {
+      this.preSave();
+      this.saveStatus = await this.save();
+      this.postSave();
+      this.dataService.reloadData(modifiedCollections);
+    }
+  }
+
+  jobResult(statuses: string[]): string {
+    return statuses.includes(Const.FAILURE) ? Const.FAILURE : Const.SUCCESS;
   }
 
   constructor() {}

@@ -59,35 +59,40 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
   artistId!: number;
   editMode = false;
 
-  async onSubmit() {
-    this.submitted = true;
-    if (this.artistForm.valid) {
-      const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
-      saveBtn.disabled = true;
-      this.artistId = Date.now();
-      const artistId = this.route.snapshot.paramMap.get('id');
-      if (artistId) {
-        this.artistId = +artistId;
-      }
-      this.artistForm.value.artist_id = this.artistId;
-      const id = this.editMode ? this.artistId : undefined;
-      const field = this.editMode ? 'artist_id' : undefined;
-      this.saveStatus = await this.operationsService.saveDocument(
-        this.artistForm.value,
-        Collections.Artists,
-        id,
-        field
-      );
-      this.messagesService.showStatus(
-        this.saveStatus,
-        Util.replaceTokens(Msgs.SAVED, { entity: 'artist' }),
-        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'artist' })
-      );
-      this.messagesService.clearStatus();
-      this.resetForm();
-      saveBtn.disabled = false;
-      this.dataService.reloadData(['artists']);
-    }
+  preSave() {
+    this.disableSaveBtn();
+    const artistId = this.route.snapshot.paramMap.get('id');
+    this.artistId = artistId ? +artistId : Date.now();
+    this.artistForm.value.artist_id = this.artistId;
+  }
+
+  async save(): Promise<string> {
+    const artistStatus = await this.saveArtist();
+    return this.jobResult([artistStatus]);
+  }
+
+  postSave() {
+    this.messagesService.showStatus(
+      this.saveStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'artist' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'artist' })
+    );
+    this.messagesService.clearStatus();
+    this.resetForm();
+    this.enableSaveBtn();
+  }
+
+  async onSubmit(): Promise<void> {
+    this.submitForm(this.artistForm, ['artists']);
+  }
+
+  async saveArtist(): Promise<string> {
+    return await this.operationsService.saveDocument(
+      this.artistForm.value,
+      Collections.Artists,
+      this.editMode ? this.artistId : undefined,
+      this.editMode ? 'artist_id' : undefined
+    );
   }
 
   onClickReset() {
@@ -119,7 +124,6 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    private route: ActivatedRoute,
     private messagesService: MessagesService
   ) {
     super();

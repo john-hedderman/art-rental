@@ -55,9 +55,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
   contactForm!: FormGroup;
   submitted = false;
 
-  contactStatus = '';
-  oldClientStatus = '';
-  clientStatus = '';
+  saveStatus = '';
 
   clients: Client[] = [];
   clients$: Observable<Client[]> | undefined;
@@ -94,41 +92,41 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     }
   }
 
-  async onSubmit() {
-    this.submitted = true;
-    if (this.contactForm.valid) {
-      const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
-      saveBtn.disabled = true;
-      this.contactId = Date.now();
-      const contactId = this.route.snapshot.paramMap.get('id');
-      if (contactId) {
-        this.contactId = +contactId;
-      }
-      this.contactForm.value.contact_id = this.contactId;
-      this.contactForm.value.client_id = parseInt(this.contactForm.value.client_id);
-      this.contactStatus = await this.saveContact(this.contactForm.value);
-      if (this.editMode) {
-        this.oldClientStatus = await this.updateOldClient(this.dbData, this.contactForm.value);
-      }
-      this.clientStatus = await this.updateClient(this.contactForm.value);
-      this.messagesService.showStatus(
-        this.contactStatus,
-        Util.replaceTokens(Msgs.SAVED, { entity: 'contact' }),
-        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'contact' })
-      );
-      this.messagesService.showStatus(
-        this.clientStatus,
-        Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
-        Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
-      );
-      this.messagesService.clearStatus();
-      this.resetForm();
-      saveBtn.disabled = false;
-      this.dataService.reloadData(['contacts', 'clients']);
-    }
+  preSave() {
+    this.disableSaveBtn();
+    const contactId = this.route.snapshot.paramMap.get('id');
+    this.contactId = contactId ? +contactId : Date.now();
+    this.contactForm.value.contact_id = this.contactId;
+    this.contactForm.value.client_id = parseInt(this.contactForm.value.client_id);
   }
 
-  async saveContact(formData: any): Promise<string> {
+  async save(): Promise<string> {
+    const contactStatus = await this.saveContact();
+    const oldClientStatus = this.editMode ? await this.updateOldClient() : Const.SUCCESS;
+    const clientStatus = await this.updateClient();
+    if ([contactStatus, oldClientStatus, clientStatus].includes(Const.FAILURE)) {
+      return Const.FAILURE;
+    }
+    return Const.SUCCESS;
+  }
+
+  postSave() {
+    this.messagesService.showStatus(
+      this.saveStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'contact' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'contact' })
+    );
+    this.messagesService.clearStatus();
+    this.resetForm();
+    this.enableSaveBtn();
+  }
+
+  async onSubmit(): Promise<void> {
+    this.submitForm(this.contactForm, ['contacts', 'clients']);
+  }
+
+  async saveContact(): Promise<string> {
+    const formData = this.contactForm.value;
     const collection = Collections.Contacts;
     let result = Const.SUCCESS;
     try {
@@ -153,7 +151,9 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
-  async updateOldClient(dbData: any, formData: any): Promise<string> {
+  async updateOldClient(): Promise<string> {
+    const dbData = this.dbData;
+    const formData = this.contactForm.value;
     const oldClient = this.clients.find((client) => client.client_id === dbData.client_id);
     const client = this.clients.find((client) => client.client_id === formData.client_id);
     if (oldClient === client) {
@@ -186,7 +186,8 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     return result;
   }
 
-  async updateClient(formData: any): Promise<string> {
+  async updateClient(): Promise<string> {
+    const formData = this.contactForm.value;
     const client = this.clients.find((client) => client.client_id === formData.client_id);
     if (!client) {
       console.error('Save client error, could not find the selected client');
@@ -248,7 +249,6 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    private route: ActivatedRoute,
     private messagesService: MessagesService
   ) {
     super();
