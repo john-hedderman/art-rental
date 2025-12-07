@@ -12,7 +12,6 @@ import {
   HeaderActions,
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
-import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
 import { OperationsService } from '../../../service/operations-service';
@@ -20,6 +19,7 @@ import { Collections } from '../../../shared/enums/collections';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { Util } from '../../../shared/util/util';
+import { DetailBase } from '../../../shared/components/base/detail-base/detail-base';
 
 @Component({
   selector: 'app-site-detail',
@@ -29,7 +29,7 @@ import { Util } from '../../../shared/util/util';
   styleUrl: './site-detail.scss',
   standalone: true,
 })
-export class SiteDetail implements OnDestroy {
+export class SiteDetail extends DetailBase implements OnDestroy {
   goToEditSite = () => this.router.navigate(['/sites', this.siteId, 'edit']);
   goToSiteList = () => this.router.navigate(['/sites', 'list']);
 
@@ -61,37 +61,34 @@ export class SiteDetail implements OnDestroy {
   jobs: Job[] = [];
 
   deleteStatus = '';
-  jobStatus = '';
-  clientStatus = '';
 
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  async onClickDelete() {
-    this.deleteStatus = await this.operationsService.deleteDocument(
-      Collections.Sites,
-      'site_id',
-      this.siteId
-    );
-    this.jobStatus = await this.updateJob();
-    this.clientStatus = await this.updateClient();
+  override preDelete(): void {}
+
+  override async delete(): Promise<string> {
+    const siteStatus = await this.deleteSite();
+    const jobStatus = await this.updateJob();
+    const clientStatus = await this.updateClient();
+    return this.jobResult([siteStatus, jobStatus, clientStatus]);
+  }
+
+  override postDelete() {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'site' }),
       Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'site' })
     );
-    this.messagesService.showStatus(
-      this.jobStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'job' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'job' })
-    );
-    this.messagesService.showStatus(
-      this.clientStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
-    );
     this.messagesService.clearStatus();
-    this.dataService.reloadData(['sites', 'jobs', 'clients'], this.goToSiteList);
+  }
+
+  async onClickDelete() {
+    this.deleteAndReload(['sites', 'jobs', 'clients'], this.goToSiteList);
+  }
+
+  async deleteSite(): Promise<string> {
+    return await this.operationsService.deleteDocument(Collections.Sites, 'site_id', this.siteId);
   }
 
   async updateJob(): Promise<string> {
@@ -153,11 +150,11 @@ export class SiteDetail implements OnDestroy {
 
   constructor(
     private router: Router,
-    private dataService: DataService,
     private route: ActivatedRoute,
     private operationsService: OperationsService,
     private messagesService: MessagesService
   ) {
+    super();
     combineLatest({
       sites: this.dataService.sites$,
       clients: this.dataService.clients$,

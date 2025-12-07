@@ -5,6 +5,7 @@ import { OperationsService } from '../../../../service/operations-service';
 import * as Const from '../../../../constants';
 import { DataService } from '../../../../service/data-service';
 import { ActivatedRoute } from '@angular/router';
+import { Util } from '../../../util/util';
 
 @Component({
   selector: 'app-add-base',
@@ -65,7 +66,7 @@ export abstract class AddBase {
   }
 
   jobResult(statuses: string[]): string {
-    return statuses.includes(Const.FAILURE) ? Const.FAILURE : Const.SUCCESS;
+    return Util.jobResult(statuses);
   }
 
   constructor() {}

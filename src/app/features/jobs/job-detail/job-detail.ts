@@ -5,7 +5,6 @@ import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { Art, Client, Contact, Job, Site } from '../../../model/models';
-import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Card } from '../../../shared/components/card/card';
 import { Util } from '../../../shared/util/util';
@@ -23,6 +22,7 @@ import { OperationsService } from '../../../service/operations-service';
 import { Collections } from '../../../shared/enums/collections';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { DetailBase } from '../../../shared/components/base/detail-base/detail-base';
 
 @Component({
   selector: 'app-job-detail',
@@ -32,7 +32,7 @@ import { PageFooter } from '../../../shared/components/page-footer/page-footer';
   styleUrl: './job-detail.scss',
   standalone: true,
 })
-export class JobDetail implements OnInit, OnDestroy {
+export class JobDetail extends DetailBase implements OnInit, OnDestroy {
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
 
   goToArtDetail = (id: number) => this.router.navigate(['/art', id]);
@@ -71,43 +71,35 @@ export class JobDetail implements OnInit, OnDestroy {
   artwork: Art[] = [];
 
   deleteStatus = '';
-  clientStatus = '';
-  siteStatus = '';
-  artStatus = '';
+
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  async onClickDelete() {
-    this.deleteStatus = await this.operationsService.deleteDocument(
-      Collections.Jobs,
-      'job_id',
-      this.jobId
-    );
-    this.clientStatus = await this.updateClient();
-    this.siteStatus = await this.updateSite();
-    this.artStatus = await this.updateArt();
+  override preDelete(): void {}
+
+  override async delete(): Promise<string> {
+    const jobStatus = await this.deleteJob();
+    const clientStatus = await this.updateClient();
+    const siteStatus = await this.updateSite();
+    const artStatus = await this.updateArt();
+    return this.jobResult([jobStatus, clientStatus, siteStatus, artStatus]);
+  }
+
+  override postDelete() {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'job' }),
       Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'job' })
     );
-    this.messagesService.showStatus(
-      this.clientStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
-    );
-    this.messagesService.showStatus(
-      this.siteStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'site' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'site' })
-    );
-    this.messagesService.showStatus(
-      this.artStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'art' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' })
-    );
     this.messagesService.clearStatus();
-    this.dataService.reloadData(['jobs', 'clients', 'sites', 'art'], this.goToJobList);
+  }
+
+  async onClickDelete() {
+    this.deleteAndReload(['jobs', 'clients', 'sites', 'art'], this.goToJobList);
+  }
+
+  async deleteJob(): Promise<string> {
+    return await this.operationsService.deleteDocument(Collections.Jobs, 'job_id', this.jobId);
   }
 
   async updateClient(): Promise<string> {
@@ -195,11 +187,11 @@ export class JobDetail implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private dataService: DataService,
     public util: Util,
     private operationsService: OperationsService,
     private messagesService: MessagesService
   ) {
+    super();
     combineLatest({
       clients: this.dataService.clients$,
       contacts: this.dataService.contacts$,

@@ -19,6 +19,7 @@ import { DeleteButton } from '../../../shared/components/buttons/delete-button/d
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { Util } from '../../../shared/util/util';
+import { DetailBase } from '../../../shared/components/base/detail-base/detail-base';
 
 @Component({
   selector: 'app-art-detail',
@@ -28,7 +29,7 @@ import { Util } from '../../../shared/util/util';
   styleUrl: './art-detail.scss',
   standalone: true,
 })
-export class ArtDetail implements OnDestroy {
+export class ArtDetail extends DetailBase implements OnDestroy {
   goToEditArt = () => this.router.navigate(['/art', this.artId, 'edit']);
   goToArtList = () => this.router.navigate(['/art', 'list']);
 
@@ -53,30 +54,33 @@ export class ArtDetail implements OnDestroy {
   artId = 0;
 
   deleteStatus = '';
-  jobStatus = '';
 
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  async onClickDelete() {
-    this.deleteStatus = await this.operationsService.deleteDocument(
-      Collections.Art,
-      'art_id',
-      this.artId
-    );
-    this.jobStatus = await this.updateJob();
+  override preDelete(): void {}
+
+  override async delete(): Promise<string> {
+    const deleteStatus = await this.deleteArt();
+    const jobStatus = await this.updateJob();
+    return this.jobResult([deleteStatus, jobStatus]);
+  }
+
+  override postDelete(): void {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'art' }),
       Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'art' })
     );
-    this.messagesService.showStatus(
-      this.jobStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'job' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'job' })
-    );
     this.messagesService.clearStatus();
-    this.dataService.reloadData(['art', 'jobs'], this.goToArtList);
+  }
+
+  async onClickDelete() {
+    this.deleteAndReload(['art', 'jobs'], this.goToArtList);
+  }
+
+  async deleteArt(): Promise<string> {
+    return await this.operationsService.deleteDocument(Collections.Art, 'art_id', this.artId);
   }
 
   async updateJob(): Promise<string> {
@@ -108,10 +112,10 @@ export class ArtDetail implements OnDestroy {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private dataService: DataService,
     private operationsService: OperationsService,
     private messagesService: MessagesService
   ) {
+    super();
     combineLatest({
       artwork: this.dataService.art$,
       artId: this.getArtId(),

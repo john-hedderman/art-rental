@@ -5,7 +5,6 @@ import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { Client, Contact, Job, Site } from '../../../model/models';
-import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { ContactsTable } from '../../../shared/components/contacts-table/contacts-table';
 import { Collections } from '../../../shared/enums/collections';
@@ -22,6 +21,7 @@ import { DeleteButton } from '../../../shared/components/buttons/delete-button/d
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { Util } from '../../../shared/util/util';
+import { DetailBase } from '../../../shared/components/base/detail-base/detail-base';
 
 @Component({
   selector: 'app-client-detail',
@@ -31,7 +31,7 @@ import { Util } from '../../../shared/util/util';
   styleUrl: './client-detail.scss',
   standalone: true,
 })
-export class ClientDetail implements OnInit, OnDestroy {
+export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
 
   goToEditClient = () => this.router.navigate(['/clients', this.clientId, 'edit']);
@@ -69,46 +69,55 @@ export class ClientDetail implements OnInit, OnDestroy {
 
   clientId = 0;
 
-  clientStatus = '';
-  contactsStatus = '';
-  sitesStatus = '';
+  deleteStatus = '';
 
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
+  override preDelete(): void {}
+
+  override async delete(): Promise<string> {
+    const clientStatus = await this.deleteClient();
+    const contactsStatus = await this.deleteContacts();
+    const sitesStatus = await this.deleteSites();
+    return this.jobResult([clientStatus, contactsStatus, sitesStatus]);
+  }
+
+  override postDelete() {
+    this.messagesService.showStatus(
+      this.deleteStatus,
+      Util.replaceTokens(Msgs.DELETED, { entity: 'client' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'client' })
+    );
+    this.messagesService.clearStatus();
+  }
+
   async onClickDelete() {
-    this.clientStatus = await this.operationsService.deleteDocument(
+    this.deleteAndReload(['clients', 'contacts', 'sites'], this.goToClientList);
+  }
+
+  async deleteClient(): Promise<string> {
+    return await this.operationsService.deleteDocument(
       Collections.Clients,
       'client_id',
       this.clientId
     );
-    this.contactsStatus = await this.operationsService.deleteDocuments(
+  }
+
+  async deleteContacts(): Promise<string> {
+    return await this.operationsService.deleteDocuments(
       Collections.Contacts,
       'client_id',
       this.clientId
     );
-    this.sitesStatus = await this.operationsService.deleteDocuments(
+  }
+
+  async deleteSites(): Promise<string> {
+    return await this.operationsService.deleteDocuments(
       Collections.Sites,
       'client_id',
       this.clientId
     );
-    this.messagesService.showStatus(
-      this.clientStatus,
-      Util.replaceTokens(Msgs.DELETED, { entity: 'client' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'client' })
-    );
-    this.messagesService.showStatus(
-      this.contactsStatus,
-      Util.replaceTokens(Msgs.DELETED, { entity: 'contacts' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'contacts' })
-    );
-    this.messagesService.showStatus(
-      this.sitesStatus,
-      Util.replaceTokens(Msgs.DELETED, { entity: 'sites' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'sites' })
-    );
-    this.messagesService.clearStatus();
-    this.dataService.reloadData(['clients', 'contacts', 'sites'], this.goToClientList);
   }
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
@@ -124,10 +133,10 @@ export class ClientDetail implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private dataService: DataService,
     private operationsService: OperationsService,
     private messagesService: MessagesService
   ) {
+    super();
     combineLatest({
       clients: this.dataService.clients$,
       clientId: this.getClientId(),

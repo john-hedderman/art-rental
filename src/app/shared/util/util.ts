@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import * as Const from '../../constants';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -28,4 +30,8 @@ export class Util {
     }
     return result;
   };
+
+  static jobResult(statuses: string[]): string {
+    return statuses.includes(Const.FAILURE) ? Const.FAILURE : Const.SUCCESS;
+  }
 }

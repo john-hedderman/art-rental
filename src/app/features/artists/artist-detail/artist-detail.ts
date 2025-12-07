@@ -19,6 +19,7 @@ import { DeleteButton } from '../../../shared/components/buttons/delete-button/d
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { Util } from '../../../shared/util/util';
+import { DetailBase } from '../../../shared/components/base/detail-base/detail-base';
 
 @Component({
   selector: 'app-artist-detail',
@@ -28,7 +29,7 @@ import { Util } from '../../../shared/util/util';
   styleUrl: './artist-detail.scss',
   standalone: true,
 })
-export class ArtistDetail implements OnDestroy {
+export class ArtistDetail extends DetailBase implements OnDestroy {
   goToEditArtist = () => this.router.navigate(['/artists', this.artistId, 'edit']);
   goToArtistList = () => this.router.navigate(['/artists', 'list']);
 
@@ -57,22 +58,36 @@ export class ArtistDetail implements OnDestroy {
   artistId = 0;
 
   deleteStatus = '';
+
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  async onClickDelete() {
-    this.deleteStatus = await this.operationsService.deleteDocument(
-      Collections.Artists,
-      'artist_id',
-      this.artistId
-    );
+  override preDelete(): void {}
+
+  override async delete(): Promise<string> {
+    const deleteStatus = await this.deleteArtist();
+    return this.jobResult([deleteStatus]);
+  }
+
+  override postDelete(): void {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'artist' }),
       Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'artist' })
     );
     this.messagesService.clearStatus();
-    this.dataService.reloadData(['artists'], this.goToArtistList);
+  }
+
+  async onClickDelete() {
+    this.deleteAndReload(['artists'], this.goToArtistList);
+  }
+
+  async deleteArtist(): Promise<string> {
+    return await this.operationsService.deleteDocument(
+      Collections.Artists,
+      'artist_id',
+      this.artistId
+    );
   }
 
   getArtistId(): Observable<number> {
@@ -81,11 +96,11 @@ export class ArtistDetail implements OnDestroy {
 
   constructor(
     private router: Router,
-    private dataService: DataService,
     private route: ActivatedRoute,
     private operationsService: OperationsService,
     private messagesService: MessagesService
   ) {
+    super();
     combineLatest({
       artists: this.dataService.artists$,
       artistId: this.getArtistId(),

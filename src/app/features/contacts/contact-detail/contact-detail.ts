@@ -5,7 +5,6 @@ import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Contact } from '../../../model/models';
-import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
@@ -20,6 +19,7 @@ import { DeleteButton } from '../../../shared/components/buttons/delete-button/d
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { Util } from '../../../shared/util/util';
+import { DetailBase } from '../../../shared/components/base/detail-base/detail-base';
 
 @Component({
   selector: 'app-contact-detail',
@@ -29,7 +29,7 @@ import { Util } from '../../../shared/util/util';
   styleUrl: './contact-detail.scss',
   standalone: true,
 })
-export class ContactDetail implements OnDestroy {
+export class ContactDetail extends DetailBase implements OnDestroy {
   goToEditContact = () => this.router.navigate(['/contacts', this.contactId, 'edit']);
   goToContactList = () => this.router.navigate(['/contacts', 'list']);
 
@@ -68,29 +68,37 @@ export class ContactDetail implements OnDestroy {
   clients: Client[] = [];
 
   deleteStatus = '';
-  clientStatus = '';
+
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
-  async onClickDelete() {
-    this.deleteStatus = await this.operationsService.deleteDocument(
-      Collections.Contacts,
-      'contact_id',
-      this.contactId
-    );
-    this.clientStatus = await this.updateClient();
+  override preDelete(): void {}
+
+  override async delete(): Promise<string> {
+    const contactStatus = await this.deleteContact();
+    const clientStatus = await this.updateClient();
+    return this.jobResult([clientStatus, contactStatus]);
+  }
+
+  override postDelete() {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'contact' }),
       Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'contact' })
     );
-    this.messagesService.showStatus(
-      this.clientStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
-    );
     this.messagesService.clearStatus();
-    this.dataService.reloadData(['contacts', 'clients'], this.goToContactList);
+  }
+
+  async onClickDelete() {
+    this.deleteAndReload(['contacts', 'clients'], this.goToContactList);
+  }
+
+  async deleteContact(): Promise<string> {
+    return await this.operationsService.deleteDocument(
+      Collections.Contacts,
+      'contact_id',
+      this.contactId
+    );
   }
 
   async updateClient(): Promise<string> {
@@ -126,11 +134,11 @@ export class ContactDetail implements OnDestroy {
 
   constructor(
     private router: Router,
-    private dataService: DataService,
     private route: ActivatedRoute,
     private operationsService: OperationsService,
     private messagesService: MessagesService
   ) {
+    super();
     combineLatest({
       contacts: this.dataService.contacts$,
       clients: this.dataService.clients$,
