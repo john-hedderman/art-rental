@@ -8,7 +8,7 @@ import * as Const from '../../constants';
 export class Util {
   static showHideRowDetail = () => {
     let detailRows;
-    if (window.innerWidth >= 768) {
+    if (window.innerWidth >= Const.TABLET) {
       detailRows = document.querySelectorAll('.datatable-row-detail:not(.d-none)');
       detailRows.forEach((detailRow) => {
         detailRow.classList.add('d-none');

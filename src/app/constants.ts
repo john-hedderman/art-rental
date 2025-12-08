@@ -1,3 +1,8 @@
+export const MOBILE_SM = 320;
+export const MOBILE_MD = 375;
+export const MOBILE_LG = 425;
+export const TABLET = 768;
+
 export const SUCCESS = 'success';
 export const FAILURE = 'failure';
 
