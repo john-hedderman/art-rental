@@ -21,6 +21,7 @@ import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { Util } from '../../../shared/util/util';
+import { ResetButton } from '../../../shared/buttons/reset-button';
 
 @Component({
   selector: 'app-add-job',
@@ -34,17 +35,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
   goToJobList = () => this.router.navigate(['/jobs', 'list']);
   jobListLink = new ActionLink('jobListLink', 'Jobs', '/jobs/list', '', this.goToJobList);
   headerData: HeaderActions = new HeaderActions('job-add', 'Add Job', [], [this.jobListLink.data]);
-  resetButton = new ActionButton(
-    'resetBtn',
-    'Reset',
-    'button',
-    'btn btn-outline-secondary ms-3',
-    false,
-    'modal',
-    '#confirmModal',
-    null
-  );
-  footerData = new FooterActions([new SaveButton(), this.resetButton, new CancelButton()]);
+  footerData = new FooterActions([new SaveButton(), new ResetButton(), new CancelButton()]);
 
   jobForm!: FormGroup;
   submitted = false;

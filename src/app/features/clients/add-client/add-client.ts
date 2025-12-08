@@ -25,6 +25,7 @@ import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { Util } from '../../../shared/util/util';
+import { ResetButton } from '../../../shared/buttons/reset-button';
 
 @Component({
   selector: 'app-add-client',
@@ -44,17 +45,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     this.goToClientList
   );
   headerData = new HeaderActions('client-add', 'Add Client', [], [this.clientListLink.data]);
-  resetButton = new ActionButton(
-    'resetBtn',
-    'Reset',
-    'button',
-    'btn btn-outline-secondary ms-3',
-    false,
-    'modal',
-    '#confirmModal',
-    null
-  );
-  footerData = new FooterActions([new SaveButton(), this.resetButton, new CancelButton()]);
+  footerData = new FooterActions([new SaveButton(), new ResetButton(), new CancelButton()]);
 
   dbData: Client = {} as Client;
   contactsDBData: Contact[] = [];

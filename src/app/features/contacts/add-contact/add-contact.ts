@@ -21,6 +21,7 @@ import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { Util } from '../../../shared/util/util';
+import { ResetButton } from '../../../shared/buttons/reset-button';
 
 @Component({
   selector: 'app-add-contact',
@@ -40,17 +41,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     this.goToContactList
   );
   headerData = new HeaderActions('contact-add', 'Add Contact', [], [this.contactListLink.data]);
-  resetButton = new ActionButton(
-    'resetBtn',
-    'Reset',
-    'button',
-    'btn btn-outline-secondary ms-3',
-    false,
-    'modal',
-    '#confirmModal',
-    null
-  );
-  footerData = new FooterActions([new SaveButton(), this.resetButton, new CancelButton()]);
+  footerData = new FooterActions([new SaveButton(), new ResetButton(), new CancelButton()]);
 
   contactForm!: FormGroup;
   submitted = false;

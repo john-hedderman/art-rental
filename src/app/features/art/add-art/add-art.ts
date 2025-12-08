@@ -21,6 +21,7 @@ import { CancelButton } from '../../../shared/components/cancel-button/cancel-bu
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { Util } from '../../../shared/util/util';
+import { ResetButton } from '../../../shared/buttons/reset-button';
 
 @Component({
   selector: 'app-add-art',
@@ -36,17 +37,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
   goToArtList = () => this.router.navigate(['/art', 'list']);
   artListLink = new ActionLink('artListLink', 'Art', '/art/list', '', this.goToArtList);
   headerData = new HeaderActions('art-add', 'Add Art', [], [this.artListLink.data]);
-  resetButton = new ActionButton(
-    'resetBtn',
-    'Reset',
-    'button',
-    'btn btn-outline-secondary ms-3',
-    false,
-    'modal',
-    '#confirmModal',
-    null
-  );
-  footerData = new FooterActions([new SaveButton(), this.resetButton, new CancelButton()]);
+  footerData = new FooterActions([new SaveButton(), new ResetButton(), new CancelButton()]);
 
   artForm!: FormGroup;
   submitted = false;
