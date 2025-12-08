@@ -84,6 +84,9 @@ export class ArtDetail extends DetailBase implements OnDestroy {
   }
 
   async updateJob(): Promise<string> {
+    if (this.art.job_id === Const.NO_JOB) {
+      return Const.SUCCESS;
+    }
     const job = this.jobs.find((job) => job.job_id === this.art.job_id);
     if (!job) {
       console.error('Delete art error, could not find the job');
