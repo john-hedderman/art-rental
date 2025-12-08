@@ -13,36 +13,42 @@
     </div>
     <div class="col-sm-12 col-md-6 p-3">
       <h5 class="fw-bold pb-2 ar-heading">Title</h5>
-      @if (art.title) {
-      <p class="pb-4">{{ art.title }}</p>
-      } @else {
-      <p class="pb-4">Untitled</p>
-      }
+      <section>
+        @if (art.title) {
+        <p class="pb-4">{{ art.title }}</p>
+        } @else {
+        <p class="pb-4">Untitled</p>
+        }
+      </section>
       <h5 class="fw-bold pb-2 ar-heading">Artist</h5>
-      @if (art.artist) {
-      <p class="pb-4">{{ art.artist.name }}</p>
-      } @else {
-      <p class="pb-4">Unknown</p>
-      }
+      <section>
+        @if (art.artist) {
+        <p class="pb-4">{{ art.artist.name }}</p>
+        } @else {
+        <p class="pb-4">Unknown</p>
+        }
+      </section>
       <h5 class="fw-bold pb-2 ar-heading">Job</h5>
-      @if (art.job) {
-      <p>
-        <span class="fw-bold">Job number: </span
-        ><a class="fw-bold" href="#" [routerLink]="`/jobs/${art.job.job_id}`">{{
-          art.job.job_number
-        }}</a>
-      </p>
-      <p><span class="fw-bold">Client: </span>{{ art.job.client?.name }}</p>
-      @if (art.job.site) {
-      <p class="mb-0">{{ art.job.site.name }}</p>
-      <p class="mb-0">{{ art.job.site.address1 }}</p>
-      @if (art.job.site.address2) {
-      <p class="mb-0">{{ art.job.site.address2 }}</p>
-      }
-      <p>{{ art.job.site.city }}, {{ art.job.site.state }} {{ art.job.site.zip_code }}</p>
-      } } @else {
-      <p class="pb-4">Not on a job</p>
-      }
+      <section>
+        @if (art.job) {
+        <p>
+          <span class="fw-bold">Job number: </span
+          ><a class="fw-bold" href="#" [routerLink]="`/jobs/${art.job.job_id}`">{{
+            art.job.job_number
+          }}</a>
+        </p>
+        <p><span class="fw-bold">Client: </span>{{ art.job.client?.name }}</p>
+        @if (art.job.site) {
+        <p class="mb-0">{{ art.job.site.name }}</p>
+        <p class="mb-0">{{ art.job.site.address1 }}</p>
+        @if (art.job.site.address2) {
+        <p class="mb-0">{{ art.job.site.address2 }}</p>
+        }
+        <p>{{ art.job.site.city }}, {{ art.job.site.state }} {{ art.job.site.zip_code }}</p>
+        } } @else {
+        <p class="pb-4">Not on a job</p>
+        }
+      </section>
     </div>
   </div>
   <app-page-footer [footerData]="footerData"></app-page-footer>

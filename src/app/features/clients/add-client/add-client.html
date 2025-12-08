@@ -160,7 +160,7 @@
               </div>
 
               <h5 class="fw-bold pb-2 pt-4 ar-heading">Contacts</h5>
-              <div class="col mt-0 pe-0">
+              <section class="col mt-0 pe-0">
                 <button
                   class="btn btn-secondary float-end me-3 mt-2"
                   type="button"
@@ -168,9 +168,9 @@
                 >
                   + Add contact
                 </button>
-              </div>
+              </section>
 
-              <div formArrayName="contacts" class="mt-0">
+              <section formArrayName="contacts" class="mt-0">
                 @for (clientContactGroup of contacts.controls; track trackByContactId($index,
                 clientContactGroup); let i = $index) {
                 <div [formGroupName]="i" class="row pt-1 border-top ar-contact-row mt-4">
@@ -242,7 +242,7 @@
                   </div>
                 </div>
                 }
-              </div>
+              </section>
             </div>
           </div>
         </div>
