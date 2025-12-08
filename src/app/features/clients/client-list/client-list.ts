@@ -9,6 +9,7 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
 import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { AddButton } from '../../../shared/buttons/add-button';
 
 @Component({
   selector: 'app-client-list',
@@ -36,18 +37,7 @@ export class ClientList implements OnInit {
   goToAddClient = () => this.router.navigate(['/clients', 'add']);
 
   headerData = new HeaderActions('client-list', 'Clients', [], []);
-
-  addButton = new ActionButton(
-    'addBtn',
-    'Add Client',
-    'button',
-    'btn btn-primary',
-    false,
-    null,
-    null,
-    this.goToAddClient
-  );
-  footerData = new FooterActions([this.addButton]);
+  footerData = new FooterActions([new AddButton('Add Client', this.goToAddClient)]);
 
   rows: Client[] = [];
   columns: TableColumn[] = [];

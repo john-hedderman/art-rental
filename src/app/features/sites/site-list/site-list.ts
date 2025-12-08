@@ -9,6 +9,7 @@ import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
 import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { AddButton } from '../../../shared/buttons/add-button';
 
 @Component({
   selector: 'app-site-list',
@@ -38,17 +39,7 @@ export class SiteList implements OnInit {
 
   goToAddSite = () => this.router.navigate(['/sites', 'add']);
   headerData = new HeaderActions('site-list', 'Sites', [], []);
-  addButton = new ActionButton(
-    'addBtn',
-    'Add Site',
-    'button',
-    'btn btn-primary',
-    false,
-    null,
-    null,
-    this.goToAddSite
-  );
-  footerData = new FooterActions([this.addButton]);
+  footerData = new FooterActions([new AddButton('Add Site', this.goToAddSite)]);
 
   rows: Site[] = [];
   columns: TableColumn[] = [];

@@ -9,6 +9,7 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
 import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { AddButton } from '../../../shared/buttons/add-button';
 
 @Component({
   selector: 'app-job-list',
@@ -38,18 +39,7 @@ export class JobList implements OnInit {
   goToAddJob = () => this.router.navigate(['/jobs', 'add']);
 
   headerData = new HeaderActions('job-list', 'Jobs', [], []);
-
-  addButton = new ActionButton(
-    'addBtn',
-    'Add Job',
-    'button',
-    'btn btn-primary',
-    false,
-    null,
-    null,
-    this.goToAddJob
-  );
-  footerData = new FooterActions([this.addButton]);
+  footerData = new FooterActions([new AddButton('Add Job', this.goToAddJob)]);
 
   rows: Job[] = [];
   columns: TableColumn[] = [];

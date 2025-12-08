@@ -9,6 +9,7 @@ import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
 import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { AddButton } from '../../../shared/buttons/add-button';
 
 @Component({
   selector: 'app-contact-list',
@@ -38,18 +39,7 @@ export class ContactList implements OnInit {
   goToAddContact = () => this.router.navigate(['/contacts', 'add']);
 
   headerData = new HeaderActions('contact-list', 'Contacts', [], []);
-
-  addButton = new ActionButton(
-    'addBtn',
-    'Add Contact',
-    'button',
-    'btn btn-primary',
-    false,
-    null,
-    null,
-    this.goToAddContact
-  );
-  footerData = new FooterActions([this.addButton]);
+  footerData = new FooterActions([new AddButton('Add Contact', this.goToAddContact)]);
 
   rows: Contact[] = [];
   columns: TableColumn[] = [];

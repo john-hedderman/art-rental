@@ -8,6 +8,7 @@ import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { AddButton } from '../../../shared/buttons/add-button';
 
 @Component({
   selector: 'app-artist-list',
@@ -24,18 +25,7 @@ export class ArtistList {
   goToAddArtist = () => this.router.navigate(['/artists', 'add']);
 
   headerData = new HeaderActions('artist-list', 'Artists', [], []);
-
-  addButton = new ActionButton(
-    'addBtn',
-    'Add Artist',
-    'button',
-    'btn btn-primary',
-    false,
-    null,
-    null,
-    this.goToAddArtist
-  );
-  footerData = new FooterActions([this.addButton]);
+  footerData = new FooterActions([new AddButton('Add Artist', this.goToAddArtist)]);
 
   artists: Artist[] = [];
 

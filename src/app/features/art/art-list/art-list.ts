@@ -9,6 +9,7 @@ import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { AddButton } from '../../../shared/buttons/add-button';
 
 @Component({
   selector: 'app-art-list',
@@ -22,18 +23,7 @@ export class ArtList {
   goToAddArt = () => this.router.navigate(['/art', 'add']);
 
   headerData = new HeaderActions('art-list', 'Art', [], []);
-
-  addButton = new ActionButton(
-    'addBtn',
-    'Add Art',
-    'button',
-    'btn btn-primary',
-    false,
-    null,
-    null,
-    this.goToAddArt
-  );
-  footerData = new FooterActions([this.addButton]);
+  footerData = new FooterActions([new AddButton('Add Art', this.goToAddArt)]);
 
   artwork: Art[] = [];
 
