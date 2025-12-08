@@ -3,6 +3,7 @@ import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/n
 
 import { Contact } from '../../../model/models';
 import { Util } from '../../util/util';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-contacts-table',
@@ -33,6 +34,15 @@ export class ContactsTable implements OnInit {
     this.table.rowDetail!.toggleExpandRow(row);
   }
 
+  onActivate(event: any) {
+    if (event.type !== 'click') {
+      return;
+    }
+    if (event.cellIndex !== 0) {
+      this.router.navigate(['/contacts', event.row.contact_id]);
+    }
+  }
+
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
     const nameA = `${rowA['first_name']} ${rowA['last_name']}`;
     const nameB = `${rowB['first_name']} ${rowB['last_name']}`;
@@ -44,6 +54,8 @@ export class ContactsTable implements OnInit {
     const clientNameB = `${rowB['client']['name']}`;
     return clientNameA.localeCompare(clientNameB);
   }
+
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.columns = [

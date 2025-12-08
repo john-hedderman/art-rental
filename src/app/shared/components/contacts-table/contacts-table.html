@@ -8,6 +8,7 @@
   [headerHeight]="50"
   [rowHeight]="50"
   [scrollbarV]="true"
+  (activate)="onActivate($event)"
   [messages]="{ emptyMessage: 'No contacts' }"
 >
   <ngx-datatable-row-detail [rowHeight]="50">
