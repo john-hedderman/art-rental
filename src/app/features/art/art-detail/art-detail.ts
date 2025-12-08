@@ -15,7 +15,7 @@ import {
   FooterActions,
   HeaderActions,
 } from '../../../shared/actions/action-data';
-import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
+import { DeleteButton } from '../../../shared/buttons/delete-button';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { Util } from '../../../shared/util/util';

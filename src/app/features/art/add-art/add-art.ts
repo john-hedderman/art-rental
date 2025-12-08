@@ -16,8 +16,8 @@ import {
   FooterActions,
   HeaderActions,
 } from '../../../shared/actions/action-data';
-import { SaveButton } from '../../../shared/components/save-button/save-button';
-import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
+import { SaveButton } from '../../../shared/buttons/save-button';
+import { CancelButton } from '../../../shared/buttons/cancel-button';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { Util } from '../../../shared/util/util';

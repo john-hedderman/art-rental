@@ -15,7 +15,7 @@ import {
   FooterActions,
   HeaderActions,
 } from '../../../shared/actions/action-data';
-import { DeleteButton } from '../../../shared/components/buttons/delete-button/delete-button';
+import { DeleteButton } from '../../../shared/buttons/delete-button';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
 import { OperationsService } from '../../../service/operations-service';

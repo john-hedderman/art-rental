@@ -13,8 +13,8 @@ import {
   FooterActions,
   HeaderActions,
 } from '../../../shared/actions/action-data';
-import { SaveButton } from '../../../shared/components/save-button/save-button';
-import { CancelButton } from '../../../shared/components/cancel-button/cancel-button';
+import { SaveButton } from '../../../shared/buttons/save-button';
+import { CancelButton } from '../../../shared/buttons/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
