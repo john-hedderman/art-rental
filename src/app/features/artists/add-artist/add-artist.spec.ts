@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 
 import { AddArtist } from './add-artist';
@@ -10,7 +11,7 @@ describe('AddArtist', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AddArtist],
-      providers: [provideHttpClient()],
+      providers: [provideRouter([]), provideHttpClient()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddArtist);
