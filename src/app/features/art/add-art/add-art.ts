@@ -6,7 +6,7 @@ import { AsyncPipe } from '@angular/common';
 
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Art, Artist, Job } from '../../../model/models';
+import { Art, Artist, Client, Job, Site } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -106,7 +106,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     }
     const oldJob = this.jobs.find((job) => job.job_id === dbData.job_id);
     if (!oldJob) {
-      console.error('Save art error, could not find the previous job');
+      console.error('Save job error, could not find the previous job');
       return Const.FAILURE;
     }
     const collection = Collections.Jobs;
@@ -138,7 +138,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     }
     const job = this.jobs.find((job) => job.job_id === formData.job_id);
     if (!job) {
-      console.error('Save art error, could not find the selected job');
+      console.error('Save job error, could not find the selected job');
       return Const.FAILURE;
     }
     const collection = Collections.Jobs;
@@ -156,7 +156,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
         result = Const.FAILURE;
       }
     } catch (error) {
-      console.error('Save client error:', error);
+      console.error('Save job error:', error);
       result = Const.FAILURE;
     }
     return result;
@@ -220,54 +220,35 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     this.artForm.get('tags')?.setValue(this.dbData.tags);
   }
 
-  constructor(
-    private router: Router,
-    private fb: FormBuilder,
-    private messagesService: MessagesService
-  ) {
-    super();
-    const segments = this.route.snapshot.url.map((x) => x.path);
-    if (segments[segments.length - 1] === 'edit') {
-      this.headerData.data.headerTitle = 'Edit Art';
-    }
-    combineLatest({
-      artists: this.dataService.artists$,
-      jobs: this.dataService.jobs$,
-      clients: this.dataService.clients$,
-      sites: this.dataService.sites$,
-    })
-      .pipe(take(1))
-      .subscribe(({ artists, jobs, clients, sites }) => {
-        this.artists$ = of(artists);
-        this.jobs = jobs;
-        const fullJobs = jobs
-          .map((job) => {
-            const client = clients.find((client) => client.client_id === job.client_id);
-            if (client) {
-              return { ...job, client };
-            }
-            return job;
-          })
-          .map((job) => {
-            const site = sites.find((site) => site.site_id === job.site_id);
-            if (site) {
-              return { ...job, site };
-            }
-            return job;
-          });
-        this.jobs$ = of(fullJobs);
-      });
-  }
+  init(): void {
+    this.getCombinedData$().subscribe(({ artists, jobs, clients, sites }) => {
+      this.artists$ = of(artists);
+      this.jobs = jobs;
+      const fullJobs = jobs
+        .map((job) => {
+          const client = clients.find((client) => client.client_id === job.client_id);
+          if (client) {
+            return { ...job, client };
+          }
+          return job;
+        })
+        .map((job) => {
+          const site = sites.find((site) => site.site_id === job.site_id);
+          if (site) {
+            return { ...job, site };
+          }
+          return job;
+        });
+      this.jobs$ = of(fullJobs);
+    });
 
-  ngOnInit(): void {
     this.artId = Date.now();
     this.editMode = false;
-
     const artId = this.route.snapshot.paramMap.get('id');
     if (artId) {
       this.artId = +artId;
       this.editMode = true;
-      this.populateForm<Art>(Collections.Art, 'art_id', this.artId);
+      this.headerData.data.headerTitle = 'Edit Art';
     }
 
     this.artForm = this.fb.group({
@@ -279,6 +260,36 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       job_id: [null],
       tags: [''],
     });
+
+    if (this.editMode) {
+      this.populateForm<Art>(Collections.Art, 'art_id', this.artId);
+    }
+  }
+
+  getCombinedData$(): Observable<{
+    artists: Artist[];
+    jobs: Job[];
+    clients: Client[];
+    sites: Site[];
+  }> {
+    return combineLatest({
+      artists: this.dataService.artists$,
+      jobs: this.dataService.jobs$,
+      clients: this.dataService.clients$,
+      sites: this.dataService.sites$,
+    }).pipe(take(1));
+  }
+
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    public messagesService: MessagesService
+  ) {
+    super();
+  }
+
+  ngOnInit(): void {
+    this.init();
   }
 
   ngOnDestroy(): void {

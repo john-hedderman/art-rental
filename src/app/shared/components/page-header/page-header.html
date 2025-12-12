@@ -6,13 +6,13 @@
     <div class="me-2">
       @if (operationStatus().status === OP_SUCCESS) {
       <div>
-        <span class="bi bi-check-circle d-inline-block me-2 text-success"></span
-        ><span class="text-success">{{ operationStatus().message }}</span>
+        <span class="status-icon bi bi-check-circle d-inline-block me-2 text-success"></span
+        ><span class="status-message text-success">{{ operationStatus().message }}</span>
       </div>
       } @else if (operationStatus().status === OP_FAILURE) {
       <div>
-        <span class="bi bi-exclamation-circle d-inline-block me-2 text-danger"></span
-        ><span class="text-danger">{{ operationStatus().message }}</span>
+        <span class="status-icon bi bi-exclamation-circle d-inline-block me-2 text-danger"></span
+        ><span class="status-message text-danger">{{ operationStatus().message }}</span>
       </div>
       }
     </div>

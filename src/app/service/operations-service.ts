@@ -17,7 +17,12 @@ export class OperationsService {
     this._status.update(() => status);
   }
 
-  async saveDocument(data: any, collectionName: string, id?: number, field?: string) {
+  async saveDocument(
+    data: any,
+    collectionName: string,
+    id?: number,
+    field?: string
+  ): Promise<string> {
     let result = Const.SUCCESS;
     try {
       const returnData = await this.dataService.saveDocument(data, collectionName, id, field);
