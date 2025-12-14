@@ -1,6 +1,7 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
 <div class="container-fluid">
   <div class="row ar-page-content overflow-y-auto pt-3">
+    @if (art$ | async; as art) {
     <div class="col-sm-12 col-md-6 p-3">
       <div class="ar-art-detail__image-container">
         <img
@@ -23,19 +24,22 @@
       <h5 class="fw-bold pb-2 ar-heading">Artist</h5>
       <section>
         @if (art.artist) {
-        <p class="pb-4">{{ art.artist.name }}</p>
+        <p class="pb-4 ar-art-detail__artist-name">{{ art.artist.name }}</p>
         } @else {
         <p class="pb-4">Unknown</p>
         }
       </section>
       <h5 class="fw-bold pb-2 ar-heading">Job</h5>
-      <section>
+      <section class="ar-art-detail__job-info">
         @if (art.job) {
         <p>
           <span class="fw-bold">Job number: </span
-          ><a class="fw-bold" href="#" [routerLink]="`/jobs/${art.job.job_id}`">{{
-            art.job.job_number
-          }}</a>
+          ><a
+            class="fw-bold ar-art-detail__job-number"
+            href="#"
+            [routerLink]="`/jobs/${art.job.job_id}`"
+            >{{ art.job.job_number }}</a
+          >
         </p>
         <p><span class="fw-bold">Client: </span>{{ art.job.client?.name }}</p>
         @if (art.job.site) {
@@ -50,6 +54,7 @@
         }
       </section>
     </div>
+    }
   </div>
   <app-page-footer [footerData]="footerData"></app-page-footer>
 </div>

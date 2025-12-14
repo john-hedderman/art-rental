@@ -1,8 +1,9 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { combineLatest, map, Observable, take } from 'rxjs';
+import { combineLatest, map, Observable, of, take } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
-import { Art, Job } from '../../../model/models';
+import { Art, Artist, Client, Job, Site } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
@@ -23,13 +24,13 @@ import { DetailBase } from '../../../shared/components/base/detail-base/detail-b
 
 @Component({
   selector: 'app-art-detail',
-  imports: [PageHeader, RouterLink, PageFooter],
+  imports: [PageHeader, RouterLink, PageFooter, AsyncPipe],
   providers: [MessagesService],
   templateUrl: './art-detail.html',
   styleUrl: './art-detail.scss',
   standalone: true,
 })
-export class ArtDetail extends DetailBase implements OnDestroy {
+export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
   goToEditArt = () => this.router.navigate(['/art', this.artId, 'edit']);
   goToArtList = () => this.router.navigate(['/art', 'list']);
 
@@ -49,6 +50,7 @@ export class ArtDetail extends DetailBase implements OnDestroy {
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
   art: Art = {} as Art;
+  art$: Observable<Art> | undefined;
   jobs: Job[] = [];
 
   artId = 0;
@@ -112,6 +114,52 @@ export class ArtDetail extends DetailBase implements OnDestroy {
     return this.route.paramMap.pipe(map((params) => +params.get('id')!));
   }
 
+  init(): void {
+    this.getCombinedData$().subscribe(({ artId, art, artists, clients, jobs, sites }) => {
+      this.artId = artId;
+      this.jobs = jobs;
+      let artwork = art.find((piece: Art) => piece.art_id === artId);
+      if (artwork) {
+        let job = jobs.find((job) => job.job_id === artwork?.job_id);
+        if (job) {
+          const client = clients.find((client) => client.client_id === job?.client_id);
+          if (client) {
+            job = { ...job, client };
+          }
+          const site = sites.find((site) => site.site_id === job?.site_id);
+          if (site) {
+            job = { ...job, site };
+          }
+          artwork = { ...artwork, job };
+        }
+        let artist = artists.find((artist) => artist.artist_id === artwork?.artist_id);
+        if (artist) {
+          artwork = { ...artwork, artist };
+        }
+        this.art = artwork;
+        this.art$ = of(this.art);
+      }
+    });
+  }
+
+  getCombinedData$(): Observable<{
+    artId: number;
+    art: Art[];
+    artists: Artist[];
+    clients: Client[];
+    jobs: Job[];
+    sites: Site[];
+  }> {
+    return combineLatest({
+      artId: this.getArtId(),
+      art: this.dataService.art$,
+      artists: this.dataService.artists$,
+      clients: this.dataService.clients$,
+      jobs: this.dataService.jobs$,
+      sites: this.dataService.sites$,
+    }).pipe(take(1));
+  }
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -119,39 +167,10 @@ export class ArtDetail extends DetailBase implements OnDestroy {
     private messagesService: MessagesService
   ) {
     super();
-    combineLatest({
-      artwork: this.dataService.art$,
-      artId: this.getArtId(),
-      jobs: this.dataService.jobs$,
-      clients: this.dataService.clients$,
-      artists: this.dataService.artists$,
-      sites: this.dataService.sites$,
-    })
-      .pipe(take(1))
-      .subscribe(({ artwork, artId, jobs, clients, artists, sites }) => {
-        this.artId = artId;
-        this.jobs = jobs;
-        let art = artwork.find((piece) => piece.art_id === artId);
-        if (art) {
-          let job = jobs.find((job) => job.job_id === art?.job_id);
-          if (job) {
-            const client = clients.find((client) => client.client_id === job?.client_id);
-            if (client) {
-              job = { ...job, client };
-            }
-            const site = sites.find((site) => site.site_id === job?.site_id);
-            if (site) {
-              job = { ...job, site };
-            }
-            art = { ...art, job };
-          }
-          let artist = artists.find((artist) => artist.artist_id === art?.artist_id);
-          if (artist) {
-            art = { ...art, artist };
-          }
-        }
-        this.art = art!;
-      });
+  }
+
+  ngOnInit(): void {
+    this.init();
   }
 
   ngOnDestroy(): void {
