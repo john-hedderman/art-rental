@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { combineLatest, take } from 'rxjs';
+import { combineLatest, Observable, take } from 'rxjs';
 
 import { Card } from '../../../shared/components/card/card';
-import { Art } from '../../../model/models';
+import { Art, Artist, Client, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -18,7 +18,7 @@ import { AddButton } from '../../../shared/buttons/add-button';
   styleUrl: './art-list.scss',
   standalone: true,
 })
-export class ArtList {
+export class ArtList implements OnInit {
   goToArtDetail = (id: number) => this.router.navigate(['/art', id]);
   goToAddArt = () => this.router.navigate(['/art', 'add']);
 
@@ -29,39 +29,53 @@ export class ArtList {
 
   thumbnail_path = 'images/art/';
 
-  constructor(private dataService: DataService, private router: Router) {
-    combineLatest({
+  init(): void {
+    this.getCombinedData$().subscribe(({ artwork, jobs, clients, artists, sites }) => {
+      this.artwork = artwork
+        .map((art) => {
+          let job = jobs.find((job) => job.job_id === art.job_id);
+          if (job) {
+            const client = clients.find((client) => client.client_id === job?.client_id);
+            if (client) {
+              job = { ...job, client };
+            }
+            const site = sites.find((site) => site.site_id === job?.site_id);
+            if (site) {
+              job = { ...job, site };
+            }
+            return { ...art, job };
+          }
+          return art;
+        })
+        .map((art) => {
+          const artist = artists.find((artist) => artist.artist_id === art.artist_id);
+          if (artist) {
+            return { ...art, artist };
+          }
+          return art;
+        });
+    });
+  }
+
+  getCombinedData$(): Observable<{
+    artwork: Art[];
+    artists: Artist[];
+    clients: Client[];
+    jobs: Job[];
+    sites: Site[];
+  }> {
+    return combineLatest({
       artwork: this.dataService.art$,
-      jobs: this.dataService.jobs$,
-      clients: this.dataService.clients$,
       artists: this.dataService.artists$,
+      clients: this.dataService.clients$,
+      jobs: this.dataService.jobs$,
       sites: this.dataService.sites$,
-    })
-      .pipe(take(1))
-      .subscribe(({ artwork, jobs, clients, artists, sites }) => {
-        this.artwork = artwork
-          .map((art) => {
-            let job = jobs.find((job) => job.job_id === art.job_id);
-            if (job) {
-              const client = clients.find((client) => client.client_id === job?.client_id);
-              if (client) {
-                job = { ...job, client };
-              }
-              const site = sites.find((site) => site.site_id === job?.site_id);
-              if (site) {
-                job = { ...job, site };
-              }
-              return { ...art, job };
-            }
-            return art;
-          })
-          .map((art) => {
-            const artist = artists.find((artist) => artist.artist_id === art.artist_id);
-            if (artist) {
-              return { ...art, artist };
-            }
-            return art;
-          });
-      });
+    }).pipe(take(1));
+  }
+
+  constructor(private dataService: DataService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.init();
   }
 }
