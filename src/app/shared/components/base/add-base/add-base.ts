@@ -2,10 +2,11 @@ import { Component, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { OperationsService } from '../../../../service/operations-service';
-import * as Const from '../../../../constants';
+import * as Msgs from '../../../../shared/strings';
 import { DataService } from '../../../../service/data-service';
 import { ActivatedRoute } from '@angular/router';
 import { Util } from '../../../util/util';
+import { MessagesService } from '../../../../service/messages-service';
 
 @Component({
   selector: 'app-add-base',
@@ -17,18 +18,30 @@ import { Util } from '../../../util/util';
 export abstract class AddBase {
   operationsService = inject(OperationsService);
   dataService = inject(DataService);
+  messagesService = inject(MessagesService);
   http = inject(HttpClient);
   route = inject(ActivatedRoute);
 
   abstract dbData: any;
-  abstract populateData(): void;
   abstract submitted: boolean;
   abstract editMode: boolean;
+  abstract saveStatus: string;
+
+  abstract populateData(): void;
   abstract preSave(): void;
   abstract save(): Promise<string>;
-  abstract saveStatus: string;
-  abstract postSave(): void;
   abstract resetForm(): void;
+
+  postSave(entity: string): void {
+    this.messagesService.showStatus(
+      this.saveStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity })
+    );
+    this.messagesService.clearStatus();
+    this.resetForm();
+    this.enableSaveBtn();
+  }
 
   populateForm<T>(collection: string, recordId: string, id: number) {
     this.http
@@ -55,12 +68,12 @@ export abstract class AddBase {
     this.saveBtn.disabled = false;
   }
 
-  async submitForm(form: any, modifiedCollections: string[]) {
+  async submitForm(form: any, modifiedCollections: string[], entity: string) {
     this.submitted = true;
     if (form.valid) {
       this.preSave();
       this.saveStatus = await this.save();
-      this.postSave();
+      this.postSave(entity);
       this.dataService.reloadData(modifiedCollections);
     }
   }

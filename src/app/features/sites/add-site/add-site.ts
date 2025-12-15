@@ -71,19 +71,8 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
     return Const.SUCCESS;
   }
 
-  postSave() {
-    this.messagesService.showStatus(
-      this.saveStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'site' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'site' })
-    );
-    this.messagesService.clearStatus();
-    this.resetForm();
-    this.enableSaveBtn();
-  }
-
   async onSubmit(): Promise<void> {
-    this.submitForm(this.siteForm, ['sites', 'clients']);
+    this.submitForm(this.siteForm, ['sites', 'clients'], 'site');
   }
 
   convertIds() {
@@ -196,11 +185,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
     this.siteForm.get('job_id')?.setValue(this.dbData.job_id);
   }
 
-  constructor(
-    private router: Router,
-    private fb: FormBuilder,
-    private messagesService: MessagesService
-  ) {
+  constructor(private router: Router, private fb: FormBuilder) {
     super();
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {

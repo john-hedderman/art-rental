@@ -74,19 +74,8 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     return this.jobResult([artStatus, oldJobStatus, jobStatus]);
   }
 
-  postSave() {
-    this.messagesService.showStatus(
-      this.saveStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'art' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' })
-    );
-    this.messagesService.clearStatus();
-    this.resetForm();
-    this.enableSaveBtn();
-  }
-
   async onSubmit(): Promise<void> {
-    this.submitForm(this.artForm, ['art', 'jobs']);
+    this.submitForm(this.artForm, ['art', 'jobs'], 'art');
   }
 
   async saveArt(): Promise<string> {
@@ -280,11 +269,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     }).pipe(take(1));
   }
 
-  constructor(
-    private router: Router,
-    private fb: FormBuilder,
-    public messagesService: MessagesService
-  ) {
+  constructor(private router: Router, private fb: FormBuilder) {
     super();
   }
 

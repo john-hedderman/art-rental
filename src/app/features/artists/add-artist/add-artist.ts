@@ -62,19 +62,8 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
     return this.jobResult([artistStatus]);
   }
 
-  postSave() {
-    this.messagesService.showStatus(
-      this.saveStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'artist' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'artist' })
-    );
-    this.messagesService.clearStatus();
-    this.resetForm();
-    this.enableSaveBtn();
-  }
-
   async onSubmit(): Promise<void> {
-    this.submitForm(this.artistForm, ['artists']);
+    this.submitForm(this.artistForm, ['artists'], 'artist');
   }
 
   async saveArtist(): Promise<string> {
@@ -112,11 +101,7 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
     this.artistForm.get('tags')?.setValue(this.dbData.tags);
   }
 
-  constructor(
-    private router: Router,
-    private fb: FormBuilder,
-    private messagesService: MessagesService
-  ) {
+  constructor(private router: Router, private fb: FormBuilder) {
     super();
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {

@@ -72,19 +72,8 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     return this.jobResult([clientStatus, deleteContactsStatus, contactsStatus]);
   }
 
-  postSave() {
-    this.messagesService.showStatus(
-      this.saveStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'client' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'client' })
-    );
-    this.messagesService.clearStatus();
-    this.resetForm();
-    this.enableSaveBtn();
-  }
-
   async onSubmit(): Promise<void> {
-    this.submitForm(this.clientForm, ['clients', 'contacts']);
+    this.submitForm(this.clientForm, ['clients', 'contacts'], 'client');
   }
 
   mergeContactIds(clientFormData: any): any {
@@ -249,11 +238,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     this.populateContactsData();
   }
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private messagesService: MessagesService
-  ) {
+  constructor(private fb: FormBuilder, private router: Router) {
     super();
   }
 

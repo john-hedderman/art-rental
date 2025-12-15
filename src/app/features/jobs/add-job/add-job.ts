@@ -77,19 +77,8 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     return Const.SUCCESS;
   }
 
-  postSave() {
-    this.messagesService.showStatus(
-      this.saveStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'job' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'job' })
-    );
-    this.messagesService.clearStatus();
-    this.resetForm();
-    this.enableSaveBtn();
-  }
-
   async onSubmit(): Promise<void> {
-    this.submitForm(this.jobForm, ['jobs', 'clients', 'sites', 'art']);
+    this.submitForm(this.jobForm, ['jobs', 'clients', 'sites', 'art'], 'job');
   }
 
   convertIds() {
@@ -384,11 +373,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     artSelectEl.dispatchEvent(new Event('change'));
   }
 
-  constructor(
-    private router: Router,
-    private fb: FormBuilder,
-    private messagesService: MessagesService
-  ) {
+  constructor(private router: Router, private fb: FormBuilder) {
     super();
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {

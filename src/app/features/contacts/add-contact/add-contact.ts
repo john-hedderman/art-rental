@@ -101,19 +101,8 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     return Const.SUCCESS;
   }
 
-  postSave() {
-    this.messagesService.showStatus(
-      this.saveStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'contact' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'contact' })
-    );
-    this.messagesService.clearStatus();
-    this.resetForm();
-    this.enableSaveBtn();
-  }
-
   async onSubmit(): Promise<void> {
-    this.submitForm(this.contactForm, ['contacts', 'clients']);
+    this.submitForm(this.contactForm, ['contacts', 'clients'], 'contact');
   }
 
   async saveContact(): Promise<string> {
@@ -237,11 +226,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     this.contactForm.get('client_id')?.setValue(this.dbData.client_id);
   }
 
-  constructor(
-    private router: Router,
-    private fb: FormBuilder,
-    private messagesService: MessagesService
-  ) {
+  constructor(private router: Router, private fb: FormBuilder) {
     super();
     const segments = this.route.snapshot.url.map((x) => x.path);
     if (segments[segments.length - 1] === 'edit') {
