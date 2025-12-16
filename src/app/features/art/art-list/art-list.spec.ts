@@ -4,10 +4,14 @@ import { of } from 'rxjs';
 
 import { ArtList } from './art-list';
 import { DataService } from '../../../service/data-service';
+import { provideRouter, Router } from '@angular/router';
+import { ArtDetail } from '../art-detail/art-detail';
+import { AddArt } from '../add-art/add-art';
 
 describe('ArtList', () => {
   let component: ArtList;
   let fixture: ComponentFixture<ArtList>;
+  let router: Router;
 
   const mockDataService = {
     art$: of([
@@ -28,11 +32,19 @@ describe('ArtList', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ArtList],
-      providers: [provideHttpClient(), { provide: DataService, useValue: mockDataService }],
+      providers: [
+        provideHttpClient(),
+        { provide: DataService, useValue: mockDataService },
+        provideRouter([
+          { path: 'art/:id', component: ArtDetail },
+          { path: 'art/add', component: AddArt },
+        ]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ArtList);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
@@ -85,6 +97,24 @@ describe('ArtList', () => {
         'app-card:first-of-type .card-body .card-text'
       );
       expect(artistNameEl.innerHTML).toBe('Fred Rogers');
+    });
+  });
+
+  describe('Navigation', () => {
+    it('should navigate to artist detail when a card is clicked', async () => {
+      const routerSpy = spyOn(router, 'navigate');
+      const cardEl = fixture.nativeElement.querySelector(
+        '.ar-card:first-of-type'
+      ) as HTMLDivElement;
+      cardEl.click();
+      expect(routerSpy).toHaveBeenCalledOnceWith(['/art', 1]);
+    });
+
+    it('should navigate to add artist when the Add Artist footer button is clicked', async () => {
+      const routerSpy = spyOn(router, 'navigate');
+      const addButtonEl = fixture.nativeElement.querySelector('#addBtn') as HTMLButtonElement;
+      addButtonEl.click();
+      expect(routerSpy).toHaveBeenCalledOnceWith(['/art', 'add']);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { take } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -6,7 +6,7 @@ import { Artist } from '../../../model/models';
 import { Card } from '../../../shared/components/card/card';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
 
@@ -20,7 +20,7 @@ import { AddButton } from '../../../shared/buttons/add-button';
     class: 'overflow-y-auto',
   },
 })
-export class ArtistList {
+export class ArtistList implements OnInit {
   goToArtistDetail = (id: number) => this.router.navigate(['/artists', id]);
   goToAddArtist = () => this.router.navigate(['/artists', 'add']);
 
@@ -29,11 +29,17 @@ export class ArtistList {
 
   artists: Artist[] = [];
 
-  constructor(private dataService: DataService, private router: Router) {
+  init() {
     this.dataService.artists$.pipe(take(1)).subscribe((artists) => {
       if (artists) {
         this.artists = artists;
       }
     });
+  }
+
+  constructor(private dataService: DataService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.init();
   }
 }
