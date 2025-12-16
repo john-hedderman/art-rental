@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -9,18 +9,11 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Art, Artist, Client, Job, Site } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/strings';
-import {
-  ActionButton,
-  ActionLink,
-  FooterActions,
-  HeaderActions,
-} from '../../../shared/actions/action-data';
+import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/buttons/save-button';
 import { CancelButton } from '../../../shared/buttons/cancel-button';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
-import { Util } from '../../../shared/util/util';
 import { ResetButton } from '../../../shared/buttons/reset-button';
 
 @Component({

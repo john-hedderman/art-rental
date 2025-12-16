@@ -1,23 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { Artist } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
-import * as Msgs from '../../../shared/strings';
-import {
-  ActionButton,
-  ActionLink,
-  FooterActions,
-  HeaderActions,
-} from '../../../shared/actions/action-data';
+import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/buttons/save-button';
 import { CancelButton } from '../../../shared/buttons/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
-import { Util } from '../../../shared/util/util';
 import { ResetButton } from '../../../shared/buttons/reset-button';
 
 @Component({
@@ -101,15 +94,7 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
     this.artistForm.get('tags')?.setValue(this.dbData.tags);
   }
 
-  constructor(private router: Router, private fb: FormBuilder) {
-    super();
-    const segments = this.route.snapshot.url.map((x) => x.path);
-    if (segments[segments.length - 1] === 'edit') {
-      this.headerData.data.headerTitle = 'Edit Artist';
-    }
-  }
-
-  ngOnInit(): void {
+  init(): void {
     this.artistId = Date.now();
     this.editMode = false;
 
@@ -117,7 +102,7 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
     if (artistId) {
       this.artistId = +artistId;
       this.editMode = true;
-      this.populateForm(Collections.Artists, 'artist_id', this.artistId);
+      this.headerData.data.headerTitle = 'Edit Artist';
     }
 
     this.artistForm = this.fb.group({
@@ -126,6 +111,18 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
       photo_path: [''],
       tags: [''],
     });
+
+    if (this.editMode) {
+      this.populateForm(Collections.Artists, 'artist_id', this.artistId);
+    }
+  }
+
+  constructor(private router: Router, private fb: FormBuilder) {
+    super();
+  }
+
+  ngOnInit(): void {
+    this.init();
   }
 
   ngOnDestroy(): void {

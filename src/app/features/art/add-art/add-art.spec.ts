@@ -380,7 +380,7 @@ describe('AddArt', () => {
         } as Art,
       ];
 
-      component.postSave();
+      component.postSave('art');
 
       const req = httpTestingController.expectOne(url);
       expect(req.request.method).toEqual('GET');
