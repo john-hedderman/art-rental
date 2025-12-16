@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, map, Observable, take } from 'rxjs';
 
@@ -29,7 +29,7 @@ import { DetailBase } from '../../../shared/components/base/detail-base/detail-b
   styleUrl: './artist-detail.scss',
   standalone: true,
 })
-export class ArtistDetail extends DetailBase implements OnDestroy {
+export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
   goToEditArtist = () => this.router.navigate(['/artists', this.artistId, 'edit']);
   goToArtistList = () => this.router.navigate(['/artists', 'list']);
 
@@ -94,6 +94,26 @@ export class ArtistDetail extends DetailBase implements OnDestroy {
     return this.route.paramMap.pipe(map((params) => +params.get('id')!));
   }
 
+  init() {
+    this.getCombinedData$().subscribe(({ artistId, artists }) => {
+      this.artistId = artistId;
+      const artist = artists.find((artist) => artist.artist_id === artistId);
+      if (artist) {
+        this.artist = artist;
+      }
+    });
+  }
+
+  getCombinedData$(): Observable<{
+    artistId: number;
+    artists: Artist[];
+  }> {
+    return combineLatest({
+      artistId: this.getArtistId(),
+      artists: this.dataService.artists$,
+    }).pipe(take(1));
+  }
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -101,18 +121,10 @@ export class ArtistDetail extends DetailBase implements OnDestroy {
     private messagesService: MessagesService
   ) {
     super();
-    combineLatest({
-      artists: this.dataService.artists$,
-      artistId: this.getArtistId(),
-    })
-      .pipe(take(1))
-      .subscribe(({ artists, artistId }) => {
-        this.artistId = artistId;
-        let artist = artists.find((artist) => artist.artist_id === artistId);
-        if (artist) {
-          this.artist = artist;
-        }
-      });
+  }
+
+  ngOnInit(): void {
+    this.init();
   }
 
   ngOnDestroy(): void {
