@@ -162,6 +162,7 @@
               <h5 class="fw-bold pb-2 pt-4 ar-heading">Contacts</h5>
               <section class="col mt-0 pe-0">
                 <button
+                  id="addContactBtn"
                   class="btn btn-secondary float-end me-3 mt-2"
                   type="button"
                   (click)="addContact()"
@@ -176,7 +177,8 @@
                 <div [formGroupName]="i" class="row pt-1 border-top ar-contact-row mt-4">
                   <div class="col-12 mt-0 pe-0">
                     <button
-                      class="btn btn-secondary float-end me-3 mt-3"
+                      id="remove-contact-btn-{{ i }}"
+                      class="btn btn-secondary ar-remove-contact-btn float-end me-3 mt-3"
                       type="button"
                       (click)="removeContact(i)"
                     >

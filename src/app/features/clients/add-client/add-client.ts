@@ -6,25 +6,18 @@ import {
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Contact } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/strings';
-import {
-  ActionButton,
-  ActionLink,
-  FooterActions,
-  HeaderActions,
-} from '../../../shared/actions/action-data';
+import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/buttons/save-button';
 import { CancelButton } from '../../../shared/buttons/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
-import { Util } from '../../../shared/util/util';
 import { ResetButton } from '../../../shared/buttons/reset-button';
 
 @Component({
@@ -127,12 +120,11 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
   async saveContacts(): Promise<string> {
     const contactsFormData = this.clientForm.value.contacts;
     const collection = Collections.Contacts;
-    let returnData;
     let result = Const.SUCCESS;
     for (const contactFormData of contactsFormData) {
       contactFormData.client_id = this.clientId;
       try {
-        returnData = await this.dataService.saveDocument(contactFormData, collection);
+        const returnData = await this.dataService.saveDocument(contactFormData, collection);
         if (!returnData.insertedId) {
           result = Const.FAILURE;
         }
@@ -238,11 +230,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     this.populateContactsData();
   }
 
-  constructor(private fb: FormBuilder, private router: Router) {
-    super();
-  }
-
-  ngOnInit(): void {
+  init() {
     this.clientId = 0;
     this.editMode = false;
 
@@ -250,7 +238,6 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     if (clientId) {
       this.clientId = +clientId;
       this.editMode = true;
-      this.populateForm(Collections.Clients, 'client_id', this.clientId);
     }
 
     this.clientForm = this.fb.group({
@@ -264,6 +251,18 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
       industry: [''],
       contacts: this.fb.array([]),
     });
+
+    if (this.editMode) {
+      this.populateForm(Collections.Clients, 'client_id', this.clientId);
+    }
+  }
+
+  constructor(private fb: FormBuilder, private router: Router) {
+    super();
+  }
+
+  ngOnInit(): void {
+    this.init();
   }
 
   ngOnDestroy(): void {
