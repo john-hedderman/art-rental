@@ -53,7 +53,10 @@ export class OperationsService {
   async deleteDocuments(collectionName: string, field: string, id: number): Promise<string> {
     let result = Const.SUCCESS;
     try {
-      await this.dataService.deleteDocuments(collectionName, field, id);
+      const returnData = await this.dataService.deleteDocuments(collectionName, field, id);
+      if (returnData.deletedCount === 0) {
+        result = Const.FAILURE;
+      }
     } catch (error) {
       console.error('Delete error:', error);
       result = Const.FAILURE;

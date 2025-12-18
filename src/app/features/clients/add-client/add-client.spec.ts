@@ -90,11 +90,10 @@ describe('AddClient', () => {
     await TestBed.configureTestingModule({
       imports: [AddClient],
       providers: [
-        provideRouter([]),
         provideHttpClient(),
+        provideRouter([{ path: 'clients/list', component: ClientList }]),
         provideHttpClientTesting(),
         { provide: DataService, useValue: mockDataService },
-        provideRouter([{ path: 'clients', component: ClientList }]),
       ],
     }).compileComponents();
     httpTestingController = TestBed.inject(HttpTestingController);

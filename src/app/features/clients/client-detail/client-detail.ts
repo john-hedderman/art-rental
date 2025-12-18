@@ -130,50 +130,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
     return this.route.paramMap.pipe(map((params) => +params.get('id')!));
   }
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private operationsService: OperationsService,
-    private messagesService: MessagesService
-  ) {
-    super();
-    combineLatest({
-      clients: this.dataService.clients$,
-      clientId: this.getClientId(),
-      jobs: this.dataService.jobs$,
-      sites: this.dataService.sites$,
-      contacts: this.dataService.contacts$,
-    })
-      .pipe(take(1))
-      .subscribe(({ clients, clientId, jobs, sites, contacts }) => {
-        this.clientId = clientId;
-        const client = clients.find((client) => client.client_id === clientId)!;
-        if (client) {
-          this.contactIds = client.contact_ids;
-          const fullJobs = jobs
-            .filter((job) => client.job_ids.indexOf(job.job_id) >= 0)
-            .map((job) => {
-              const site = sites.find((site) => site.site_id === job.site_id);
-              return { ...job, site };
-            });
-          this.jobs$ = of(fullJobs);
-          this.contacts = contacts
-            .filter((contact) => {
-              return client.contact_ids.indexOf(contact.contact_id) >= 0;
-            })
-            .map((contact) => {
-              const client = clients.find((client) => client.client_id === contact.client_id);
-              return { ...contact, client };
-            });
-          this.client$ = of(client);
-          const clientSites = sites.filter((site) => site.client_id === this.clientId);
-          this.sites$ = of(clientSites);
-          this.rows = [...this.contacts]; // for table of contacts
-        }
-      });
-  }
-
-  ngOnInit(): void {
+  async init() {
     this.columns = [
       {
         name: 'Name',
@@ -189,6 +146,62 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
         name: 'Phone',
       },
     ];
+
+    this.getCombinedData$().subscribe(({ clientId, clients, contacts, jobs, sites }) => {
+      this.clientId = clientId;
+      const client = clients.find((client) => client.client_id === clientId)!;
+      if (client) {
+        this.contactIds = client.contact_ids;
+        const fullJobs = jobs
+          .filter((job) => client.job_ids.indexOf(job.job_id) >= 0)
+          .map((job) => {
+            const site = sites.find((site) => site.site_id === job.site_id);
+            return { ...job, site };
+          });
+        this.jobs$ = of(fullJobs);
+        this.contacts = contacts
+          .filter((contact) => {
+            return client.contact_ids.indexOf(contact.contact_id) >= 0;
+          })
+          .map((contact) => {
+            const client = clients.find((client) => client.client_id === contact.client_id);
+            return { ...contact, client };
+          });
+        this.client$ = of(client);
+        const clientSites = sites.filter((site) => site.client_id === this.clientId);
+        this.sites$ = of(clientSites);
+        this.rows = [...this.contacts]; // for table of contacts
+      }
+    });
+  }
+
+  getCombinedData$(): Observable<{
+    clientId: number;
+    clients: Client[];
+    contacts: Contact[];
+    jobs: Job[];
+    sites: Site[];
+  }> {
+    return combineLatest({
+      clientId: this.getClientId(),
+      clients: this.dataService.clients$,
+      contacts: this.dataService.contacts$,
+      jobs: this.dataService.jobs$,
+      sites: this.dataService.sites$,
+    }).pipe(take(1));
+  }
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private operationsService: OperationsService,
+    private messagesService: MessagesService
+  ) {
+    super();
+  }
+
+  ngOnInit(): void {
+    this.init();
   }
 
   ngOnDestroy(): void {
