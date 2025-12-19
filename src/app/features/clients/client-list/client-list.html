@@ -13,7 +13,7 @@
       (activate)="onActivate($event)"
       [messages]="{ emptyMessage: 'No clients' }"
     >
-      <ngx-datatable-row-detail [rowHeight]="50">
+      <ngx-datatable-row-detail [rowHeight]="50" #rowDetail>
         <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
           @if (row.city && row.state) {
           <div class="row-detail-container">

@@ -1,13 +1,18 @@
 import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgxDatatableModule, TableColumn, DatatableComponent } from '@swimlane/ngx-datatable';
+import {
+  NgxDatatableModule,
+  TableColumn,
+  DatatableComponent,
+  DatatableRowDetailDirective,
+} from '@swimlane/ngx-datatable';
 import { take } from 'rxjs';
 
 import { Client } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
-import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
 
@@ -28,6 +33,7 @@ export class ClientList implements OnInit {
   @ViewChild('locationTemplate', { static: true }) locationTemplate!: TemplateRef<any>;
   @ViewChild('businessHeaderTemplate', { static: true }) businessHeaderTemplate!: TemplateRef<any>;
   @ViewChild('businessTemplate', { static: true }) businessTemplate!: TemplateRef<any>;
+  @ViewChild('rowDetail', { static: true }) rowDetail!: DatatableRowDetailDirective<any>;
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
@@ -62,15 +68,7 @@ export class ClientList implements OnInit {
     return locationA.localeCompare(locationB);
   }
 
-  constructor(private dataService: DataService, private router: Router) {
-    this.dataService.clients$.pipe(take(1)).subscribe((clients) => {
-      if (clients) {
-        this.rows = [...clients];
-      }
-    });
-  }
-
-  ngOnInit(): void {
+  init() {
     this.columns = [
       {
         width: 50,
@@ -97,5 +95,23 @@ export class ClientList implements OnInit {
         cellTemplate: this.businessTemplate,
       },
     ];
+
+    this.dataService.clients$.pipe(take(1)).subscribe((clients) => {
+      if (clients) {
+        this.rows = [...clients];
+      }
+    });
+  }
+
+  constructor(private dataService: DataService, private router: Router) {
+    this.dataService.clients$.pipe(take(1)).subscribe((clients) => {
+      if (clients) {
+        this.rows = [...clients];
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    this.init();
   }
 }
