@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -8,19 +8,12 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Contact } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/strings';
-import {
-  ActionButton,
-  ActionLink,
-  FooterActions,
-  HeaderActions,
-} from '../../../shared/actions/action-data';
+import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/buttons/save-button';
 import { CancelButton } from '../../../shared/buttons/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
-import { Util } from '../../../shared/util/util';
 import { ResetButton } from '../../../shared/buttons/reset-button';
 
 @Component({
@@ -95,10 +88,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     const contactStatus = await this.saveContact();
     const oldClientStatus = this.editMode ? await this.updateOldClient() : Const.SUCCESS;
     const clientStatus = await this.updateClient();
-    if ([contactStatus, oldClientStatus, clientStatus].includes(Const.FAILURE)) {
-      return Const.FAILURE;
-    }
-    return Const.SUCCESS;
+    return this.jobResult([contactStatus, oldClientStatus, clientStatus]);
   }
 
   async onSubmit(): Promise<void> {
@@ -136,12 +126,12 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     const formData = this.contactForm.value;
     const oldClient = this.clients.find((client) => client.client_id === dbData.client_id);
     const client = this.clients.find((client) => client.client_id === formData.client_id);
-    if (oldClient === client) {
-      return Const.SUCCESS;
-    }
     if (!oldClient) {
       console.error('Save client error, could not find the previous client');
       return Const.FAILURE;
+    }
+    if (oldClient === client) {
+      return Const.SUCCESS;
     }
     const collection = Collections.Clients;
     let result = Const.SUCCESS;
@@ -226,19 +216,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     this.contactForm.get('client_id')?.setValue(this.dbData.client_id);
   }
 
-  constructor(private router: Router, private fb: FormBuilder) {
-    super();
-    const segments = this.route.snapshot.url.map((x) => x.path);
-    if (segments[segments.length - 1] === 'edit') {
-      this.headerData.data.headerTitle = 'Edit Contact';
-    }
-    this.dataService.clients$.pipe(take(1)).subscribe((clients) => {
-      this.clients$ = of(clients);
-      this.clients = clients;
-    });
-  }
-
-  ngOnInit(): void {
+  init() {
     this.contactId = Date.now();
     this.editMode = false;
 
@@ -246,8 +224,13 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     if (contactId) {
       this.contactId = +contactId;
       this.editMode = true;
-      this.populateForm<Contact>(Collections.Contacts, 'contact_id', this.contactId);
+      this.headerData.data.headerTitle = 'Edit Contact';
     }
+
+    this.dataService.clients$.pipe(take(1)).subscribe((clients) => {
+      this.clients$ = of(clients);
+      this.clients = clients;
+    });
 
     this.contactForm = this.fb.group({
       contact_id: this.contactId,
@@ -258,6 +241,18 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
       email: [{ value: '', disabled: this.editMode ? false : true }],
       client_id: [''],
     });
+
+    if (this.editMode) {
+      this.populateForm<Contact>(Collections.Contacts, 'contact_id', this.contactId);
+    }
+  }
+
+  constructor(private router: Router, private fb: FormBuilder) {
+    super();
+  }
+
+  ngOnInit(): void {
+    this.init();
   }
 
   ngOnDestroy(): void {

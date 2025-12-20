@@ -124,7 +124,7 @@ describe('ClientList', () => {
     // believe that style sheet _row-detail.scss loaded by @use is not being loaded
     // look into ensuring Karma understands the path to the file, and all files loaded with @use
     // perhaps can be addressed in angular.json
-    fit('should not display the client location at a mobile screen size', fakeAsync(async () => {
+    xit('should not display the client location at a mobile screen size', fakeAsync(async () => {
       spyOnProperty(window, 'innerWidth', 'get').and.returnValue(425);
       window.dispatchEvent(new Event('resize'));
       tick(3000);
