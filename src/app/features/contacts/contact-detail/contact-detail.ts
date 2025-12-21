@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -29,7 +29,7 @@ import { DetailBase } from '../../../shared/components/base/detail-base/detail-b
   styleUrl: './contact-detail.scss',
   standalone: true,
 })
-export class ContactDetail extends DetailBase implements OnDestroy {
+export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
   goToEditContact = () => this.router.navigate(['/contacts', this.contactId, 'edit']);
   goToContactList = () => this.router.navigate(['/contacts', 'list']);
 
@@ -132,6 +132,35 @@ export class ContactDetail extends DetailBase implements OnDestroy {
     return this.route.paramMap.pipe(map((params) => +params.get('id')!));
   }
 
+  init() {
+    this.getCombinedData$().subscribe(({ contactId, contacts, clients }) => {
+      this.contactId = contactId;
+      this.clients = clients;
+      let contact = contacts.find((contact) => contact.contact_id === contactId)!;
+      if (contact) {
+        let client = clients.find((client) => client.client_id === contact.client_id);
+        if (client) {
+          contact = { ...contact, client };
+          this.client$ = of(client);
+          this.clientId = client.client_id;
+        }
+        this.contact$ = of(contact);
+      }
+    });
+  }
+
+  getCombinedData$(): Observable<{
+    contactId: number;
+    contacts: Contact[];
+    clients: Client[];
+  }> {
+    return combineLatest({
+      contactId: this.getContactId(),
+      contacts: this.dataService.contacts$,
+      clients: this.dataService.clients$,
+    }).pipe(take(1));
+  }
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -139,26 +168,10 @@ export class ContactDetail extends DetailBase implements OnDestroy {
     private messagesService: MessagesService
   ) {
     super();
-    combineLatest({
-      contacts: this.dataService.contacts$,
-      clients: this.dataService.clients$,
-      contactId: this.getContactId(),
-    })
-      .pipe(take(1))
-      .subscribe(({ contacts, clients, contactId }) => {
-        this.contactId = contactId;
-        this.clients = clients;
-        let contact = contacts.find((contact) => contact.contact_id === contactId)!;
-        if (contact) {
-          let client = clients.find((client) => client.client_id === contact.client_id);
-          if (client) {
-            contact = { ...contact, client };
-            this.client$ = of(client);
-            this.clientId = client.client_id;
-          }
-          this.contact$ = of(contact);
-        }
-      });
+  }
+
+  ngOnInit(): void {
+    this.init();
   }
 
   ngOnDestroy(): void {
