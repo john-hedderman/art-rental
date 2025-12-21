@@ -1,13 +1,13 @@
 import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 import { Router } from '@angular/router';
-import { combineLatest, take } from 'rxjs';
+import { combineLatest, Observable, take } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Contact } from '../../../model/models';
+import { Client, Contact } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
-import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
 
@@ -58,7 +58,7 @@ export class ContactList implements OnInit {
     }
   }
 
-  nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
+  nameComparator(rowA: any, rowB: any): number {
     const nameA = `${rowA['first_name']} ${rowA['last_name']}`;
     const nameB = `${rowB['first_name']} ${rowB['last_name']}`;
     return nameA.localeCompare(nameB);
@@ -70,22 +70,7 @@ export class ContactList implements OnInit {
     return clientNameA.localeCompare(clientNameB);
   }
 
-  constructor(private dataService: DataService, private router: Router) {
-    combineLatest({
-      contacts: this.dataService.contacts$,
-      clients: this.dataService.clients$,
-    })
-      .pipe(take(1))
-      .subscribe(({ contacts, clients }) => {
-        const fullContacts = contacts.map((contact) => {
-          const client = clients.find((client) => client.client_id === contact.client_id);
-          return { ...contact, client };
-        });
-        this.rows = [...fullContacts];
-      });
-  }
-
-  ngOnInit(): void {
+  init() {
     this.columns = [
       {
         width: 50,
@@ -96,6 +81,7 @@ export class ContactList implements OnInit {
         cellTemplate: this.arrowTemplate,
       },
       {
+        prop: '',
         width: 250,
         name: 'Name',
         cellTemplate: this.nameTemplate,
@@ -116,5 +102,29 @@ export class ContactList implements OnInit {
         cellTemplate: this.phoneTemplate,
       },
     ];
+
+    this.getCombinedData$().subscribe(({ contacts, clients }) => {
+      const fullContacts = contacts.map((contact) => {
+        const client = clients.find((client) => client.client_id === contact.client_id);
+        return { ...contact, client };
+      });
+      this.rows = [...fullContacts];
+    });
+  }
+
+  getCombinedData$(): Observable<{
+    contacts: Contact[];
+    clients: Client[];
+  }> {
+    return combineLatest({
+      contacts: this.dataService.contacts$,
+      clients: this.dataService.clients$,
+    }).pipe(take(1));
+  }
+
+  constructor(private dataService: DataService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.init();
   }
 }
