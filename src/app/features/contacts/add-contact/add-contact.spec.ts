@@ -383,7 +383,6 @@ describe('AddContact', () => {
     }));
 
     it('should perform all form submission activity (edit mode)', fakeAsync(() => {
-      component.route = route;
       component.editMode = true;
       component.contactForm = component['fb'].group({
         contact_id: Date.now(),

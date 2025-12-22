@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -7,20 +7,13 @@ import { AsyncPipe } from '@angular/common';
 import { Art, Client, Contact, Job, Site } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
-import {
-  ActionButton,
-  ActionLink,
-  FooterActions,
-  HeaderActions,
-} from '../../../shared/actions/action-data';
+import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/strings';
 import { SaveButton } from '../../../shared/buttons/save-button';
 import { CancelButton } from '../../../shared/buttons/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
-import { Util } from '../../../shared/util/util';
 import { ResetButton } from '../../../shared/buttons/reset-button';
 
 @Component({
@@ -71,10 +64,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     const clientStatus = await this.updateClient();
     const siteStatus = await this.updateSite();
     const artStatus = await this.updateArt();
-    if ([jobStatus, clientStatus, siteStatus, artStatus].includes(Const.FAILURE)) {
-      return Const.FAILURE;
-    }
-    return Const.SUCCESS;
+    return this.jobResult([jobStatus, clientStatus, siteStatus, artStatus]);
   }
 
   async onSubmit(): Promise<void> {
@@ -141,9 +131,12 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     const collection = Collections.Art;
     let result = Const.SUCCESS;
     try {
-      for (const art of this.art) {
+      const dbArt = [...this.art];
+      for (const piece of dbArt) {
+        const art = { ...piece };
         const oldJobId = art.job_id;
-        const newJobId = formData.art_ids.includes(art.art_id) ? formData.job_id : Const.NO_JOB;
+        const isArtInSelected = formData.art_ids.includes(art.art_id);
+        const newJobId = isArtInSelected ? formData.job_id : Const.NO_JOB;
         if (newJobId === oldJobId) {
           result = Const.SUCCESS;
         } else {
@@ -336,7 +329,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
 
     const siteSelectEl = document.getElementById('site_id') as HTMLSelectElement;
     siteSelectEl.value = this.dbData.site_id.toString();
-    siteSelectEl.dispatchEvent(new Event('change'));
+    siteSelectEl.dispatchEvent(new Event('change')); // triggers onSelectSite
 
     const contactsSelectEl = document.getElementById('contact_ids') as HTMLSelectElement;
     let contactsAssigned = false;
@@ -351,7 +344,6 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     }
     if (!contactsAssigned) {
       contactsSelectEl.options[0].selected = true;
-      contactsSelectEl.options[0].dispatchEvent(new Event('change'));
     }
     contactsSelectEl.dispatchEvent(new Event('change'));
 
@@ -368,37 +360,22 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     }
     if (!artAssigned) {
       artSelectEl.options[0].selected = true;
-      artSelectEl.options[0].dispatchEvent(new Event('change'));
     }
     artSelectEl.dispatchEvent(new Event('change'));
   }
 
-  constructor(private router: Router, private fb: FormBuilder) {
-    super();
-    const segments = this.route.snapshot.url.map((x) => x.path);
-    if (segments[segments.length - 1] === 'edit') {
-      this.headerData.data.headerTitle = 'Edit Job';
-    }
-    combineLatest({
-      clients: this.dataService.clients$,
-      sites: this.dataService.sites$,
-      contacts: this.dataService.contacts$,
-      art: this.dataService.art$,
-    })
-      .pipe(take(1))
-      .subscribe(({ clients, sites, contacts, art }) => {
-        this.clients = clients;
-        this.clients$ = of(clients);
-        this.sites = sites;
-        this.sites$ = of(sites);
-        this.contacts = contacts;
-        this.contacts$ = of(contacts);
-        this.art = art;
-        this.art$ = of(art);
-      });
-  }
+  init() {
+    this.getCombinedData$().subscribe(({ art, clients, contacts, sites }) => {
+      this.clients = clients;
+      this.clients$ = of(clients);
+      this.sites = sites;
+      this.sites$ = of(sites);
+      this.contacts = contacts;
+      this.contacts$ = of(contacts);
+      this.art = art;
+      this.art$ = of(art);
+    });
 
-  ngOnInit(): void {
     this.jobId = Date.now();
     this.editMode = false;
 
@@ -406,7 +383,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     if (jobId) {
       this.jobId = +jobId;
       this.editMode = true;
-      this.populateForm<Job>(Collections.Jobs, 'job_id', this.jobId);
+      this.headerData.data.headerTitle = 'Edit Job';
     }
 
     this.jobForm = this.fb.group({
@@ -417,6 +394,32 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       contact_ids: [{ value: '', disabled: this.editMode ? false : true }],
       art_ids: [{ value: '', disabled: this.editMode ? false : true }],
     });
+
+    if (this.editMode) {
+      this.populateForm<Job>(Collections.Jobs, 'job_id', this.jobId);
+    }
+  }
+
+  getCombinedData$(): Observable<{
+    art: Art[];
+    clients: Client[];
+    contacts: Contact[];
+    sites: Site[];
+  }> {
+    return combineLatest({
+      art: this.dataService.art$,
+      clients: this.dataService.clients$,
+      contacts: this.dataService.contacts$,
+      sites: this.dataService.sites$,
+    }).pipe(take(1));
+  }
+
+  constructor(private router: Router, private fb: FormBuilder) {
+    super();
+  }
+
+  ngOnInit(): void {
+    this.init();
   }
 
   ngOnDestroy(): void {

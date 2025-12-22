@@ -113,7 +113,7 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
     });
 
     if (this.editMode) {
-      this.populateForm(Collections.Artists, 'artist_id', this.artistId);
+      this.populateForm<Artist>(Collections.Artists, 'artist_id', this.artistId);
     }
   }
 

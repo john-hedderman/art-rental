@@ -253,7 +253,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     });
 
     if (this.editMode) {
-      this.populateForm(Collections.Clients, 'client_id', this.clientId);
+      this.populateForm<Client>(Collections.Clients, 'client_id', this.clientId);
     }
   }
 
