@@ -1,13 +1,13 @@
 import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { combineLatest, take } from 'rxjs';
+import { combineLatest, Observable, take } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { Job } from '../../../model/models';
+import { Client, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
-import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
 
@@ -64,34 +64,7 @@ export class JobList implements OnInit {
     return locationA.localeCompare(locationB);
   }
 
-  constructor(private dataService: DataService, private router: Router) {
-    combineLatest({
-      clients: this.dataService.clients$,
-      jobs: this.dataService.jobs$,
-      sites: this.dataService.sites$,
-    })
-      .pipe(take(1))
-      .subscribe(({ clients, jobs, sites }) => {
-        const fullJobs = jobs
-          .map((job) => {
-            const client = clients.find((client) => client.client_id === job.client_id);
-            if (client) {
-              return { ...job, client };
-            }
-            return job;
-          })
-          .map((job) => {
-            const site = sites.find((site) => site.site_id === job.site_id);
-            if (site) {
-              return { ...job, site };
-            }
-            return job;
-          });
-        this.rows = [...fullJobs];
-      });
-  }
-
-  ngOnInit(): void {
+  init() {
     this.columns = [
       {
         width: 50,
@@ -118,5 +91,42 @@ export class JobList implements OnInit {
         comparator: this.addressComparator,
       },
     ];
+
+    this.getCombinedData$().subscribe(({ clients, jobs, sites }) => {
+      const fullJobs = jobs
+        .map((job) => {
+          const client = clients.find((client) => client.client_id === job.client_id);
+          if (client) {
+            return { ...job, client };
+          }
+          return job;
+        })
+        .map((job) => {
+          const site = sites.find((site) => site.site_id === job.site_id);
+          if (site) {
+            return { ...job, site };
+          }
+          return job;
+        });
+      this.rows = [...fullJobs];
+    });
+  }
+
+  getCombinedData$(): Observable<{
+    clients: Client[];
+    jobs: Job[];
+    sites: Site[];
+  }> {
+    return combineLatest({
+      clients: this.dataService.clients$,
+      jobs: this.dataService.jobs$,
+      sites: this.dataService.sites$,
+    }).pipe(take(1));
+  }
+
+  constructor(private dataService: DataService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.init();
   }
 }
