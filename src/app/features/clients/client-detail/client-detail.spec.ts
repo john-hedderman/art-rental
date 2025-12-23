@@ -191,7 +191,7 @@ describe('ClientDetail', () => {
   });
 
   describe('Navigation', () => {
-    it('should navigate to the edit client page when the Edit button in the page footer is clicked', async () => {
+    it('should navigate to the client list when the Clients link in the page header is clicked', async () => {
       const routerSpy = spyOn(router, 'navigate');
       const clientListLinkEl = fixture.nativeElement.querySelector(
         '#clientListLink'
@@ -200,10 +200,12 @@ describe('ClientDetail', () => {
       expect(routerSpy).toHaveBeenCalledOnceWith(['/clients', 'list']);
     });
 
-    it('should navigate to the client list when the Clients link in the page header is clicked', async () => {
+    it('should navigate to the edit client page when the Edit button in the page footer is clicked', async () => {
       const routerSpy = spyOn(router, 'navigate');
-      const editClientLinkEl = fixture.nativeElement.querySelector('#editBtn') as HTMLButtonElement;
-      editClientLinkEl.click();
+      const editClientButtonEl = fixture.nativeElement.querySelector(
+        '#editBtn'
+      ) as HTMLButtonElement;
+      editClientButtonEl.click();
       expect(routerSpy).toHaveBeenCalledOnceWith(['/clients', 6, 'edit']);
     });
   });
