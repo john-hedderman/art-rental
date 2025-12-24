@@ -140,7 +140,7 @@ describe('AddJob', () => {
       expect(component.jobForm.value.job_id).toEqual(3);
     });
 
-    it('should set the art ID in the form to the date in ms when in add mode', () => {
+    it('should set the job ID in the form to the date in ms when in add mode', () => {
       component.route = {
         snapshot: {
           paramMap: {

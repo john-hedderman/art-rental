@@ -1,26 +1,19 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, Observable, of, take } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Job, Site } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
-import { AsyncPipe } from '@angular/common';
-import {
-  ActionButton,
-  ActionLink,
-  FooterActions,
-  HeaderActions,
-} from '../../../shared/actions/action-data';
+import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/buttons/save-button';
 import { CancelButton } from '../../../shared/buttons/cancel-button';
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import * as Const from '../../../constants';
-import * as Msgs from '../../../shared/strings';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
-import { Util } from '../../../shared/util/util';
 import { ResetButton } from '../../../shared/buttons/reset-button';
 
 @Component({
@@ -65,10 +58,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
   async save(): Promise<string> {
     const siteStatus = await this.saveSite();
     const clientStatus = this.editMode ? Const.SUCCESS : await this.updateClient();
-    if ([siteStatus, clientStatus].includes(Const.FAILURE)) {
-      return Const.FAILURE;
-    }
-    return Const.SUCCESS;
+    return this.jobResult([siteStatus, clientStatus]);
   }
 
   async onSubmit(): Promise<void> {
@@ -185,26 +175,14 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
     this.siteForm.get('job_id')?.setValue(this.dbData.job_id);
   }
 
-  constructor(private router: Router, private fb: FormBuilder) {
-    super();
-    const segments = this.route.snapshot.url.map((x) => x.path);
-    if (segments[segments.length - 1] === 'edit') {
-      this.headerData.data.headerTitle = 'Edit Site';
-    }
-    combineLatest({
-      clients: this.dataService.clients$,
-      jobs: this.dataService.jobs$,
-    })
-      .pipe(take(1))
-      .subscribe(({ clients, jobs }) => {
-        this.clients$ = of(clients);
-        this.clients = clients;
-        this.jobs$ = of(jobs);
-        this.jobs = jobs;
-      });
-  }
+  init() {
+    this.getCombinedData$().subscribe(({ clients, jobs }) => {
+      this.clients$ = of(clients);
+      this.clients = clients;
+      this.jobs$ = of(jobs);
+      this.jobs = jobs;
+    });
 
-  ngOnInit(): void {
     this.siteId = Date.now();
     this.editMode = false;
 
@@ -212,7 +190,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
     if (siteId) {
       this.siteId = +siteId;
       this.editMode = true;
-      this.populateForm<Site>(Collections.Sites, 'site_id', this.siteId);
+      this.headerData.data.headerTitle = 'Edit Site';
     }
 
     this.siteForm = this.fb.group({
@@ -226,6 +204,28 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
       client_id: [''],
       job_id: [{ value: '', disabled: this.editMode ? false : true }],
     });
+
+    if (this.editMode) {
+      this.populateForm<Site>(Collections.Sites, 'site_id', this.siteId);
+    }
+  }
+
+  getCombinedData$(): Observable<{
+    clients: Client[];
+    jobs: Job[];
+  }> {
+    return combineLatest({
+      clients: this.dataService.clients$,
+      jobs: this.dataService.jobs$,
+    }).pipe(take(1));
+  }
+
+  constructor(private router: Router, private fb: FormBuilder) {
+    super();
+  }
+
+  ngOnInit(): void {
+    this.init();
   }
 
   ngOnDestroy(): void {
