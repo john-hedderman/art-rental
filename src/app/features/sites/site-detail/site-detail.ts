@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, Observable, of, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -29,7 +29,7 @@ import { DetailBase } from '../../../shared/components/base/detail-base/detail-b
   styleUrl: './site-detail.scss',
   standalone: true,
 })
-export class SiteDetail extends DetailBase implements OnDestroy {
+export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
   goToEditSite = () => this.router.navigate(['/sites', this.siteId, 'edit']);
   goToSiteList = () => this.router.navigate(['/sites', 'list']);
 
@@ -59,6 +59,7 @@ export class SiteDetail extends DetailBase implements OnDestroy {
   site: Site | undefined;
   clients: Client[] = [];
   jobs: Job[] = [];
+  job: Job | undefined;
 
   deleteStatus = '';
 
@@ -126,10 +127,11 @@ export class SiteDetail extends DetailBase implements OnDestroy {
     }
     let result = Const.SUCCESS;
     try {
-      client.site_ids = client.site_ids.filter((site_id) => site_id !== this.siteId);
-      delete (client as any)._id;
+      const newClient = { ...client };
+      newClient.site_ids = newClient.site_ids.filter((site_id) => site_id !== this.siteId);
+      delete (newClient as any)._id;
       const returnData = await this.dataService.saveDocument(
-        client,
+        newClient,
         Collections.Clients,
         this.clientId,
         'client_id'
@@ -148,6 +150,46 @@ export class SiteDetail extends DetailBase implements OnDestroy {
     return this.route.paramMap.pipe(map((params) => +params.get('id')!));
   }
 
+  init() {
+    this.getCombinedData$().subscribe(({ siteId, clients, jobs, sites }) => {
+      this.clients = clients;
+      this.jobs = jobs;
+      this.siteId = siteId;
+      let site = sites.find((site) => site.site_id === siteId);
+      if (site) {
+        const client = clients.find((client) => client.client_id === site?.client_id);
+        if (client) {
+          site = { ...site, client };
+          this.client$ = of(client);
+          this.clientId = client.client_id;
+        }
+        const job = jobs.find((job) => job.job_id === site?.job_id);
+        if (job) {
+          site = { ...site, job };
+          this.job = job;
+          this.job$ = of(job);
+          this.jobId = job.job_id;
+        }
+        this.site$ = of(site);
+        this.site = site;
+      }
+    });
+  }
+
+  getCombinedData$(): Observable<{
+    siteId: number;
+    clients: Client[];
+    jobs: Job[];
+    sites: Site[];
+  }> {
+    return combineLatest({
+      siteId: this.getSiteId(),
+      clients: this.dataService.clients$,
+      jobs: this.dataService.jobs$,
+      sites: this.dataService.sites$,
+    }).pipe(take(1));
+  }
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -155,35 +197,10 @@ export class SiteDetail extends DetailBase implements OnDestroy {
     private messagesService: MessagesService
   ) {
     super();
-    combineLatest({
-      sites: this.dataService.sites$,
-      clients: this.dataService.clients$,
-      jobs: this.dataService.jobs$,
-      siteId: this.getSiteId(),
-    })
-      .pipe(take(1))
-      .subscribe(({ sites, clients, jobs, siteId }) => {
-        this.clients = clients;
-        this.jobs = jobs;
-        this.siteId = siteId;
-        let site = sites.find((site) => site.site_id === siteId);
-        if (site) {
-          const client = clients.find((client) => client.client_id === site?.client_id);
-          if (client) {
-            site = { ...site, client };
-            this.client$ = of(client);
-            this.clientId = client.client_id;
-          }
-          const job = jobs.find((job) => job.job_id === site?.job_id);
-          if (job) {
-            site = { ...site, job };
-            this.job$ = of(job);
-            this.jobId = job.job_id;
-          }
-          this.site$ = of(site);
-          this.site = site;
-        }
-      });
+  }
+
+  ngOnInit(): void {
+    this.init();
   }
 
   ngOnDestroy(): void {
