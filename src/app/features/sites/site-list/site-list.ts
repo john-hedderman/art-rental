@@ -1,10 +1,10 @@
 import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { combineLatest, take } from 'rxjs';
+import { combineLatest, Observable, take } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Site } from '../../../model/models';
+import { Client, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
 import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -64,21 +64,17 @@ export class SiteList implements OnInit {
     return locationA.localeCompare(locationB);
   }
 
-  constructor(private router: Router, private dataService: DataService) {
-    combineLatest({ clients: this.dataService.clients$, sites: this.dataService.sites$ })
-      .pipe(take(1))
-      .subscribe(({ clients, sites }) => {
-        if (clients && sites) {
-          const fullSites = sites.map((site) => {
-            const client = clients.find((client) => client.client_id === site.client_id)!;
-            return { ...site, client };
-          });
-          this.rows = [...fullSites];
-        }
-      });
-  }
+  init() {
+    this.getCombinedData$().subscribe(({ clients, sites }) => {
+      if (clients && sites) {
+        const fullSites = sites.map((site) => {
+          const client = clients.find((client) => client.client_id === site.client_id)!;
+          return { ...site, client };
+        });
+        this.rows = [...fullSites];
+      }
+    });
 
-  ngOnInit(): void {
     this.columns = [
       {
         width: 50,
@@ -110,5 +106,21 @@ export class SiteList implements OnInit {
         cellTemplate: this.clientNameTemplate,
       },
     ];
+  }
+
+  getCombinedData$(): Observable<{
+    clients: Client[];
+    sites: Site[];
+  }> {
+    return combineLatest({
+      clients: this.dataService.clients$,
+      sites: this.dataService.sites$,
+    }).pipe(take(1));
+  }
+
+  constructor(private router: Router, private dataService: DataService) {}
+
+  ngOnInit(): void {
+    this.init();
   }
 }

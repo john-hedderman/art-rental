@@ -100,7 +100,7 @@ describe('JobList', () => {
     });
   });
 
-  describe('Clients table', () => {
+  describe('Jobs table', () => {
     beforeEach(fakeAsync(() => {
       component.ngOnInit();
       tick(1000);
