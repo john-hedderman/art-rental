@@ -38,7 +38,7 @@ describe('Navbar', () => {
 
     // this test works whether returning a mobile width or a greater one
     // so need to revisit and investigate not seeing any after-effects from window.resize
-    xit('should force the mobile nav to collapse if expanded', fakeAsync(() => {
+    it('should force the mobile nav to collapse if expanded', fakeAsync(() => {
       spyOnProperty(window, 'innerWidth', 'get').and.returnValue(400);
       window.dispatchEvent(new Event('resize'));
       tick(3000);

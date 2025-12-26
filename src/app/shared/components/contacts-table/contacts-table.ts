@@ -28,7 +28,8 @@ export class ContactsTable implements OnInit {
   }
 
   @Input() rows: Contact[] = [];
-  @Input() columns: TableColumn[] = [];
+
+  columns: TableColumn[] = [];
 
   toggleExpandRow(row: Contact) {
     this.table.rowDetail!.toggleExpandRow(row);
