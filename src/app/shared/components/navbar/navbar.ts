@@ -1,6 +1,6 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject, takeUntil } from 'rxjs';
 
 import { RouteChangeService } from '../../../service/route-change-service';
 
@@ -11,10 +11,12 @@ import { RouteChangeService } from '../../../service/route-change-service';
   styleUrl: './navbar.scss',
   standalone: true,
 })
-export class Navbar {
+export class Navbar implements OnInit, OnDestroy {
   @ViewChild('navbarToggler') navbarToggler: ElementRef | undefined;
 
-  onClickNavLink(event: PointerEvent, fromBrand?: boolean) {
+  private readonly destroy$ = new Subject<void>();
+
+  onClickNavLink(event: PointerEvent) {
     // Force the expanded nav to collapse by clicking the toggle button
     const toggler = this.navbarToggler?.nativeElement;
     if (toggler.checkVisibility()) {
@@ -29,13 +31,7 @@ export class Navbar {
     });
 
     // Mark the clicked link as active
-    let target;
-    if (fromBrand) {
-      const brandRouterLinkValue = (event.target as HTMLElement).getAttribute('routerLink');
-      target = document.querySelector(`.nav-link[routerLink="${brandRouterLinkValue}"]`);
-    } else {
-      target = event.target as HTMLElement;
-    }
+    const target = event.target as HTMLElement;
     target?.setAttribute('aria-current', 'page');
     target?.classList.add('active');
   }
@@ -47,8 +43,8 @@ export class Navbar {
     return url.split('/')[1];
   }
 
-  constructor(private routeChangesService: RouteChangeService) {
-    this.routeChangesService.routeChanges$.pipe(takeUntilDestroyed()).subscribe((url) => {
+  init() {
+    this.routeChangesService.routeChanges$.pipe(takeUntil(this.destroy$)).subscribe((url) => {
       const currentRouteSegment = this.firstSegment(url);
       document.querySelectorAll('.ar-nav-link').forEach((link) => {
         const routerLink = link.getAttribute('routerLink');
@@ -62,5 +58,16 @@ export class Navbar {
         }
       });
     });
+  }
+
+  constructor(private routeChangesService: RouteChangeService) {}
+
+  ngOnInit(): void {
+    this.init();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
