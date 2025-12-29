@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { combineLatest, Observable, take } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
@@ -6,14 +6,14 @@ import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/n
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
-import { Util } from '../../../shared/util/util';
-import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
+import { RowDetail } from '../../../directives/row-detail';
 
 @Component({
   selector: 'app-site-list',
-  imports: [PageHeader, NgxDatatableModule, PageFooter],
+  imports: [PageHeader, NgxDatatableModule, PageFooter, RowDetail],
   templateUrl: './site-list.html',
   styleUrl: './site-list.scss',
   standalone: true,
@@ -31,11 +31,6 @@ export class SiteList implements OnInit {
   @ViewChild('siteAddressHeaderTemplate', { static: true })
   siteAddressHeaderTemplate!: TemplateRef<any>;
   @ViewChild('siteAddressTemplate', { static: true }) siteAddressTemplate!: TemplateRef<any>;
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event: Event) {
-    Util.showHideRowDetail();
-  }
 
   goToAddSite = () => this.router.navigate(['/sites', 'add']);
   headerData = new HeaderActions('site-list', 'Sites', [], []);

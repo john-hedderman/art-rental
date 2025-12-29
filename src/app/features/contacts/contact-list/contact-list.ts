@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 import { Router } from '@angular/router';
 import { combineLatest, Observable, take } from 'rxjs';
@@ -6,14 +6,14 @@ import { combineLatest, Observable, take } from 'rxjs';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Contact } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
-import { Util } from '../../../shared/util/util';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
+import { RowDetail } from '../../../directives/row-detail';
 
 @Component({
   selector: 'app-contact-list',
-  imports: [NgxDatatableModule, PageHeader, PageFooter],
+  imports: [NgxDatatableModule, PageHeader, PageFooter, RowDetail],
   templateUrl: './contact-list.html',
   styleUrl: './contact-list.scss',
   standalone: true,
@@ -30,11 +30,6 @@ export class ContactList implements OnInit {
   @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
   @ViewChild('phoneHeaderTemplate', { static: true }) phoneHeaderTemplate!: TemplateRef<any>;
   @ViewChild('phoneTemplate', { static: true }) phoneTemplate!: TemplateRef<any>;
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event: Event) {
-    Util.showHideRowDetail();
-  }
 
   goToAddContact = () => this.router.navigate(['/contacts', 'add']);
 

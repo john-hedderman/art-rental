@@ -103,16 +103,6 @@ describe('ContactsTable', () => {
       component.toggleExpandRow(row);
       expect(toggleRowSpy).toHaveBeenCalled();
     });
-
-    it('should respond to a window resize by displaying row detail or not ', fakeAsync(() => {
-      const rowDetailSpy = spyOn(Util, 'showHideRowDetail');
-      spyOnProperty(window, 'innerWidth', 'get').and.returnValue(400);
-      window.dispatchEvent(new Event('resize'));
-      tick(1000);
-      fixture.detectChanges();
-
-      expect(rowDetailSpy).toHaveBeenCalled();
-    }));
   });
 
   describe('Navigation', () => {

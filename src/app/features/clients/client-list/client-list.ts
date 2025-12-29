@@ -1,24 +1,19 @@
-import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  NgxDatatableModule,
-  TableColumn,
-  DatatableComponent,
-  DatatableRowDetailDirective,
-} from '@swimlane/ngx-datatable';
+import { NgxDatatableModule, TableColumn, DatatableComponent } from '@swimlane/ngx-datatable';
 import { take } from 'rxjs';
 
 import { Client } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Util } from '../../../shared/util/util';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
+import { RowDetail } from '../../../directives/row-detail';
 
 @Component({
   selector: 'app-client-list',
-  imports: [NgxDatatableModule, PageHeader, PageFooter],
+  imports: [NgxDatatableModule, PageHeader, PageFooter, RowDetail],
   templateUrl: './client-list.html',
   styleUrl: './client-list.scss',
   standalone: true,
@@ -33,12 +28,6 @@ export class ClientList implements OnInit {
   @ViewChild('locationTemplate', { static: true }) locationTemplate!: TemplateRef<any>;
   @ViewChild('businessHeaderTemplate', { static: true }) businessHeaderTemplate!: TemplateRef<any>;
   @ViewChild('businessTemplate', { static: true }) businessTemplate!: TemplateRef<any>;
-  @ViewChild('rowDetail', { static: true }) rowDetail!: DatatableRowDetailDirective<any>;
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event: Event) {
-    Util.showHideRowDetail();
-  }
 
   goToAddClient = () => this.router.navigate(['/clients', 'add']);
 

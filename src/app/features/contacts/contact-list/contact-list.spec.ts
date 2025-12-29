@@ -125,18 +125,6 @@ describe('ContactList', () => {
       expect(computedStyle.display).toBe('none');
     }));
 
-    // this test works whether returning a mobile width or a greater one
-    // so need to revisit and investigate not seeing any after-effects from window.resize
-    it('should respond to a window resize by displaying row detail or not ', fakeAsync(() => {
-      const rowDetailSpy = spyOn(Util, 'showHideRowDetail');
-      spyOnProperty(window, 'innerWidth', 'get').and.returnValue(400);
-      window.dispatchEvent(new Event('resize'));
-      tick(3000);
-      fixture.detectChanges();
-
-      expect(rowDetailSpy).toHaveBeenCalled();
-    }));
-
     // this test also works whether returning a mobile width or a greater one
     // so need to revisit and investigate not seeing any after-effects from window.resize
     it('should toggle row detail when clicking the first column arrow in mobile mode', fakeAsync(() => {

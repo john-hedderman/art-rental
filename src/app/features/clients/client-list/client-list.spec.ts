@@ -137,16 +137,6 @@ describe('ClientList', () => {
       expect(computedStyle.display).toBe('none');
     }));
 
-    it('should respond to a window resize by displaying row detail or not ', fakeAsync(() => {
-      const rowDetailSpy = spyOn(Util, 'showHideRowDetail');
-      spyOnProperty(window, 'innerWidth', 'get').and.returnValue(425);
-      window.dispatchEvent(new Event('resize'));
-      tick(3000);
-      fixture.detectChanges();
-
-      expect(rowDetailSpy).toHaveBeenCalled();
-    }));
-
     it('should toggle row detail when clicking the first column arrow in mobile mode', fakeAsync(() => {
       const toggleExpandSpy = spyOn(component, 'toggleExpandRow');
 

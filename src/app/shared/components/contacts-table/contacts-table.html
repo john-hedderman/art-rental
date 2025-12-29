@@ -14,7 +14,7 @@
   <ngx-datatable-row-detail [rowHeight]="50">
     <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
       @if (row.client?.name && row.phone) {
-      <div class="row-detail-container">
+      <div class="row-detail-container" appRowDetail>
         <div>{{ row.client?.name }}, {{ row.phone }}</div>
       </div>
       }

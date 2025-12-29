@@ -119,16 +119,6 @@ describe('SiteList', () => {
       expect(computedStyle.display).toBe('inline');
     }));
 
-    it('should respond to a window resize by displaying row detail or not ', fakeAsync(() => {
-      const rowDetailSpy = spyOn(Util, 'showHideRowDetail');
-      spyOnProperty(window, 'innerWidth', 'get').and.returnValue(400);
-      window.dispatchEvent(new Event('resize'));
-      tick(1000);
-      fixture.detectChanges();
-
-      expect(rowDetailSpy).toHaveBeenCalled();
-    }));
-
     it('should toggle row detail when clicking the first column arrow in mobile mode', fakeAsync(() => {
       const toggleExpandSpy = spyOn(component, 'toggleExpandRow');
 

@@ -1,13 +1,13 @@
-import { Component, HostListener, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { Contact } from '../../../model/models';
-import { Util } from '../../util/util';
 import { Router } from '@angular/router';
+import { RowDetail } from '../../../directives/row-detail';
 
 @Component({
   selector: 'app-contacts-table',
-  imports: [NgxDatatableModule],
+  imports: [NgxDatatableModule, RowDetail],
   templateUrl: './contacts-table.html',
   styleUrl: './contacts-table.scss',
   standalone: true,
@@ -21,11 +21,6 @@ export class ContactsTable implements OnInit {
   @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
   @ViewChild('phoneHeaderTemplate', { static: true }) phoneHeaderTemplate!: TemplateRef<any>;
   @ViewChild('phoneTemplate', { static: true }) phoneTemplate!: TemplateRef<any>;
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event: Event) {
-    Util.showHideRowDetail();
-  }
 
   @Input() rows: Contact[] = [];
 

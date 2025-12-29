@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { combineLatest, Observable, take } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
@@ -6,14 +6,14 @@ import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/n
 import { Client, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Util } from '../../../shared/util/util';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
+import { RowDetail } from '../../../directives/row-detail';
 
 @Component({
   selector: 'app-job-list',
-  imports: [NgxDatatableModule, PageHeader, PageFooter],
+  imports: [NgxDatatableModule, PageHeader, PageFooter, RowDetail],
   templateUrl: './job-list.html',
   styleUrl: './job-list.scss',
   standalone: true,
@@ -30,11 +30,6 @@ export class JobList implements OnInit {
   @ViewChild('siteAddressHeaderTemplate', { static: true })
   siteAddressHeaderTemplate!: TemplateRef<any>;
   @ViewChild('siteAddressTemplate', { static: true }) siteAddressTemplate!: TemplateRef<any>;
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event: Event) {
-    Util.showHideRowDetail();
-  }
 
   goToAddJob = () => this.router.navigate(['/jobs', 'add']);
 
