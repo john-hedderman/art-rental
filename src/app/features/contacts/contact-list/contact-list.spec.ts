@@ -125,7 +125,7 @@ describe('ContactList', () => {
       expect(computedStyle.display).toBe('none');
     }));
 
-    // this test also works whether returning a mobile width or a greater one
+    // this test works whether returning a mobile width or a greater one
     // so need to revisit and investigate not seeing any after-effects from window.resize
     it('should toggle row detail when clicking the first column arrow in mobile mode', fakeAsync(() => {
       const toggleExpandSpy = spyOn(component, 'toggleExpandRow');
@@ -168,38 +168,17 @@ describe('ContactList', () => {
       expect(sortedList).toEqual(expectedRows);
     });
 
-    // sorting in the app is currently only working correctly on both the Name and Client columns when:
-    //    a) the Name column definition has a prop:'' key/value pair
-    //    a1) its comparator takes 2 arguments
-    //    b) the Client definition does not have a prop property at all
-    //    b1) its comparator takes 4 arguments
-    // if you change (b) and (b1) so they work like (a) and (a1), the first column doesn't sort correctly,
-    //    but instead, the Client column is the one that sorts
-    // revisit this test after making it work in the app with only two values, like a normal comparator does
-    //    wonder if it's an ngx-datatable bug
-    //    research seems to indicate this is a known issue, only fixed by specifying the 'prop' property, and
-    //    giving it a real value, not the empty string
-    //    this implies that for app sorting to work, the comparator funcions must take 4 arguments
-    // and so, the roadblock is here in the test, where it only wants 2 (rightfully so)
-    //    research on that finds a suggestion that in the unit test, you can call the comparator function directly,
-    //    not involving the 'sort' function at all
-    //    look for the AI answer when searching for:
-    //    "ngx-datatable angular how do you unit test custom sort comparators with four arguments"
-    //    https://www.google.com/search?q=ngx-datatable+angular+how+do+you+unit+test+custom+sort+comparators+with+four+arguments
-    // xit('should use the custom sort comparator function for sorting on the client (name) column', () => {
-    //   const rows = [
-    //     { contact_id: 4, client: { name: 'Second City ' } },
-    //     { contact_id: 2, client: { name: 'Funny Farm' } },
-    //     { contact_id: 6, client: { name: 'Comedy Club ' } },
-    //   ];
-    //   const expectedRows = [
-    //     { contact_id: 6, client: { name: 'Comedy Club ' } },
-    //     { contact_id: 2, client: { name: 'Funny Farm' } },
-    //     { contact_id: 4, client: { name: 'Second City ' } },
-    //   ];
-    //   const sortedList = [...rows].sort(component.clientNameComparator);
-    //   expect(sortedList).toEqual(expectedRows);
-    // });
+    it('should use the custom sort comparator function for sorting on the client (name) column', () => {
+      const mockRowA = { contact_id: 4, client: { name: 'Second City ' } };
+      const mockRowB = { contact_id: 2, client: { name: 'Funny Farm' } };
+      const mockRowC = { contact_id: 6, client: { name: 'Comedy Club ' } };
+
+      let result = component.clientNameComparator('', '', mockRowA, mockRowB);
+      expect(result).toBe(1); // expect row B to come before row A
+
+      result = component.clientNameComparator('', '', mockRowC, mockRowB);
+      expect(result).toBe(-1); // expect row C to come before row B
+    });
   });
 
   describe('Navigation', () => {

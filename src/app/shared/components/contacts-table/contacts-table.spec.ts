@@ -39,40 +39,28 @@ describe('ContactsTable', () => {
   });
 
   describe('Sorting', () => {
-    // revisit this test after making it work in the app with only two values, like a normal comparator does
-    //    otherwise must test it as is - with 4 arguments to suit ngx-datatable
-    xit('should use the custom sort comparator function for sorting on the name column', () => {
-      const rows = [
-        { first_name: 'Carson', last_name: 'Dyle' },
-        { first_name: 'Aaron', last_name: 'Burr' },
-        { first_name: 'Timothy', last_name: 'Leary' },
-        { first_name: 'George', last_name: 'Bailey' },
-      ];
-      const expectedRows = [
-        { first_name: 'Aaron', last_name: 'Burr' },
-        { first_name: 'Carson', last_name: 'Dyle' },
-        { first_name: 'George', last_name: 'Bailey' },
-        { first_name: 'Timothy', last_name: 'Leary' },
-      ];
-      // const sortedList = [...rows].sort(component.nameComparator);
-      // expect(sortedList).toEqual(expectedRows);
+    it('should use the custom sort comparator function for sorting on the name column', () => {
+      const mockRowA = { first_name: 'Carson', last_name: 'Dyle' };
+      const mockRowB = { first_name: 'Aaron', last_name: 'Burr' };
+      const mockRowC = { first_name: 'Timothy', last_name: 'Leary' };
+
+      let result = component.nameComparator('', '', mockRowA, mockRowB);
+      expect(result).toBe(1); // expect row B to come before row A
+
+      result = component.nameComparator('', '', mockRowA, mockRowC);
+      expect(result).toBe(-1); // expect row A to come before row C
     });
 
-    // revisit this test after making it work in the app with only two values, like a normal comparator does
-    //    otherwise must test it as is - with 4 arguments to suit ngx-datatable
-    xit('should use the custom sort comparator function for sorting on the client (name) column', () => {
-      const rows = [
-        { contact_id: 4, client: { name: 'Second City ' } },
-        { contact_id: 2, client: { name: 'Funny Farm' } },
-        { contact_id: 6, client: { name: 'Comedy Club ' } },
-      ];
-      const expectedRows = [
-        { contact_id: 6, client: { name: 'Comedy Club ' } },
-        { contact_id: 2, client: { name: 'Funny Farm' } },
-        { contact_id: 4, client: { name: 'Second City ' } },
-      ];
-      // const sortedList = [...rows].sort(component.clientNameComparator);
-      // expect(sortedList).toEqual(expectedRows);
+    it('should use the custom sort comparator function for sorting on the client (name) column', () => {
+      const mockRowA = { contact_id: 4, client: { name: 'Second City ' } };
+      const mockRowB = { contact_id: 2, client: { name: 'Funny Farm' } };
+      const mockRowC = { contact_id: 6, client: { name: 'Comedy Club ' } };
+
+      let result = component.clientNameComparator('', '', mockRowA, mockRowB);
+      expect(result).toBe(1); // expect row B to come before row A
+
+      result = component.clientNameComparator('', '', mockRowC, mockRowB);
+      expect(result).toBe(-1); // expect row C to come before row B
     });
   });
 
