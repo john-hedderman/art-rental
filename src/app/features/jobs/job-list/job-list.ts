@@ -53,6 +53,12 @@ export class JobList implements OnInit {
     }
   }
 
+  clientNameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
+    const clientNameA = `${rowA['client']['name']}`;
+    const clientNameB = `${rowB['client']['name']}`;
+    return clientNameA.localeCompare(clientNameB);
+  }
+
   addressComparator(rowA: any, rowB: any): number {
     const locationA = `${rowA['address1']}, ${rowA['city']}, ${rowA['state']} ${rowA['zip_code']}`;
     const locationB = `${rowB['address1']}, ${rowB['city']}, ${rowB['state']} ${rowB['zip_code']}`;
@@ -76,10 +82,10 @@ export class JobList implements OnInit {
         name: 'Client',
         headerTemplate: this.clientNameHeaderTemplate,
         cellTemplate: this.clientNameTemplate,
+        comparator: this.clientNameComparator,
       },
       {
         width: 450,
-        prop: '',
         name: 'Site',
         headerTemplate: this.siteAddressHeaderTemplate,
         cellTemplate: this.siteAddressTemplate,
