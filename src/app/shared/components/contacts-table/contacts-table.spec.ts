@@ -36,6 +36,17 @@ describe('ContactsTable', () => {
     it('should create', () => {
       expect(component).toBeTruthy();
     });
+
+    // with a vertical scrollbar, the test claimed there was only one table row instead of three
+    // this happened at some point in app development, and I think it was resolved with styles
+    // but it may be that style sheet imports are not working in the test environment if imported with @use
+    it('should display the correct number of rows', fakeAsync(() => {
+      component.table.scrollbarV = false;
+      component.rows = [...mockRows];
+      fixture.detectChanges();
+      const rowElements = fixture.nativeElement.querySelectorAll('.datatable-body-row');
+      expect(rowElements.length).toBe(mockRows.length);
+    }));
   });
 
   describe('Sorting', () => {
@@ -94,15 +105,6 @@ describe('ContactsTable', () => {
   });
 
   describe('Navigation', () => {
-    // not working - we mock 3 rows of contacts but it says we have only the first of those 3
-    //    table input scrollbarV is the culprit, though root cause not known - take it out and this test works
-    //    may have resolved this in the app with style changes
-    //    see other comments in skipped tests about style sheets not importing with @use
-    xit('should display the correct number of rows', () => {
-      const rowElements = fixture.nativeElement.querySelectorAll('.datatable-body-row');
-      expect(rowElements.length).toBe(mockRows.length);
-    });
-
     it('should navigate to contact detail when a contact row is clicked', () => {
       const routerSpy = spyOn(router, 'navigate');
       const cellEl = fixture.nativeElement.querySelector(
