@@ -4,7 +4,7 @@
 ::ng-deep ngx-datatable {
   .datatable-body,
   .datatable-scroll {
-    height: auto !important;
+    max-height: 200px !important;
   }
 }
 
