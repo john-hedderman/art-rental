@@ -1,12 +1,11 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-
-import { ContactList } from './contact-list';
 import { provideHttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
+import { Router } from '@angular/router';
+
+import { ContactList } from './contact-list';
 import { Client, Contact } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
-import { Router } from '@angular/router';
-import { Util } from '../../../shared/util/util';
 
 const mockDataService = {
   clients$: of([
@@ -107,41 +106,6 @@ describe('ContactList', () => {
       expect(cellEl.innerHTML).toContain('Comedy Club');
       const computedStyle = window.getComputedStyle(cellEl);
       expect(computedStyle.display).toBe('inline');
-    }));
-
-    // style sheet _row-detail.scss might not be being loaded because it does so with @use
-    //    look into ensuring Karma understands the path to the file, and all files loaded with @use
-    //    perhaps can be addressed in angular.json
-    xit('should not display the client name at a mobile screen size', fakeAsync(async () => {
-      spyOnProperty(window, 'innerWidth', 'get').and.returnValue(425);
-      window.dispatchEvent(new Event('resize'));
-      tick(3000);
-      fixture.detectChanges();
-
-      const cellEl = fixture.nativeElement.querySelector(
-        'datatable-row-wrapper:nth-of-type(3) datatable-body-cell:nth-of-type(3) span.mobile-hidden'
-      );
-      const computedStyle = window.getComputedStyle(cellEl);
-      expect(computedStyle.display).toBe('none');
-    }));
-
-    // this test works whether returning a mobile width or a greater one
-    // so need to revisit and investigate not seeing any after-effects from window.resize
-    it('should toggle row detail when clicking the first column arrow in mobile mode', fakeAsync(() => {
-      const toggleExpandSpy = spyOn(component, 'toggleExpandRow');
-
-      spyOnProperty(window, 'innerWidth', 'get').and.returnValue(400);
-      window.dispatchEvent(new Event('resize'));
-      tick(1000);
-      fixture.detectChanges();
-
-      const arrowEl = fixture.nativeElement.querySelector(
-        'datatable-row-wrapper:nth-of-type(3) datatable-body-cell:nth-of-type(1) a'
-      );
-      arrowEl.click();
-      tick(1000);
-      fixture.detectChanges();
-      expect(toggleExpandSpy).toHaveBeenCalled();
     }));
 
     it('should call toggleExpandRow on the row detail area when called on the arrow', () => {

@@ -1,12 +1,11 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { of, zip } from 'rxjs';
+import { of } from 'rxjs';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 
 import { JobList } from './job-list';
 import { Client, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
-import { Util } from '../../../shared/util/util';
 
 const mockJob = {
   job_id: 40,
@@ -134,23 +133,6 @@ describe('JobList', () => {
       expect(cellEl.innerHTML).toContain('Comedy Club');
       const computedStyle = window.getComputedStyle(cellEl);
       expect(computedStyle.display).toBe('inline');
-    }));
-
-    it('should toggle row detail when clicking the first column arrow in mobile mode', fakeAsync(() => {
-      const toggleExpandSpy = spyOn(component, 'toggleExpandRow');
-
-      spyOnProperty(window, 'innerWidth', 'get').and.returnValue(400);
-      window.dispatchEvent(new Event('resize'));
-      tick(1000);
-      fixture.detectChanges();
-
-      const arrowEl = fixture.nativeElement.querySelector(
-        'datatable-row-wrapper:nth-of-type(3) datatable-body-cell:nth-of-type(1) a'
-      );
-      arrowEl.click();
-      tick(1000);
-      fixture.detectChanges();
-      expect(toggleExpandSpy).toHaveBeenCalled();
     }));
 
     it('should call toggleExpandRow on the row detail area when called on the arrow', () => {

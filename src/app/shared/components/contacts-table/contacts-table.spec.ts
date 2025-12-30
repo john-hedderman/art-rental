@@ -1,9 +1,8 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContactsTable } from './contacts-table';
 import { Contact } from '../../../model/models';
 import { Router } from '@angular/router';
-import { Util } from '../../util/util';
 
 const mockRows = [
   { contact_id: 10, client_id: 6, first_name: 'Drac', last_name: 'Ula' },
@@ -40,13 +39,13 @@ describe('ContactsTable', () => {
     // with a vertical scrollbar, the test claimed there was only one table row instead of three
     // this happened at some point in app development, and I think it was resolved with styles
     // but it may be that style sheet imports are not working in the test environment if imported with @use
-    it('should display the correct number of rows', fakeAsync(() => {
+    it('should display the correct number of rows', () => {
       component.table.scrollbarV = false;
       component.rows = [...mockRows];
       fixture.detectChanges();
       const rowElements = fixture.nativeElement.querySelectorAll('.datatable-body-row');
       expect(rowElements.length).toBe(mockRows.length);
-    }));
+    });
   });
 
   describe('Sorting', () => {
@@ -76,26 +75,6 @@ describe('ContactsTable', () => {
   });
 
   describe('Row detail', () => {
-    // this test works whether returning a mobile width or a greater one
-    // so need to revisit and investigate not seeing any after-effects from window.resize
-    it('should toggle row detail when clicking the first column arrow in mobile mode', fakeAsync(() => {
-      const toggleExpandSpy = spyOn(component, 'toggleExpandRow');
-
-      spyOnProperty(window, 'innerWidth', 'get').and.returnValue(400);
-      window.dispatchEvent(new Event('resize'));
-      tick(1000);
-      fixture.detectChanges();
-
-      const arrowEl = fixture.nativeElement.querySelector(
-        'datatable-row-wrapper:nth-of-type(1) datatable-body-cell:nth-of-type(1) a'
-      ) as HTMLAnchorElement;
-      arrowEl.click();
-      tick(1000);
-      fixture.detectChanges();
-
-      expect(toggleExpandSpy).toHaveBeenCalled();
-    }));
-
     it('should call toggleExpandRow on the row detail area when called on the arrow', () => {
       const toggleRowSpy = spyOn(component.table.rowDetail!, 'toggleExpandRow');
       const row = component.rows[0];

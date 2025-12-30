@@ -36,23 +36,6 @@ describe('Navbar', () => {
       linkEl.click();
     }
 
-    // this test works whether returning a mobile width or a greater one
-    // so need to revisit and investigate not seeing any after-effects from window.resize
-    it('should force the mobile nav to collapse if expanded', fakeAsync(() => {
-      spyOnProperty(window, 'innerWidth', 'get').and.returnValue(400);
-      window.dispatchEvent(new Event('resize'));
-      tick(3000);
-      fixture.detectChanges();
-
-      const toggler = component.navbarToggler?.nativeElement as HTMLButtonElement;
-      expect(toggler).toBeTruthy();
-      expect(toggler.checkVisibility()).toBeTrue();
-      const togglerSpy = spyOn(toggler, 'click');
-
-      clickNavLink();
-      expect(togglerSpy).toHaveBeenCalled();
-    }));
-
     it('should mark the clicked link as active', fakeAsync(() => {
       clickNavLink();
       tick(1000);

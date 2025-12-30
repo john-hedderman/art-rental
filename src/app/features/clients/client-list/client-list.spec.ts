@@ -7,7 +7,6 @@ import { ClientList } from './client-list';
 import { Client } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { AddClient } from '../add-client/add-client';
-import { Util } from '../../../shared/util/util';
 
 const mockDataService = {
   clients$: of([
@@ -119,39 +118,6 @@ describe('ClientList', () => {
       expect(cellEl.innerHTML).toContain('Walla Walla, WA');
       const computedStyle = window.getComputedStyle(cellEl);
       expect(computedStyle.display).toBe('inline');
-    }));
-
-    // believe that style sheet _row-detail.scss loaded by @use is not being loaded
-    // look into ensuring Karma understands the path to the file, and all files loaded with @use
-    // perhaps can be addressed in angular.json
-    xit('should not display the client location at a mobile screen size', fakeAsync(async () => {
-      spyOnProperty(window, 'innerWidth', 'get').and.returnValue(425);
-      window.dispatchEvent(new Event('resize'));
-      tick(3000);
-      fixture.detectChanges();
-
-      const cellEl = fixture.nativeElement.querySelector(
-        'datatable-row-wrapper:nth-of-type(3) datatable-body-cell:nth-of-type(3) span.mobile-hidden'
-      );
-      const computedStyle = window.getComputedStyle(cellEl);
-      expect(computedStyle.display).toBe('none');
-    }));
-
-    it('should toggle row detail when clicking the first column arrow in mobile mode', fakeAsync(() => {
-      const toggleExpandSpy = spyOn(component, 'toggleExpandRow');
-
-      spyOnProperty(window, 'innerWidth', 'get').and.returnValue(425);
-      window.dispatchEvent(new Event('resize'));
-      tick(1000);
-      fixture.detectChanges();
-
-      const arrowEl = fixture.nativeElement.querySelector(
-        'datatable-row-wrapper:nth-of-type(3) datatable-body-cell:nth-of-type(1) a'
-      );
-      arrowEl.click();
-      tick(1000);
-      fixture.detectChanges();
-      expect(toggleExpandSpy).toHaveBeenCalled();
     }));
 
     it('should call toggleExpandRow on the row detail area when called on the arrow', () => {

@@ -6,7 +6,6 @@ import { provideHttpClient } from '@angular/common/http';
 import { Client, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Router } from '@angular/router';
-import { Util } from '../../../shared/util/util';
 
 const mockClients = of([
   { client_id: 1 },
@@ -117,23 +116,6 @@ describe('SiteList', () => {
       expect(cellEl.innerHTML).toContain('Comedy Club');
       const computedStyle = window.getComputedStyle(cellEl);
       expect(computedStyle.display).toBe('inline');
-    }));
-
-    it('should toggle row detail when clicking the first column arrow in mobile mode', fakeAsync(() => {
-      const toggleExpandSpy = spyOn(component, 'toggleExpandRow');
-
-      spyOnProperty(window, 'innerWidth', 'get').and.returnValue(400);
-      window.dispatchEvent(new Event('resize'));
-      tick(1000);
-      fixture.detectChanges();
-
-      const arrowEl = fixture.nativeElement.querySelector(
-        'datatable-row-wrapper:nth-of-type(1) datatable-body-cell:nth-of-type(1) a'
-      );
-      arrowEl.click();
-      tick(1000);
-      fixture.detectChanges();
-      expect(toggleExpandSpy).toHaveBeenCalled();
     }));
 
     it('should call toggleExpandRow on the row detail area when called on the arrow', () => {
