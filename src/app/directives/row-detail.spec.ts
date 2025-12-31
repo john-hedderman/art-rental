@@ -3,6 +3,7 @@ import { Component, DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { RowDetail } from './row-detail';
+import * as Const from '../constants';
 
 @Component({
   standalone: true,
@@ -14,7 +15,7 @@ import { RowDetail } from './row-detail';
 class TestHostComponent {}
 
 let fixture: ComponentFixture<TestHostComponent>;
-let des: DebugElement[];
+let rowDetailEls: DebugElement[];
 
 describe('RowDetail', () => {
   beforeEach(async () => {
@@ -27,10 +28,28 @@ describe('RowDetail', () => {
     fixture = TestBed.createComponent(TestHostComponent);
     fixture.detectChanges();
 
-    des = fixture.debugElement.queryAll(By.directive(RowDetail));
+    rowDetailEls = fixture.debugElement.queryAll(By.directive(RowDetail));
   });
 
   it('should have the directive applied to the element', () => {
-    expect(des.length).toBe(1);
+    expect(rowDetailEls.length).toBe(1);
+  });
+
+  it('should show the row at a mobile breakpoint', () => {
+    spyOnProperty(window, 'innerWidth', 'get').and.returnValue(Const.MOBILE_MD);
+    window.dispatchEvent(new Event('resize'));
+    fixture.detectChanges();
+
+    const parentEl = rowDetailEls[0].nativeElement.parentElement as HTMLDivElement;
+    expect(parentEl.classList).not.toContain('d-none');
+  });
+
+  it('should hide the row at a tablet or higher breakpoint', () => {
+    spyOnProperty(window, 'innerWidth', 'get').and.returnValue(Const.TABLET);
+    window.dispatchEvent(new Event('resize'));
+    fixture.detectChanges();
+
+    const parentEl = rowDetailEls[0].nativeElement.parentElement as HTMLDivElement;
+    expect(parentEl.classList).toContain('d-none');
   });
 });
