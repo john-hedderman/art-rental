@@ -142,6 +142,18 @@ describe('JobList', () => {
       expect(toggleRowSpy).toHaveBeenCalled();
     });
 
+    it('should use the custom sort comparator function for sorting on the client (name) column', () => {
+      const mockRowA = { contact_id: 4, client: { name: 'Second City ' } };
+      const mockRowB = { contact_id: 2, client: { name: 'Funny Farm' } };
+      const mockRowC = { contact_id: 6, client: { name: 'Comedy Club ' } };
+
+      let result = component.clientNameComparator('', '', mockRowA, mockRowB);
+      expect(result).toBe(1); // expect row B to come before row A
+
+      result = component.clientNameComparator('', '', mockRowC, mockRowB);
+      expect(result).toBe(-1); // expect row C to come before row B
+    });
+
     it('should use the custom sort comparator function for sorting on the site column', () => {
       const rows = [
         { address1: '4392 Maple Ave', city: 'Carson City', state: 'NV', zip_code: '' },
