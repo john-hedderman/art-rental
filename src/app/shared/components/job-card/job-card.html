@@ -1,0 +1,16 @@
+<div class="ar-job-card__container">
+  <div class="card ar-job-card">
+    <div class="row g-0 flex-grow-1 ar-job-card__content">
+      <div class="card-group ar-art-card-group pt-3">
+        @if (art$ | async; as artwork) { @for (piece of artwork; track $index) {
+        <app-art-thumbnail-card [art_id]="piece.art_id" [job_id]="job_id"></app-art-thumbnail-card>
+        } }
+      </div>
+    </div>
+    <div class="row g-0">
+      <div class="card-footer ar-job-card-footer">
+        <p class="mb-0 fst-italic">{{ job_name }}</p>
+      </div>
+    </div>
+  </div>
+</div>

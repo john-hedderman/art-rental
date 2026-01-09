@@ -1,0 +1,40 @@
+:host {
+  margin-top: 1rem;
+  margin-left: 1rem;
+}
+
+:host:first-of-type {
+  margin-top: 0;
+}
+
+:host:last-of-type {
+  margin-bottom: 1rem;
+}
+
+.ar-job-card__container {
+  --ar-job-card-side: 364px;
+  --ar-job-card-min-height: 125px;
+  --ar-job-card-border-radius: 6px;
+
+  width: var(--ar-job-card-side);
+  text-align: center;
+
+  .ar-job-card {
+    min-height: var(--ar-job-card-min-height);
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2);
+  }
+
+  .droppable {
+    background-color: rgba(32, 11, 224, 0.1);
+  }
+
+  .ar-job-card-footer {
+    height: 2.625rem;
+
+    .ar-job-card-footer-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

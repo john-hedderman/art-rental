@@ -1,0 +1,12 @@
+<div class="ar-thumbnail-card__container">
+  <div class="card ar-thumbnail-card">
+    <img
+      src="{{ ART_THUMBNAIL_PATH + art?.file_name }}"
+      class="img-fluid ar-thumbnail-rounded h-100"
+      alt="{{ art?.title }}"
+      title="{{ art?.title }}"
+    />
+  </div>
+  <p class="mt-1 mb-0 fst-italic lh-1 pb-1">{{ art?.title }}</p>
+  <p>{{ art?.artist?.name }}</p>
+</div>

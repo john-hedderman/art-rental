@@ -24,6 +24,8 @@ import { AddSite } from './features/sites/add-site/add-site';
 import { SiteDetail } from './features/sites/site-detail/site-detail';
 import { ContactDetail } from './features/contacts/contact-detail/contact-detail';
 import { AddContact } from './features/contacts/add-contact/add-contact';
+import { Jobs2Page } from './features/jobs2/jobs2-page';
+import { Jobs2List } from './features/jobs2/jobs2-list/jobs2-list';
 
 export const routes: Routes = [
   {
@@ -126,6 +128,21 @@ export const routes: Routes = [
       {
         path: ':id/edit',
         component: AddJob,
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full',
+      },
+    ],
+  },
+  {
+    path: 'jobs2',
+    component: Jobs2Page,
+    children: [
+      {
+        path: 'list',
+        component: Jobs2List,
       },
       {
         path: '',
