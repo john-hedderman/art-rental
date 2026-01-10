@@ -58,10 +58,14 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
 
   onDrop(event: DragEvent) {
     const el = this.elemRef.nativeElement;
-    const artData = event.dataTransfer?.getData('text/plain');
     el.querySelector('.ar-job-card__content')?.classList.remove('droppable');
+
+    const artData = event.dataTransfer?.getData('text/plain');
     if (artData) {
       const { art, oldJob } = JSON.parse(artData);
+      if (oldJob.job_id === this.job_id) {
+        return;
+      }
       const newJob = this.job;
       this.artAssignmentService.assignArt(art, oldJob, newJob);
     }
