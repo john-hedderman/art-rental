@@ -5,13 +5,17 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Art, Job } from '../model/models';
 import { DataService } from './data-service';
 import * as Const from '../constants';
+import * as Msgs from '../shared/strings';
 import { Collections } from '../shared/enums/collections';
-import { Router } from '@angular/router';
+import { Util } from '../shared/util/util';
+import { MessagesService } from './messages-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ArtAssignmentService {
+  saveStatus: string = '';
+
   private _assignedArt = signal<any>({ art: {}, oldJob: {}, newJob: {} });
   public assignedArt$: Observable<any> = toObservable(this._assignedArt);
 
@@ -106,15 +110,34 @@ export class ArtAssignmentService {
     return result;
   }
 
-  constructor(private dataService: DataService, private router: Router) {
+  async save(art: Art, oldJob: Job, newJob: Job): Promise<string> {
+    const artStatus = await this.updateArt(art, oldJob, newJob);
+    const oldJobStatus = await this.updateOldJob(art, oldJob);
+    const newJobStatus = await this.updateNewJob(art, newJob);
+    return this.jobResult([artStatus, oldJobStatus, newJobStatus]);
+  }
+
+  postSave(entity: string) {
+    this.messagesService.showStatus(
+      this.saveStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity })
+    );
+    this.messagesService.clearStatus();
+  }
+
+  jobResult(statuses: string[]): string {
+    return Util.jobResult(statuses);
+  }
+
+  constructor(private dataService: DataService, private messagesService: MessagesService) {
     this.assignedArt$.pipe(takeUntilDestroyed()).subscribe(async (data) => {
       let { art, oldJob, newJob } = data;
       oldJob = oldJob || { job_id: Const.NO_JOB };
       newJob = newJob || { job_id: Const.NO_JOB };
       if (art?.art_id && oldJob?.job_id != undefined && newJob?.job_id != undefined) {
-        const artStatus = await this.updateArt(art, oldJob, newJob);
-        const oldJobStatus = await this.updateOldJob(art, oldJob);
-        const newJobStatus = await this.updateNewJob(art, newJob);
+        this.saveStatus = await this.save(art, oldJob, newJob);
+        this.postSave('job');
         this.dataService.reloadData(['art']);
       }
     });
