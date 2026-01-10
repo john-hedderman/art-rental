@@ -1,8 +1,6 @@
 :host {
-  margin-left: 16px;
-
-  .foo {
-    border: 4px solid red;
+  @media (min-width: 576px) {
+    margin-left: 1rem;
   }
 }
 

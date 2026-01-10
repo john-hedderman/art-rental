@@ -12,6 +12,13 @@
   .ar-job-card {
     min-height: var(--ar-job-card-min-height);
     box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2);
+
+    @media (max-width: 767px) {
+      .ar-job-card__content > * {
+        width: auto;
+        margin: auto;
+      }
+    }
   }
 
   .droppable {
@@ -19,12 +26,12 @@
   }
 
   .ar-job-card-footer {
-    height: 2.625rem;
+    min-height: 2.625rem;
 
-    .ar-job-card-footer-text {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    @media (max-width: 767px) {
+      p {
+        font-size: 0.75rem;
+      }
     }
   }
 }

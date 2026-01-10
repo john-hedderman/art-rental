@@ -23,7 +23,7 @@ import { DataService } from '../../../service/data-service';
   styleUrl: './job-card.scss',
   standalone: true,
   host: {
-    class: 'w-100 mb-3',
+    class: 'w-100',
   },
 })
 export class JobCard implements OnInit, AfterViewInit, OnDestroy {
