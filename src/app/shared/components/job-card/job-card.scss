@@ -1,22 +1,12 @@
-:host {
-  margin-top: 1rem;
-  margin-left: 1rem;
-}
-
-:host:first-of-type {
-  margin-top: 0;
-}
-
 :host:last-of-type {
-  margin-bottom: 1rem;
+  margin-bottom: 0;
 }
 
 .ar-job-card__container {
-  --ar-job-card-side: 364px;
+  --ar-job-card-side: 346px;
   --ar-job-card-min-height: 125px;
   --ar-job-card-border-radius: 6px;
 
-  width: var(--ar-job-card-side);
   text-align: center;
 
   .ar-job-card {

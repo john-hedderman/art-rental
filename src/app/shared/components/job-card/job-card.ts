@@ -22,6 +22,9 @@ import { DataService } from '../../../service/data-service';
   templateUrl: './job-card.html',
   styleUrl: './job-card.scss',
   standalone: true,
+  host: {
+    class: 'w-100 mb-3',
+  },
 })
 export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   @Input() job_id: number | undefined;
