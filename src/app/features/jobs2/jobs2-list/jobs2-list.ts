@@ -10,6 +10,7 @@ import * as Const from '../../../constants';
 import { JobCard } from '../../../shared/components/job-card/job-card';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-jobs2-list',
@@ -19,8 +20,10 @@ import { AddButton } from '../../../shared/buttons/add-button';
   standalone: true,
 })
 export class Jobs2List implements OnInit {
+  goToAddJob = () => this.router.navigate(['/jobs', 'add']);
+
   headerData = new HeaderActions('job2-list', 'Jobs2', [], []);
-  footerData = new FooterActions([new AddButton('Add Job', null)]);
+  footerData = new FooterActions([new AddButton('Add Job', this.goToAddJob)]);
 
   art$: Observable<Art[]> | undefined;
   jobs$: Observable<Job[]> | undefined;
@@ -66,7 +69,11 @@ export class Jobs2List implements OnInit {
     }).pipe(take(1));
   }
 
-  constructor(private dataService: DataService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private dataService: DataService,
+    private cdr: ChangeDetectorRef,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.init();
