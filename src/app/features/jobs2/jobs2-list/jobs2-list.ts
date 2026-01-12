@@ -21,6 +21,8 @@ import { Router } from '@angular/router';
 })
 export class Jobs2List implements OnInit {
   goToAddJob = () => this.router.navigate(['/jobs', 'add']);
+  goToJobDetail = (id: number) => this.router.navigate(['/jobs', id]);
+  noop = () => {};
 
   headerData = new HeaderActions('job2-list', 'Jobs2', [], []);
   footerData = new FooterActions([new AddButton('Add Job', this.goToAddJob)]);

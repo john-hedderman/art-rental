@@ -19,6 +19,10 @@
         margin: auto;
       }
     }
+
+    .hover:hover {
+      cursor: pointer;
+    }
   }
 
   .droppable {

@@ -15,6 +15,7 @@ import { ArtThumbnailCard } from '../art-thumbnail-card/art-thumbnail-card';
 import * as Const from '../../../constants';
 import { ArtAssignmentService } from '../../../service/art-assignment-service';
 import { DataService } from '../../../service/data-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-job-card',
@@ -28,6 +29,9 @@ import { DataService } from '../../../service/data-service';
 })
 export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   @Input() job_id: number | undefined;
+  @Input() cardData: any = {
+    clickHandler: null,
+  };
 
   job_name = '';
 
@@ -36,6 +40,8 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   art$: Observable<Art[] | undefined> | undefined;
 
   private readonly destroy$ = new Subject<void>();
+
+  readonly WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
 
   onDragEnter(event: DragEvent) {
     const el = this.elemRef.nativeElement;
@@ -124,7 +130,8 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
     private elemRef: ElementRef,
     private artAssignmentService: ArtAssignmentService,
     private dataService: DataService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
