@@ -60,7 +60,9 @@ export class ArtAssignmentService {
     let result = Const.SUCCESS;
     let modifiedJob = { ...oldJob };
     try {
-      const art_ids = modifiedJob.art_ids.filter((art_id) => art_id !== art.art_id);
+      const art_ids = modifiedJob.art_ids
+        ? modifiedJob.art_ids.filter((art_id) => art_id !== art.art_id)
+        : [];
       modifiedJob = { ...modifiedJob, art_ids };
       delete modifiedJob.art;
       delete modifiedJob.site;
@@ -86,9 +88,9 @@ export class ArtAssignmentService {
       return Const.FAILURE;
     }
     let result = Const.SUCCESS;
-    let modifiedJob = { ...newJob };
+    let modifiedJob: Job = { ...newJob };
     try {
-      const art_ids = modifiedJob.art_ids;
+      const art_ids = modifiedJob.art_ids || [];
       art_ids.push(art.art_id);
       modifiedJob = { ...modifiedJob, art_ids };
       delete modifiedJob.art;

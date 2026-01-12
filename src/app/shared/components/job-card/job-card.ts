@@ -94,6 +94,9 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
       if (job) {
         job.site = sites.find((site) => site.job_id === job.job_id);
         this.job = job;
+        if (!this.job.art_ids) {
+          this.job.art_ids = [];
+        }
         this.job_name =
           this.job?.job_number === Const.WAREHOUSE_JOB_NUMBER
             ? `${Const.WAREHOUSE_JOB_NUMBER} (${Const.WAREHOUSE_SITE_NAME})`

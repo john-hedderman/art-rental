@@ -63,8 +63,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     const jobStatus = await this.saveJob();
     const clientStatus = await this.updateClient();
     const siteStatus = await this.updateSite();
-    const artStatus = await this.updateArt();
-    return this.jobResult([jobStatus, clientStatus, siteStatus, artStatus]);
+    return this.jobResult([jobStatus, clientStatus, siteStatus]);
   }
 
   async onSubmit(): Promise<void> {
@@ -76,7 +75,6 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     form.client_id = parseInt(form.client_id);
     form.site_id = parseInt(form.site_id);
     form.contact_ids = form.contact_ids.map((id: any) => parseInt(id));
-    form.art_ids = form.art_ids.map((id: any) => parseInt(id));
   }
 
   async saveJob(): Promise<string> {
@@ -121,40 +119,6 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       }
     } catch (error) {
       console.error('Save client error:', error);
-      result = Const.FAILURE;
-    }
-    return result;
-  }
-
-  async updateArt(): Promise<string> {
-    const formData = this.jobForm.value;
-    const collection = Collections.Art;
-    let result = Const.SUCCESS;
-    try {
-      const dbArt = [...this.art];
-      for (const piece of dbArt) {
-        const art = { ...piece };
-        const oldJobId = art.job_id;
-        const isArtInSelected = formData.art_ids.includes(art.art_id);
-        const newJobId = isArtInSelected ? formData.job_id : Const.NO_JOB;
-        if (newJobId === oldJobId) {
-          result = Const.SUCCESS;
-        } else {
-          art.job_id = newJobId;
-          delete (art as any)._id;
-          const returnData = await this.dataService.saveDocument(
-            art,
-            collection,
-            art.art_id,
-            'art_id'
-          );
-          if (returnData.modifiedCount === 0) {
-            result = Const.FAILURE;
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Save art error:', error);
       result = Const.FAILURE;
     }
     return result;
@@ -217,7 +181,6 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       this.clientId = +clientId;
       this.enableMenu('site_id');
       this.disableMenu('contact_ids');
-      this.disableMenu('art_ids');
     } else {
       this.resetMenus();
     }
@@ -231,17 +194,14 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     menu?.add(newOption);
     this.jobForm.get('site_id')?.disable();
     this.disableMenu('contact_ids');
-    this.disableMenu('art_ids');
   }
 
   onSelectSite(event: any) {
     const siteId = event.target.value;
     if (siteId !== '') {
       this.enableMenu('contact_ids');
-      this.enableMenu('art_ids');
     } else {
       this.disableMenu('contact_ids');
-      this.disableMenu('art_ids');
     }
   }
 
@@ -266,9 +226,6 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
         break;
       case 'contact_ids':
         this.populateContactsMenu();
-        break;
-      case 'art_ids':
-        this.populateArtMenu();
         break;
     }
   }
@@ -298,19 +255,6 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
         `${clientContact.first_name} ${clientContact.last_name}`,
         clientContact.contact_id.toString()
       );
-      menu?.add(newOption);
-    }
-  }
-
-  populateArtMenu() {
-    const menu = document.getElementById('art_ids') as HTMLSelectElement;
-    let newOption = new Option('TBD', 'tbd');
-    menu?.add(newOption);
-    const availableArt = this.art.filter(
-      (art) => art.job_id === Const.NO_JOB || art.job_id === this.jobId
-    );
-    for (const art of availableArt) {
-      newOption = new Option(art.title, art.art_id.toString());
       menu?.add(newOption);
     }
   }
@@ -346,22 +290,6 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       contactsSelectEl.options[0].selected = true;
     }
     contactsSelectEl.dispatchEvent(new Event('change'));
-
-    const artSelectEl = document.getElementById('art_ids') as HTMLSelectElement;
-    let artAssigned = false;
-    for (const option of artSelectEl.options) {
-      if (this.dbData.art_ids.includes(+option.value)) {
-        artAssigned = true;
-        option.selected = true;
-        option.dispatchEvent(new Event('change'));
-      } else {
-        option.selected = false;
-      }
-    }
-    if (!artAssigned) {
-      artSelectEl.options[0].selected = true;
-    }
-    artSelectEl.dispatchEvent(new Event('change'));
   }
 
   init() {
@@ -392,7 +320,6 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       client_id: [''],
       site_id: [{ value: '', disabled: this.editMode ? false : true }],
       contact_ids: [{ value: '', disabled: this.editMode ? false : true }],
-      art_ids: [{ value: '', disabled: this.editMode ? false : true }],
     });
 
     if (this.editMode) {
