@@ -67,9 +67,10 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
   columns: TableColumn[] = [];
 
   job: Job | undefined;
-  clients: Client[] = [];
-  sites: Site[] = [];
   artwork: Art[] = [];
+  clients: Client[] = [];
+  jobs: Job[] = [];
+  sites: Site[] = [];
 
   deleteStatus = '';
 
@@ -80,10 +81,11 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
 
   override async delete(): Promise<string> {
     const jobStatus = await this.deleteJob();
+    const warehouseStatus = await this.updateWarehouse();
     const clientStatus = await this.updateClient();
     const siteStatus = await this.updateSite();
     const artStatus = await this.updateArt();
-    return this.jobResult([jobStatus, clientStatus, siteStatus, artStatus]);
+    return this.jobResult([jobStatus, warehouseStatus, clientStatus, siteStatus, artStatus]);
   }
 
   override postDelete() {
@@ -101,6 +103,40 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
 
   async deleteJob(): Promise<string> {
     return await this.operationsService.deleteDocument(Collections.Jobs, 'job_id', this.jobId);
+  }
+
+  async updateWarehouse(): Promise<string> {
+    const warehouse = this.jobs.find((job) => job.job_id === Const.WAREHOUSE_JOB_ID);
+    if (!warehouse) {
+      console.error('Save job error, could not find the warehouse job');
+      return Const.FAILURE;
+    }
+    const collection = Collections.Jobs;
+    let result = Const.SUCCESS;
+    try {
+      const returnedArtIds = this.job?.art_ids;
+      if (returnedArtIds && returnedArtIds.length) {
+        const newWarehouseArtIds = [...new Set([...warehouse.art_ids, ...returnedArtIds])];
+        warehouse.art_ids = newWarehouseArtIds;
+        delete warehouse.art;
+        delete warehouse.contacts;
+        delete warehouse.site;
+        delete (warehouse as any)._id;
+        const data = await this.dataService.saveDocument(
+          warehouse,
+          collection,
+          Const.WAREHOUSE_JOB_ID,
+          'job_id'
+        );
+        if (data.modifiedCount === 0) {
+          result = Const.FAILURE;
+        }
+      }
+    } catch (error) {
+      console.error('Save warehouse job error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
   }
 
   async updateClient(): Promise<string> {
@@ -202,6 +238,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
       this.jobId = jobId;
       this.artwork = artwork;
       this.clients = clients;
+      this.jobs = jobs;
       this.sites = sites;
       const job = jobs.find((job) => job.job_id === jobId);
       if (job) {
