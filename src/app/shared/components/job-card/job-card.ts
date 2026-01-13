@@ -10,7 +10,7 @@ import {
 import { combineLatest, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { Art, Job, Site } from '../../../model/models';
+import { Art, Client, Job, Site } from '../../../model/models';
 import { ArtThumbnailCard } from '../art-thumbnail-card/art-thumbnail-card';
 import * as Const from '../../../constants';
 import { ArtAssignmentService } from '../../../service/art-assignment-service';
@@ -95,7 +95,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   }
 
   init() {
-    this.getCombinedData$().subscribe(({ art, jobs, sites }) => {
+    this.getCombinedData$().subscribe(({ art, clients, jobs, sites }) => {
       const job = jobs.find((job) => job.job_id === this.job_id);
       if (job) {
         job.site = sites.find((site) => site.job_id === job.job_id);
@@ -103,10 +103,14 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
         if (!this.job.art_ids) {
           this.job.art_ids = [];
         }
+        job.client = clients.find((client) => client.client_id === job.client_id);
+
+        const client = this.job?.client?.name || 'client TBD';
+        const site = this.job?.site?.name || 'site TBD';
         this.job_name =
           this.job?.job_number === Const.WAREHOUSE_JOB_NUMBER
-            ? `${Const.WAREHOUSE_JOB_NUMBER} (${Const.WAREHOUSE_SITE_NAME})`
-            : `${this.job?.job_number}: ${this.job?.site?.name}`;
+            ? `${Const.WAREHOUSE_SITE_NAME}`
+            : `${this.job?.job_number}: ${client}, ${site}`;
       }
       const artwork = art.filter((piece) => piece.job_id === this.job_id);
       this.art$ = of(artwork);
@@ -116,11 +120,13 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
 
   getCombinedData$(): Observable<{
     art: Art[];
+    clients: Client[];
     jobs: Job[];
     sites: Site[];
   }> {
     return combineLatest({
       art: this.dataService.art$,
+      clients: this.dataService.clients$,
       jobs: this.dataService.jobs$,
       sites: this.dataService.sites$,
     }).pipe(takeUntil(this.destroy$));
