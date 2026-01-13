@@ -16,7 +16,10 @@
       [class.hover]="job_id !== WAREHOUSE_JOB_ID"
       (click)="cardData.clickHandler($event)"
     >
-      <div class="card-footer ar-job-card-footer">
+      <div
+        class="card-footer ar-job-card-footer"
+        [class.warehouse-footer]="job_name === WAREHOUSE_SITE_NAME"
+      >
         <p class="mb-0 fst-italic">{{ job_name }}</p>
       </div>
     </div>

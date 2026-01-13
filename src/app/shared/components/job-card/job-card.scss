@@ -26,11 +26,15 @@
   }
 
   .droppable {
-    background-color: rgba(32, 11, 224, 0.1);
+    background-color: rgba(202, 116, 10, 0.1);
   }
 
   .ar-job-card-footer {
     min-height: 2.625rem;
+
+    &.warehouse-footer {
+      background-color: rgba(202, 164, 10, 0.1);
+    }
 
     @media (max-width: 767px) {
       p {

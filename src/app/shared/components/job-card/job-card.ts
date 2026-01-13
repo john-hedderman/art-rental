@@ -42,6 +42,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   readonly WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
+  readonly WAREHOUSE_SITE_NAME = Const.WAREHOUSE_SITE_NAME;
 
   onDragEnter(event: DragEvent) {
     const el = this.elemRef.nativeElement;
