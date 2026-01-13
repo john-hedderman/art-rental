@@ -23,10 +23,20 @@ import { Collections } from '../../../shared/enums/collections';
 import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { DetailBase } from '../../../shared/components/base/detail-base/detail-base';
+import { ArtThumbnailCard } from '../../../shared/components/art-thumbnail-card/art-thumbnail-card';
 
 @Component({
   selector: 'app-job-detail',
-  imports: [AsyncPipe, PageHeader, RouterLink, Card, NgxDatatableModule, ContactsTable, PageFooter],
+  imports: [
+    AsyncPipe,
+    PageHeader,
+    RouterLink,
+    Card,
+    NgxDatatableModule,
+    ContactsTable,
+    PageFooter,
+    ArtThumbnailCard,
+  ],
   providers: [MessagesService],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.scss',

@@ -15,6 +15,7 @@ import { DataService } from '../../../service/data-service';
 export class ArtThumbnailCard implements OnInit, OnDestroy, AfterViewInit {
   @Input() job_id: number | undefined;
   @Input() art_id: number = 0;
+  @Input() draggable = true;
 
   art: Art | undefined;
   job: Job | undefined;
@@ -78,11 +79,15 @@ export class ArtThumbnailCard implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.connectDrag(this.elemRef.nativeElement);
+    if (this.draggable) {
+      this.connectDrag(this.elemRef.nativeElement);
+    }
   }
 
   ngOnDestroy(): void {
-    this.removeListeners(this.elemRef.nativeElement);
+    if (this.draggable) {
+      this.removeListeners(this.elemRef.nativeElement);
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }
