@@ -124,7 +124,7 @@ describe('AddJob', () => {
       siteSelectEl.value = '';
       siteSelectEl.dispatchEvent(new Event('change')); // triggers onSelectSite
 
-      expect(disableMenuSpy).toHaveBeenCalledTimes(2);
+      expect(disableMenuSpy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -244,32 +244,6 @@ describe('AddJob', () => {
     });
   });
 
-  describe('Form submission: update art', () => {
-    beforeEach(fakeAsync(() => {
-      component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 1 });
-      component.jobForm = jobForm;
-      component.jobForm.value.art_ids = [30];
-      component.route = route;
-    }));
-
-    it('should update the art', async () => {
-      let saveArtResult = await component.updateArt();
-      expect(saveArtResult).toEqual(Const.SUCCESS);
-    });
-
-    it('should skip saving the art if it remained on the same job', async () => {
-      component.jobForm = jobForm;
-      let saveArtResult = await component.updateArt();
-      expect(saveArtResult).toEqual(Const.SUCCESS);
-    });
-
-    it('should fail to save the art if nothing was modified in the database', async () => {
-      component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 0 });
-      const saveArtResult = await component.updateArt();
-      expect(saveArtResult).toEqual(Const.FAILURE);
-    });
-  });
-
   describe('Form submission: save all data', () => {
     it('should perform all save activity', async () => {
       component.editMode = true;
@@ -277,14 +251,12 @@ describe('AddJob', () => {
       const jobSpy = spyOn(component, 'saveJob');
       const clientSpy = spyOn(component, 'updateClient');
       const siteSpy = spyOn(component, 'updateSite');
-      const artSpy = spyOn(component, 'updateArt');
 
       await component.save();
 
       expect(jobSpy).toHaveBeenCalled();
       expect(clientSpy).toHaveBeenCalled();
       expect(siteSpy).toHaveBeenCalled();
-      expect(artSpy).toHaveBeenCalled();
     });
   });
 

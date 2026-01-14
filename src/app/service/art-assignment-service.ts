@@ -28,13 +28,10 @@ export class ArtAssignmentService {
     oldJob: Job | undefined,
     newJob: Job | undefined
   ): Promise<string> {
-    if (art?.art_id == undefined || oldJob?.job_id == undefined || newJob?.job_id == undefined) {
-      return Const.FAILURE;
-    }
     let result = Const.SUCCESS;
     let modifiedArt = { ...art };
     try {
-      modifiedArt.job_id = newJob.job_id;
+      modifiedArt.job_id = newJob?.job_id;
       delete modifiedArt.artist;
       delete (modifiedArt as any)._id;
       const returnData = await this.dataService.saveDocument(
@@ -54,14 +51,11 @@ export class ArtAssignmentService {
   }
 
   async updateOldJob(art: Art | undefined, oldJob: Job | undefined): Promise<string> {
-    if (art?.art_id == undefined || oldJob?.job_id == undefined) {
-      return Const.FAILURE;
-    }
     let result = Const.SUCCESS;
     let modifiedJob = { ...oldJob };
     try {
       const art_ids = modifiedJob.art_ids
-        ? modifiedJob.art_ids.filter((art_id) => art_id !== art.art_id)
+        ? modifiedJob.art_ids.filter((art_id) => art_id !== art?.art_id)
         : [];
       modifiedJob = { ...modifiedJob, art_ids };
       delete modifiedJob.art;
@@ -83,10 +77,7 @@ export class ArtAssignmentService {
     return result;
   }
 
-  async updateNewJob(art: Art, newJob: Job | undefined): Promise<string> {
-    if (art.art_id == undefined || newJob?.job_id == undefined) {
-      return Const.FAILURE;
-    }
+  async updateNewJob(art: Art, newJob: Job): Promise<string> {
     let result = Const.SUCCESS;
     let modifiedJob: Job = { ...newJob };
     try {
@@ -116,7 +107,8 @@ export class ArtAssignmentService {
     const artStatus = await this.updateArt(art, oldJob, newJob);
     const oldJobStatus = await this.updateOldJob(art, oldJob);
     const newJobStatus = await this.updateNewJob(art, newJob);
-    return this.jobResult([artStatus, oldJobStatus, newJobStatus]);
+    const jobResult = this.jobResult([artStatus, oldJobStatus, newJobStatus]);
+    return jobResult;
   }
 
   postSave(entity: string) {

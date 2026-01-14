@@ -37,7 +37,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
 
   job: Job | undefined;
 
-  art$: Observable<Art[] | undefined> | undefined;
+  art$: Observable<Art[]> | undefined;
 
   private readonly destroy$ = new Subject<void>();
 
@@ -61,7 +61,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   onDragLeave(event: DragEvent) {
     const el = this.elemRef.nativeElement;
     const targetEl = event.relatedTarget as EventTarget as Element;
-    if (targetEl.closest && targetEl.closest('app-job-card') !== el) {
+    if (targetEl?.closest && targetEl.closest('app-job-card') !== el) {
       el.querySelector('.ar-job-card__content')?.classList.remove('droppable');
     }
   }
