@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-jobs2-page',
+  selector: 'app-jobs',
   imports: [RouterOutlet],
-  templateUrl: './jobs2-page.html',
-  styleUrl: './jobs2-page.scss',
+  templateUrl: './jobs1-page.html',
+  styleUrl: './jobs1-page.scss',
   standalone: true,
 })
-export class Jobs2Page {}
+export class Jobs1Page {}

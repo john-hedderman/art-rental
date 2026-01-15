@@ -1,131 +1,81 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { combineLatest, Observable, take } from 'rxjs';
-import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { combineLatest, Observable, of, take } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
-import { Client, Job, Site } from '../../../model/models';
-import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { Art, Artist, Job, Site } from '../../../model/models';
+import { DataService } from '../../../service/data-service';
+import * as Const from '../../../constants';
+import { JobCard } from '../../../shared/components/job-card/job-card';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
-import { RowDetail } from '../../../directives/row-detail';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-job-list',
-  imports: [NgxDatatableModule, PageHeader, PageFooter, RowDetail],
+  imports: [PageHeader, AsyncPipe, JobCard, PageFooter],
   templateUrl: './job-list.html',
   styleUrl: './job-list.scss',
   standalone: true,
-  host: {
-    class: 'd-flex flex-column h-100',
-  },
 })
 export class JobList implements OnInit {
-  @ViewChild('jobsTable') table!: DatatableComponent<Job>;
-  @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
-  @ViewChild('clientNameHeaderTemplate', { static: true })
-  clientNameHeaderTemplate!: TemplateRef<any>;
-  @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
-  @ViewChild('siteAddressHeaderTemplate', { static: true })
-  siteAddressHeaderTemplate!: TemplateRef<any>;
-  @ViewChild('siteAddressTemplate', { static: true }) siteAddressTemplate!: TemplateRef<any>;
-
   goToAddJob = () => this.router.navigate(['/jobs', 'add']);
+  goToJobDetail = (id: number) => this.router.navigate(['/jobs', id]);
+  noop = () => {};
 
-  headerData = new HeaderActions('job-list', 'Jobs', [], []);
+  headerData = new HeaderActions('job2-list', 'Jobs2', [], []);
   footerData = new FooterActions([new AddButton('Add Job', this.goToAddJob)]);
 
-  rows: Job[] = [];
-  columns: TableColumn[] = [];
-  expanded: any = {};
+  art$: Observable<Art[]> | undefined;
+  jobs$: Observable<Job[]> | undefined;
 
-  toggleExpandRow(row: Job) {
-    this.table.rowDetail!.toggleExpandRow(row);
-  }
-
-  onActivate(event: any) {
-    if (event.type !== 'click') {
-      return;
-    }
-    if (event.cellIndex !== 0) {
-      this.router.navigate(['/jobs', event.row.job_id]);
-    }
-  }
-
-  clientNameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
-    const clientNameA = `${rowA['client']['name']}`;
-    const clientNameB = `${rowB['client']['name']}`;
-    return clientNameA.localeCompare(clientNameB);
-  }
-
-  addressComparator(rowA: any, rowB: any): number {
-    const locationA = `${rowA['address1']}, ${rowA['city']}, ${rowA['state']} ${rowA['zip_code']}`;
-    const locationB = `${rowB['address1']}, ${rowB['city']}, ${rowB['state']} ${rowB['zip_code']}`;
-    return locationA.localeCompare(locationB);
-  }
+  WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
 
   init() {
-    this.columns = [
-      {
-        width: 50,
-        resizeable: false,
-        sortable: false,
-        draggable: false,
-        canAutoResize: false,
-        cellTemplate: this.arrowTemplate,
-      },
-      { width: 100, prop: 'job_number', name: 'Job Number' },
-      {
-        width: 200,
-        prop: '',
-        name: 'Client',
-        headerTemplate: this.clientNameHeaderTemplate,
-        cellTemplate: this.clientNameTemplate,
-        comparator: this.clientNameComparator,
-      },
-      {
-        width: 450,
-        name: 'Site',
-        headerTemplate: this.siteAddressHeaderTemplate,
-        cellTemplate: this.siteAddressTemplate,
-        comparator: this.addressComparator,
-      },
-    ];
-
-    this.getCombinedData$().subscribe(({ clients, jobs, sites }) => {
-      const fullJobs = jobs
-        .map((job) => {
-          const client = clients.find((client) => client.client_id === job.client_id);
-          if (client) {
-            return { ...job, client };
-          }
-          return job;
-        })
+    this.getCombinedData$().subscribe(({ art, artists, jobs, sites }) => {
+      this.art$ = of(art);
+      const validJobs = jobs
+        .filter((job) => job.job_id !== Const.WAREHOUSE_JOB_ID)
         .map((job) => {
           const site = sites.find((site) => site.site_id === job.site_id);
           if (site) {
-            return { ...job, site };
+            job = { ...job, site };
+          }
+          const artwork = art
+            .filter((piece) => piece.job_id === job.job_id)
+            .map((piece) => {
+              piece.artist = artists.find((artist) => artist.artist_id === piece.artist_id);
+              return piece;
+            });
+          if (artwork) {
+            job = { ...job, art: artwork };
           }
           return job;
         });
-      this.rows = [...fullJobs];
+      this.jobs$ = of(validJobs);
     });
   }
 
   getCombinedData$(): Observable<{
-    clients: Client[];
+    art: Art[];
+    artists: Artist[];
     jobs: Job[];
     sites: Site[];
   }> {
     return combineLatest({
-      clients: this.dataService.clients$,
+      art: this.dataService.art$,
+      artists: this.dataService.artists$,
       jobs: this.dataService.jobs$,
       sites: this.dataService.sites$,
     }).pipe(take(1));
   }
 
-  constructor(private dataService: DataService, private router: Router) {}
+  constructor(
+    private dataService: DataService,
+    private cdr: ChangeDetectorRef,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.init();

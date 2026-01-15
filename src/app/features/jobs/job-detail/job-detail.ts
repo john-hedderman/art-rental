@@ -31,7 +31,6 @@ import { ArtThumbnailCard } from '../../../shared/components/art-thumbnail-card/
     AsyncPipe,
     PageHeader,
     RouterLink,
-    Card,
     NgxDatatableModule,
     ContactsTable,
     PageFooter,

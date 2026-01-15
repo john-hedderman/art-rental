@@ -1,67 +1,30 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
-<div class="container-fluid gx-0 overflow-x-hidden">
-  <div class="row overflow-y-hidden ar-page-content mx-0">
-    <ngx-datatable
-      #jobsTable
-      class="material h-100 px-0"
-      [rows]="rows"
-      [columns]="columns"
-      [columnMode]="'force'"
-      [headerHeight]="50"
-      [rowHeight]="50"
-      [scrollbarV]="true"
-      (activate)="onActivate($event)"
-      [messages]="{ emptyMessage: 'No jobs' }"
-    >
-      <ngx-datatable-row-detail [rowHeight]="50">
-        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
-          <div class="row-detail-container" appRowDetail>
-            <div>
-              {{ row.client?.name }}
-              @if (row.site && row.site.city && row.site.state && row.site.zip_code) { &mdash;
-              {{ row.site.address1 }}, @if (row.site.address2) { {{ row.site.address2 }}, }
-              {{ row.site.city }}, {{ row.site.state }}
-              {{ row.site.zip_code }}
-              }
-            </div>
-          </div>
-        </ng-template>
-      </ngx-datatable-row-detail>
-    </ngx-datatable>
+<div class="container-fluid">
+  <div class="ar-page-content">
+    <div class="row h-100 overflow-hidden">
+      <div class="col-6 pt-3 h-100 overflow-y-auto">
+        <h5 class="fw-bold">Art</h5>
+        <div class="card-group pt-2">
+          @if (art$ | async; as artwork) {
+          <app-job-card
+            [job_id]="WAREHOUSE_JOB_ID"
+            [cardData]="{ clickHandler: noop }"
+          ></app-job-card>
+          }
+        </div>
+      </div>
+      <div class="col-6 pt-3 h-100 overflow-y-auto">
+        <h5 class="fw-bold">Jobs</h5>
+        <div class="card-group pt-2">
+          @if (jobs$ | async; as assignedJobs) { @for (job of assignedJobs; track $index) {
+          <app-job-card
+            [job_id]="job.job_id"
+            [cardData]="{ clickHandler: goToJobDetail.bind(null, job.job_id) }"
+          ></app-job-card>
+          } }
+        </div>
+      </div>
+    </div>
   </div>
   <app-page-footer [footerData]="footerData"></app-page-footer>
 </div>
-
-<ng-template #arrowTemplate let-row="row" let-expanded="expanded">
-  <a
-    [class.bi-chevron-right]="!expanded"
-    [class.bi-chevron-down]="expanded"
-    title="Expand/Collapse Row"
-    (click)="toggleExpandRow(row)"
-    class="desktop-hidden bi"
-  ></a>
-</ng-template>
-
-<ng-template #clientNameHeaderTemplate let-column="column">
-  <span class="mobile-hidden">{{ column.name }}</span>
-</ng-template>
-
-<ng-template #clientNameTemplate let-row="row">
-  <span class="mobile-hidden">
-    {{ row.client?.name }}
-  </span>
-</ng-template>
-
-<ng-template #siteAddressHeaderTemplate let-column="column">
-  <span class="mobile-hidden">{{ column.name }}</span>
-</ng-template>
-
-<ng-template #siteAddressTemplate let-row="row">
-  <span class="mobile-hidden">
-    @if (row.site) {
-    {{ row.site.name }}, {{ row.site.address1 }}, @if (row.site.address2) { {{ row.site.address2 }},
-    } {{ row.site.city }}, {{ row.site.state }}
-    {{ row.site.zip_code }}
-    }
-  </span>
-</ng-template>
