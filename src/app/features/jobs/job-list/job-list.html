@@ -3,10 +3,10 @@
   <div class="ar-page-content">
     <div class="row h-100 overflow-hidden">
       <div class="col-6 pt-3 h-100 overflow-y-auto">
-        <div class="d-flex">
-          <h5 class="fw-bold d-inline mt-1 ms-1">Art</h5>
+        <div class="d-flex flex-wrap section-header art-header">
+          <h5 class="fw-bold d-inline mt-1 ms-1 me-4">Art</h5>
           <select
-            class="form-select form-select-sm d-inline w-auto ms-4 mb-2"
+            class="form-select form-select-sm d-inline me-3 mb-2 w-auto"
             name="filter_artist_id"
             id="filter_artist_id"
             [(ngModel)]="selectedArtistId"
@@ -29,10 +29,10 @@
         </div>
       </div>
       <div class="col-6 pt-3 h-100 overflow-y-auto">
-        <div class="d-flex">
-          <h5 class="fw-bold d-inline mt-1 ms-1">Jobs</h5>
+        <div class="d-flex flex-wrap section-header jobs-header">
+          <h5 class="fw-bold d-inline mt-1 ms-1 me-4">Jobs</h5>
           <select
-            class="form-select form-select-sm d-inline w-auto ms-4 mb-2"
+            class="form-select form-select-sm d-inline mb-2 w-auto"
             name="filter_client_id"
             id="filter_client_id"
             [(ngModel)]="selectedClientId"
@@ -44,7 +44,7 @@
             }
           </select>
           <select
-            class="form-select form-select-sm d-inline w-auto ms-3 mb-2"
+            class="form-select form-select-sm d-inline mb-2 w-auto"
             name="filter_site_id"
             id="filter_site_id"
             [(ngModel)]="selectedSiteId"

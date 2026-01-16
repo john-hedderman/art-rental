@@ -1,3 +1,13 @@
-.ar-art-card-group {
-  margin-left: -16px;
+.section-header {
+  select {
+    margin-right: 1rem;
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+
+    option {
+      font-size: 0.75rem;
+    }
+  }
 }
