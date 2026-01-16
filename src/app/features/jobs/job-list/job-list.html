@@ -3,25 +3,68 @@
   <div class="ar-page-content">
     <div class="row h-100 overflow-hidden">
       <div class="col-6 pt-3 h-100 overflow-y-auto">
-        <h5 class="fw-bold">Art</h5>
+        <div class="d-flex">
+          <h5 class="fw-bold d-inline mt-1 ms-1">Art</h5>
+          <select
+            class="form-select form-select-sm d-inline w-auto ms-4 mb-2"
+            name="filter_artist_id"
+            id="filter_artist_id"
+            [(ngModel)]="selectedArtistId"
+            (change)="filterArt()"
+          >
+            <option value="All">All artists</option>
+            @for (artist of artists; track trackByArtistId(artist)) {
+            <option value="{{ artist.artist_id }}">{{ artist.name }}</option>
+            }
+          </select>
+        </div>
         <div class="card-group pt-2">
           @if (art$ | async; as artwork) {
           <app-job-card
             [job_id]="WAREHOUSE_JOB_ID"
             [cardData]="{ clickHandler: noop }"
+            [selectedArtistId]="selectedArtistId"
           ></app-job-card>
           }
         </div>
       </div>
       <div class="col-6 pt-3 h-100 overflow-y-auto">
-        <h5 class="fw-bold">Jobs</h5>
+        <div class="d-flex">
+          <h5 class="fw-bold d-inline mt-1 ms-1">Jobs</h5>
+          <select
+            class="form-select form-select-sm d-inline w-auto ms-4 mb-2"
+            name="filter_client_id"
+            id="filter_client_id"
+            [(ngModel)]="selectedClientId"
+            (change)="onSelectClient()"
+          >
+            <option value="All">All clients</option>
+            @for (client of clients; track trackByClientId(client)) {
+            <option value="{{ client.client_id }}">{{ client.name }}</option>
+            }
+          </select>
+          <select
+            class="form-select form-select-sm d-inline w-auto ms-3 mb-2"
+            name="filter_site_id"
+            id="filter_site_id"
+            [(ngModel)]="selectedSiteId"
+            (change)="filterJobs()"
+            #filterSite
+          >
+            <option value="All">All sites</option>
+            <option value="{{ TBD }}">TBD</option>
+            @for (site of filteredSites; track trackBySiteId(site)) {
+            <option value="{{ site.site_id }}">{{ site.name }}</option>
+            }
+          </select>
+        </div>
         <div class="card-group pt-2">
-          @if (jobs$ | async; as assignedJobs) { @for (job of assignedJobs; track $index) {
+          @for (job of filteredJobs; track trackByJobId(job)) {
           <app-job-card
             [job_id]="job.job_id"
             [cardData]="{ clickHandler: goToJobDetail.bind(null, job.job_id) }"
           ></app-job-card>
-          } }
+          }
         </div>
       </div>
     </div>

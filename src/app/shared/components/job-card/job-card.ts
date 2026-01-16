@@ -8,18 +8,17 @@ import {
   OnInit,
 } from '@angular/core';
 import { combineLatest, Observable, of, Subject, takeUntil } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
 
 import { Art, Client, Job, Site } from '../../../model/models';
 import { ArtThumbnailCard } from '../art-thumbnail-card/art-thumbnail-card';
 import * as Const from '../../../constants';
 import { ArtAssignmentService } from '../../../service/art-assignment-service';
 import { DataService } from '../../../service/data-service';
-import { Router } from '@angular/router';
+import { ViewFilterService } from '../../../service/view-filter-service';
 
 @Component({
   selector: 'app-job-card',
-  imports: [ArtThumbnailCard, AsyncPipe],
+  imports: [ArtThumbnailCard],
   templateUrl: './job-card.html',
   styleUrl: './job-card.scss',
   standalone: true,
@@ -32,10 +31,15 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   @Input() cardData: any = {
     clickHandler: null,
   };
+  @Input() selectedArtistId: string | undefined;
 
   job_name = '';
 
   job: Job | undefined;
+
+  art: Art[] = [];
+  filteredArt: Art[] = [];
+  artistIds: string[] = [];
 
   art$: Observable<Art[]> | undefined;
 
@@ -43,6 +47,18 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
 
   readonly WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
   readonly WAREHOUSE_SITE_NAME = Const.WAREHOUSE_SITE_NAME;
+
+  filterArt() {
+    if (this.selectedArtistId === 'All') {
+      this.filteredArt = this.art;
+    } else {
+      this.filteredArt = this.art.filter((art) => art.artist_id === +this.selectedArtistId!);
+    }
+  }
+
+  trackByArtId(art: Art) {
+    return art.art_id;
+  }
 
   onDragEnter(event: DragEvent) {
     const el = this.elemRef.nativeElement;
@@ -115,8 +131,20 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
       }
       const artwork = art.filter((piece) => piece.job_id === this.job_id);
       this.art$ = of(artwork);
+      this.art = artwork;
+      this.filteredArt = [...artwork];
+      if (this.job_id === Const.WAREHOUSE_JOB_ID) {
+        this.filterArt();
+      }
       this.cdr.detectChanges();
     });
+
+    if (this.job_id === Const.WAREHOUSE_JOB_ID) {
+      this.viewFilterService.artistId$.pipe(takeUntil(this.destroy$)).subscribe((id: string) => {
+        this.selectedArtistId = id;
+        this.filterArt();
+      });
+    }
   }
 
   getCombinedData$(): Observable<{
@@ -138,7 +166,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
     private artAssignmentService: ArtAssignmentService,
     private dataService: DataService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private viewFilterService: ViewFilterService
   ) {}
 
   ngOnInit(): void {
