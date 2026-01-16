@@ -107,8 +107,7 @@ export class ArtAssignmentService {
     const artStatus = await this.updateArt(art, oldJob, newJob);
     const oldJobStatus = await this.updateOldJob(art, oldJob);
     const newJobStatus = await this.updateNewJob(art, newJob);
-    const jobResult = this.jobResult([artStatus, oldJobStatus, newJobStatus]);
-    return jobResult;
+    return Util.jobResult([artStatus, oldJobStatus, newJobStatus]);
   }
 
   postSave(entity: string) {
@@ -118,10 +117,6 @@ export class ArtAssignmentService {
       Util.replaceTokens(Msgs.SAVE_FAILED, { entity })
     );
     this.messagesService.clearStatus();
-  }
-
-  jobResult(statuses: string[]): string {
-    return Util.jobResult(statuses);
   }
 
   constructor(private dataService: DataService, private messagesService: MessagesService) {
