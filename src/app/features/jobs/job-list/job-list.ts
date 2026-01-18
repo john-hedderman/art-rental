@@ -1,7 +1,16 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { combineLatest, Observable, of, take } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  Observable,
+  of,
+  startWith,
+  take,
+} from 'rxjs';
 import { AsyncPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -11,12 +20,10 @@ import * as Const from '../../../constants';
 import { JobCard } from '../../../shared/components/job-card/job-card';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
-import { Router } from '@angular/router';
-import { ViewFilterService } from '../../../service/view-filter-service';
 
 @Component({
   selector: 'app-job-list',
-  imports: [FormsModule, PageHeader, AsyncPipe, JobCard, PageFooter],
+  imports: [FormsModule, PageHeader, AsyncPipe, JobCard, PageFooter, ReactiveFormsModule],
   templateUrl: './job-list.html',
   styleUrl: './job-list.scss',
   standalone: true,
@@ -46,6 +53,12 @@ export class JobList implements OnInit {
   WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
   TBD = Const.TBD;
 
+  searchArtControl: FormControl = new FormControl('');
+  searchArtString$: Observable<string> | undefined;
+
+  selectArtistControl: FormControl = new FormControl('');
+  artistId$!: Observable<string>;
+
   onSelectClient() {
     if (this.selectedClientId === 'All') {
       this.filteredSites = this.sites;
@@ -70,10 +83,6 @@ export class JobList implements OnInit {
         (job) => job.client_id === +this.selectedClientId && job.site_id === +this.selectedSiteId
       );
     }
-  }
-
-  filterArt() {
-    this.viewFilterService.selectArtistId(this.selectedArtistId);
   }
 
   trackByArtistId(artist: Artist) {
@@ -120,8 +129,17 @@ export class JobList implements OnInit {
       this.jobs = validJobs;
       this.jobs$ = of(validJobs);
       this.onSelectClient();
-      this.filterArt();
     });
+
+    this.artistId$ = this.selectArtistControl.valueChanges.pipe(
+      startWith(this.selectArtistControl.value || '')
+    );
+
+    this.searchArtString$ = this.searchArtControl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(300),
+      distinctUntilChanged()
+    );
   }
 
   getCombinedData$(): Observable<{
@@ -143,8 +161,7 @@ export class JobList implements OnInit {
   constructor(
     private dataService: DataService,
     private cdr: ChangeDetectorRef,
-    private router: Router,
-    private viewFilterService: ViewFilterService
+    private router: Router
   ) {}
 
   ngOnInit(): void {

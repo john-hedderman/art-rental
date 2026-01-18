@@ -2,13 +2,13 @@
   <div class="card ar-job-card mb-3">
     <div class="row g-0 flex-grow-1 ar-job-card__content">
       <div class="card-group ar-art-card-group pt-3">
-        @for (art of filteredArt; track trackByArtId(art)) {
+        @if (artwork$ | async; as artwork) { @for (art of artwork; track trackByArtId(art)) {
         <app-art-thumbnail-card
           [art_id]="art.art_id"
           [job_id]="job_id"
           [draggable]="true"
         ></app-art-thumbnail-card>
-        }
+        } }
       </div>
     </div>
     <div
@@ -18,7 +18,7 @@
     >
       <div
         class="card-footer ar-job-card-footer"
-        [class.warehouse-footer]="job_name === WAREHOUSE_SITE_NAME"
+        [class.warehouse-footer]="job_id === WAREHOUSE_JOB_ID"
       >
         <p class="mb-0 fst-italic">{{ job_name }}</p>
       </div>

@@ -5,16 +5,19 @@
       <div class="col-6 pt-3 h-100 overflow-y-auto">
         <div class="d-flex flex-wrap section-header art-header">
           <h5 class="fw-bold d-inline mt-1 ms-1 me-4">Art</h5>
+          <input
+            type="text"
+            class="form-control form-control-sm mb-2"
+            placeholder="Search..."
+            [formControl]="searchArtControl"
+          />
           <select
-            class="form-select form-select-sm d-inline me-3 mb-2 w-auto"
-            name="filter_artist_id"
-            id="filter_artist_id"
-            [(ngModel)]="selectedArtistId"
-            (change)="filterArt()"
+            class="form-select form-select-sm d-inline mb-2"
+            [formControl]="selectArtistControl"
           >
-            <option value="All">All artists</option>
+            <option [value]="''">All artists</option>
             @for (artist of artists; track trackByArtistId(artist)) {
-            <option value="{{ artist.artist_id }}">{{ artist.name }}</option>
+            <option [value]="artist.artist_id">{{ artist.name }}</option>
             }
           </select>
         </div>
@@ -24,6 +27,8 @@
             [job_id]="WAREHOUSE_JOB_ID"
             [cardData]="{ clickHandler: noop }"
             [selectedArtistId]="selectedArtistId"
+            [searchArtString$]="searchArtString$"
+            [artistId$]="artistId$"
           ></app-job-card>
           }
         </div>
@@ -32,7 +37,7 @@
         <div class="d-flex flex-wrap section-header jobs-header">
           <h5 class="fw-bold d-inline mt-1 ms-1 me-4">Jobs</h5>
           <select
-            class="form-select form-select-sm d-inline mb-2 w-auto"
+            class="form-select form-select-sm d-inline mb-2"
             name="filter_client_id"
             id="filter_client_id"
             [(ngModel)]="selectedClientId"
@@ -44,7 +49,7 @@
             }
           </select>
           <select
-            class="form-select form-select-sm d-inline mb-2 w-auto"
+            class="form-select form-select-sm d-inline mb-2"
             name="filter_site_id"
             id="filter_site_id"
             [(ngModel)]="selectedSiteId"

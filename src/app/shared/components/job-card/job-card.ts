@@ -7,18 +7,18 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { combineLatest, Observable, of, Subject, takeUntil } from 'rxjs';
+import { combineLatest, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
-import { Art, Client, Job, Site } from '../../../model/models';
+import { Art, Artist, Client, Job, Site } from '../../../model/models';
 import { ArtThumbnailCard } from '../art-thumbnail-card/art-thumbnail-card';
 import * as Const from '../../../constants';
 import { ArtAssignmentService } from '../../../service/art-assignment-service';
 import { DataService } from '../../../service/data-service';
-import { ViewFilterService } from '../../../service/view-filter-service';
 
 @Component({
   selector: 'app-job-card',
-  imports: [ArtThumbnailCard],
+  imports: [ArtThumbnailCard, AsyncPipe],
   templateUrl: './job-card.html',
   styleUrl: './job-card.scss',
   standalone: true,
@@ -32,6 +32,8 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
     clickHandler: null,
   };
   @Input() selectedArtistId: string | undefined;
+  @Input() searchArtString$: Observable<string> | undefined;
+  @Input() artistId$!: Observable<string>;
 
   job_name = '';
 
@@ -41,20 +43,11 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   filteredArt: Art[] = [];
   artistIds: string[] = [];
 
-  art$: Observable<Art[]> | undefined;
+  artwork$: Observable<Art[]> = of([]);
 
   private readonly destroy$ = new Subject<void>();
 
   readonly WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
-  readonly WAREHOUSE_SITE_NAME = Const.WAREHOUSE_SITE_NAME;
-
-  filterArt() {
-    if (this.selectedArtistId === 'All') {
-      this.filteredArt = this.art;
-    } else {
-      this.filteredArt = this.art.filter((art) => art.artist_id === +this.selectedArtistId!);
-    }
-  }
 
   trackByArtId(art: Art) {
     return art.art_id;
@@ -112,7 +105,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   }
 
   init() {
-    this.getCombinedData$().subscribe(({ art, clients, jobs, sites }) => {
+    this.getCombinedData$().subscribe(({ art, artists, clients, jobs, sites }) => {
       const job = jobs.find((job) => job.job_id === this.job_id);
       if (job) {
         job.site = sites.find((site) => site.job_id === job.job_id);
@@ -129,32 +122,65 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
             ? `${Const.WAREHOUSE_SITE_NAME}`
             : `${this.job?.job_number}: ${client}, ${site}`;
       }
-      const artwork = art.filter((piece) => piece.job_id === this.job_id);
-      this.art$ = of(artwork);
+
+      const artwork = art
+        .filter((piece) => piece.job_id === this.job_id)
+        .map((piece) => {
+          piece.artist = artists.find((artist) => artist.artist_id === piece.artist_id);
+          return piece;
+        });
+
+      if (this.searchArtString$) {
+        // Warehouse
+        this.artwork$ = combineLatest({
+          artwork: of(artwork),
+          searchTerm: this.searchArtString$,
+          artist: this.artistId$,
+        }).pipe(
+          takeUntil(this.destroy$),
+          switchMap(({ artwork, searchTerm, artist }) => {
+            if (searchTerm) {
+              return of({
+                artwork: artwork.filter(
+                  (art) =>
+                    art.title.toLowerCase().includes(searchTerm) ||
+                    art.artist?.name.toLowerCase().includes(searchTerm)
+                ),
+                artist,
+              });
+            }
+            return of({ artwork, artist });
+          }),
+          switchMap(({ artwork, artist }) => {
+            if (artist) {
+              const artByArtist = artwork.filter(
+                (art) => art.artist?.artist_id.toString() === artist
+              );
+              return of(artByArtist);
+            }
+            return of(artwork);
+          })
+        );
+      } else {
+        // A job
+        this.artwork$ = of(artwork);
+      }
+
       this.art = artwork;
       this.filteredArt = [...artwork];
-      if (this.job_id === Const.WAREHOUSE_JOB_ID) {
-        this.filterArt();
-      }
-      this.cdr.detectChanges();
     });
-
-    if (this.job_id === Const.WAREHOUSE_JOB_ID) {
-      this.viewFilterService.artistId$.pipe(takeUntil(this.destroy$)).subscribe((id: string) => {
-        this.selectedArtistId = id;
-        this.filterArt();
-      });
-    }
   }
 
   getCombinedData$(): Observable<{
     art: Art[];
+    artists: Artist[];
     clients: Client[];
     jobs: Job[];
     sites: Site[];
   }> {
     return combineLatest({
       art: this.dataService.art$,
+      artists: this.dataService.artists$,
       clients: this.dataService.clients$,
       jobs: this.dataService.jobs$,
       sites: this.dataService.sites$,
@@ -164,9 +190,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private elemRef: ElementRef,
     private artAssignmentService: ArtAssignmentService,
-    private dataService: DataService,
-    private cdr: ChangeDetectorRef,
-    private viewFilterService: ViewFilterService
+    private dataService: DataService
   ) {}
 
   ngOnInit(): void {
