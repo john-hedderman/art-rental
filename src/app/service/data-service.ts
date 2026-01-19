@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { combineLatest, Observable, ReplaySubject, take } from 'rxjs';
+import { combineLatest, Observable, ReplaySubject, Subject, takeUntil } from 'rxjs';
 import { Art, Artist, Client, Contact, Job, Site } from '../model/models';
 
 type Source = {
@@ -15,7 +15,9 @@ type Source = {
 @Injectable({
   providedIn: 'root',
 })
-export class DataService {
+export class DataService implements OnDestroy {
+  private readonly destroy$ = new Subject<void>();
+
   public art$: ReplaySubject<Art[]> = new ReplaySubject(1);
   public artists$: ReplaySubject<Artist[]> = new ReplaySubject(1);
   public clients$: ReplaySubject<Client[]> = new ReplaySubject(1);
@@ -45,7 +47,7 @@ export class DataService {
       }
     }
     combineLatest(source)
-      .pipe(take(1))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(({ ...args }) => {
         if (collections.includes('art')) {
           this.art$.next(args['art']);
@@ -161,5 +163,10 @@ export class DataService {
 
   constructor(private http: HttpClient) {
     this.reloadData(['art', 'artists', 'clients', 'contacts', 'jobs', 'sites']);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

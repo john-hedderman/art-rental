@@ -108,12 +108,12 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
     this.getCombinedData$().subscribe(({ art, artists, clients, jobs, sites }) => {
       const job = jobs.find((job) => job.job_id === this.job_id);
       if (job) {
+        job.client = clients.find((client) => client.client_id === job.client_id);
         job.site = sites.find((site) => site.job_id === job.job_id);
         this.job = job;
         if (!this.job.art_ids) {
           this.job.art_ids = [];
         }
-        job.client = clients.find((client) => client.client_id === job.client_id);
 
         const client = this.job?.client?.name || 'client TBD';
         const site = this.job?.site?.name || 'site TBD';
@@ -144,7 +144,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
                 artwork: artwork.filter(
                   (art) =>
                     art.title.toLowerCase().includes(searchTerm) ||
-                    art.artist?.name.toLowerCase().includes(searchTerm)
+                    art.artist?.name.toLowerCase().includes(searchTerm),
                 ),
                 artist,
               });
@@ -154,15 +154,15 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
           switchMap(({ artwork, artist }) => {
             if (artist) {
               const artByArtist = artwork.filter(
-                (art) => art.artist?.artist_id.toString() === artist
+                (art) => art.artist?.artist_id.toString() === artist,
               );
               return of(artByArtist);
             }
             return of(artwork);
-          })
+          }),
         );
       } else {
-        // A job
+        // A job - no filtering of content at this time
         this.artwork$ = of(artwork);
       }
 
@@ -190,7 +190,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private elemRef: ElementRef,
     private artAssignmentService: ArtAssignmentService,
-    private dataService: DataService
+    private dataService: DataService,
   ) {}
 
   ngOnInit(): void {
