@@ -7,29 +7,30 @@
           <h5 class="fw-bold d-inline mt-1 ms-1 me-4">Art</h5>
           <input
             type="text"
+            id="searchArt"
             class="form-control form-control-sm mb-2"
             placeholder="Search..."
             [formControl]="searchArtControl"
           />
           <select
+            id="selectArtist"
             class="form-select form-select-sm d-inline mb-2"
             [formControl]="selectArtistControl"
           >
             <option [value]="''">All artists</option>
             @for (artist of artists; track trackByArtistId(artist)) {
-            <option [value]="artist.artist_id">{{ artist.name }}</option>
+              <option [value]="artist.artist_id">{{ artist.name }}</option>
             }
           </select>
         </div>
         <div class="card-group pt-2">
           @if (art$ | async; as artwork) {
-          <app-job-card
-            [job_id]="WAREHOUSE_JOB_ID"
-            [cardData]="{ clickHandler: noop }"
-            [selectedArtistId]="selectedArtistId"
-            [searchArtString$]="searchArtString$"
-            [artistId$]="artistId$"
-          ></app-job-card>
+            <app-job-card
+              [job_id]="WAREHOUSE_JOB_ID"
+              [cardData]="{ clickHandler: noop }"
+              [searchArtString$]="searchArtString$"
+              [artistId$]="artistId$"
+            ></app-job-card>
           }
         </div>
       </div>
@@ -45,7 +46,7 @@
           >
             <option value="All">All clients</option>
             @for (client of clients; track trackByClientId(client)) {
-            <option value="{{ client.client_id }}">{{ client.name }}</option>
+              <option value="{{ client.client_id }}">{{ client.name }}</option>
             }
           </select>
           <select
@@ -59,16 +60,18 @@
             <option value="All">All sites</option>
             <option value="{{ TBD }}">TBD</option>
             @for (site of filteredSites; track trackBySiteId(site)) {
-            <option value="{{ site.site_id }}">{{ site.name }}</option>
+              <option value="{{ site.site_id }}">{{ site.name }}</option>
             }
           </select>
         </div>
         <div class="card-group pt-2">
           @for (job of filteredJobs; track trackByJobId(job)) {
-          <app-job-card
-            [job_id]="job.job_id"
-            [cardData]="{ clickHandler: goToJobDetail.bind(null, job.job_id) }"
-          ></app-job-card>
+            <app-job-card
+              [job_id]="job.job_id"
+              [cardData]="{ clickHandler: goToJobDetail.bind(null, job.job_id) }"
+              [searchArtString$]="searchArtStringAll$"
+              [artistId$]="artistIdAll$"
+            ></app-job-card>
           }
         </div>
       </div>

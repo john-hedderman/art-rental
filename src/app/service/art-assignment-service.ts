@@ -1,5 +1,5 @@
-import { Injectable, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, OnDestroy, signal } from '@angular/core';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 import { Art, Job } from '../model/models';
@@ -13,8 +13,10 @@ import { MessagesService } from './messages-service';
 @Injectable({
   providedIn: 'root',
 })
-export class ArtAssignmentService {
+export class ArtAssignmentService implements OnDestroy {
   saveStatus: string = '';
+
+  private readonly destroy$ = new Subject<void>();
 
   private _assignedArt = signal<any>({ art: {}, oldJob: {}, newJob: {} });
   public assignedArt$: Observable<any> = toObservable(this._assignedArt);
@@ -23,11 +25,7 @@ export class ArtAssignmentService {
     this._assignedArt.set({ art, oldJob, newJob });
   }
 
-  async updateArt(
-    art: Art | undefined,
-    oldJob: Job | undefined,
-    newJob: Job | undefined
-  ): Promise<string> {
+  async updateArt(art: Art | undefined, newJob: Job | undefined): Promise<string> {
     let result = Const.SUCCESS;
     let modifiedArt = { ...art };
     try {
@@ -38,7 +36,7 @@ export class ArtAssignmentService {
         modifiedArt,
         Collections.Art,
         modifiedArt.art_id,
-        'art_id'
+        'art_id',
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -65,7 +63,7 @@ export class ArtAssignmentService {
         modifiedJob,
         Collections.Jobs,
         modifiedJob.job_id,
-        'job_id'
+        'job_id',
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -91,7 +89,7 @@ export class ArtAssignmentService {
         modifiedJob,
         Collections.Jobs,
         modifiedJob.job_id,
-        'job_id'
+        'job_id',
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -104,7 +102,7 @@ export class ArtAssignmentService {
   }
 
   async save(art: Art, oldJob: Job, newJob: Job): Promise<string> {
-    const artStatus = await this.updateArt(art, oldJob, newJob);
+    const artStatus = await this.updateArt(art, newJob);
     const oldJobStatus = await this.updateOldJob(art, oldJob);
     const newJobStatus = await this.updateNewJob(art, newJob);
     return Util.jobResult([artStatus, oldJobStatus, newJobStatus]);
@@ -114,13 +112,13 @@ export class ArtAssignmentService {
     this.messagesService.showStatus(
       this.saveStatus,
       Util.replaceTokens(Msgs.SAVED, { entity }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity })
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity }),
     );
     this.messagesService.clearStatus();
   }
 
-  constructor(private dataService: DataService, private messagesService: MessagesService) {
-    this.assignedArt$.pipe(takeUntilDestroyed()).subscribe(async (data) => {
+  subscribeToAssignedArt() {
+    this.assignedArt$.pipe(takeUntil(this.destroy$)).subscribe(async (data) => {
       let { art, oldJob, newJob } = data;
       oldJob = oldJob || { job_id: Const.NO_JOB };
       newJob = newJob || { job_id: Const.NO_JOB };
@@ -130,5 +128,17 @@ export class ArtAssignmentService {
         this.dataService.reloadData(['art', 'jobs']);
       }
     });
+  }
+
+  constructor(
+    private dataService: DataService,
+    private messagesService: MessagesService,
+  ) {
+    this.subscribeToAssignedArt();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -2,17 +2,20 @@
   <div class="card ar-job-card mb-3">
     <div class="row g-0 flex-grow-1 ar-job-card__content">
       <div class="card-group ar-art-card-group pt-3">
-        @if (artwork$ | async; as artwork) { @if (artwork.length > 0) { @for (art of artwork; track
-        trackByArtId(art)) {
-        <app-art-thumbnail-card
-          [art_id]="art.art_id"
-          [job_id]="job_id"
-          [draggable]="true"
-        ></app-art-thumbnail-card>
-        } } @else {
-        <p class="ms-3">No artwork</p>
-        } } @else {
-        <p class="ms-3">No artwork</p>
+        @if (artwork$ | async; as artwork) {
+          @if (artwork.length > 0) {
+            @for (art of artwork; track trackByArtId(art)) {
+              <app-art-thumbnail-card
+                [art_id]="art.art_id"
+                [job_id]="job_id"
+                [draggable]="true"
+              ></app-art-thumbnail-card>
+            }
+          } @else {
+            <p class="ms-3">No artwork</p>
+          }
+        } @else {
+          <p class="ms-3">No artwork</p>
         }
       </div>
     </div>
@@ -25,7 +28,7 @@
         class="card-footer ar-job-card-footer"
         [class.warehouse-footer]="job_id === WAREHOUSE_JOB_ID"
       >
-        <p class="mb-0 fst-italic">{{ job_name }}</p>
+        <p class="mb-0 fst-italic">{{ cardFooterContent }}</p>
       </div>
     </div>
   </div>

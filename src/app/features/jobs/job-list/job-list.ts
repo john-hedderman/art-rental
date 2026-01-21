@@ -47,17 +47,18 @@ export class JobList implements OnInit {
   selectedSiteId = 'All';
   sites: Site[] = [];
   filteredSites: Site[] = [];
-  selectedArtistId = 'All';
   artists: Artist[] = [];
 
   WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
   TBD = Const.TBD;
 
   searchArtControl: FormControl = new FormControl('');
-  searchArtString$: Observable<string> | undefined;
+  searchArtString$!: Observable<string>;
+  searchArtStringAll$!: Observable<string>;
 
   selectArtistControl: FormControl = new FormControl('');
   artistId$!: Observable<string>;
+  artistIdAll$!: Observable<string>;
 
   onSelectClient() {
     if (this.selectedClientId === 'All') {
@@ -80,7 +81,7 @@ export class JobList implements OnInit {
       this.filteredJobs = this.jobs.filter((job) => job.client_id === +this.selectedClientId);
     } else {
       this.filteredJobs = this.jobs.filter(
-        (job) => job.client_id === +this.selectedClientId && job.site_id === +this.selectedSiteId
+        (job) => job.client_id === +this.selectedClientId && job.site_id === +this.selectedSiteId,
       );
     }
   }
@@ -131,15 +132,17 @@ export class JobList implements OnInit {
       this.onSelectClient();
     });
 
-    this.artistId$ = this.selectArtistControl.valueChanges.pipe(
-      startWith(this.selectArtistControl.value || '')
-    );
-
     this.searchArtString$ = this.searchArtControl.valueChanges.pipe(
       startWith(''),
       debounceTime(300),
-      distinctUntilChanged()
+      distinctUntilChanged(),
     );
+    this.searchArtStringAll$ = of('');
+
+    this.artistId$ = this.selectArtistControl.valueChanges.pipe(
+      startWith(this.selectArtistControl.value || ''),
+    );
+    this.artistIdAll$ = of('');
   }
 
   getCombinedData$(): Observable<{
@@ -161,7 +164,7 @@ export class JobList implements OnInit {
   constructor(
     private dataService: DataService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {

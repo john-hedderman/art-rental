@@ -1,12 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  Input,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
@@ -32,18 +24,15 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
     clickHandler: null,
   };
   @Input() selectedArtistId: string | undefined;
-  @Input() searchArtString$: Observable<string> | undefined;
+  @Input() searchArtString$!: Observable<string>;
   @Input() artistId$!: Observable<string>;
 
-  job_name = '';
+  cardFooterContent = '';
 
   job: Job | undefined;
 
-  art: Art[] = [];
-  filteredArt: Art[] = [];
-  artistIds: string[] = [];
-
-  artwork$: Observable<Art[]> = of([]);
+  artwork: Art[] = [];
+  artwork$!: Observable<Art[]>;
 
   private readonly destroy$ = new Subject<void>();
 
@@ -104,74 +93,88 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
     el.removeEventListener('drop', this.onDrop.bind(this));
   }
 
-  init() {
-    this.getCombinedData$().subscribe(({ art, artists, clients, jobs, sites }) => {
-      const job = jobs.find((job) => job.job_id === this.job_id);
-      if (job) {
-        job.client = clients.find((client) => client.client_id === job.client_id);
-        job.site = sites.find((site) => site.job_id === job.job_id);
-        this.job = job;
-        if (!this.job.art_ids) {
-          this.job.art_ids = [];
+  getDetailedJob(jobs: Job[], clients: Client[], sites: Site[]): Job {
+    const job = jobs.find((job) => job.job_id === this.job_id);
+    if (job) {
+      job.client = clients.find((client) => client.client_id === job.client_id);
+      job.site = sites.find((site) => site.job_id === job.job_id);
+      job.art_ids = job.art_ids || [];
+      return job;
+    } else {
+      return {} as Job;
+    }
+  }
+
+  createCardFooterContent(job: Job): string {
+    const client = job.client?.name || 'client TBD';
+    const site = job.site?.name || 'site TBD';
+    return job.job_number === Const.WAREHOUSE_JOB_NUMBER
+      ? `${Const.WAREHOUSE_SITE_NAME}`
+      : `${job.job_number}: ${client}, ${site}`;
+  }
+
+  getSearchArtString(): string {
+    let returnVal;
+    if (this.job_id === this.WAREHOUSE_JOB_ID) {
+      const searchArtControl = document.getElementById('searchArt') as HTMLInputElement;
+      returnVal = searchArtControl.value.trim();
+    }
+    return returnVal || '';
+  }
+
+  getSelectArtistId(): string {
+    let returnVal;
+    if (this.job_id === this.WAREHOUSE_JOB_ID) {
+      const selectArtistControl = document.getElementById('selectArtist') as HTMLSelectElement;
+      returnVal = selectArtistControl.value.trim();
+    }
+    return returnVal || '';
+  }
+
+  getFilteredArt$(artwork: Art[]): Observable<Art[]> {
+    return combineLatest({
+      searchTerm: this.searchArtString$,
+      artist: this.artistId$,
+    }).pipe(
+      takeUntil(this.destroy$),
+      switchMap(({ searchTerm, artist }) => {
+        const searchTermString = this.getSearchArtString();
+        const artistIdString = this.getSelectArtistId();
+        let art = artwork;
+        if (searchTermString || artistIdString) {
+          art = artwork.filter((art: Art) => {
+            const titleMatch = art.title.toLowerCase().includes(searchTermString);
+            const artistMatch = artistIdString === '' || art.artist?.artist_id === +artistIdString;
+            return titleMatch && artistMatch;
+          });
         }
+        if (artist) {
+          art = art.filter((art) => art.artist?.artist_id.toString() === artist);
+        }
+        return of(art);
+      }),
+    );
+  }
 
-        const client = this.job?.client?.name || 'client TBD';
-        const site = this.job?.site?.name || 'site TBD';
-        this.job_name =
-          this.job?.job_number === Const.WAREHOUSE_JOB_NUMBER
-            ? `${Const.WAREHOUSE_SITE_NAME}`
-            : `${this.job?.job_number}: ${client}, ${site}`;
-      }
+  getDetailedArtwork(art: Art[], artists: Artist[]): Art[] {
+    return art
+      .filter((piece) => piece.job_id === this.job_id)
+      .map((piece) => {
+        piece.artist = artists.find((artist) => artist.artist_id === piece.artist_id);
+        return piece;
+      });
+  }
 
-      const artwork = art
-        .filter((piece) => piece.job_id === this.job_id)
-        .map((piece) => {
-          piece.artist = artists.find((artist) => artist.artist_id === piece.artist_id);
-          return piece;
-        });
-
-      if (this.searchArtString$) {
-        // Warehouse
-        this.artwork$ = combineLatest({
-          artwork: of(artwork),
-          searchTerm: this.searchArtString$,
-          artist: this.artistId$,
-        }).pipe(
-          takeUntil(this.destroy$),
-          switchMap(({ artwork, searchTerm, artist }) => {
-            if (searchTerm) {
-              return of({
-                artwork: artwork.filter(
-                  (art) =>
-                    art.title.toLowerCase().includes(searchTerm) ||
-                    art.artist?.name.toLowerCase().includes(searchTerm),
-                ),
-                artist,
-              });
-            }
-            return of({ artwork, artist });
-          }),
-          switchMap(({ artwork, artist }) => {
-            if (artist) {
-              const artByArtist = artwork.filter(
-                (art) => art.artist?.artist_id.toString() === artist,
-              );
-              return of(artByArtist);
-            }
-            return of(artwork);
-          }),
-        );
-      } else {
-        // A job - no filtering of content at this time
-        this.artwork$ = of(artwork);
-      }
-
-      this.art = artwork;
-      this.filteredArt = [...artwork];
+  async init() {
+    this.getAppData$().subscribe(async ({ art, artists, clients, jobs, sites }) => {
+      this.job = this.getDetailedJob(jobs, clients, sites);
+      this.cardFooterContent = this.createCardFooterContent(this.job);
+      this.artwork = this.getDetailedArtwork(art, artists);
+      this.artwork$ = this.getFilteredArt$(this.artwork);
     });
   }
 
-  getCombinedData$(): Observable<{
+  getAppData$(): Observable<{
     art: Art[];
     artists: Artist[];
     clients: Client[];
