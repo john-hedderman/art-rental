@@ -34,15 +34,18 @@
             >Artists</a
           >
         </li>
-        <li class="nav-item">
-          <a class="nav-link ar-nav-link" routerLink="/clients" (click)="onClickNavLink($event)"
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link ar-nav-link dropdown-toggle"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
             >Clients</a
           >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link ar-nav-link" routerLink="/contacts" (click)="onClickNavLink($event)"
-            >Contacts</a
-          >
+          <ul class="dropdown-menu p-1">
+            <a class="nav-link" routerLink="/clients" (click)="onClickNavLink($event)">Clients</a>
+            <a class="nav-link" routerLink="/contacts" (click)="onClickNavLink($event)">Contacts</a>
+          </ul>
         </li>
         <li class="nav-item">
           <a class="nav-link ar-nav-link" routerLink="/jobs" (click)="onClickNavLink($event)"
