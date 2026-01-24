@@ -1,0 +1,70 @@
+<app-page-header [headerData]="headerData.data"></app-page-header>
+<div class="container-fluid">
+  <div class="row overflow-y-auto ar-page-content">
+    <div class="card-group ar-card-group p-3">
+      @if (tags$ | async; as tags) {
+        @for (tag of tags; track trackByTagId(tag)) {
+          <div
+            id="{{ tag.tag_id }}"
+            class="ar-tag-btn-container d-flex align-items-center ps-2 pe-1 py-2 me-3 mb-3 border rounded-2"
+          >
+            <button type="button" class="btn btn-sm ar-btn-tag me-2">{{ tag.name }}</button>
+            <!-- link the delete button to a warning modal if the tag is in use, otherwise just delete -->
+            @if (tag.art!.length > 0 || tag.artists!.length > 0) {
+              <button
+                type="button"
+                class="btn-close ar-btn-tag-delete me-1 p-0 rounded-0 border border-dark-subtle"
+                aria-label="Delete"
+                data-bs-toggle="modal"
+                data-bs-target="#confirmModal"
+                [attr.data-bs-tag-id]="tag.tag_id"
+              ></button>
+            } @else {
+              <button
+                type="button"
+                class="btn-close ar-btn-tag-delete me-1 p-0 rounded-0 border border-dark-subtle"
+                aria-label="Delete"
+                [attr.data-bs-tag-id]="tag.tag_id"
+                (click)="onClickDelete($event)"
+              ></button>
+            }
+          </div>
+        }
+      }
+    </div>
+  </div>
+  <app-page-footer [footerData]="footerData"></app-page-footer>
+</div>
+
+<div
+  class="modal"
+  id="confirmModal"
+  tabindex="-1"
+  aria-labelledby="confirmModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmModalLabel">Are you sure?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        This tag is in use. If you delete it, it will be removed from any artwork and artists to
+        which it now applies. Are you sure you want to delete it from the system?
+      </div>
+      <div class="modal-footer">
+        <button
+          id="confirmedDeleteBtn"
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          (click)="onClickDelete($event, true)"
+        >
+          Yes, delete
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { combineLatest, Observable, ReplaySubject, Subject, takeUntil } from 'rxjs';
-import { Art, Artist, Client, Contact, Job, Site } from '../model/models';
+import { Art, Artist, Client, Contact, Job, Site, Tag } from '../model/models';
 
 type Source = {
   art: Observable<Art[]>;
@@ -10,6 +10,7 @@ type Source = {
   jobs: Observable<Job[]>;
   contacts: Observable<Contact[]>;
   sites: Observable<Site[]>;
+  tags: Observable<Tag[]>;
 };
 
 @Injectable({
@@ -21,9 +22,10 @@ export class DataService implements OnDestroy {
   public art$: ReplaySubject<Art[]> = new ReplaySubject(1);
   public artists$: ReplaySubject<Artist[]> = new ReplaySubject(1);
   public clients$: ReplaySubject<Client[]> = new ReplaySubject(1);
-  public jobs$: ReplaySubject<Job[]> = new ReplaySubject(1);
   public contacts$: ReplaySubject<Contact[]> = new ReplaySubject(1);
+  public jobs$: ReplaySubject<Job[]> = new ReplaySubject(1);
   public sites$: ReplaySubject<Site[]> = new ReplaySubject(1);
+  public tags$: ReplaySubject<Tag[]> = new ReplaySubject(1);
 
   loadData<T>(dataType: string): Observable<T[]> {
     return this.http.get<T[]>(`http://localhost:3000/data/${dataType}`);
@@ -44,6 +46,8 @@ export class DataService implements OnDestroy {
         source[coll] = this.loadData<Job>(coll);
       } else if (coll === 'sites') {
         source[coll] = this.loadData<Site>(coll);
+      } else if (coll === 'tags') {
+        source[coll] = this.loadData<Tag>(coll);
       }
     }
     combineLatest(source)
@@ -67,6 +71,9 @@ export class DataService implements OnDestroy {
         if (collections.includes('sites')) {
           this.sites$.next(args['sites']);
         }
+        if (collections.includes('tags')) {
+          this.tags$.next(args['tags']);
+        }
         if (callback) {
           callback();
         }
@@ -77,7 +84,7 @@ export class DataService implements OnDestroy {
     data: any,
     collectionName: string,
     id?: number,
-    recordId?: string
+    recordId?: string,
   ): Promise<any> {
     try {
       const options = {
@@ -94,14 +101,14 @@ export class DataService implements OnDestroy {
         const params = new URLSearchParams(paramsObj);
         response = await fetch(
           `http://localhost:3000/data/${collectionName}/${id}?${params}`,
-          options
+          options,
         );
       } else {
         response = await fetch(`http://localhost:3000/data/${collectionName}`, options);
       }
       if (!response.ok) {
         throw new Error(
-          `Save response not ok. Status: ${response.status} - ${response.statusText}`
+          `Save response not ok. Status: ${response.status} - ${response.statusText}`,
         );
       }
       const jsonData = await response.json();
@@ -125,7 +132,7 @@ export class DataService implements OnDestroy {
       });
       if (!response.ok) {
         throw new Error(
-          `Delete response not ok. Status: ${response.status} - ${response.statusText}`
+          `Delete response not ok. Status: ${response.status} - ${response.statusText}`,
         );
       }
       const jsonData = await response.json();
@@ -150,7 +157,7 @@ export class DataService implements OnDestroy {
       });
       if (!response.ok) {
         throw new Error(
-          `Delete response not ok. Status: ${response.status} - ${response.statusText}`
+          `Delete response not ok. Status: ${response.status} - ${response.statusText}`,
         );
       }
       const jsonData = await response.json();
@@ -162,7 +169,7 @@ export class DataService implements OnDestroy {
   }
 
   constructor(private http: HttpClient) {
-    this.reloadData(['art', 'artists', 'clients', 'contacts', 'jobs', 'sites']);
+    this.reloadData(['art', 'artists', 'clients', 'contacts', 'jobs', 'sites', 'tags']);
   }
 
   ngOnDestroy(): void {

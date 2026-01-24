@@ -26,6 +26,18 @@
     </div>
     <div class="collapse navbar-collapse" id="arNavbarSupportedContent">
       <ul class="navbar-nav ms-auto mb-0 align-items-baseline">
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link ar-nav-link dropdown-toggle"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            >Admin</a
+          >
+          <ul class="dropdown-menu p-1">
+            <a class="nav-link" routerLink="/tags" (click)="onClickNavLink($event)">Tags</a>
+          </ul>
+        </li>
         <li class="nav-item">
           <a class="nav-link ar-nav-link" routerLink="/art" (click)="onClickNavLink($event)">Art</a>
         </li>

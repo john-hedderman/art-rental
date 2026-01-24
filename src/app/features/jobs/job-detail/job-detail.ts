@@ -6,7 +6,6 @@ import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/n
 
 import { Art, Client, Contact, Job, Site } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Card } from '../../../shared/components/card/card';
 import { Util } from '../../../shared/util/util';
 import { ContactsTable } from '../../../shared/components/contacts-table/contacts-table';
 import {
@@ -60,7 +59,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
     false,
     null,
     null,
-    this.goToEditJob
+    this.goToEditJob,
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
@@ -101,7 +100,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'job' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'job' })
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'job' }),
     );
     this.messagesService.clearStatus();
   }
@@ -135,7 +134,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
           warehouse,
           collection,
           Const.WAREHOUSE_JOB_ID,
-          'job_id'
+          'job_id',
         );
         if (data.modifiedCount === 0) {
           result = Const.FAILURE;
@@ -163,7 +162,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
         client,
         collection,
         this.clientId,
-        'client_id'
+        'client_id',
       );
       if (data.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -194,7 +193,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
         newSite,
         collection,
         newSite.site_id,
-        'site_id'
+        'site_id',
       );
       if (data.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -219,7 +218,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
           newArt,
           collection,
           newArt.art_id,
-          'art_id'
+          'art_id',
         );
         if (data.modifiedCount === 0) {
           compositeResult = Const.FAILURE;
@@ -309,7 +308,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     public util: Util,
     private operationsService: OperationsService,
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
   ) {
     super();
   }

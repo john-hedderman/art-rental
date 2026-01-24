@@ -18,7 +18,8 @@
           "parser": "angular"
         }
       }
-    ]
+    ],
+    "trailingComma": "none"
   },
   "private": true,
   "dependencies": {

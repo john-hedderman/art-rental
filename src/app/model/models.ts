@@ -3,7 +3,8 @@ export interface Art {
   title: string;
   file_name: string;
   full_size_image_url: string;
-  tags: string;
+  tag_ids: number[];
+  tags?: Tag[];
   artist_id: number;
   artist?: Artist;
   job_id: number;
@@ -14,7 +15,9 @@ export interface Artist {
   artist_id: number;
   name: string;
   photo_path: string;
-  tags: string;
+  tag_ids: number[];
+  tags?: Tag[];
+  tagList?: string;
 }
 
 export interface Client {
@@ -99,4 +102,13 @@ export interface HeaderLink {
 export interface OperationStatus {
   status: string;
   message: string;
+}
+
+export interface Tag {
+  tag_id: number;
+  name: string;
+  art_ids: number[];
+  art?: Art[];
+  artist_ids: number[];
+  artists?: Artist[];
 }

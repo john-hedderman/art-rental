@@ -24,8 +24,30 @@ import { AddSite } from './features/sites/add-site/add-site';
 import { SiteDetail } from './features/sites/site-detail/site-detail';
 import { ContactDetail } from './features/contacts/contact-detail/contact-detail';
 import { AddContact } from './features/contacts/add-contact/add-contact';
+import { TagsPage } from './features/admin/tags/tags-page';
+import { TagList } from './features/admin/tags/tag-list/tag-list';
+import { AddTag } from './features/admin/tags/add-tag/add-tag';
 
 export const routes: Routes = [
+  {
+    path: 'tags',
+    component: TagsPage,
+    children: [
+      {
+        path: 'list',
+        component: TagList,
+      },
+      {
+        path: 'add',
+        component: AddTag,
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full',
+      },
+    ],
+  },
   {
     path: 'art',
     component: ArtPage,
