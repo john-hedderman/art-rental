@@ -20,7 +20,9 @@ import { OperationsService } from '../../../../service/operations-service';
 import { AddButton } from '../../../../shared/buttons/add-button';
 import { Collections } from '../../../../shared/enums/collections';
 import * as Const from '../../../../constants';
+import * as Msgs from '../../../../shared/strings';
 import { Util } from '../../../../shared/util/util';
+import { MessagesService } from '../../../../service/messages-service';
 
 @Component({
   selector: 'app-tag-list',
@@ -49,6 +51,12 @@ export class TagList implements OnInit, OnDestroy {
     const tagId = buttonEl.getAttribute('data-bs-tag-id');
     if (tagId) {
       this.deleteStatus = await this.deleteTag(tagId, tagIsInUse);
+      this.messagesService.showStatus(
+        this.deleteStatus,
+        Util.replaceTokens(Msgs.DELETED, { entity: 'tag' }),
+        Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'tag' }),
+      );
+      this.messagesService.clearStatus();
       this.dataService.reloadData(['art', 'artists', 'tags']);
     }
   }
@@ -171,6 +179,7 @@ export class TagList implements OnInit, OnDestroy {
     private dataService: DataService,
     private operationsService: OperationsService,
     private router: Router,
+    private messagesService: MessagesService,
   ) {}
 
   ngOnInit(): void {

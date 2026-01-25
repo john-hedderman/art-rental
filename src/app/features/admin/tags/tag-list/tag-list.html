@@ -8,7 +8,7 @@
             id="{{ tag.tag_id }}"
             class="ar-tag-btn-container d-flex align-items-center ps-2 pe-1 py-2 me-3 mb-3 border rounded-2"
           >
-            <button type="button" class="btn btn-sm ar-btn-tag me-2">{{ tag.name }}</button>
+            <button type="button" class="btn btn-sm btn-success me-2">{{ tag.name }}</button>
             <!-- link the delete button to a warning modal if the tag is in use, otherwise just delete -->
             @if (tag.art!.length > 0 || tag.artists!.length > 0) {
               <button
