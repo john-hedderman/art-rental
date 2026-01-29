@@ -1,0 +1,11 @@
+.ar-btn-tag {
+  &:hover {
+    cursor: inherit;
+  }
+
+  .ar-btn-tag-delete {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

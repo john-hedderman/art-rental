@@ -1,9 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { combineLatest, map, Observable, of, take } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  Observable,
+  of,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { Art, Artist, Client, Job, Site } from '../../../model/models';
+import { Art, Artist, Client, Job, Site, Tag } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
@@ -20,10 +29,11 @@ import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { Util } from '../../../shared/util/util';
 import { DetailBase } from '../../../shared/components/base/detail-base/detail-base';
+import { Tags } from '../../../shared/components/tags/tags';
 
 @Component({
   selector: 'app-art-detail',
-  imports: [PageHeader, RouterLink, PageFooter, AsyncPipe],
+  imports: [PageHeader, RouterLink, PageFooter, AsyncPipe, Tags],
   providers: [MessagesService],
   templateUrl: './art-detail.html',
   styleUrl: './art-detail.scss',
@@ -44,20 +54,31 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
     false,
     null,
     null,
-    this.goToEditArt
+    this.goToEditArt,
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
   art: Art = {} as Art;
   art$: Observable<Art> | undefined;
   jobs: Job[] = [];
+  tags: Tag[] = [];
 
   artId = 0;
 
   deleteStatus = '';
 
+  addTagToArtStatus = '';
+  updateAddedTagStatus = '';
+
+  removeTagFromArtStatus = '';
+  updateRemovedTagStatus = '';
+
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
+  WAREHOUSE_JOB_NUMBER = Const.WAREHOUSE_JOB_NUMBER;
+  NO_SITE = Const.NO_SITE;
+
+  private readonly destroy$ = new Subject<void>();
 
   override preDelete(): void {}
 
@@ -71,9 +92,85 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'art' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'art' })
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'art' }),
     );
     this.messagesService.clearStatus();
+  }
+
+  async addTag(tagId: number) {
+    this.addTagToArtStatus = await this.addTagToArt(tagId);
+    this.updateAddedTagStatus = await this.updateAddedTag(tagId);
+    this.messagesService.showStatus(
+      this.addTagToArtStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'art' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' }),
+    );
+    this.messagesService.clearStatus();
+    this.dataService.reloadData(['art', 'tags']);
+  }
+
+  async addTagToArt(tagId: number): Promise<string> {
+    let result = Const.SUCCESS;
+    const art = this.art;
+    if (!art) {
+      console.error('Add tag error, could not find the art to update');
+      return Const.FAILURE;
+    }
+    try {
+      art.tag_ids = [...art.tag_ids, tagId];
+      delete (art as any)._id;
+      const returnData = await this.dataService.saveDocument(
+        art,
+        Collections.Art,
+        this.artId,
+        'art_id',
+      );
+      if (returnData.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Update art error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
+
+  async updateAddedTag(tagId: number): Promise<string> {
+    let result = Const.SUCCESS;
+    const tag = this.tags.find((tag) => tag.tag_id === tagId);
+    if (!tag) {
+      console.error('Add tag error, could not find the tag to update');
+      return Const.FAILURE;
+    }
+    try {
+      tag.art_ids = [...tag.art_ids, this.artId];
+      delete (tag as any)._id;
+      const returnData = await this.dataService.saveDocument(
+        tag,
+        Collections.Tags,
+        tagId,
+        'tag_id',
+      );
+      if (returnData.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Update tag error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
+
+  async removeTag(tagId: number) {
+    this.removeTagFromArtStatus = await this.removeTagFromArt(tagId);
+    this.updateRemovedTagStatus = await this.updateRemovedTag(tagId);
+    this.messagesService.showStatus(
+      this.removeTagFromArtStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'art' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' }),
+    );
+    this.messagesService.clearStatus();
+    this.dataService.reloadData(['art', 'tags']);
   }
 
   async onClickDelete() {
@@ -114,9 +211,10 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
   }
 
   init(): void {
-    this.getCombinedData$().subscribe(({ artId, art, artists, clients, jobs, sites }) => {
+    this.getCombinedData$().subscribe(({ artId, art, artists, clients, jobs, sites, tags }) => {
       this.artId = artId;
       this.jobs = jobs;
+      this.tags = tags;
       let artwork = art.find((piece: Art) => piece.art_id === artId);
       if (artwork) {
         let job = jobs.find((job) => job.job_id === artwork?.job_id);
@@ -148,6 +246,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
     clients: Client[];
     jobs: Job[];
     sites: Site[];
+    tags: Tag[];
   }> {
     return combineLatest({
       artId: this.getArtId(),
@@ -156,14 +255,67 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
       clients: this.dataService.clients$,
       jobs: this.dataService.jobs$,
       sites: this.dataService.sites$,
-    }).pipe(take(1));
+      tags: this.dataService.tags$,
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+  }
+
+  async removeTagFromArt(tagId: number): Promise<string> {
+    let result = Const.SUCCESS;
+    const art = this.art;
+    if (!art) {
+      console.error('Remove tag error, could not find the art to update');
+      return Const.FAILURE;
+    }
+    try {
+      art.tag_ids = art.tag_ids.filter((tag_id) => tag_id !== tagId);
+      delete (art as any)._id;
+      const returnData = await this.dataService.saveDocument(
+        art,
+        Collections.Art,
+        this.artId,
+        'art_id',
+      );
+      if (returnData.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Update art error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
+
+  async updateRemovedTag(tagId: number): Promise<string> {
+    let result = Const.SUCCESS;
+    const tag = this.tags.find((tag) => tag.tag_id === tagId);
+    if (!tag) {
+      console.error('Remove tag error, could not find the tag to update');
+      return Const.FAILURE;
+    }
+    try {
+      tag.art_ids = tag.art_ids.filter((art_id) => art_id !== this.artId);
+      delete (tag as any)._id;
+      const returnData = await this.dataService.saveDocument(
+        tag,
+        Collections.Tags,
+        tagId,
+        'tag_id',
+      );
+      if (returnData.modifiedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Update tag error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
   }
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private operationsService: OperationsService,
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
   ) {
     super();
   }
@@ -174,5 +326,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.messagesService.clearStatus();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -4,7 +4,6 @@ import { combineLatest, map, Observable, take } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Artist } from '../../../model/models';
-import { DataService } from '../../../service/data-service';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
@@ -20,10 +19,11 @@ import { MessagesService } from '../../../service/messages-service';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { Util } from '../../../shared/util/util';
 import { DetailBase } from '../../../shared/components/base/detail-base/detail-base';
+import { Tags } from '../../../shared/components/tags/tags';
 
 @Component({
   selector: 'app-artist-detail',
-  imports: [PageHeader, PageFooter],
+  imports: [PageHeader, PageFooter, Tags],
   providers: [MessagesService],
   templateUrl: './artist-detail.html',
   styleUrl: './artist-detail.scss',
@@ -38,7 +38,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
     'Artists',
     '/artists/list',
     '',
-    this.goToArtistList
+    this.goToArtistList,
   );
   headerData = new HeaderActions('artist-detail', 'Artist detail', [], [this.artistListLink.data]);
 
@@ -50,7 +50,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
     false,
     null,
     null,
-    this.goToEditArtist
+    this.goToEditArtist,
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
@@ -73,7 +73,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'artist' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'artist' })
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'artist' }),
     );
     this.messagesService.clearStatus();
   }
@@ -86,7 +86,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
     return await this.operationsService.deleteDocument(
       Collections.Artists,
       'artist_id',
-      this.artistId
+      this.artistId,
     );
   }
 
@@ -118,7 +118,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private operationsService: OperationsService,
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
   ) {
     super();
   }

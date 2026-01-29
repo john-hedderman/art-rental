@@ -1,0 +1,39 @@
+<div id="tag-search-container" class="d-flex">
+  <input
+    type="text"
+    #tagSearch
+    class="form-control me-2"
+    placeholder="Search..."
+    list="tag-options"
+    (focus)="onFocusTagSearch()"
+  />
+  <datalist id="tag-options">
+    @if (tags$ | async; as tags) {
+      @for (tag of tags; track $index) {
+        <option value="{{ tag.name }}"></option>
+      }
+    }
+  </datalist>
+  <button type="button" class="btn btn-sm btn-success" (click)="onClickAddTag()">Add</button>
+</div>
+<div class="mb-3">
+  <div id="tag-not-in-system" class="invalid-feedback">
+    This tag is not in the system. Please select one from the list.
+  </div>
+  <div id="tag-already-assigned" class="invalid-feedback">
+    This tag is already assigned. Please select one from the list.
+  </div>
+</div>
+@if (assignedTags$ | async; as assignedTags) {
+  @for (assignedTag of assignedTags; track $index) {
+    <button type="button" class="btn btn-sm btn-secondary ar-btn-tag me-2 mb-2">
+      {{ assignedTag.name }}
+      <button
+        class="btn-close align-bottom ar-btn-tag-delete"
+        aria-label="Delete"
+        (click)="onClickDeleteTag(assignedTag.tag_id)"
+        data-bs-theme="dark"
+      ></button>
+    </button>
+  }
+}

@@ -122,7 +122,7 @@ export class TagList implements OnInit, OnDestroy {
     return tag.tag_id;
   }
 
-  sortByField(sortable: any[], field: string) {
+  sortByStringField(sortable: any[], field: string) {
     sortable.sort((a: any, b: any) => (a[field] || '').localeCompare(b[field] || ''));
   }
 
@@ -153,7 +153,7 @@ export class TagList implements OnInit, OnDestroy {
             return { ...tag, artists };
           });
         this.detailedTags = [...detailedTags];
-        this.sortByField(this.detailedTags, 'name');
+        this.sortByStringField(this.detailedTags, 'name');
         this.tags$ = of(this.detailedTags);
       }
       this.art = artwork;
@@ -187,6 +187,7 @@ export class TagList implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.messagesService.clearStatus();
     this.destroy$.next();
     this.destroy$.complete();
   }

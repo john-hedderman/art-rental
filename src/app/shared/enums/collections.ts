@@ -5,4 +5,5 @@ export enum Collections {
   Contacts = 'contacts',
   Jobs = 'jobs',
   Sites = 'sites',
+  Tags = 'tags',
 }

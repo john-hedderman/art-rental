@@ -111,4 +111,5 @@ export interface Tag {
   art?: Art[];
   artist_ids: number[];
   artists?: Artist[];
+  [key: string]: number | string | number[] | Art[] | Artist[] | undefined;
 }
