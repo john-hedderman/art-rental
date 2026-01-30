@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+import { environment } from '../../../../../environments/environment';
 import { OperationsService } from '../../../../service/operations-service';
 import * as Msgs from '../../../../shared/strings';
 import { DataService } from '../../../../service/data-service';
@@ -36,7 +37,7 @@ export abstract class AddBase {
     this.messagesService.showStatus(
       this.saveStatus,
       Util.replaceTokens(Msgs.SAVED, { entity }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity })
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity }),
     );
     this.messagesService.clearStatus();
     this.resetForm();
@@ -45,7 +46,7 @@ export abstract class AddBase {
 
   populateForm<T>(collection: string, recordId: string, id: number) {
     this.http
-      .get<T[]>(`http://localhost:3000/data/${collection}/${id}?recordId=${recordId}`)
+      .get<T[]>(`${environment.apiUrl}/data/${collection}/${id}?recordId=${recordId}`)
       .subscribe((data) => {
         if (data && data.length === 1) {
           this.dbData = data[0];

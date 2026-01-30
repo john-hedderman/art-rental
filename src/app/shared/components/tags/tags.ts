@@ -1,5 +1,5 @@
-import { Component, ElementRef, Input, OnInit, output, ViewChild } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Component, ElementRef, Input, OnDestroy, OnInit, output, ViewChild } from '@angular/core';
+import { debounceTime, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -13,11 +13,13 @@ import { DataService } from '../../../service/data-service';
   styleUrl: './tags.scss',
   standalone: true,
 })
-export class Tags implements OnInit {
+export class Tags implements OnInit, OnDestroy {
   @Input() assigneeField: string = '';
   @Input() assigneeId: number = 0;
 
   @ViewChild('tagSearch') tagSearch: ElementRef | undefined;
+
+  private readonly destroy$ = new Subject<void>();
 
   tags: Tag[] = [];
   tags$: Observable<Tag[]> | undefined;
@@ -71,21 +73,28 @@ export class Tags implements OnInit {
   }
 
   init() {
-    this.dataService.tags$.subscribe((tags) => {
-      this.tags = tags;
-      this.sortByStringField(this.tags, 'name');
-      this.tags$ = of(tags);
-      const assignedTags = tags.filter((tag: Tag) =>
-        (<Array<number>>tag[this.assigneeField]).includes(this.assigneeId),
-      );
-      this.assignedTags = assignedTags;
-      this.assignedTags$ = of(assignedTags);
-    });
+    this.dataService.tags$
+      .pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500))
+      .subscribe((tags) => {
+        this.tags = tags;
+        this.sortByStringField(this.tags, 'name');
+        this.tags$ = of(tags);
+        const assignedTags = tags.filter((tag: Tag) =>
+          (<Array<number>>tag[this.assigneeField]).includes(this.assigneeId),
+        );
+        this.assignedTags = assignedTags;
+        this.assignedTags$ = of(assignedTags);
+      });
   }
 
   constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
     this.init();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

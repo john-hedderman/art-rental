@@ -76,7 +76,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       this.artForm.value,
       Collections.Art,
       this.editMode ? this.artId : undefined,
-      this.editMode ? 'art_id' : undefined
+      this.editMode ? 'art_id' : undefined,
     );
   }
 
@@ -100,7 +100,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
         oldJob,
         collection,
         dbData.job_id,
-        'job_id'
+        'job_id',
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -132,7 +132,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
         job,
         collection,
         formData.job_id,
-        'job_id'
+        'job_id',
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -199,7 +199,6 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     this.artForm.get('full_size_image_url')?.setValue(this.dbData.full_size_image_url);
     this.artForm.get('artist_id')?.setValue(this.dbData.artist_id);
     this.artForm.get('job_id')?.setValue(this.dbData.job_id);
-    this.artForm.get('tags')?.setValue(this.dbData.tags);
   }
 
   init(): void {
@@ -240,7 +239,6 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       full_size_image_url: [''],
       artist_id: [null],
       job_id: [null],
-      tags: [''],
     });
 
     if (this.editMode) {
@@ -262,7 +260,10 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     }).pipe(take(1));
   }
 
-  constructor(private router: Router, private fb: FormBuilder) {
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+  ) {
     super();
   }
 

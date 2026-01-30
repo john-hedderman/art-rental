@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import {
   combineLatest,
   debounceTime,
@@ -6,7 +6,8 @@ import {
   Observable,
   of,
   startWith,
-  take,
+  Subject,
+  takeUntil,
 } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -28,13 +29,15 @@ import { AddButton } from '../../../shared/buttons/add-button';
   styleUrl: './job-list.scss',
   standalone: true,
 })
-export class JobList implements OnInit {
+export class JobList implements OnInit, OnDestroy {
   goToAddJob = () => this.router.navigate(['/jobs', 'add']);
   goToJobDetail = (id: number) => this.router.navigate(['/jobs', id]);
   noop = () => {};
 
   headerData = new HeaderActions('job2-list', 'Jobs2', [], []);
   footerData = new FooterActions([new AddButton('Add Job', this.goToAddJob)]);
+
+  private readonly destroy$ = new Subject<void>();
 
   art$: Observable<Art[]> | undefined;
   jobs$: Observable<Job[]> | undefined;
@@ -158,7 +161,7 @@ export class JobList implements OnInit {
       clients: this.dataService.clients$,
       jobs: this.dataService.jobs$,
       sites: this.dataService.sites$,
-    }).pipe(take(1));
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
   }
 
   constructor(
@@ -169,5 +172,10 @@ export class JobList implements OnInit {
 
   ngOnInit(): void {
     this.init();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -75,9 +75,11 @@
                 >
                   <option value="" selected="selected">Select an artist...</option>
                   <option value="0">Unknown</option>
-                  @if (artists$ | async; as artists) { @for (artist of artists; track $index) {
-                  <option value="{{ artist.artist_id }}">{{ artist.name }}</option>
-                  } }
+                  @if (artists$ | async; as artists) {
+                    @for (artist of artists; track $index) {
+                      <option value="{{ artist.artist_id }}">{{ artist.name }}</option>
+                    }
+                  }
                 </select>
                 <div class="invalid-feedback">Please select an artist.</div>
               </div>
@@ -94,23 +96,20 @@
                 >
                   <option value="" selected="selected">Select a job...</option>
                   <option value="0">Not on a job</option>
-                  @if (jobs$ | async; as jobs) { @for (job of jobs; track $index) {
-                  <option value="{{ job.job_id }}">
-                    {{ job.job_number }}: {{ job.client?.name }} (@if (job.site?.name)
-                    {{{ job.site?.name }}} @else {TBD})
-                  </option>
-                  } }
+                  @if (jobs$ | async; as jobs) {
+                    @for (job of jobs; track $index) {
+                      <option value="{{ job.job_id }}">
+                        {{ job.job_number }}: {{ job.client?.name }} (
+                        @if (job.site?.name) {
+                          {{ job.site?.name }}
+                        } @else {
+                          TBD
+                        }
+                        )
+                      </option>
+                    }
+                  }
                 </select>
-              </div>
-              <div class="col-md-6 mt-3">
-                <label for="tags" class="col-form-label">Tags (comma-separated)</label>
-                <input
-                  type="text"
-                  id="tags"
-                  formControlName="tags"
-                  aria-describedby="tags"
-                  class="form-control"
-                />
               </div>
             </div>
           </div>

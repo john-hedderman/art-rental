@@ -28,7 +28,7 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
     'Artists',
     '/artists/list',
     '',
-    this.goToArtistList
+    this.goToArtistList,
   );
   headerData = new HeaderActions('artist-add', 'Add Artist', [], [this.artistListLink.data]);
   footerData = new FooterActions([new SaveButton(), new ResetButton(), new CancelButton()]);
@@ -64,7 +64,7 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
       this.artistForm.value,
       Collections.Artists,
       this.editMode ? this.artistId : undefined,
-      this.editMode ? 'artist_id' : undefined
+      this.editMode ? 'artist_id' : undefined,
     );
   }
 
@@ -91,7 +91,6 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
     this.artistForm.get('artist_id')?.setValue(this.dbData.artist_id);
     this.artistForm.get('name')?.setValue(this.dbData.name);
     this.artistForm.get('photo_path')?.setValue(this.dbData.photo_path);
-    this.artistForm.get('tags')?.setValue(this.dbData.tags);
   }
 
   init(): void {
@@ -109,7 +108,6 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
       artist_id: this.artistId,
       name: [''],
       photo_path: [''],
-      tags: [''],
     });
 
     if (this.editMode) {
@@ -117,7 +115,10 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
     }
   }
 
-  constructor(private router: Router, private fb: FormBuilder) {
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+  ) {
     super();
   }
 

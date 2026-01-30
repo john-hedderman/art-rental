@@ -22,7 +22,12 @@
           }
           <h5 class="fw-bold pb-2 ar-heading">Tags</h5>
         </section>
-        <app-tags [assigneeField]="'artist_ids'" [assigneeId]="artistId"></app-tags>
+        <app-tags
+          [assigneeField]="'artist_ids'"
+          [assigneeId]="artistId"
+          (removingTag)="removeTag($event)"
+          (addingTag)="addTag($event)"
+        ></app-tags>
       </div>
     </div>
   </div>

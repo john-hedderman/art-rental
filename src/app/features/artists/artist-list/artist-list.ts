@@ -44,14 +44,7 @@ export class ArtistList implements OnInit, OnDestroy {
   init() {
     this.getCombinedData$().subscribe(({ artists, tags }) => {
       if (artists) {
-        this.artists = artists.map((artist) => {
-          const tagList = artist.tag_ids.map((tag_id) => {
-            const tag = tags.find((tag) => tag.tag_id === tag_id);
-            return tag?.name;
-          });
-          artist.tagList = tagList.join(', ');
-          return artist;
-        });
+        this.artists = artists;
         this.artists$ = of(this.artists);
       }
     });

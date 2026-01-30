@@ -1,6 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { combineLatest, Observable, ReplaySubject, Subject, takeUntil } from 'rxjs';
+
+import { environment } from '../../environments/environment';
 import { Art, Artist, Client, Contact, Job, Site, Tag } from '../model/models';
 
 type Source = {
@@ -28,7 +30,7 @@ export class DataService implements OnDestroy {
   public tags$: ReplaySubject<Tag[]> = new ReplaySubject(1);
 
   loadData<T>(dataType: string): Observable<T[]> {
-    return this.http.get<T[]>(`http://localhost:3000/data/${dataType}`);
+    return this.http.get<T[]>(`${environment.apiUrl}/data/${dataType}`);
   }
 
   reloadData(collections: string[], callback?: any) {
@@ -100,11 +102,11 @@ export class DataService implements OnDestroy {
         paramsObj['recordId'] = recordId;
         const params = new URLSearchParams(paramsObj);
         response = await fetch(
-          `http://localhost:3000/data/${collectionName}/${id}?${params}`,
+          `${environment.apiUrl}/data/${collectionName}/${id}?${params}`,
           options,
         );
       } else {
-        response = await fetch(`http://localhost:3000/data/${collectionName}`, options);
+        response = await fetch(`${environment.apiUrl}/data/${collectionName}`, options);
       }
       if (!response.ok) {
         throw new Error(
@@ -124,7 +126,7 @@ export class DataService implements OnDestroy {
       const paramsObj = {} as any;
       paramsObj['recordId'] = recordId;
       const params = new URLSearchParams(paramsObj);
-      const response = await fetch(`http://localhost:3000/data/${collectionName}/${id}?${params}`, {
+      const response = await fetch(`${environment.apiUrl}/data/${collectionName}/${id}?${params}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -149,7 +151,7 @@ export class DataService implements OnDestroy {
       paramsObj['id'] = id;
       paramsObj['recordId'] = recordId;
       const params = new URLSearchParams(paramsObj);
-      const response = await fetch(`http://localhost:3000/data/${collectionName}?${params}`, {
+      const response = await fetch(`${environment.apiUrl}/data/${collectionName}?${params}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

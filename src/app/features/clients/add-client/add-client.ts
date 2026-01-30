@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { environment } from '../../../../environments/environment';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Contact } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
@@ -35,7 +36,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     'Clients',
     '/clients/list',
     '',
-    this.goToClientList
+    this.goToClientList,
   );
   headerData = new HeaderActions('client-add', 'Add Client', [], [this.clientListLink.data]);
   footerData = new FooterActions([new SaveButton(), new ResetButton(), new CancelButton()]);
@@ -86,7 +87,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
           formData,
           collection,
           formData.client_id,
-          'client_id'
+          'client_id',
         );
       } else {
         returnData = await this.dataService.saveDocument(formData, collection);
@@ -154,7 +155,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
         title: [''],
         email: [''],
         client_id: this.clientId,
-      })
+      }),
     );
   }
 
@@ -164,14 +165,14 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
 
   populateContactData(contact_id: number) {
     this.http
-      .get<Contact[]>(`http://localhost:3000/data/contacts/${contact_id}?recordId=contact_id`)
+      .get<Contact[]>(`${environment.apiUrl}/data/contacts/${contact_id}?recordId=contact_id`)
       .subscribe((contacts) => {
         if (contacts && contacts.length === 1) {
           const contactDBData = contacts[0];
           if (contactDBData) {
             this.contactsDBData.push(contactDBData);
             const contactControl = this.contacts.controls.find(
-              (control) => control.value.contact_id === contactDBData.contact_id
+              (control) => control.value.contact_id === contactDBData.contact_id,
             );
             if (contactControl) {
               contactControl.get('first_name')?.setValue(contactDBData.first_name);
@@ -257,7 +258,10 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     }
   }
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+  ) {
     super();
   }
 

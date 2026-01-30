@@ -17,7 +17,6 @@ export interface Artist {
   photo_path: string;
   tag_ids: number[];
   tags?: Tag[];
-  tagList?: string;
 }
 
 export interface Client {
