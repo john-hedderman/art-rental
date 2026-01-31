@@ -34,7 +34,7 @@ export class JobList implements OnInit, OnDestroy {
   goToJobDetail = (id: number) => this.router.navigate(['/jobs', id]);
   noop = () => {};
 
-  headerData = new HeaderActions('job2-list', 'Jobs2', [], []);
+  headerData = new HeaderActions('job-list', 'Jobs', [], []);
   footerData = new FooterActions([new AddButton('Add Job', this.goToAddJob)]);
 
   private readonly destroy$ = new Subject<void>();

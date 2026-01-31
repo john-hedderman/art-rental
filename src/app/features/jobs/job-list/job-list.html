@@ -2,8 +2,8 @@
 <div class="container-fluid">
   <div class="ar-page-content">
     <div class="row h-100 overflow-hidden">
-      <div class="col-6 pt-3 h-100 overflow-y-auto">
-        <div class="d-flex flex-wrap section-header art-header">
+      <div class="col-6 pt-3 h-100 overflow-y-hidden">
+        <div class="d-flex flex-wrap">
           <h5 class="fw-bold d-inline mt-1 ms-1 me-4">Art</h5>
           <input
             type="text"
@@ -23,7 +23,7 @@
             }
           </select>
         </div>
-        <div class="card-group pt-2">
+        <div class="card-group mt-2 art-section-content overflow-y-auto">
           @if (art$ | async; as artwork) {
             <app-job-card
               [job_id]="WAREHOUSE_JOB_ID"
@@ -34,8 +34,8 @@
           }
         </div>
       </div>
-      <div class="col-6 pt-3 h-100 overflow-y-auto">
-        <div class="d-flex flex-wrap section-header jobs-header">
+      <div class="col-6 pt-3 h-100 overflow-y-hidden">
+        <div class="d-flex flex-wrap">
           <h5 class="fw-bold d-inline mt-1 ms-1 me-4">Jobs</h5>
           <select
             class="form-select form-select-sm d-inline mb-2"
@@ -64,7 +64,7 @@
             }
           </select>
         </div>
-        <div class="card-group pt-2">
+        <div class="card-group mt-2 jobs-section-content overflow-y-auto">
           @for (job of filteredJobs; track trackByJobId(job)) {
             <app-job-card
               [job_id]="job.job_id"
