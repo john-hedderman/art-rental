@@ -53,6 +53,9 @@ body {
   height: calc(
     100vh - var(--ar-navbar-height) - var(--ar-page-header-height) - var(--ar-page-footer-height)
   );
+  height: calc(
+    100dvh - var(--ar-navbar-height) - var(--ar-page-header-height) - var(--ar-page-footer-height)
+  );
 }
 
 .kranky-regular {
