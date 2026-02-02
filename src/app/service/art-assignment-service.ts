@@ -125,7 +125,7 @@ export class ArtAssignmentService implements OnDestroy {
       if (art?.art_id && oldJob?.job_id != undefined && newJob?.job_id != undefined) {
         this.saveStatus = await this.save(art, oldJob, newJob);
         this.postSave('job');
-        this.dataService.reloadData(['art', 'jobs']);
+        this.dataService.reloadData(['art', 'artists', 'jobs']);
       }
     });
   }

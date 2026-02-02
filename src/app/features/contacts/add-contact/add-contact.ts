@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Observable, of, take } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Observable, of, Subject, take, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -31,7 +31,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     'Contacts',
     '/contacts/list',
     '',
-    this.goToContactList
+    this.goToContactList,
   );
   headerData = new HeaderActions('contact-add', 'Add Contact', [], [this.contactListLink.data]);
   footerData = new FooterActions([new SaveButton(), new ResetButton(), new CancelButton()]);
@@ -48,6 +48,8 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
 
   contactId!: number;
   editMode = false;
+
+  private readonly destroy$ = new Subject<void>();
 
   onClickReset() {
     this.resetForm();
@@ -106,7 +108,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
           formData,
           collection,
           formData.contact_id,
-          'contact_id'
+          'contact_id',
         );
       } else {
         returnData = await this.dataService.saveDocument(formData, collection);
@@ -137,14 +139,14 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     let result = Const.SUCCESS;
     try {
       oldClient.contact_ids = oldClient.contact_ids.filter(
-        (contact_id) => contact_id !== this.contactId
+        (contact_id) => contact_id !== this.contactId,
       );
       delete (oldClient as any)._id;
       const returnData = await this.dataService.saveDocument(
         oldClient,
         collection,
         dbData.client_id,
-        'client_id'
+        'client_id',
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -172,7 +174,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
         client,
         collection,
         formData.client_id,
-        'client_id'
+        'client_id',
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -227,10 +229,12 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
       this.headerData.data.headerTitle = 'Edit Contact';
     }
 
-    this.dataService.clients$.pipe(take(1)).subscribe((clients) => {
-      this.clients$ = of(clients);
-      this.clients = clients;
-    });
+    this.dataService.clients$
+      .pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500))
+      .subscribe((clients) => {
+        this.clients$ = of(clients);
+        this.clients = clients;
+      });
 
     this.contactForm = this.fb.group({
       contact_id: this.contactId,
@@ -247,7 +251,10 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     }
   }
 
-  constructor(private router: Router, private fb: FormBuilder) {
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+  ) {
     super();
   }
 
@@ -257,5 +264,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.messagesService.clearStatus();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

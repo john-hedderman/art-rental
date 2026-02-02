@@ -1,7 +1,14 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 import { Router } from '@angular/router';
-import { combineLatest, Observable, take } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  Observable,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Contact } from '../../../model/models';
@@ -21,7 +28,7 @@ import { RowDetail } from '../../../directives/row-detail';
     class: 'd-flex flex-column h-100',
   },
 })
-export class ContactList implements OnInit {
+export class ContactList implements OnInit, OnDestroy {
   @ViewChild('contactsTable') table!: DatatableComponent<Contact>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
@@ -39,6 +46,8 @@ export class ContactList implements OnInit {
   rows: Contact[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
+
+  private readonly destroy$ = new Subject<void>();
 
   toggleExpandRow(row: Contact) {
     this.table.rowDetail!.toggleExpandRow(row);
@@ -114,12 +123,20 @@ export class ContactList implements OnInit {
     return combineLatest({
       contacts: this.dataService.contacts$,
       clients: this.dataService.clients$,
-    }).pipe(take(1));
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
   }
 
-  constructor(private dataService: DataService, private router: Router) {}
+  constructor(
+    private dataService: DataService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.init();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

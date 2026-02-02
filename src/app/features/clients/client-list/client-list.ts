@@ -1,7 +1,7 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxDatatableModule, TableColumn, DatatableComponent } from '@swimlane/ngx-datatable';
-import { take } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 
 import { Client } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
@@ -21,7 +21,7 @@ import { RowDetail } from '../../../directives/row-detail';
     class: 'd-flex flex-column h-100',
   },
 })
-export class ClientList implements OnInit {
+export class ClientList implements OnInit, OnDestroy {
   @ViewChild('clientsTable') table!: DatatableComponent<Client>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('locationHeaderTemplate', { static: true }) locationHeaderTemplate!: TemplateRef<any>;
@@ -37,6 +37,8 @@ export class ClientList implements OnInit {
   rows: Client[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
+
+  private readonly destroy$ = new Subject<void>();
 
   toggleExpandRow(row: Client) {
     this.table.rowDetail!.toggleExpandRow(row);
@@ -85,22 +87,26 @@ export class ClientList implements OnInit {
       },
     ];
 
-    this.dataService.clients$.pipe(take(1)).subscribe((clients) => {
-      if (clients) {
-        this.rows = [...clients];
-      }
-    });
+    this.dataService.clients$
+      .pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500))
+      .subscribe((clients) => {
+        if (clients) {
+          this.rows = [...clients];
+        }
+      });
   }
 
-  constructor(private dataService: DataService, private router: Router) {
-    this.dataService.clients$.pipe(take(1)).subscribe((clients) => {
-      if (clients) {
-        this.rows = [...clients];
-      }
-    });
-  }
+  constructor(
+    private dataService: DataService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.init();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

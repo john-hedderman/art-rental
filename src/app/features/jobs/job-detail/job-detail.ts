@@ -1,7 +1,16 @@
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
-import { combineLatest, map, Observable, of, take } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  Observable,
+  of,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { Art, Client, Contact, Job, Site } from '../../../model/models';
@@ -84,6 +93,8 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
 
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
+
+  private readonly destroy$ = new Subject<void>();
 
   override preDelete(): void {}
 
@@ -300,7 +311,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
       artwork: this.dataService.art$,
       sites: this.dataService.sites$,
       jobs: this.dataService.jobs$,
-    }).pipe(take(1));
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
   }
 
   constructor(
@@ -319,5 +330,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.messagesService.clearStatus();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -1,7 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { combineLatest, Observable, of, take } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  Observable,
+  of,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -46,6 +54,8 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
 
   siteId!: number;
   editMode = false;
+
+  private readonly destroy$ = new Subject<void>();
 
   preSave() {
     this.disableSaveBtn();
@@ -108,7 +118,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
         client,
         collection,
         formData.client_id,
-        'client_id'
+        'client_id',
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -217,10 +227,13 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
     return combineLatest({
       clients: this.dataService.clients$,
       jobs: this.dataService.jobs$,
-    }).pipe(take(1));
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
   }
 
-  constructor(private router: Router, private fb: FormBuilder) {
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+  ) {
     super();
   }
 
@@ -230,5 +243,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.messagesService.clearStatus();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

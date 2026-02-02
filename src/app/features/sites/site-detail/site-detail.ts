@@ -1,6 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { combineLatest, map, Observable, of, take } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  Observable,
+  of,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -44,7 +53,7 @@ export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
     false,
     null,
     null,
-    this.goToEditSite
+    this.goToEditSite,
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
@@ -66,6 +75,8 @@ export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
+  private readonly destroy$ = new Subject<void>();
+
   override preDelete(): void {}
 
   override async delete(): Promise<string> {
@@ -79,7 +90,7 @@ export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'site' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'site' })
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'site' }),
     );
     this.messagesService.clearStatus();
   }
@@ -134,7 +145,7 @@ export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
         newClient,
         Collections.Clients,
         this.clientId,
-        'client_id'
+        'client_id',
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -187,14 +198,14 @@ export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
       clients: this.dataService.clients$,
       jobs: this.dataService.jobs$,
       sites: this.dataService.sites$,
-    }).pipe(take(1));
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
   }
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private operationsService: OperationsService,
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
   ) {
     super();
   }
@@ -205,5 +216,7 @@ export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.messagesService.clearStatus();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

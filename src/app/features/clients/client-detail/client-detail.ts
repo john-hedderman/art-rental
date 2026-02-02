@@ -1,7 +1,16 @@
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { combineLatest, map, Observable, of, take } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  Observable,
+  of,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { Client, Contact, Job, Site } from '../../../model/models';
@@ -41,7 +50,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
     'Clients',
     '/clients/list',
     '',
-    this.goToClientList
+    this.goToClientList,
   );
   headerData = new HeaderActions('client-detail', 'Client detail', [], [this.clientListLink.data]);
 
@@ -53,7 +62,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
     false,
     null,
     null,
-    this.goToEditClient
+    this.goToEditClient,
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
@@ -74,6 +83,8 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
+  private readonly destroy$ = new Subject<void>();
+
   override preDelete(): void {}
 
   override async delete(): Promise<string> {
@@ -87,7 +98,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'client' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'client' })
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'client' }),
     );
     this.messagesService.clearStatus();
   }
@@ -100,7 +111,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
     return await this.operationsService.deleteDocument(
       Collections.Clients,
       'client_id',
-      this.clientId
+      this.clientId,
     );
   }
 
@@ -108,7 +119,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
     return await this.operationsService.deleteDocuments(
       Collections.Contacts,
       'client_id',
-      this.clientId
+      this.clientId,
     );
   }
 
@@ -116,7 +127,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
     return await this.operationsService.deleteDocuments(
       Collections.Sites,
       'client_id',
-      this.clientId
+      this.clientId,
     );
   }
 
@@ -188,14 +199,14 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
       contacts: this.dataService.contacts$,
       jobs: this.dataService.jobs$,
       sites: this.dataService.sites$,
-    }).pipe(take(1));
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
   }
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private operationsService: OperationsService,
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
   ) {
     super();
   }
@@ -206,5 +217,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.messagesService.clearStatus();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

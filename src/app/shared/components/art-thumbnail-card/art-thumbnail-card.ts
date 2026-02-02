@@ -1,5 +1,12 @@
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { combineLatest, Observable, Subject, takeUntil } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  Observable,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 
 import { Art, Artist, Job } from '../../../model/models';
 import * as Const from '../../../constants';
@@ -69,10 +76,13 @@ export class ArtThumbnailCard implements OnInit, OnDestroy, AfterViewInit {
       art: this.dataService.art$,
       artists: this.dataService.artists$,
       jobs: this.dataService.jobs$,
-    }).pipe(takeUntil(this.destroy$));
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
   }
 
-  constructor(private elemRef: ElementRef, private dataService: DataService) {}
+  constructor(
+    private elemRef: ElementRef,
+    private dataService: DataService,
+  ) {}
 
   ngOnInit(): void {
     this.init();

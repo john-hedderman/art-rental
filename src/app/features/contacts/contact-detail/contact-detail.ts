@@ -1,6 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { combineLatest, map, Observable, of, take } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  Observable,
+  of,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -38,13 +47,13 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
     'Contacts',
     '/contacts/list',
     '',
-    this.goToContactList
+    this.goToContactList,
   );
   headerData = new HeaderActions(
     'contact-detail',
     'Contact detail',
     [],
-    [this.contactListLink.data]
+    [this.contactListLink.data],
   );
 
   editButton = new ActionButton(
@@ -55,7 +64,7 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
     false,
     null,
     null,
-    this.goToEditContact
+    this.goToEditContact,
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
@@ -72,6 +81,8 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
+  private readonly destroy$ = new Subject<void>();
+
   override preDelete(): void {}
 
   override async delete(): Promise<string> {
@@ -84,7 +95,7 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'contact' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'contact' })
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'contact' }),
     );
     this.messagesService.clearStatus();
   }
@@ -97,7 +108,7 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
     return await this.operationsService.deleteDocument(
       Collections.Contacts,
       'contact_id',
-      this.contactId
+      this.contactId,
     );
   }
 
@@ -116,7 +127,7 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
         client,
         collection,
         this.clientId,
-        'client_id'
+        'client_id',
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -158,14 +169,14 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
       contactId: this.getContactId(),
       contacts: this.dataService.contacts$,
       clients: this.dataService.clients$,
-    }).pipe(take(1));
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
   }
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private operationsService: OperationsService,
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
   ) {
     super();
   }
@@ -176,5 +187,7 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.messagesService.clearStatus();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

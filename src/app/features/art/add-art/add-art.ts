@@ -1,7 +1,15 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { combineLatest, Observable, of, take } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  Observable,
+  of,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
@@ -46,6 +54,8 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
 
   artId!: number;
   editMode = false;
+
+  private readonly destroy$ = new Subject<void>();
 
   preSave() {
     this.disableSaveBtn();
@@ -257,7 +267,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       jobs: this.dataService.jobs$,
       clients: this.dataService.clients$,
       sites: this.dataService.sites$,
-    }).pipe(take(1));
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
   }
 
   constructor(
@@ -273,5 +283,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.messagesService.clearStatus();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

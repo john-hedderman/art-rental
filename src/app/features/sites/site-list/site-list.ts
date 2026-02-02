@@ -1,6 +1,13 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { combineLatest, Observable, take } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  Observable,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -21,7 +28,7 @@ import { RowDetail } from '../../../directives/row-detail';
     class: 'd-flex flex-column h-100',
   },
 })
-export class SiteList implements OnInit {
+export class SiteList implements OnInit, OnDestroy {
   @ViewChild('sitesTable') table!: DatatableComponent<Site>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
@@ -39,6 +46,8 @@ export class SiteList implements OnInit {
   rows: Site[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
+
+  private readonly destroy$ = new Subject<void>();
 
   toggleExpandRow(row: Site) {
     this.table.rowDetail!.toggleExpandRow(row);
@@ -110,12 +119,20 @@ export class SiteList implements OnInit {
     return combineLatest({
       clients: this.dataService.clients$,
       sites: this.dataService.sites$,
-    }).pipe(take(1));
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
   }
 
-  constructor(private router: Router, private dataService: DataService) {}
+  constructor(
+    private router: Router,
+    private dataService: DataService,
+  ) {}
 
   ngOnInit(): void {
     this.init();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

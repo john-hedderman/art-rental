@@ -1,7 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { combineLatest, Observable, take } from 'rxjs';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  Observable,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 
 import { Card } from '../../../shared/components/card/card';
 import { Art, Artist, Client, Job, Site } from '../../../model/models';
@@ -18,7 +25,7 @@ import { AddButton } from '../../../shared/buttons/add-button';
   styleUrl: './art-list.scss',
   standalone: true,
 })
-export class ArtList implements OnInit {
+export class ArtList implements OnInit, OnDestroy {
   goToArtDetail = (id: number) => this.router.navigate(['/art', id]);
   goToAddArt = () => this.router.navigate(['/art', 'add']);
 
@@ -28,6 +35,8 @@ export class ArtList implements OnInit {
   artwork: Art[] = [];
 
   thumbnail_path = 'images/art/';
+
+  private readonly destroy$ = new Subject<void>();
 
   init(): void {
     this.getCombinedData$().subscribe(({ artwork, jobs, clients, artists, sites }) => {
@@ -70,12 +79,20 @@ export class ArtList implements OnInit {
       clients: this.dataService.clients$,
       jobs: this.dataService.jobs$,
       sites: this.dataService.sites$,
-    }).pipe(take(1));
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
   }
 
-  constructor(private dataService: DataService, private router: Router) {}
+  constructor(
+    private dataService: DataService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.init();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
