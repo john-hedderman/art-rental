@@ -1,5 +1,5 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
-<div class="container-fluid">
+<div class="container-fluid overflow-y-auto">
   <div class="row overflow-y-auto ar-page-content">
     <div class="card-group ar-card-group p-3">
       @if (tags$ | async; as tags) {
@@ -33,8 +33,8 @@
       }
     </div>
   </div>
-  <app-page-footer [footerData]="footerData"></app-page-footer>
 </div>
+<app-page-footer [footerData]="footerData"></app-page-footer>
 
 <div
   class="modal"

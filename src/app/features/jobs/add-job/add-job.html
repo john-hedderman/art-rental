@@ -1,5 +1,5 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
-<div class="container-fluid">
+<div class="container-fluid overflow-y-auto">
   <form
     [formGroup]="jobForm"
     (ngSubmit)="onSubmit()"
@@ -46,9 +46,11 @@
                     required
                   >
                     <option value="">Select a client...</option>
-                    @if (clients$ | async; as clients) { @for (client of clients; track $index) {
-                    <option value="{{ client.client_id }}">{{ client.name }}</option>
-                    } }
+                    @if (clients$ | async; as clients) {
+                      @for (client of clients; track $index) {
+                        <option value="{{ client.client_id }}">{{ client.name }}</option>
+                      }
+                    }
                   </select>
                   <div class="invalid-feedback">Please select a client.</div>
                 </div>
@@ -94,9 +96,9 @@
         </div>
       </div>
     </div>
-    <app-page-footer [footerData]="footerData"></app-page-footer>
   </form>
 </div>
+<app-page-footer [footerData]="footerData"></app-page-footer>
 
 <div
   class="modal"

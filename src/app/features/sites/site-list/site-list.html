@@ -1,6 +1,6 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
-<div class="container-fluid gx-0 overflow-x-hidden">
-  <div class="row overflow-y-hidden ar-page-content mx-0">
+<div class="container-fluid gx-0 overflow-y-auto">
+  <div class="row ar-page-content mx-0">
     <ngx-datatable
       #sitesTable
       class="material"
@@ -18,8 +18,11 @@
           <div class="row-detail-container" appRowDetail>
             <div>
               @if (row.address1 && row.city && row.state && row.zip_code) {
-              {{ row.address1 }}, @if (row.address2) { {{ row.address2 }}, } {{ row.city }},
-              {{ row.state }} {{ row.zip_code }}
+                {{ row.address1 }},
+                @if (row.address2) {
+                  {{ row.address2 }},
+                }
+                {{ row.city }}, {{ row.state }} {{ row.zip_code }}
               }
             </div>
           </div>
@@ -27,8 +30,8 @@
       </ngx-datatable-row-detail>
     </ngx-datatable>
   </div>
-  <app-page-footer [footerData]="footerData"></app-page-footer>
 </div>
+<app-page-footer [footerData]="footerData"></app-page-footer>
 
 <ng-template #arrowTemplate let-row="row" let-expanded="expanded">
   <a
@@ -40,7 +43,11 @@
   ></a>
 </ng-template>
 
-<ng-template #siteNameTemplate let-row="row"> @if (row.name) { {{ row.name }} } </ng-template>
+<ng-template #siteNameTemplate let-row="row">
+  @if (row.name) {
+    {{ row.name }}
+  }
+</ng-template>
 
 <ng-template #siteAddressHeaderTemplate let-column="column">
   <span class="mobile-hidden">{{ column.name }}</span>
@@ -49,15 +56,19 @@
 <ng-template #siteAddressTemplate let-value="value" let-row="row">
   <span class="mobile-hidden">
     @if (row.address1 && row.city && row.state && row.zip_code) {
-    {{ row.address1 }}, @if (row.address2) { {{ row.address2 }}, } {{ row.city }}, {{ row.state }}
-    {{ row.zip_code }}
+      {{ row.address1 }},
+      @if (row.address2) {
+        {{ row.address2 }},
+      }
+      {{ row.city }}, {{ row.state }}
+      {{ row.zip_code }}
     }
   </span>
 </ng-template>
 
 <ng-template #clientNameTemplate let-row="row">
   @if (row.client?.name) {
-  <span class="mobile-hidden">{{ row.client.name }}</span>
+    <span class="mobile-hidden">{{ row.client.name }}</span>
   }
 </ng-template>
 

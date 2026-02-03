@@ -1,5 +1,5 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
-<div class="container-fluid">
+<div class="container-fluid overflow-y-auto">
   <form
     [formGroup]="clientForm"
     (ngSubmit)="onSubmit()"
@@ -172,77 +172,80 @@
               </section>
 
               <section formArrayName="contacts" class="mt-0">
-                @for (clientContactGroup of contacts.controls; track trackByContactId($index,
-                clientContactGroup); let i = $index) {
-                <div [formGroupName]="i" class="row pt-1 border-top ar-contact-row mt-4">
-                  <div class="col-12 mt-0 pe-0">
-                    <button
-                      id="remove-contact-btn-{{ i }}"
-                      class="btn btn-secondary ar-remove-contact-btn float-end me-3 mt-3"
-                      type="button"
-                      (click)="removeContact(i)"
-                    >
-                      Remove contact
-                    </button>
+                @for (
+                  clientContactGroup of contacts.controls;
+                  track trackByContactId($index, clientContactGroup);
+                  let i = $index
+                ) {
+                  <div [formGroupName]="i" class="row pt-1 border-top ar-contact-row mt-4">
+                    <div class="col-12 mt-0 pe-0">
+                      <button
+                        id="remove-contact-btn-{{ i }}"
+                        class="btn btn-secondary ar-remove-contact-btn float-end me-3 mt-3"
+                        type="button"
+                        (click)="removeContact(i)"
+                      >
+                        Remove contact
+                      </button>
+                    </div>
+                    <div class="col-md-6 mt-3">
+                      <label for="first_name-{{ i }}" class="col-form-label"
+                        >First name <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="first_name-{{ i }}"
+                        formControlName="first_name"
+                        required
+                      />
+                      <div class="invalid-feedback">Please provide a first name.</div>
+                    </div>
+                    <div class="col-md-6 mt-3">
+                      <label for="last_name-{{ i }}" class="col-form-label"
+                        >Last name <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="last_name-{{ i }}"
+                        formControlName="last_name"
+                        required
+                      />
+                      <div class="invalid-feedback">Please provide a last name.</div>
+                    </div>
+                    <div class="col-md-6 mt-3">
+                      <label for="phone-{{ i }}" class="col-form-label"
+                        >Phone <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="tel"
+                        class="form-control"
+                        id="phone-{{ i }}"
+                        formControlName="phone"
+                        required
+                      />
+                      <div class="invalid-feedback">Please provide a phone number.</div>
+                    </div>
+                    <div class="col-md-6 mt-3">
+                      <label for="email-{{ i }}" class="col-form-label">Email</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="email-{{ i }}"
+                        formControlName="email"
+                      />
+                    </div>
+                    <div class="col-md-6 mt-3">
+                      <label for="title-{{ i }}" class="col-form-label">Title</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="title-{{ i }}"
+                        formControlName="title"
+                      />
+                    </div>
                   </div>
-                  <div class="col-md-6 mt-3">
-                    <label for="first_name-{{ i }}" class="col-form-label"
-                      >First name <span class="text-danger">*</span></label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="first_name-{{ i }}"
-                      formControlName="first_name"
-                      required
-                    />
-                    <div class="invalid-feedback">Please provide a first name.</div>
-                  </div>
-                  <div class="col-md-6 mt-3">
-                    <label for="last_name-{{ i }}" class="col-form-label"
-                      >Last name <span class="text-danger">*</span></label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="last_name-{{ i }}"
-                      formControlName="last_name"
-                      required
-                    />
-                    <div class="invalid-feedback">Please provide a last name.</div>
-                  </div>
-                  <div class="col-md-6 mt-3">
-                    <label for="phone-{{ i }}" class="col-form-label"
-                      >Phone <span class="text-danger">*</span></label
-                    >
-                    <input
-                      type="tel"
-                      class="form-control"
-                      id="phone-{{ i }}"
-                      formControlName="phone"
-                      required
-                    />
-                    <div class="invalid-feedback">Please provide a phone number.</div>
-                  </div>
-                  <div class="col-md-6 mt-3">
-                    <label for="email-{{ i }}" class="col-form-label">Email</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="email-{{ i }}"
-                      formControlName="email"
-                    />
-                  </div>
-                  <div class="col-md-6 mt-3">
-                    <label for="title-{{ i }}" class="col-form-label">Title</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="title-{{ i }}"
-                      formControlName="title"
-                    />
-                  </div>
-                </div>
                 }
               </section>
             </div>
@@ -250,9 +253,9 @@
         </div>
       </div>
     </div>
-    <app-page-footer [footerData]="footerData"></app-page-footer>
   </form>
 </div>
+<app-page-footer [footerData]="footerData"></app-page-footer>
 
 <div
   class="modal"

@@ -1,5 +1,5 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
-<div class="container-fluid">
+<div class="container-fluid overflow-y-auto">
   <form
     [formGroup]="artForm"
     (ngSubmit)="onSubmit()"
@@ -116,9 +116,9 @@
         </div>
       </div>
     </div>
-    <app-page-footer [footerData]="footerData"></app-page-footer>
   </form>
 </div>
+<app-page-footer [footerData]="footerData"></app-page-footer>
 
 <div
   class="modal"

@@ -8,7 +8,7 @@ import {
   Observable,
   of,
   Subject,
-  takeUntil,
+  takeUntil
 } from 'rxjs';
 
 import { Artist, Tag } from '../../../model/models';
@@ -24,10 +24,7 @@ import { AddButton } from '../../../shared/buttons/add-button';
   imports: [Card, PageHeader, PageFooter, AsyncPipe],
   templateUrl: './artist-list.html',
   styleUrl: './artist-list.scss',
-  standalone: true,
-  host: {
-    class: 'overflow-y-auto',
-  },
+  standalone: true
 })
 export class ArtistList implements OnInit, OnDestroy {
   goToArtistDetail = (id: number) => this.router.navigate(['/artists', id]);
@@ -56,13 +53,13 @@ export class ArtistList implements OnInit, OnDestroy {
   }> {
     return combineLatest({
       artists: this.dataService.artists$,
-      tags: this.dataService.tags$,
+      tags: this.dataService.tags$
     }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
   }
 
   constructor(
     private dataService: DataService,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit(): void {

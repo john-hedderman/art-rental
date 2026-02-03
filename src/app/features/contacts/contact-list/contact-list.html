@@ -1,6 +1,6 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
-<div class="container-fluid gx-0 overflow-x-hidden">
-  <div class="row overflow-y-hidden ar-page-content mx-0">
+<div class="container-fluid gx-0 overflow-y-auto">
+  <div class="row ar-page-content mx-0">
     <ngx-datatable
       #contactsTable
       class="material h-100 px-0"
@@ -16,16 +16,16 @@
       <ngx-datatable-row-detail [rowHeight]="50">
         <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
           @if (row.client?.name && row.phone) {
-          <div class="row-detail-container" appRowDetail>
-            <div>{{ row.client?.name }}, {{ row.phone }}</div>
-          </div>
+            <div class="row-detail-container" appRowDetail>
+              <div>{{ row.client?.name }}, {{ row.phone }}</div>
+            </div>
           }
         </ng-template>
       </ngx-datatable-row-detail>
     </ngx-datatable>
   </div>
-  <app-page-footer [footerData]="footerData"></app-page-footer>
 </div>
+<app-page-footer [footerData]="footerData"></app-page-footer>
 
 <ng-template #arrowTemplate let-row="row" let-expanded="expanded">
   <a
@@ -39,7 +39,7 @@
 
 <ng-template #nameTemplate let-row="row">
   @if (row.first_name && row.last_name) {
-  {{ row.first_name }} {{ row.last_name }}
+    {{ row.first_name }} {{ row.last_name }}
   }
 </ng-template>
 

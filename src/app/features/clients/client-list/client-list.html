@@ -1,5 +1,5 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
-<div class="container-fluid gx-0 overflow-x-hidden">
+<div class="container-fluid gx-0 overflow-y-auto">
   <div class="row overflow-y-hidden ar-page-content mx-0">
     <ngx-datatable
       #clientsTable
@@ -16,16 +16,16 @@
       <ngx-datatable-row-detail [rowHeight]="50">
         <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
           @if (row.city && row.state) {
-          <div class="row-detail-container" appRowDetail>
-            <div>{{ row.city }}, {{ row.state }} &mdash; {{ row.industry }}</div>
-          </div>
+            <div class="row-detail-container" appRowDetail>
+              <div>{{ row.city }}, {{ row.state }} &mdash; {{ row.industry }}</div>
+            </div>
           }
         </ng-template>
       </ngx-datatable-row-detail>
     </ngx-datatable>
   </div>
-  <app-page-footer [footerData]="footerData"></app-page-footer>
 </div>
+<app-page-footer [footerData]="footerData"></app-page-footer>
 
 <ng-template #arrowTemplate let-row="row" let-expanded="expanded">
   <a
@@ -44,7 +44,7 @@
 <ng-template #locationTemplate let-value="value" let-row="row">
   <span class="mobile-hidden">
     @if (row.city && row.state) {
-    {{ row.city }}, {{ row.state }}
+      {{ row.city }}, {{ row.state }}
     }
   </span>
 </ng-template>

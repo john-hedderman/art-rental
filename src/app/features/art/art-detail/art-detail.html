@@ -1,5 +1,5 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
-<div class="container-fluid">
+<div class="container-fluid overflow-y-auto">
   <div class="row ar-page-content overflow-y-auto pt-3">
     @if (art$ | async; as art) {
       <div class="col-sm-12 col-md-6 p-3 pt-0">
@@ -73,8 +73,8 @@
       </div>
     }
   </div>
-  <app-page-footer [footerData]="footerData"></app-page-footer>
 </div>
+<app-page-footer [footerData]="footerData"></app-page-footer>
 
 <div
   class="modal"

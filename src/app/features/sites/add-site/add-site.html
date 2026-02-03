@@ -1,5 +1,5 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
-<div class="container-fluid">
+<div class="container-fluid overflow-y-auto">
   <form
     [formGroup]="siteForm"
     (ngSubmit)="onSubmit()"
@@ -11,41 +11,43 @@
       <div class="col-12 d-flex flex-column py-3">
         <p>Please complete all required fields (<span class="text-danger">*</span>).</p>
         @if (!editMode) {
-        <p>
-          You must <a href="#" [routerLink]="'/clients/add'">add a client</a> before you can create
-          a site.
-        </p>
+          <p>
+            You must <a href="#" [routerLink]="'/clients/add'">add a client</a> before you can
+            create a site.
+          </p>
         }
         <div class="row flex-grow-1">
           <div class="col-12">
             @if (!editMode) {
-            <div class="row">
-              <h5 class="fw-bold pb-2 ar-heading ar-inset">Step 1</h5>
-              <section class="row">
-                <div class="col-md-6">
-                  <label for="client_id" class="col-form-label"
-                    >Client <span class="text-danger">*</span></label
-                  >
-                  <select
-                    class="form-select"
-                    name="client_id"
-                    id="client_id"
-                    formControlName="client_id"
-                    (change)="onSelectClient($event)"
-                    required
-                  >
-                    <option value="">Select a client...</option>
-                    @if (clients$ | async; as clients) { @for (client of clients; track $index) {
-                    <option value="{{ client.client_id }}">{{ client.name }}</option>
-                    } }
-                  </select>
-                  <div class="invalid-feedback">Please select a client.</div>
-                </div>
-              </section>
-            </div>
-            <div class="row">
-              <h5 class="fw-bold pb-2 pt-4 ar-heading ar-inset">Step 2</h5>
-            </div>
+              <div class="row">
+                <h5 class="fw-bold pb-2 ar-heading ar-inset">Step 1</h5>
+                <section class="row">
+                  <div class="col-md-6">
+                    <label for="client_id" class="col-form-label"
+                      >Client <span class="text-danger">*</span></label
+                    >
+                    <select
+                      class="form-select"
+                      name="client_id"
+                      id="client_id"
+                      formControlName="client_id"
+                      (change)="onSelectClient($event)"
+                      required
+                    >
+                      <option value="">Select a client...</option>
+                      @if (clients$ | async; as clients) {
+                        @for (client of clients; track $index) {
+                          <option value="{{ client.client_id }}">{{ client.name }}</option>
+                        }
+                      }
+                    </select>
+                    <div class="invalid-feedback">Please select a client.</div>
+                  </div>
+                </section>
+              </div>
+              <div class="row">
+                <h5 class="fw-bold pb-2 pt-4 ar-heading ar-inset">Step 2</h5>
+              </div>
             }
             <div class="row">
               <div class="col-md-6">
@@ -189,9 +191,9 @@
         </div>
       </div>
     </div>
-    <app-page-footer [footerData]="footerData"></app-page-footer>
   </form>
 </div>
+<app-page-footer [footerData]="footerData"></app-page-footer>
 
 <div
   class="modal"

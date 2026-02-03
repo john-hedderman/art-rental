@@ -1,20 +1,26 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
-<div class="container-fluid">
-  <div class="row overflow-y-auto ar-page-content">
+<div class="container-fluid overflow-y-auto">
+  <div class="row ar-page-content">
     <div class="card-group ar-card-group px-0">
       @for (art of artwork; track $index) {
-      <app-card
-        [cardData]="{
-        imageData: { source: `${thumbnail_path}${art.file_name}`, alt: art.title, title: art.title },
-        title: art.title,
-        text: art.artist?.name,
-        footerText: art.job?.client ? `<strong>Job: </strong>${art.job?.client?.name} (${art.job?.site?.name || 'Site TBD'})` : '',
-        clickHandler: goToArtDetail.bind(null, art.art_id)
-      }"
-        class="mt-3 ms-3"
-      ></app-card>
+        <app-card
+          [cardData]="{
+            imageData: {
+              source: `${thumbnail_path}${art.file_name}`,
+              alt: art.title,
+              title: art.title
+            },
+            title: art.title,
+            text: art.artist?.name,
+            footerText: art.job?.client
+              ? `<strong>Job: </strong>${art.job?.client?.name} (${art.job?.site?.name || 'Site TBD'})`
+              : '',
+            clickHandler: goToArtDetail.bind(null, art.art_id)
+          }"
+          class="mt-3 ms-3"
+        ></app-card>
       }
     </div>
   </div>
-  <app-page-footer [footerData]="footerData"></app-page-footer>
 </div>
+<app-page-footer [footerData]="footerData"></app-page-footer>
