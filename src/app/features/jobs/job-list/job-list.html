@@ -4,24 +4,27 @@
     <div class="row h-100 overflow-hidden">
       <div class="col-6 pt-3 h-100 overflow-y-hidden">
         <div class="d-flex flex-wrap">
-          <h5 class="fw-bold d-inline mt-1 ms-1 me-4">Warehouse</h5>
+          <h5 class="fw-bold d-inline mt-1 ms-1 me-4 mb-4">Warehouse</h5>
           <input
-            type="text"
+            type="search"
             id="searchArt"
             class="form-control form-control-sm mb-2"
             placeholder="Search..."
             [formControl]="searchArtControl"
           />
-          <select
-            id="selectArtist"
-            class="form-select form-select-sm d-inline mb-2"
-            [formControl]="selectArtistControl"
-          >
-            <option [value]="''">All artists</option>
-            @for (artist of artists; track trackByArtistId(artist)) {
-              <option [value]="artist.artist_id">{{ artist.name }}</option>
-            }
-          </select>
+          <div class="d-flex w-100">
+            <label for="selectArtist" class="ps-1 pe-2 py-1">Artist:</label>
+            <select
+              id="selectArtist"
+              class="form-select form-select-sm d-inline mb-2"
+              [formControl]="selectArtistControl"
+            >
+              <option [value]="''">All artists</option>
+              @for (artist of artists; track trackByArtistId(artist)) {
+                <option [value]="artist.artist_id">{{ artist.name }}</option>
+              }
+            </select>
+          </div>
         </div>
         <div class="card-group mt-2 art-section-content overflow-y-auto">
           @if (art$ | async; as artwork) {
@@ -36,33 +39,39 @@
       </div>
       <div class="col-6 pt-3 h-100 overflow-y-hidden">
         <div class="d-flex flex-wrap">
-          <h5 class="fw-bold d-inline mt-1 ms-1 me-4">Jobs</h5>
-          <select
-            class="form-select form-select-sm d-inline mb-2"
-            name="filter_client_id"
-            id="filter_client_id"
-            [(ngModel)]="selectedClientId"
-            (change)="onSelectClient()"
-          >
-            <option value="All">All clients</option>
-            @for (client of clients; track trackByClientId(client)) {
-              <option value="{{ client.client_id }}">{{ client.name }}</option>
-            }
-          </select>
-          <select
-            class="form-select form-select-sm d-inline mb-2"
-            name="filter_site_id"
-            id="filter_site_id"
-            [(ngModel)]="selectedSiteId"
-            (change)="filterJobs()"
-            #filterSite
-          >
-            <option value="All">All sites</option>
-            <option value="{{ TBD }}">TBD</option>
-            @for (site of filteredSites; track trackBySiteId(site)) {
-              <option value="{{ site.site_id }}">{{ site.name }}</option>
-            }
-          </select>
+          <h5 class="fw-bold d-inline mt-1 ms-1 me-4 mb-4">Jobs</h5>
+          <div class="d-flex w-100">
+            <label for="filter_client_id" class="ps-1 pe-2 py-1">Client:</label>
+            <select
+              class="form-select form-select-sm d-inline mb-2"
+              name="filter_client_id"
+              id="filter_client_id"
+              [(ngModel)]="selectedClientId"
+              (change)="onSelectClient()"
+            >
+              <option value="All">All clients</option>
+              @for (client of clients; track trackByClientId(client)) {
+                <option value="{{ client.client_id }}">{{ client.name }}</option>
+              }
+            </select>
+          </div>
+          <div class="d-flex w-100">
+            <label for="filter_site_id" class="ps-1 pe-2 py-1">Site:</label>
+            <select
+              class="form-select form-select-sm d-inline mb-2"
+              name="filter_site_id"
+              id="filter_site_id"
+              [(ngModel)]="selectedSiteId"
+              (change)="filterJobs()"
+              #filterSite
+            >
+              <option value="All">All sites</option>
+              <option value="{{ TBD }}">TBD</option>
+              @for (site of filteredSites; track trackBySiteId(site)) {
+                <option value="{{ site.site_id }}">{{ site.name }}</option>
+              }
+            </select>
+          </div>
         </div>
         <div class="card-group mt-2 jobs-section-content overflow-y-auto">
           @for (job of filteredJobs; track trackByJobId(job)) {
