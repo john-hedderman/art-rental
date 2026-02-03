@@ -57,6 +57,8 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
+  client: Client | undefined;
+
   client$: Observable<Client> | undefined;
   jobs$: Observable<Job[]> | undefined;
   sites$: Observable<Site[]> | undefined;
@@ -107,6 +109,9 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
   }
 
   async deleteContacts(): Promise<string> {
+    if (this.client?.contact_ids.length === 0) {
+      return Const.SUCCESS;
+    }
     return await this.operationsService.deleteDocuments(
       Collections.Contacts,
       'client_id',
@@ -115,6 +120,9 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
   }
 
   async deleteSites(): Promise<string> {
+    if (this.client?.site_ids.length === 0) {
+      return Const.SUCCESS;
+    }
     return await this.operationsService.deleteDocuments(
       Collections.Sites,
       'client_id',
@@ -169,6 +177,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
             const client = clients.find((client) => client.client_id === contact.client_id);
             return { ...contact, client };
           });
+        this.client = client;
         this.client$ = of(client);
         const clientSites = sites.filter((site) => site.client_id === this.clientId);
         this.sites$ = of(clientSites);
