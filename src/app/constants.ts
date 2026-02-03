@@ -16,5 +16,6 @@ export const CLEAR_ERROR_DELAY = 3000;
 export const ART_THUMBNAIL_PATH = 'images/art/';
 
 export const WAREHOUSE_JOB_ID = 1;
+export const WAREHOUSE_SITE_ID = 0;
 export const WAREHOUSE_JOB_NUMBER = 'No job';
 export const WAREHOUSE_SITE_NAME = 'Warehouse';

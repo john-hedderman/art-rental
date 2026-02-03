@@ -10,6 +10,7 @@ import { FooterActions, HeaderActions } from '../../../shared/actions/action-dat
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
 import { RowDetail } from '../../../directives/row-detail';
+import * as Const from '../../../constants';
 
 @Component({
   selector: 'app-site-list',
@@ -64,10 +65,12 @@ export class SiteList implements OnInit, OnDestroy {
   init() {
     this.getCombinedData$().subscribe(({ clients, sites }) => {
       if (clients && sites) {
-        const fullSites = sites.map((site) => {
-          const client = clients.find((client) => client.client_id === site.client_id)!;
-          return { ...site, client };
-        });
+        const fullSites = sites
+          .filter((site) => site.site_id !== Const.WAREHOUSE_SITE_ID)
+          .map((site) => {
+            const client = clients.find((client) => client.client_id === site.client_id)!;
+            return { ...site, client };
+          });
         this.rows = [...fullSites];
       }
     });
