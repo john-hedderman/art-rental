@@ -1,15 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  Observable,
-  of,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { Art, Client, Contact, Job, Site } from '../../../model/models';
@@ -30,7 +22,7 @@ import { ResetButton } from '../../../shared/buttons/reset-button';
   providers: [MessagesService],
   templateUrl: './add-job.html',
   styleUrl: './add-job.scss',
-  standalone: true,
+  standalone: true
 })
 export class AddJob extends AddBase implements OnInit, OnDestroy {
   goToJobList = () => this.router.navigate(['/jobs', 'list']);
@@ -122,7 +114,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
         client,
         collection,
         formData.client_id,
-        'client_id',
+        'client_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -153,7 +145,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
         site,
         collection,
         formData.site_id,
-        'site_id',
+        'site_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -258,12 +250,12 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     let newOption = new Option('TBD', 'tbd');
     menu?.add(newOption);
     const availableContacts = this.contacts.filter(
-      (contact: Contact) => contact.client_id === this.clientId,
+      (contact: Contact) => contact.client_id === this.clientId
     );
     for (const clientContact of availableContacts) {
       newOption = new Option(
         `${clientContact.first_name} ${clientContact.last_name}`,
-        clientContact.contact_id.toString(),
+        clientContact.contact_id.toString()
       );
       menu?.add(newOption);
     }
@@ -329,7 +321,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       job_number: [''],
       client_id: [''],
       site_id: [{ value: '', disabled: this.editMode ? false : true }],
-      contact_ids: [{ value: '', disabled: this.editMode ? false : true }],
+      contact_ids: [{ value: '', disabled: this.editMode ? false : true }]
     });
 
     if (this.editMode) {
@@ -347,13 +339,13 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
       art: this.dataService.art$,
       clients: this.dataService.clients$,
       contacts: this.dataService.contacts$,
-      sites: this.dataService.sites$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      sites: this.dataService.sites$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
     private router: Router,
-    private fb: FormBuilder,
+    private fb: FormBuilder
   ) {
     super();
   }

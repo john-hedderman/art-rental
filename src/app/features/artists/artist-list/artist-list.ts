@@ -1,15 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  Observable,
-  of,
-  Subject,
-  takeUntil
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 
 import { Artist, Tag } from '../../../model/models';
 import { Card } from '../../../shared/components/card/card';
@@ -54,7 +46,7 @@ export class ArtistList implements OnInit, OnDestroy {
     return combineLatest({
       artists: this.dataService.artists$,
       tags: this.dataService.tags$
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(

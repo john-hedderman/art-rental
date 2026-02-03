@@ -1,13 +1,6 @@
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  Observable,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -25,8 +18,8 @@ import { RowDetail } from '../../../directives/row-detail';
   styleUrl: './site-list.scss',
   standalone: true,
   host: {
-    class: 'd-flex flex-column h-100',
-  },
+    class: 'd-flex flex-column h-100'
+  }
 })
 export class SiteList implements OnInit, OnDestroy {
   @ViewChild('sitesTable') table!: DatatableComponent<Site>;
@@ -86,13 +79,13 @@ export class SiteList implements OnInit, OnDestroy {
         sortable: false,
         draggable: false,
         canAutoResize: false,
-        cellTemplate: this.arrowTemplate,
+        cellTemplate: this.arrowTemplate
       },
       {
         width: 200,
         prop: '',
         name: 'Site',
-        cellTemplate: this.siteNameTemplate,
+        cellTemplate: this.siteNameTemplate
       },
       {
         width: 250,
@@ -100,15 +93,15 @@ export class SiteList implements OnInit, OnDestroy {
         name: 'Site Address',
         headerTemplate: this.siteAddressHeaderTemplate,
         cellTemplate: this.siteAddressTemplate,
-        comparator: this.addressComparator,
+        comparator: this.addressComparator
       },
       {
         width: 200,
         prop: '',
         name: 'Client',
         headerTemplate: this.clientNameHeaderTemplate,
-        cellTemplate: this.clientNameTemplate,
-      },
+        cellTemplate: this.clientNameTemplate
+      }
     ];
   }
 
@@ -118,13 +111,13 @@ export class SiteList implements OnInit, OnDestroy {
   }> {
     return combineLatest({
       clients: this.dataService.clients$,
-      sites: this.dataService.sites$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      sites: this.dataService.sites$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
     private router: Router,
-    private dataService: DataService,
+    private dataService: DataService
   ) {}
 
   ngOnInit(): void {

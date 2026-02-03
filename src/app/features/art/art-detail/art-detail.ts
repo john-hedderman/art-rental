@@ -1,15 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  Observable,
-  of,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { Art, Artist, Client, Job, Site, Tag } from '../../../model/models';
@@ -22,7 +13,7 @@ import {
   ActionButton,
   ActionLink,
   FooterActions,
-  HeaderActions,
+  HeaderActions
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/buttons/delete-button';
 import { MessagesService } from '../../../service/messages-service';
@@ -37,7 +28,7 @@ import { Tags } from '../../../shared/components/tags/tags';
   providers: [MessagesService],
   templateUrl: './art-detail.html',
   styleUrl: './art-detail.scss',
-  standalone: true,
+  standalone: true
 })
 export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
   goToEditArt = () => this.router.navigate(['/art', this.artId, 'edit']);
@@ -54,7 +45,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
     false,
     null,
     null,
-    this.goToEditArt,
+    this.goToEditArt
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
@@ -92,7 +83,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'art' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'art' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'art' })
     );
     this.messagesService.clearStatus();
   }
@@ -103,7 +94,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.addTagToArtStatus,
       Util.replaceTokens(Msgs.SAVED, { entity: 'art' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' })
     );
     this.messagesService.clearStatus();
     this.dataService.reloadData(['art', 'tags']);
@@ -123,7 +114,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
         art,
         Collections.Art,
         this.artId,
-        'art_id',
+        'art_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -149,7 +140,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
         tag,
         Collections.Tags,
         tagId,
-        'tag_id',
+        'tag_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -167,7 +158,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.removeTagFromArtStatus,
       Util.replaceTokens(Msgs.SAVED, { entity: 'art' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' })
     );
     this.messagesService.clearStatus();
     this.dataService.reloadData(['art', 'tags']);
@@ -255,8 +246,8 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
       clients: this.dataService.clients$,
       jobs: this.dataService.jobs$,
       sites: this.dataService.sites$,
-      tags: this.dataService.tags$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      tags: this.dataService.tags$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   async removeTagFromArt(tagId: number): Promise<string> {
@@ -273,7 +264,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
         art,
         Collections.Art,
         this.artId,
-        'art_id',
+        'art_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -299,7 +290,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
         tag,
         Collections.Tags,
         tagId,
-        'tag_id',
+        'tag_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -315,7 +306,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private operationsService: OperationsService,
-    private messagesService: MessagesService,
+    private messagesService: MessagesService
   ) {
     super();
   }

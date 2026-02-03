@@ -1,14 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  Observable,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, Subject, takeUntil } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Artist, Tag } from '../../../model/models';
@@ -20,7 +12,7 @@ import {
   ActionButton,
   ActionLink,
   FooterActions,
-  HeaderActions,
+  HeaderActions
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/buttons/delete-button';
 import { MessagesService } from '../../../service/messages-service';
@@ -35,7 +27,7 @@ import { Tags } from '../../../shared/components/tags/tags';
   providers: [MessagesService],
   templateUrl: './artist-detail.html',
   styleUrl: './artist-detail.scss',
-  standalone: true,
+  standalone: true
 })
 export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
   goToEditArtist = () => this.router.navigate(['/artists', this.artistId, 'edit']);
@@ -46,7 +38,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
     'Artists',
     '/artists/list',
     '',
-    this.goToArtistList,
+    this.goToArtistList
   );
   headerData = new HeaderActions('artist-detail', 'Artist detail', [], [this.artistListLink.data]);
 
@@ -58,7 +50,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
     false,
     null,
     null,
-    this.goToEditArtist,
+    this.goToEditArtist
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
@@ -90,7 +82,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'artist' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'artist' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'artist' })
     );
     this.messagesService.clearStatus();
   }
@@ -103,7 +95,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
     return await this.operationsService.deleteDocument(
       Collections.Artists,
       'artist_id',
-      this.artistId,
+      this.artistId
     );
   }
 
@@ -113,7 +105,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.addTagToArtistStatus,
       Util.replaceTokens(Msgs.SAVED, { entity: 'artist' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'artist' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'artist' })
     );
     this.messagesService.clearStatus();
     this.dataService.reloadData(['artists', 'tags']);
@@ -133,7 +125,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
         artist,
         Collections.Artists,
         this.artistId,
-        'artist_id',
+        'artist_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -159,7 +151,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
         tag,
         Collections.Tags,
         tagId,
-        'tag_id',
+        'tag_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -177,7 +169,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.removeTagFromArtistStatus,
       Util.replaceTokens(Msgs.SAVED, { entity: 'artist' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'artist' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'artist' })
     );
     this.messagesService.clearStatus();
     this.dataService.reloadData(['artists', 'tags']);
@@ -197,7 +189,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
         artist,
         Collections.Artists,
         this.artistId,
-        'artist_id',
+        'artist_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -223,7 +215,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
         tag,
         Collections.Tags,
         tagId,
-        'tag_id',
+        'tag_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -258,15 +250,15 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
     return combineLatest({
       artistId: this.getArtistId(),
       artists: this.dataService.artists$,
-      tags: this.dataService.tags$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      tags: this.dataService.tags$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private operationsService: OperationsService,
-    private messagesService: MessagesService,
+    private messagesService: MessagesService
   ) {
     super();
   }

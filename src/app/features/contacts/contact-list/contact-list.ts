@@ -1,14 +1,7 @@
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 import { Router } from '@angular/router';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  Observable,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Client, Contact } from '../../../model/models';
@@ -25,8 +18,8 @@ import { RowDetail } from '../../../directives/row-detail';
   styleUrl: './contact-list.scss',
   standalone: true,
   host: {
-    class: 'd-flex flex-column h-100',
-  },
+    class: 'd-flex flex-column h-100'
+  }
 })
 export class ContactList implements OnInit, OnDestroy {
   @ViewChild('contactsTable') table!: DatatableComponent<Contact>;
@@ -82,29 +75,29 @@ export class ContactList implements OnInit, OnDestroy {
         sortable: false,
         draggable: false,
         canAutoResize: false,
-        cellTemplate: this.arrowTemplate,
+        cellTemplate: this.arrowTemplate
       },
       {
         prop: '',
         width: 250,
         name: 'Name',
         cellTemplate: this.nameTemplate,
-        comparator: this.nameComparator,
+        comparator: this.nameComparator
       },
       {
         width: 200,
         name: 'Client',
         headerTemplate: this.clientNameHeaderTemplate,
         cellTemplate: this.clientNameTemplate,
-        comparator: this.clientNameComparator,
+        comparator: this.clientNameComparator
       },
       {
         width: 150,
         prop: 'phone',
         name: 'Phone',
         headerTemplate: this.phoneHeaderTemplate,
-        cellTemplate: this.phoneTemplate,
-      },
+        cellTemplate: this.phoneTemplate
+      }
     ];
 
     this.getCombinedData$().subscribe(({ contacts, clients }) => {
@@ -122,13 +115,13 @@ export class ContactList implements OnInit, OnDestroy {
   }> {
     return combineLatest({
       contacts: this.dataService.contacts$,
-      clients: this.dataService.clients$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      clients: this.dataService.clients$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
     private dataService: DataService,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit(): void {

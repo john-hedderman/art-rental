@@ -1,15 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  Observable,
-  of,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -22,7 +13,7 @@ import {
   ActionButton,
   ActionLink,
   FooterActions,
-  HeaderActions,
+  HeaderActions
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/buttons/delete-button';
 import { MessagesService } from '../../../service/messages-service';
@@ -36,7 +27,7 @@ import { DetailBase } from '../../../shared/components/base/detail-base/detail-b
   providers: [MessagesService],
   templateUrl: './contact-detail.html',
   styleUrl: './contact-detail.scss',
-  standalone: true,
+  standalone: true
 })
 export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
   goToEditContact = () => this.router.navigate(['/contacts', this.contactId, 'edit']);
@@ -47,13 +38,13 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
     'Contacts',
     '/contacts/list',
     '',
-    this.goToContactList,
+    this.goToContactList
   );
   headerData = new HeaderActions(
     'contact-detail',
     'Contact detail',
     [],
-    [this.contactListLink.data],
+    [this.contactListLink.data]
   );
 
   editButton = new ActionButton(
@@ -64,7 +55,7 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
     false,
     null,
     null,
-    this.goToEditContact,
+    this.goToEditContact
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
@@ -95,7 +86,7 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'contact' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'contact' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'contact' })
     );
     this.messagesService.clearStatus();
   }
@@ -108,7 +99,7 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
     return await this.operationsService.deleteDocument(
       Collections.Contacts,
       'contact_id',
-      this.contactId,
+      this.contactId
     );
   }
 
@@ -127,7 +118,7 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
         client,
         collection,
         this.clientId,
-        'client_id',
+        'client_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -168,15 +159,15 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
     return combineLatest({
       contactId: this.getContactId(),
       contacts: this.dataService.contacts$,
-      clients: this.dataService.clients$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      clients: this.dataService.clients$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private operationsService: OperationsService,
-    private messagesService: MessagesService,
+    private messagesService: MessagesService
   ) {
     super();
   }

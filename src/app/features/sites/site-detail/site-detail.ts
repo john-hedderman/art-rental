@@ -1,15 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  Observable,
-  of,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -18,7 +9,7 @@ import {
   ActionButton,
   ActionLink,
   FooterActions,
-  HeaderActions,
+  HeaderActions
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/buttons/delete-button';
 import * as Const from '../../../constants';
@@ -36,7 +27,7 @@ import { DetailBase } from '../../../shared/components/base/detail-base/detail-b
   providers: [MessagesService],
   templateUrl: './site-detail.html',
   styleUrl: './site-detail.scss',
-  standalone: true,
+  standalone: true
 })
 export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
   goToEditSite = () => this.router.navigate(['/sites', this.siteId, 'edit']);
@@ -53,7 +44,7 @@ export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
     false,
     null,
     null,
-    this.goToEditSite,
+    this.goToEditSite
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
@@ -90,7 +81,7 @@ export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'site' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'site' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'site' })
     );
     this.messagesService.clearStatus();
   }
@@ -145,7 +136,7 @@ export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
         newClient,
         Collections.Clients,
         this.clientId,
-        'client_id',
+        'client_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -197,15 +188,15 @@ export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
       siteId: this.getSiteId(),
       clients: this.dataService.clients$,
       jobs: this.dataService.jobs$,
-      sites: this.dataService.sites$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      sites: this.dataService.sites$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private operationsService: OperationsService,
-    private messagesService: MessagesService,
+    private messagesService: MessagesService
   ) {
     super();
   }

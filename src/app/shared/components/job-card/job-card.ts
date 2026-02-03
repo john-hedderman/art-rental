@@ -1,5 +1,13 @@
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { combineLatest, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
+import {
+  combineLatest,
+  distinctUntilChanged,
+  Observable,
+  of,
+  Subject,
+  switchMap,
+  takeUntil
+} from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { Art, Artist, Client, Job, Site } from '../../../model/models';
@@ -15,13 +23,13 @@ import { DataService } from '../../../service/data-service';
   styleUrl: './job-card.scss',
   standalone: true,
   host: {
-    class: 'w-100',
-  },
+    class: 'w-100'
+  }
 })
 export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   @Input() job_id: number | undefined;
   @Input() cardData: any = {
-    clickHandler: null,
+    clickHandler: null
   };
   @Input() selectedArtistId: string | undefined;
   @Input() searchArtString$!: Observable<string>;
@@ -134,7 +142,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   getFilteredArt$(artwork: Art[]): Observable<Art[]> {
     return combineLatest({
       searchTerm: this.searchArtString$,
-      artist: this.artistId$,
+      artist: this.artistId$
     }).pipe(
       takeUntil(this.destroy$),
       switchMap(({ searchTerm, artist }) => {
@@ -152,7 +160,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
           art = art.filter((art) => art.artist?.artist_id.toString() === artist);
         }
         return of(art);
-      }),
+      })
     );
   }
 
@@ -186,14 +194,14 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
       artists: this.dataService.artists$,
       clients: this.dataService.clients$,
       jobs: this.dataService.jobs$,
-      sites: this.dataService.sites$,
-    }).pipe(takeUntil(this.destroy$));
+      sites: this.dataService.sites$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
     private elemRef: ElementRef,
     private artAssignmentService: ArtAssignmentService,
-    private dataService: DataService,
+    private dataService: DataService
   ) {}
 
   ngOnInit(): void {

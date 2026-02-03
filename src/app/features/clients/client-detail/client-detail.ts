@@ -1,16 +1,7 @@
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  Observable,
-  of,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { Client, Contact, Job, Site } from '../../../model/models';
@@ -24,7 +15,7 @@ import {
   ActionButton,
   ActionLink,
   FooterActions,
-  HeaderActions,
+  HeaderActions
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/buttons/delete-button';
 import { MessagesService } from '../../../service/messages-service';
@@ -38,7 +29,7 @@ import { DetailBase } from '../../../shared/components/base/detail-base/detail-b
   providers: [MessagesService],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
-  standalone: true,
+  standalone: true
 })
 export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
@@ -50,7 +41,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
     'Clients',
     '/clients/list',
     '',
-    this.goToClientList,
+    this.goToClientList
   );
   headerData = new HeaderActions('client-detail', 'Client detail', [], [this.clientListLink.data]);
 
@@ -62,7 +53,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
     false,
     null,
     null,
-    this.goToEditClient,
+    this.goToEditClient
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
@@ -98,7 +89,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'client' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'client' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'client' })
     );
     this.messagesService.clearStatus();
   }
@@ -111,7 +102,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
     return await this.operationsService.deleteDocument(
       Collections.Clients,
       'client_id',
-      this.clientId,
+      this.clientId
     );
   }
 
@@ -119,7 +110,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
     return await this.operationsService.deleteDocuments(
       Collections.Contacts,
       'client_id',
-      this.clientId,
+      this.clientId
     );
   }
 
@@ -127,7 +118,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
     return await this.operationsService.deleteDocuments(
       Collections.Sites,
       'client_id',
-      this.clientId,
+      this.clientId
     );
   }
 
@@ -146,16 +137,16 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
       {
         name: 'Name',
         cellTemplate: this.nameTemplate,
-        comparator: this.nameComparator,
+        comparator: this.nameComparator
       },
       {
         prop: 'title',
-        name: 'Title',
+        name: 'Title'
       },
       {
         prop: 'phone',
-        name: 'Phone',
-      },
+        name: 'Phone'
+      }
     ];
 
     this.getCombinedData$().subscribe(({ clientId, clients, contacts, jobs, sites }) => {
@@ -198,15 +189,15 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
       clients: this.dataService.clients$,
       contacts: this.dataService.contacts$,
       jobs: this.dataService.jobs$,
-      sites: this.dataService.sites$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      sites: this.dataService.sites$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private operationsService: OperationsService,
-    private messagesService: MessagesService,
+    private messagesService: MessagesService
   ) {
     super();
   }

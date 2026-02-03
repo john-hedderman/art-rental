@@ -1,16 +1,7 @@
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  Observable,
-  of,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { Art, Client, Contact, Job, Site } from '../../../model/models';
@@ -21,7 +12,7 @@ import {
   ActionButton,
   ActionLink,
   FooterActions,
-  HeaderActions,
+  HeaderActions
 } from '../../../shared/actions/action-data';
 import { DeleteButton } from '../../../shared/buttons/delete-button';
 import * as Const from '../../../constants';
@@ -42,12 +33,12 @@ import { ArtThumbnailCard } from '../../../shared/components/art-thumbnail-card/
     NgxDatatableModule,
     ContactsTable,
     PageFooter,
-    ArtThumbnailCard,
+    ArtThumbnailCard
   ],
   providers: [MessagesService],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.scss',
-  standalone: true,
+  standalone: true
 })
 export class JobDetail extends DetailBase implements OnInit, OnDestroy {
   @ViewChild('contactsTable') table!: DatatableComponent<Contact>;
@@ -68,7 +59,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
     false,
     null,
     null,
-    this.goToEditJob,
+    this.goToEditJob
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
@@ -111,7 +102,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
     this.messagesService.showStatus(
       this.deleteStatus,
       Util.replaceTokens(Msgs.DELETED, { entity: 'job' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'job' }),
+      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'job' })
     );
     this.messagesService.clearStatus();
   }
@@ -145,7 +136,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
           warehouse,
           collection,
           Const.WAREHOUSE_JOB_ID,
-          'job_id',
+          'job_id'
         );
         if (data.modifiedCount === 0) {
           result = Const.FAILURE;
@@ -173,7 +164,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
         client,
         collection,
         this.clientId,
-        'client_id',
+        'client_id'
       );
       if (data.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -204,7 +195,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
         newSite,
         collection,
         newSite.site_id,
-        'site_id',
+        'site_id'
       );
       if (data.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -229,7 +220,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
           newArt,
           collection,
           newArt.art_id,
-          'art_id',
+          'art_id'
         );
         if (data.modifiedCount === 0) {
           compositeResult = Const.FAILURE;
@@ -283,16 +274,16 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
         prop: '',
         name: 'Name',
         cellTemplate: this.nameTemplate,
-        comparator: this.nameComparator,
+        comparator: this.nameComparator
       },
       {
         prop: 'title',
-        name: 'Title',
+        name: 'Title'
       },
       {
         prop: 'phone',
-        name: 'Phone',
-      },
+        name: 'Phone'
+      }
     ];
   }
 
@@ -310,8 +301,8 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
       contacts: this.dataService.contacts$,
       artwork: this.dataService.art$,
       sites: this.dataService.sites$,
-      jobs: this.dataService.jobs$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      jobs: this.dataService.jobs$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
@@ -319,7 +310,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     public util: Util,
     private operationsService: OperationsService,
-    private messagesService: MessagesService,
+    private messagesService: MessagesService
   ) {
     super();
   }

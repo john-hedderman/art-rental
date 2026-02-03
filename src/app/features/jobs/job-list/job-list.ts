@@ -7,7 +7,7 @@ import {
   of,
   startWith,
   Subject,
-  takeUntil,
+  takeUntil
 } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -27,7 +27,7 @@ import { AddButton } from '../../../shared/buttons/add-button';
   imports: [FormsModule, PageHeader, AsyncPipe, JobCard, PageFooter, ReactiveFormsModule],
   templateUrl: './job-list.html',
   styleUrl: './job-list.scss',
-  standalone: true,
+  standalone: true
 })
 export class JobList implements OnInit, OnDestroy {
   goToAddJob = () => this.router.navigate(['/jobs', 'add']);
@@ -84,7 +84,7 @@ export class JobList implements OnInit, OnDestroy {
       this.filteredJobs = this.jobs.filter((job) => job.client_id === +this.selectedClientId);
     } else {
       this.filteredJobs = this.jobs.filter(
-        (job) => job.client_id === +this.selectedClientId && job.site_id === +this.selectedSiteId,
+        (job) => job.client_id === +this.selectedClientId && job.site_id === +this.selectedSiteId
       );
     }
   }
@@ -138,12 +138,12 @@ export class JobList implements OnInit, OnDestroy {
     this.searchArtString$ = this.searchArtControl.valueChanges.pipe(
       startWith(''),
       debounceTime(300),
-      distinctUntilChanged(),
+      distinctUntilChanged()
     );
     this.searchArtStringAll$ = of('');
 
     this.artistId$ = this.selectArtistControl.valueChanges.pipe(
-      startWith(this.selectArtistControl.value || ''),
+      startWith(this.selectArtistControl.value || '')
     );
     this.artistIdAll$ = of('');
   }
@@ -160,14 +160,14 @@ export class JobList implements OnInit, OnDestroy {
       artists: this.dataService.artists$,
       clients: this.dataService.clients$,
       jobs: this.dataService.jobs$,
-      sites: this.dataService.sites$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      sites: this.dataService.sites$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
     private dataService: DataService,
     private cdr: ChangeDetectorRef,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit(): void {

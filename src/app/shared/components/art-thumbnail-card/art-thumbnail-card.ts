@@ -1,12 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  Observable,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 
 import { Art, Artist, Job } from '../../../model/models';
 import * as Const from '../../../constants';
@@ -17,7 +10,7 @@ import { DataService } from '../../../service/data-service';
   imports: [],
   templateUrl: './art-thumbnail-card.html',
   styleUrl: './art-thumbnail-card.scss',
-  standalone: true,
+  standalone: true
 })
 export class ArtThumbnailCard implements OnInit, OnDestroy, AfterViewInit {
   @Input() job_id: number | undefined;
@@ -75,13 +68,13 @@ export class ArtThumbnailCard implements OnInit, OnDestroy, AfterViewInit {
     return combineLatest({
       art: this.dataService.art$,
       artists: this.dataService.artists$,
-      jobs: this.dataService.jobs$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      jobs: this.dataService.jobs$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
     private elemRef: ElementRef,
-    private dataService: DataService,
+    private dataService: DataService
   ) {}
 
   ngOnInit(): void {

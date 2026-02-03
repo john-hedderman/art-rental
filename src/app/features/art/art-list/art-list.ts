@@ -1,14 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  Observable,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 
 import { Card } from '../../../shared/components/card/card';
 import { Art, Artist, Client, Job, Site } from '../../../model/models';
@@ -23,7 +16,7 @@ import { AddButton } from '../../../shared/buttons/add-button';
   imports: [Card, PageHeader, FormsModule, PageFooter],
   templateUrl: './art-list.html',
   styleUrl: './art-list.scss',
-  standalone: true,
+  standalone: true
 })
 export class ArtList implements OnInit, OnDestroy {
   goToArtDetail = (id: number) => this.router.navigate(['/art', id]);
@@ -78,13 +71,13 @@ export class ArtList implements OnInit, OnDestroy {
       artists: this.dataService.artists$,
       clients: this.dataService.clients$,
       jobs: this.dataService.jobs$,
-      sites: this.dataService.sites$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      sites: this.dataService.sites$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
     private dataService: DataService,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit(): void {

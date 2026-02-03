@@ -1,15 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  Observable,
-  of,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
@@ -30,7 +22,7 @@ import { ResetButton } from '../../../shared/buttons/reset-button';
   providers: [MessagesService],
   templateUrl: './add-art.html',
   styleUrl: './add-art.scss',
-  standalone: true,
+  standalone: true
 })
 export class AddArt extends AddBase implements OnInit, OnDestroy {
   @ViewChild('fileNameTBD') fileNameTBD: ElementRef | undefined;
@@ -86,7 +78,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       this.artForm.value,
       Collections.Art,
       this.editMode ? this.artId : undefined,
-      this.editMode ? 'art_id' : undefined,
+      this.editMode ? 'art_id' : undefined
     );
   }
 
@@ -110,7 +102,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
         oldJob,
         collection,
         dbData.job_id,
-        'job_id',
+        'job_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -142,7 +134,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
         job,
         collection,
         formData.job_id,
-        'job_id',
+        'job_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -248,7 +240,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       file_name: [''],
       full_size_image_url: [''],
       artist_id: [null],
-      job_id: [null],
+      job_id: [null]
     });
 
     if (this.editMode) {
@@ -266,13 +258,13 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       artists: this.dataService.artists$,
       jobs: this.dataService.jobs$,
       clients: this.dataService.clients$,
-      sites: this.dataService.sites$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      sites: this.dataService.sites$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
     private router: Router,
-    private fb: FormBuilder,
+    private fb: FormBuilder
   ) {
     super();
   }

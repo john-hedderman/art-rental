@@ -1,15 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Router } from '@angular/router';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  Observable,
-  of,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { PageFooter } from '../../../../shared/components/page-footer/page-footer';
@@ -29,7 +21,7 @@ import { MessagesService } from '../../../../service/messages-service';
   imports: [PageHeader, PageFooter, AsyncPipe],
   templateUrl: './tag-list.html',
   styleUrl: './tag-list.scss',
-  standalone: true,
+  standalone: true
 })
 export class TagList implements OnInit, OnDestroy {
   goToAddTag = () => this.router.navigate(['/tags', 'add']);
@@ -54,7 +46,7 @@ export class TagList implements OnInit, OnDestroy {
       this.messagesService.showStatus(
         this.deleteStatus,
         Util.replaceTokens(Msgs.DELETED, { entity: 'tag' }),
-        Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'tag' }),
+        Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'tag' })
       );
       this.messagesService.clearStatus();
       this.dataService.reloadData(['art', 'artists', 'tags']);
@@ -80,7 +72,7 @@ export class TagList implements OnInit, OnDestroy {
           newArt,
           Collections.Art,
           newArt.art_id,
-          'art_id',
+          'art_id'
         );
         if (data.modifiedCount === 0) {
           result = Const.FAILURE;
@@ -105,7 +97,7 @@ export class TagList implements OnInit, OnDestroy {
           newArtist,
           Collections.Artists,
           newArtist.artist_id,
-          'artist_id',
+          'artist_id'
         );
         if (data.modifiedCount === 0) {
           result = Const.FAILURE;
@@ -171,15 +163,15 @@ export class TagList implements OnInit, OnDestroy {
     return combineLatest({
       artwork: this.dataService.art$,
       producers: this.dataService.artists$,
-      tags: this.dataService.tags$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      tags: this.dataService.tags$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
     private dataService: DataService,
     private operationsService: OperationsService,
     private router: Router,
-    private messagesService: MessagesService,
+    private messagesService: MessagesService
   ) {}
 
   ngOnInit(): void {

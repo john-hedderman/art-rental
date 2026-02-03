@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, output, ViewChild } from '@angular/core';
-import { debounceTime, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
+import { distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -11,7 +11,7 @@ import { DataService } from '../../../service/data-service';
   imports: [AsyncPipe, ReactiveFormsModule],
   templateUrl: './tags.html',
   styleUrl: './tags.scss',
-  standalone: true,
+  standalone: true
 })
 export class Tags implements OnInit, OnDestroy {
   @Input() assigneeField: string = '';
@@ -74,13 +74,13 @@ export class Tags implements OnInit, OnDestroy {
 
   init() {
     this.dataService.tags$
-      .pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500))
+      .pipe(takeUntil(this.destroy$), distinctUntilChanged())
       .subscribe((tags) => {
         this.tags = tags;
         this.sortByStringField(this.tags, 'name');
         this.tags$ = of(tags);
         const assignedTags = tags.filter((tag: Tag) =>
-          (<Array<number>>tag[this.assigneeField]).includes(this.assigneeId),
+          (<Array<number>>tag[this.assigneeField]).includes(this.assigneeId)
         );
         this.assignedTags = assignedTags;
         this.assignedTags$ = of(assignedTags);

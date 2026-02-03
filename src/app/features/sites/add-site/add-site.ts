@@ -1,15 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import {
-  combineLatest,
-  debounceTime,
-  distinctUntilChanged,
-  Observable,
-  of,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -30,7 +22,7 @@ import { ResetButton } from '../../../shared/buttons/reset-button';
   providers: [MessagesService],
   templateUrl: './add-site.html',
   styleUrl: './add-site.scss',
-  standalone: true,
+  standalone: true
 })
 export class AddSite extends AddBase implements OnInit, OnDestroy {
   goToSiteList = () => this.router.navigate(['/sites', 'list']);
@@ -118,7 +110,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
         client,
         collection,
         formData.client_id,
-        'client_id',
+        'client_id'
       );
       if (returnData.modifiedCount === 0) {
         result = Const.FAILURE;
@@ -212,7 +204,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
       state: [{ value: '', disabled: this.editMode ? false : true }],
       zip_code: [{ value: '', disabled: this.editMode ? false : true }],
       client_id: [''],
-      job_id: [{ value: '', disabled: this.editMode ? false : true }],
+      job_id: [{ value: '', disabled: this.editMode ? false : true }]
     });
 
     if (this.editMode) {
@@ -226,13 +218,13 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
   }> {
     return combineLatest({
       clients: this.dataService.clients$,
-      jobs: this.dataService.jobs$,
-    }).pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500));
+      jobs: this.dataService.jobs$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
   constructor(
     private router: Router,
-    private fb: FormBuilder,
+    private fb: FormBuilder
   ) {
     super();
   }

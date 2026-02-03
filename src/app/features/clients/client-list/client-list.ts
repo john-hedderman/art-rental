@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxDatatableModule, TableColumn, DatatableComponent } from '@swimlane/ngx-datatable';
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import { distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 
 import { Client } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
@@ -18,8 +18,8 @@ import { RowDetail } from '../../../directives/row-detail';
   styleUrl: './client-list.scss',
   standalone: true,
   host: {
-    class: 'd-flex flex-column h-100',
-  },
+    class: 'd-flex flex-column h-100'
+  }
 })
 export class ClientList implements OnInit, OnDestroy {
   @ViewChild('clientsTable') table!: DatatableComponent<Client>;
@@ -67,7 +67,7 @@ export class ClientList implements OnInit, OnDestroy {
         sortable: false,
         draggable: false,
         canAutoResize: false,
-        cellTemplate: this.arrowTemplate,
+        cellTemplate: this.arrowTemplate
       },
       { width: 300, prop: 'name', name: 'Name' },
       {
@@ -76,19 +76,19 @@ export class ClientList implements OnInit, OnDestroy {
         name: 'Location',
         headerTemplate: this.locationHeaderTemplate,
         cellTemplate: this.locationTemplate,
-        comparator: this.locationComparator,
+        comparator: this.locationComparator
       },
       {
         width: 200,
         prop: 'industry',
         name: 'Business',
         headerTemplate: this.businessHeaderTemplate,
-        cellTemplate: this.businessTemplate,
-      },
+        cellTemplate: this.businessTemplate
+      }
     ];
 
     this.dataService.clients$
-      .pipe(takeUntil(this.destroy$), distinctUntilChanged(), debounceTime(500))
+      .pipe(takeUntil(this.destroy$), distinctUntilChanged())
       .subscribe((clients) => {
         if (clients) {
           this.rows = [...clients];
@@ -98,7 +98,7 @@ export class ClientList implements OnInit, OnDestroy {
 
   constructor(
     private dataService: DataService,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
