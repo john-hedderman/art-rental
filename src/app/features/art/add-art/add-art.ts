@@ -58,7 +58,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
     const filenameTBDEl = this.fileNameTBD?.nativeElement as HTMLInputElement;
     if (filenameTBDEl.checked) {
-      this.artForm.value.file_name = 'spacer.gif';
+      this.artForm.value.file_name = 'no-image-available.jpg';
     }
   }
 
@@ -188,7 +188,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     this.artForm.get('title')?.setValue(this.dbData.title);
 
     const filenameTBDEl = this.fileNameTBD?.nativeElement as HTMLInputElement;
-    if (this.dbData.file_name === 'spacer.gif') {
+    if (this.dbData.file_name === 'no-image-available.jpg') {
       filenameTBDEl.checked = true;
       this.artForm.get('file_name')?.setValue('');
       this.artForm.get('file_name')?.disable();

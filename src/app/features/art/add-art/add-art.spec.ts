@@ -17,21 +17,21 @@ const formData = {
     art_id: '1',
     artist_id: '2',
     job_id: '3',
-    file_name: 'aaa.jpg',
+    file_name: 'aaa.jpg'
   },
-  get: (key: string) => {},
+  get: (key: string) => {}
 } as FormGroup;
 
 const route = {
   snapshot: {
     paramMap: {
-      get: (key: string) => '123',
-    },
-  },
+      get: (key: string) => '123'
+    }
+  }
 } as ActivatedRoute;
 
 const dbData = {
-  job_id: 23,
+  job_id: 23
 } as Art;
 
 describe('AddArt', () => {
@@ -45,7 +45,7 @@ describe('AddArt', () => {
     artists$: of([{ artist_id: 4 }, { artist_id: 5 }, { artist_id: 6 }]),
     jobs$: of([{ job_id: 1 }, { job_id: 2, client_id: 1, site_id: 2 }, { job_id: 3 }]),
     clients$: of([{ client_id: 1 }, { client_id: 7 }, { client_id: 8 }]),
-    sites$: of([{ site_id: 9 }, { site_id: 2 }, { site_id: 10 }]),
+    sites$: of([{ site_id: 9 }, { site_id: 2 }, { site_id: 10 }])
   };
 
   beforeEach(async () => {
@@ -55,8 +55,8 @@ describe('AddArt', () => {
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-        { provide: DataService, useValue: mockDataService },
-      ],
+        { provide: DataService, useValue: mockDataService }
+      ]
     }).compileComponents();
     httpTestingController = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(AddArt);
@@ -72,7 +72,7 @@ describe('AddArt', () => {
       full_size_image_url: [''],
       artist_id: [null],
       job_id: [null],
-      tags: [''],
+      tags: ['']
     });
   });
 
@@ -127,9 +127,9 @@ describe('AddArt', () => {
       component.route = {
         snapshot: {
           paramMap: {
-            get: (key: string) => null,
-          },
-        },
+            get: (key: string) => null
+          }
+        }
       } as ActivatedRoute;
       component.preSave();
       expect(component.artForm.value.art_id).not.toEqual(123);
@@ -149,7 +149,7 @@ describe('AddArt', () => {
       checkboxEl.dispatchEvent(new Event('change'));
       tick(1000);
       component.preSave();
-      expect(component.artForm.value.file_name).toEqual('spacer.gif');
+      expect(component.artForm.value.file_name).toEqual('no-image-available.jpg');
 
       component.artForm.value.file_name = 'aaa.jpg';
       checkboxEl.checked = false;
@@ -177,8 +177,8 @@ describe('AddArt', () => {
     it('should not save the old job if the job assignment did not change', async () => {
       component.artForm = {
         value: {
-          job_id: 23,
-        },
+          job_id: 23
+        }
       } as FormGroup;
       const updateOldJobResult = await component.updateOldJob();
       expect(updateOldJobResult).toEqual(Const.SUCCESS);
@@ -186,7 +186,7 @@ describe('AddArt', () => {
 
     it('should not save the old job if the art was not previously assigned to a job', async () => {
       component.dbData = {
-        job_id: Const.NO_JOB,
+        job_id: Const.NO_JOB
       } as Art;
       const updateOldJobResult = await component.updateOldJob();
       expect(updateOldJobResult).toEqual(Const.SUCCESS);
@@ -195,7 +195,7 @@ describe('AddArt', () => {
     it('should fail saving the old job if it cannot be found in the database', async () => {
       component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3 }] as Job[];
       component.dbData = {
-        job_id: 99,
+        job_id: 99
       } as Art;
       const updateOldJobResult = await component.updateOldJob();
       expect(updateOldJobResult).toEqual(Const.FAILURE);
@@ -205,12 +205,12 @@ describe('AddArt', () => {
       component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 1 });
       component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3, art_ids: [5, 6, 7] }] as Job[];
       component.dbData = {
-        job_id: 3,
+        job_id: 3
       } as Art;
       component.artForm = {
         value: {
-          art_id: 7,
-        },
+          art_id: 7
+        }
       } as FormGroup;
       const updateOldJobResult = await component.updateOldJob();
       expect(updateOldJobResult).toEqual(Const.SUCCESS);
@@ -220,12 +220,12 @@ describe('AddArt', () => {
       component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 0 });
       component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3, art_ids: [5, 6, 7] }] as Job[];
       component.dbData = {
-        job_id: 3,
+        job_id: 3
       } as Art;
       component.artForm = {
         value: {
-          art_id: 7,
-        },
+          art_id: 7
+        }
       } as FormGroup;
       const updateOldJobResult = await component.updateOldJob();
       expect(updateOldJobResult).toEqual(Const.FAILURE);
@@ -241,8 +241,8 @@ describe('AddArt', () => {
     it('should not save the new job if the job assignment did not change', async () => {
       component.artForm = {
         value: {
-          job_id: 23,
-        },
+          job_id: 23
+        }
       } as FormGroup;
       const updateNewJobResult = await component.updateJob();
       expect(updateNewJobResult).toEqual(Const.SUCCESS);
@@ -251,8 +251,8 @@ describe('AddArt', () => {
     it('should not save the new job if the art was only removed from a job and not assigned to a new one', async () => {
       component.artForm = {
         value: {
-          job_id: Const.NO_JOB,
-        },
+          job_id: Const.NO_JOB
+        }
       } as FormGroup;
       const updateNewJobResult = await component.updateJob();
       expect(updateNewJobResult).toEqual(Const.SUCCESS);
@@ -262,8 +262,8 @@ describe('AddArt', () => {
       component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3 }] as Job[];
       component.artForm = {
         value: {
-          job_id: 4,
-        },
+          job_id: 4
+        }
       } as FormGroup;
       const updateNewJobResult = await component.updateJob();
       expect(updateNewJobResult).toEqual(Const.FAILURE);
@@ -273,13 +273,13 @@ describe('AddArt', () => {
       component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 0 });
       component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3, art_ids: [5, 6, 7] }] as Job[];
       component.dbData = {
-        job_id: 4,
+        job_id: 4
       } as Art;
       component.artForm = {
         value: {
           job_id: 3,
-          art_id: 8,
-        },
+          art_id: 8
+        }
       } as FormGroup;
       const updateNewJobResult = await component.updateJob();
       expect(updateNewJobResult).toEqual(Const.FAILURE);
@@ -332,12 +332,12 @@ describe('AddArt', () => {
         {
           art_id: 123,
           title: 'Obvious forgery',
-          file_name: 'spacer.gif',
+          file_name: 'no-image-available.jpg',
           full_size_image_url: 'http://fake.com/forgery.jpg',
-          tags: 'fake, forgery',
+          tag_ids: [1, 2, 3],
           artist_id: 456,
-          job_id: 789,
-        } as Art,
+          job_id: 789
+        } as Art
       ];
 
       component.onClickReset();
@@ -374,10 +374,10 @@ describe('AddArt', () => {
           title: 'Obvious forgery',
           file_name: 'forgery.jpg',
           full_size_image_url: 'http://fake.com/forgery.jpg',
-          tags: 'fake, forgery',
+          tag_ids: [1, 2, 3],
           artist_id: 456,
-          job_id: 789,
-        } as Art,
+          job_id: 789
+        } as Art
       ];
 
       component.postSave('art');
@@ -417,10 +417,10 @@ describe('AddArt', () => {
           title: 'Obvious forgery',
           file_name: 'forgery.jpg',
           full_size_image_url: 'http://fake.com/forgery.jpg',
-          tags: 'fake, forgery',
+          tag_ids: [1, 2, 3],
           artist_id: 456,
-          job_id: 789,
-        } as Art,
+          job_id: 789
+        } as Art
       ];
 
       component.artForm.clearAsyncValidators();
