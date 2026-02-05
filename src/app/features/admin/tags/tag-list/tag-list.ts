@@ -38,6 +38,8 @@ export class TagList implements OnInit, OnDestroy {
 
   deleteStatus = '';
 
+  modalEl: HTMLDivElement | null = null;
+
   async onClickDelete(event: PointerEvent, tagIsInUse?: boolean) {
     const buttonEl = event.target as HTMLButtonElement;
     const tagId = buttonEl.getAttribute('data-bs-tag-id');
@@ -118,17 +120,20 @@ export class TagList implements OnInit, OnDestroy {
     sortable.sort((a: any, b: any) => (a[field] || '').localeCompare(b[field] || ''));
   }
 
+  onShowModal(event: any) {
+    this.modalEl = document.getElementById('confirmModal') as HTMLDivElement;
+    const deleteTagButtonEl = event.relatedTarget as HTMLButtonElement;
+    const tagId = deleteTagButtonEl?.getAttribute('data-bs-tag-id');
+    const deleteTagConfirmEl = this.modalEl?.querySelector('#confirmedDeleteBtn');
+    deleteTagConfirmEl?.setAttribute('data-bs-tag-id', tagId!);
+  }
+
   initModal() {
-    const modalEl = document.getElementById('confirmModal');
-    if (modalEl) {
+    this.modalEl = document.getElementById('confirmModal') as HTMLDivElement;
+    if (this.modalEl) {
       // when the modal is shown, get the tag id from the button that opened it
       // add that tag id to the confirm button element, for use by its click handler
-      modalEl.addEventListener('show.bs.modal', (event: any) => {
-        const deleteTagButtonEl = event.relatedTarget as HTMLButtonElement;
-        const tagId = deleteTagButtonEl?.getAttribute('data-bs-tag-id');
-        const deleteTagConfirmEl = modalEl.querySelector('#confirmedDeleteBtn');
-        deleteTagConfirmEl?.setAttribute('data-bs-tag-id', tagId!);
-      });
+      this.modalEl.addEventListener('show.bs.modal', this.onShowModal.bind(this));
     }
   }
 
@@ -182,5 +187,6 @@ export class TagList implements OnInit, OnDestroy {
     this.messagesService.clearStatus();
     this.destroy$.next();
     this.destroy$.complete();
+    this.modalEl?.removeEventListener('show.bs.modal', this.onShowModal.bind(this));
   }
 }
