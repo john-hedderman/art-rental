@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 
-import { Artist, Tag } from '../../../model/models';
+import { Artist, ITag } from '../../../model/models';
 import { Card } from '../../../shared/components/card/card';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -41,7 +41,7 @@ export class ArtistList implements OnInit, OnDestroy {
 
   getCombinedData$(): Observable<{
     artists: Artist[];
-    tags: Tag[];
+    tags: ITag[];
   }> {
     return combineLatest({
       artists: this.dataService.artists$,

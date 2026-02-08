@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { combineLatest, Observable, ReplaySubject, Subject, takeUntil } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { Art, Artist, Client, Contact, Job, Site, Tag } from '../model/models';
+import { Art, Artist, Client, Contact, Job, Site, ITag } from '../model/models';
 
 type Source = {
   art: Observable<Art[]>;
@@ -12,11 +12,11 @@ type Source = {
   jobs: Observable<Job[]>;
   contacts: Observable<Contact[]>;
   sites: Observable<Site[]>;
-  tags: Observable<Tag[]>;
+  tags: Observable<ITag[]>;
 };
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class DataService implements OnDestroy {
   private readonly destroy$ = new Subject<void>();
@@ -27,7 +27,7 @@ export class DataService implements OnDestroy {
   public contacts$: ReplaySubject<Contact[]> = new ReplaySubject(1);
   public jobs$: ReplaySubject<Job[]> = new ReplaySubject(1);
   public sites$: ReplaySubject<Site[]> = new ReplaySubject(1);
-  public tags$: ReplaySubject<Tag[]> = new ReplaySubject(1);
+  public tags$: ReplaySubject<ITag[]> = new ReplaySubject(1);
 
   loadData<T>(dataType: string): Observable<T[]> {
     return this.http.get<T[]>(`${environment.apiUrl}/data/${dataType}`);
@@ -49,7 +49,7 @@ export class DataService implements OnDestroy {
       } else if (coll === 'sites') {
         source[coll] = this.loadData<Site>(coll);
       } else if (coll === 'tags') {
-        source[coll] = this.loadData<Tag>(coll);
+        source[coll] = this.loadData<ITag>(coll);
       }
     }
     combineLatest(source)
@@ -86,15 +86,15 @@ export class DataService implements OnDestroy {
     data: any,
     collectionName: string,
     id?: number,
-    recordId?: string,
+    recordId?: string
   ): Promise<any> {
     try {
       const options = {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       };
       let response;
       if (id) {
@@ -103,14 +103,14 @@ export class DataService implements OnDestroy {
         const params = new URLSearchParams(paramsObj);
         response = await fetch(
           `${environment.apiUrl}/data/${collectionName}/${id}?${params}`,
-          options,
+          options
         );
       } else {
         response = await fetch(`${environment.apiUrl}/data/${collectionName}`, options);
       }
       if (!response.ok) {
         throw new Error(
-          `Save response not ok. Status: ${response.status} - ${response.statusText}`,
+          `Save response not ok. Status: ${response.status} - ${response.statusText}`
         );
       }
       const jsonData = await response.json();
@@ -129,12 +129,12 @@ export class DataService implements OnDestroy {
       const response = await fetch(`${environment.apiUrl}/data/${collectionName}/${id}?${params}`, {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
       if (!response.ok) {
         throw new Error(
-          `Delete response not ok. Status: ${response.status} - ${response.statusText}`,
+          `Delete response not ok. Status: ${response.status} - ${response.statusText}`
         );
       }
       const jsonData = await response.json();
@@ -154,12 +154,12 @@ export class DataService implements OnDestroy {
       const response = await fetch(`${environment.apiUrl}/data/${collectionName}?${params}`, {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
       if (!response.ok) {
         throw new Error(
-          `Delete response not ok. Status: ${response.status} - ${response.statusText}`,
+          `Delete response not ok. Status: ${response.status} - ${response.statusText}`
         );
       }
       const jsonData = await response.json();

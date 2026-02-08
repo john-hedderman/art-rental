@@ -4,7 +4,7 @@ export interface Art {
   file_name: string;
   full_size_image_url: string;
   tag_ids: number[];
-  tags?: Tag[];
+  tags?: ITag[];
   artist_id: number;
   artist?: Artist;
   job_id: number;
@@ -16,7 +16,7 @@ export interface Artist {
   name: string;
   photo_path: string;
   tag_ids: number[];
-  tags?: Tag[];
+  tags?: ITag[];
 }
 
 export interface Client {
@@ -103,7 +103,7 @@ export interface OperationStatus {
   message: string;
 }
 
-export interface Tag {
+export interface ITag {
   tag_id: number;
   name: string;
   art_ids: number[];

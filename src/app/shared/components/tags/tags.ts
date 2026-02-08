@@ -3,7 +3,7 @@ import { distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { Tag } from '../../../model/models';
+import { ITag } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 
 @Component({
@@ -21,10 +21,10 @@ export class Tags implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
-  tags: Tag[] = [];
-  tags$: Observable<Tag[]> | undefined;
-  assignedTags: Tag[] | undefined;
-  assignedTags$: Observable<Tag[]> | undefined;
+  tags: ITag[] = [];
+  tags$: Observable<ITag[]> | undefined;
+  assignedTags: ITag[] | undefined;
+  assignedTags$: Observable<ITag[]> | undefined;
 
   addingTag = output<number>();
   removingTag = output<number>();
@@ -79,7 +79,7 @@ export class Tags implements OnInit, OnDestroy {
         this.tags = tags;
         this.sortByStringField(this.tags, 'name');
         this.tags$ = of(tags);
-        const assignedTags = tags.filter((tag: Tag) =>
+        const assignedTags = tags.filter((tag: ITag) =>
           (<Array<number>>tag[this.assigneeField]).includes(this.assigneeId)
         );
         this.assignedTags = assignedTags;

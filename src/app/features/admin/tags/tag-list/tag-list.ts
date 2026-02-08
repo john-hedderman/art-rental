@@ -7,7 +7,7 @@ import { PageHeader } from '../../../../shared/components/page-header/page-heade
 import { PageFooter } from '../../../../shared/components/page-footer/page-footer';
 import { FooterActions, HeaderActions } from '../../../../shared/actions/action-data';
 import { DataService } from '../../../../service/data-service';
-import { Art, Artist, Tag } from '../../../../model/models';
+import { Art, Artist, ITag } from '../../../../model/models';
 import { OperationsService } from '../../../../service/operations-service';
 import { AddButton } from '../../../../shared/buttons/add-button';
 import { Collections } from '../../../../shared/enums/collections';
@@ -31,8 +31,8 @@ export class TagList implements OnInit, OnDestroy {
 
   art: Art[] = [];
   artists: Artist[] = [];
-  detailedTags: Tag[] = [];
-  tags$: Observable<Tag[]> | undefined;
+  detailedTags: ITag[] = [];
+  tags$: Observable<ITag[]> | undefined;
 
   private readonly destroy$ = new Subject<void>();
 
@@ -163,7 +163,7 @@ export class TagList implements OnInit, OnDestroy {
   getCombinedData$(): Observable<{
     artwork: Art[];
     producers: Artist[];
-    tags: Tag[];
+    tags: ITag[];
   }> {
     return combineLatest({
       artwork: this.dataService.art$,
