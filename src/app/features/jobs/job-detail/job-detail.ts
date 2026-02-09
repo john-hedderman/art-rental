@@ -4,7 +4,7 @@ import { AsyncPipe } from '@angular/common';
 import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { IArt, Client, Contact, Job, Site } from '../../../model/models';
+import { IArt, IClient, Contact, Job, Site } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
 import { ContactsTable } from '../../../shared/components/contacts-table/contacts-table';
@@ -76,7 +76,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
 
   job: Job | undefined;
   artwork: IArt[] = [];
-  clients: Client[] = [];
+  clients: IClient[] = [];
   jobs: Job[] = [];
   sites: Site[] = [];
 
@@ -290,7 +290,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
   getCombinedData$(): Observable<{
     jobId: number;
     artwork: IArt[];
-    clients: Client[];
+    clients: IClient[];
     contacts: Contact[];
     jobs: Job[];
     sites: Site[];

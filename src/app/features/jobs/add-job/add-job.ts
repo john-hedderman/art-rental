@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { IArt, Client, Contact, Job, Site } from '../../../model/models';
+import { IArt, IClient, Contact, Job, Site } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -38,12 +38,12 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
   dbData: Job = {} as Job;
   contactsDBData: Contact[] = [];
 
-  clients: Client[] = [];
+  clients: IClient[] = [];
   sites: Site[] = [];
   contacts: Contact[] = [];
   art: IArt[] = [];
 
-  clients$: Observable<Client[]> | undefined;
+  clients$: Observable<IClient[]> | undefined;
   sites$: Observable<Site[]> | undefined;
   contacts$: Observable<Contact[]> | undefined;
   art$: Observable<IArt[]> | undefined;
@@ -331,7 +331,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
 
   getCombinedData$(): Observable<{
     art: IArt[];
-    clients: Client[];
+    clients: IClient[];
     contacts: Contact[];
     sites: Site[];
   }> {

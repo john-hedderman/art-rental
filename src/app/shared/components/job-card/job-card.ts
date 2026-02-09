@@ -10,7 +10,7 @@ import {
 } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { IArt, IArtist, Client, Job, Site } from '../../../model/models';
+import { IArt, IArtist, IClient, Job, Site } from '../../../model/models';
 import { ArtThumbnailCard } from '../art-thumbnail-card/art-thumbnail-card';
 import * as Const from '../../../constants';
 import { ArtAssignmentService } from '../../../service/art-assignment-service';
@@ -101,7 +101,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
     el.removeEventListener('drop', this.onDrop.bind(this));
   }
 
-  getDetailedJob(jobs: Job[], clients: Client[], sites: Site[]): Job {
+  getDetailedJob(jobs: Job[], clients: IClient[], sites: Site[]): Job {
     const job = jobs.find((job) => job.job_id === this.job_id);
     if (job) {
       job.client = clients.find((client) => client.client_id === job.client_id);
@@ -185,7 +185,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   getAppData$(): Observable<{
     art: IArt[];
     artists: IArtist[];
-    clients: Client[];
+    clients: IClient[];
     jobs: Job[];
     sites: Site[];
   }> {

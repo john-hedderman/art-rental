@@ -7,7 +7,7 @@ import { FormGroup } from '@angular/forms';
 
 import { AddJob } from './add-job';
 import { DataService } from '../../../service/data-service';
-import { Client, Contact, Job } from '../../../model/models';
+import { IClient, Contact, Job } from '../../../model/models';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
 import { Util } from '../../../shared/util/util';
@@ -17,29 +17,29 @@ const mockDataService = {
   art$: of([
     { art_id: 20, job_id: 6 },
     { art_id: 30, job_id: 99 },
-    { art_id: 40, job_id: 3 },
+    { art_id: 40, job_id: 3 }
   ]),
   clients$: of([
     { client_id: 1, name: 'Second City' },
     { client_id: 3, name: 'Comedy Club', city: 'Springfield', contact_ids: [4, 6], job_ids: [3] },
-    { client_id: 5, name: 'Funny Farm' },
-  ] as Client[]),
+    { client_id: 5, name: 'Funny Farm' }
+  ] as IClient[]),
   contacts$: of([
     { contact_id: 2, client_id: 5, first_name: 'Drac', last_name: 'Ula', title: 'Bloodsucker' },
     { contact_id: 4, client_id: 1, first_name: '', last_name: '' },
-    { contact_id: 6, client_id: 3, first_name: 'Frank', last_name: 'Stein', title: 'Scary Guy' },
+    { contact_id: 6, client_id: 3, first_name: 'Frank', last_name: 'Stein', title: 'Scary Guy' }
   ] as Contact[]),
   sites$: of([{ site_id: 10 }, { site_id: 11, client_id: 3 }, { site_id: 12 }]),
   saveDocument: () => Promise.resolve({ modifiedCount: 1 }),
-  reloadData: () => {},
+  reloadData: () => {}
 };
 
 const route = {
   snapshot: {
     paramMap: {
-      get: (key: string) => '3',
-    },
-  },
+      get: (key: string) => '3'
+    }
+  }
 } as ActivatedRoute;
 
 const jobForm = {
@@ -49,9 +49,9 @@ const jobForm = {
     client_id: 3,
     site_id: 11,
     contact_ids: [6],
-    art_ids: [40],
+    art_ids: [40]
   },
-  get: (key: string) => {},
+  get: (key: string) => {}
 } as FormGroup;
 
 describe('AddJob', () => {
@@ -67,8 +67,8 @@ describe('AddJob', () => {
         provideRouter([{ path: 'jobs/list', component: JobList }]),
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: DataService, useValue: mockDataService },
-      ],
+        { provide: DataService, useValue: mockDataService }
+      ]
     }).compileComponents();
 
     router = TestBed.inject(Router);
@@ -144,9 +144,9 @@ describe('AddJob', () => {
       component.route = {
         snapshot: {
           paramMap: {
-            get: (key: string) => null,
-          },
-        },
+            get: (key: string) => null
+          }
+        }
       } as ActivatedRoute;
       component.preSave();
       expect(component.jobForm.value.job_id).not.toEqual(3);
@@ -192,8 +192,8 @@ describe('AddJob', () => {
     it('should fail to save the client if it cannot be found in the database', async () => {
       component.jobForm = {
         value: {
-          client_id: '99',
-        },
+          client_id: '99'
+        }
       } as FormGroup;
       const saveClientResult = await component.updateClient();
       expect(saveClientResult).toEqual(Const.FAILURE);
@@ -220,8 +220,8 @@ describe('AddJob', () => {
     it('should fail to save the site if it cannot be found in the database', async () => {
       component.jobForm = {
         value: {
-          site_id: '99',
-        },
+          site_id: '99'
+        }
       } as FormGroup;
       const saveSiteResult = await component.updateSite();
       expect(saveSiteResult).toEqual(Const.FAILURE);
@@ -230,8 +230,8 @@ describe('AddJob', () => {
     it('should skip saving the site if it is TBD', async () => {
       component.jobForm = {
         value: {
-          site_id: Const.TBD,
-        },
+          site_id: Const.TBD
+        }
       } as FormGroup;
       const saveSiteResult = await component.updateSite();
       expect(saveSiteResult).toEqual(Const.SUCCESS);
@@ -310,8 +310,8 @@ describe('AddJob', () => {
           client_id: 3,
           site_id: 11,
           contact_ids: [6],
-          art_ids: [40],
-        } as Job,
+          art_ids: [40]
+        } as Job
       ];
 
       component.postSave('job');
@@ -340,7 +340,7 @@ describe('AddJob', () => {
         client_id: '',
         site_id: '',
         contact_ids: [],
-        art_ids: [],
+        art_ids: []
       });
 
       const preSaveSpy = spyOn(component, 'preSave');

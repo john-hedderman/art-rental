@@ -4,13 +4,13 @@ import {
   FormArray,
   FormBuilder,
   FormGroup,
-  ReactiveFormsModule,
+  ReactiveFormsModule
 } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Client, Contact } from '../../../model/models';
+import { IClient, Contact } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -27,7 +27,7 @@ import { ResetButton } from '../../../shared/buttons/reset-button';
   providers: [MessagesService],
   templateUrl: './add-client.html',
   styleUrl: './add-client.scss',
-  standalone: true,
+  standalone: true
 })
 export class AddClient extends AddBase implements OnInit, OnDestroy {
   goToClientList = () => this.router.navigate(['/clients', 'list']);
@@ -36,12 +36,12 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     'Clients',
     '/clients/list',
     '',
-    this.goToClientList,
+    this.goToClientList
   );
   headerData = new HeaderActions('client-add', 'Add Client', [], [this.clientListLink.data]);
   footerData = new FooterActions([new SaveButton(), new ResetButton(), new CancelButton()]);
 
-  dbData: Client = {} as Client;
+  dbData: IClient = {} as IClient;
   contactsDBData: Contact[] = [];
   editMode = false;
 
@@ -87,7 +87,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
           formData,
           collection,
           formData.client_id,
-          'client_id',
+          'client_id'
         );
       } else {
         returnData = await this.dataService.saveDocument(formData, collection);
@@ -154,8 +154,8 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
         phone: [''],
         title: [''],
         email: [''],
-        client_id: this.clientId,
-      }),
+        client_id: this.clientId
+      })
     );
   }
 
@@ -172,7 +172,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
           if (contactDBData) {
             this.contactsDBData.push(contactDBData);
             const contactControl = this.contacts.controls.find(
-              (control) => control.value.contact_id === contactDBData.contact_id,
+              (control) => control.value.contact_id === contactDBData.contact_id
             );
             if (contactControl) {
               contactControl.get('first_name')?.setValue(contactDBData.first_name);
@@ -205,7 +205,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
   resetForm() {
     this.submitted = false;
     if (this.editMode) {
-      this.populateForm<Client>(Collections.Clients, 'client_id', this.clientId);
+      this.populateForm<IClient>(Collections.Clients, 'client_id', this.clientId);
     } else {
       this.clearForm();
       this.contacts.clear();
@@ -250,17 +250,17 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
       state: [''],
       zip_code: [''],
       industry: [''],
-      contacts: this.fb.array([]),
+      contacts: this.fb.array([])
     });
 
     if (this.editMode) {
-      this.populateForm<Client>(Collections.Clients, 'client_id', this.clientId);
+      this.populateForm<IClient>(Collections.Clients, 'client_id', this.clientId);
     }
   }
 
   constructor(
     private fb: FormBuilder,
-    private router: Router,
+    private router: Router
   ) {
     super();
   }

@@ -4,20 +4,20 @@ import { of } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { ContactList } from './contact-list';
-import { Client, Contact } from '../../../model/models';
+import { IClient, Contact } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 
 const mockDataService = {
   clients$: of([
     { client_id: 1, name: 'Second City' },
     { client_id: 3, name: 'Comedy Club', city: 'Springfield', contact_ids: [4, 6] },
-    { client_id: 5, name: 'Funny Farm' },
-  ] as Client[]),
+    { client_id: 5, name: 'Funny Farm' }
+  ] as IClient[]),
   contacts$: of([
     { contact_id: 2, client_id: 5, first_name: 'Drac', last_name: 'Ula', title: 'Bloodsucker' },
     { contact_id: 4, client_id: 1, first_name: '', last_name: '' },
-    { contact_id: 6, client_id: 3, first_name: 'Frank', last_name: 'Stein', title: 'Scary Guy' },
-  ] as Contact[]),
+    { contact_id: 6, client_id: 3, first_name: 'Frank', last_name: 'Stein', title: 'Scary Guy' }
+  ] as Contact[])
 };
 
 describe('ContactList', () => {
@@ -28,7 +28,7 @@ describe('ContactList', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ContactList],
-      providers: [provideHttpClient(), { provide: DataService, useValue: mockDataService }],
+      providers: [provideHttpClient(), { provide: DataService, useValue: mockDataService }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContactList);
@@ -120,13 +120,13 @@ describe('ContactList', () => {
         { first_name: 'Carson', last_name: 'Dyle' },
         { first_name: 'Aaron', last_name: 'Burr' },
         { first_name: 'Timothy', last_name: 'Leary' },
-        { first_name: 'George', last_name: 'Bailey' },
+        { first_name: 'George', last_name: 'Bailey' }
       ];
       const expectedRows = [
         { first_name: 'Aaron', last_name: 'Burr' },
         { first_name: 'Carson', last_name: 'Dyle' },
         { first_name: 'George', last_name: 'Bailey' },
-        { first_name: 'Timothy', last_name: 'Leary' },
+        { first_name: 'Timothy', last_name: 'Leary' }
       ];
       const sortedList = [...rows].sort(component.nameComparator);
       expect(sortedList).toEqual(expectedRows);

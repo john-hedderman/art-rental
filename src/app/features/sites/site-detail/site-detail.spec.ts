@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { BehaviorSubject, of, ReplaySubject } from 'rxjs';
 
 import { SiteDetail } from './site-detail';
-import { Client, Job, Site } from '../../../model/models';
+import { IClient, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -15,7 +15,7 @@ const mockSite = { site_id: 100, name: 'Auditorium', client_id: 3, job_id: 40 };
 const mockSites = of([
   mockSite,
   { site_id: 101, client_id: 3, job_id: 0 },
-  { site_id: 102, job_id: 0 },
+  { site_id: 102, job_id: 0 }
 ] as Site[]);
 
 const mockJob = {
@@ -24,7 +24,7 @@ const mockJob = {
   client_id: 3,
   site_id: 100,
   contact_ids: [4, 6],
-  art_ids: [11, 12],
+  art_ids: [11, 12]
 };
 
 const mockJobs = of([{ job_id: 20 }, { job_id: 30 }, mockJob] as Job[]);
@@ -38,19 +38,19 @@ const mockDataService = {
       city: 'Springfield',
       contact_ids: [4, 6],
       site_ids: [100, 101],
-      job_ids: [40],
+      job_ids: [40]
     },
-    { client_id: 5, name: 'Funny Farm' },
-  ] as Client[]),
+    { client_id: 5, name: 'Funny Farm' }
+  ] as IClient[]),
   jobs$: mockJobs,
   sites$: mockSites,
   reloadData: () => {},
   deleteDocument: () => Promise.resolve({ deletedCount: 1 }),
-  saveDocument: () => Promise.resolve({ modifiedCount: 1 }),
+  saveDocument: () => Promise.resolve({ modifiedCount: 1 })
 };
 
 const mockActivatedRoute = {
-  paramMap: of(convertToParamMap({ id: '100' })),
+  paramMap: of(convertToParamMap({ id: '100' }))
 };
 
 describe('SiteDetail', () => {
@@ -65,8 +65,8 @@ describe('SiteDetail', () => {
         provideRouter([]),
         provideHttpClient(),
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: DataService, useValue: mockDataService },
-      ],
+        { provide: DataService, useValue: mockDataService }
+      ]
     }).compileComponents();
 
     mockDataService.sites$ = mockSites;

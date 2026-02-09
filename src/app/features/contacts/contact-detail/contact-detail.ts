@@ -4,7 +4,7 @@ import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, take
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Client, Contact } from '../../../model/models';
+import { IClient, Contact } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
@@ -63,9 +63,9 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
   clientId = 0;
 
   contact$: Observable<Contact> | undefined;
-  client$: Observable<Client> | undefined;
+  client$: Observable<IClient> | undefined;
 
-  clients: Client[] = [];
+  clients: IClient[] = [];
 
   deleteStatus = '';
 
@@ -154,7 +154,7 @@ export class ContactDetail extends DetailBase implements OnInit, OnDestroy {
   getCombinedData$(): Observable<{
     contactId: number;
     contacts: Contact[];
-    clients: Client[];
+    clients: IClient[];
   }> {
     return combineLatest({
       contactId: this.getContactId(),

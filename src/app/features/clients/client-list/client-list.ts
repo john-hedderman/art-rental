@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgxDatatableModule, TableColumn, DatatableComponent } from '@swimlane/ngx-datatable';
 import { distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 
-import { Client } from '../../../model/models';
+import { IClient } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -22,7 +22,7 @@ import { RowDetail } from '../../../directives/row-detail';
   }
 })
 export class ClientList implements OnInit, OnDestroy {
-  @ViewChild('clientsTable') table!: DatatableComponent<Client>;
+  @ViewChild('clientsTable') table!: DatatableComponent<IClient>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('locationHeaderTemplate', { static: true }) locationHeaderTemplate!: TemplateRef<any>;
   @ViewChild('locationTemplate', { static: true }) locationTemplate!: TemplateRef<any>;
@@ -34,13 +34,13 @@ export class ClientList implements OnInit, OnDestroy {
   headerData = new HeaderActions('client-list', 'Clients', [], []);
   footerData = new FooterActions([new AddButton('Add Client', this.goToAddClient)]);
 
-  rows: Client[] = [];
+  rows: IClient[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
 
   private readonly destroy$ = new Subject<void>();
 
-  toggleExpandRow(row: Client) {
+  toggleExpandRow(row: IClient) {
     this.table.rowDetail!.toggleExpandRow(row);
   }
 

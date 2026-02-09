@@ -19,7 +19,7 @@ export interface IArtist {
   tags?: ITag[];
 }
 
-export interface Client {
+export interface IClient {
   client_id: number;
   name: string;
   address1: string;
@@ -40,7 +40,7 @@ export interface Job {
   job_id: number;
   job_number: string;
   client_id: number;
-  client?: Client;
+  client?: IClient;
   site_id: number;
   site?: Site;
   contact_ids: number[];
@@ -57,7 +57,7 @@ export interface Contact {
   title: string;
   email?: string;
   client_id: number;
-  client?: Client;
+  client?: IClient;
 }
 
 export interface Site {
@@ -69,7 +69,7 @@ export interface Site {
   state: string;
   zip_code: string;
   client_id: number;
-  client?: Client;
+  client?: IClient;
   job_id: number;
   job?: Job;
 }

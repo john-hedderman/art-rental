@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 
 import { SiteList } from './site-list';
 import { provideHttpClient } from '@angular/common/http';
-import { Client, Site } from '../../../model/models';
+import { IClient, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Router } from '@angular/router';
 
@@ -15,19 +15,19 @@ const mockClients = of([
     city: 'Springfield',
     contact_ids: [4, 6],
     site_ids: [100, 101],
-    job_ids: [40],
+    job_ids: [40]
   },
-  { client_id: 5, name: 'Funny Farm' },
-] as Client[]);
+  { client_id: 5, name: 'Funny Farm' }
+] as IClient[]);
 const mockSites = of([
   { site_id: 100, name: 'Auditorium', client_id: 3, job_id: 40 },
   { site_id: 101, client_id: 3, job_id: 0 },
-  { site_id: 102, job_id: 0 },
+  { site_id: 102, job_id: 0 }
 ] as Site[]);
 
 const mockDataService = {
   clients$: mockClients,
-  sites$: mockSites,
+  sites$: mockSites
 };
 
 describe('SiteList', () => {
@@ -38,7 +38,7 @@ describe('SiteList', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SiteList],
-      providers: [provideHttpClient(), { provide: DataService, useValue: mockDataService }],
+      providers: [provideHttpClient(), { provide: DataService, useValue: mockDataService }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SiteList);
@@ -131,14 +131,14 @@ describe('SiteList', () => {
         { address1: '941 Main St', city: 'Chicago', state: 'IL', zip_code: '' },
         { address1: '71 W South St', city: 'Minneapolis', state: 'MN', zip_code: '' },
         { address1: '1457 Fried Blvd', city: 'Cheyenne', state: 'WY', zip_code: '' },
-        { address1: '66 Route 66', city: 'Ocala', state: 'FL', zip_code: '' },
+        { address1: '66 Route 66', city: 'Ocala', state: 'FL', zip_code: '' }
       ];
       const expectedRows = [
         { address1: '1457 Fried Blvd', city: 'Cheyenne', state: 'WY', zip_code: '' },
         { address1: '4392 Maple Ave', city: 'Carson City', state: 'NV', zip_code: '' },
         { address1: '66 Route 66', city: 'Ocala', state: 'FL', zip_code: '' },
         { address1: '71 W South St', city: 'Minneapolis', state: 'MN', zip_code: '' },
-        { address1: '941 Main St', city: 'Chicago', state: 'IL', zip_code: '' },
+        { address1: '941 Main St', city: 'Chicago', state: 'IL', zip_code: '' }
       ];
       const sortedList = [...rows].sort(component.addressComparator);
       expect(sortedList).toEqual(expectedRows);

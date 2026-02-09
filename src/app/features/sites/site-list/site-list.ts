@@ -4,7 +4,7 @@ import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } f
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Client, Site } from '../../../model/models';
+import { IClient, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
@@ -109,7 +109,7 @@ export class SiteList implements OnInit, OnDestroy {
   }
 
   getCombinedData$(): Observable<{
-    clients: Client[];
+    clients: IClient[];
     sites: Site[];
   }> {
     return combineLatest({

@@ -9,7 +9,7 @@ import { AddContact } from './add-contact';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
-import { Client, Contact } from '../../../model/models';
+import { IClient, Contact } from '../../../model/models';
 import { Util } from '../../../shared/util/util';
 import { ContactList } from '../contact-list/contact-list';
 
@@ -18,17 +18,17 @@ const mockDataService = {
     { client_id: 1 },
     { client_id: 3, name: 'Comedy Club' },
     { client_id: 5 },
-    { client_id: 23, name: 'Funny Farm' },
+    { client_id: 23, name: 'Funny Farm' }
   ]),
   reloadData: () => {},
-  saveDocument: () => Promise.resolve({ modifiedCount: 1 }),
+  saveDocument: () => Promise.resolve({ modifiedCount: 1 })
 };
 
 const clients = [
   { client_id: 1 },
   { client_id: 2, contact_ids: [3, 4, 5] },
-  { client_id: 3 },
-] as Client[];
+  { client_id: 3 }
+] as IClient[];
 
 const formData = {
   value: {
@@ -37,9 +37,9 @@ const formData = {
     last_name: 'Stein',
     phone: '2075551212',
     title: '',
-    client_id: '5',
+    client_id: '5'
   },
-  get: (key: string) => {},
+  get: (key: string) => {}
 } as FormGroup;
 
 const mockContactData = [
@@ -49,20 +49,20 @@ const mockContactData = [
     last_name: 'Stein',
     phone: '2065551212',
     title: '',
-    client_id: 23,
-  } as Contact,
+    client_id: 23
+  } as Contact
 ];
 
 const dbData = {
-  client_id: 3,
+  client_id: 3
 } as Contact;
 
 const route = {
   snapshot: {
     paramMap: {
-      get: (key: string) => '3',
-    },
-  },
+      get: (key: string) => '3'
+    }
+  }
 } as ActivatedRoute;
 
 describe('AddContact', () => {
@@ -78,8 +78,8 @@ describe('AddContact', () => {
         provideRouter([{ path: 'contacts/list', component: ContactList }]),
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: DataService, useValue: mockDataService },
-      ],
+        { provide: DataService, useValue: mockDataService }
+      ]
     }).compileComponents();
     httpTestingController = TestBed.inject(HttpTestingController);
     router = TestBed.inject(Router);
@@ -137,9 +137,9 @@ describe('AddContact', () => {
       component.route = {
         snapshot: {
           paramMap: {
-            get: (key: string) => null,
-          },
-        },
+            get: (key: string) => null
+          }
+        }
       } as ActivatedRoute;
       component.preSave();
       expect(component.contactForm.value.contact_id).not.toBe(3);
@@ -184,8 +184,8 @@ describe('AddContact', () => {
         component.editMode = true;
         component.contactForm = {
           value: {
-            client_id: '3',
-          },
+            client_id: '3'
+          }
         } as FormGroup;
         component.preSave();
         const updateOldClientResult = await component.updateOldClient();
@@ -194,7 +194,7 @@ describe('AddContact', () => {
 
       it('should fail saving the old job if it cannot be found in the database', async () => {
         component.dbData = {
-          client_id: 99,
+          client_id: 99
         } as Contact;
         const updateOldClientResult = await component.updateOldClient();
         expect(updateOldClientResult).toBe(Const.FAILURE);
@@ -203,12 +203,12 @@ describe('AddContact', () => {
       it('should successfully save the old client if something was modified in the database', async () => {
         component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 1 });
         component.dbData = {
-          client_id: 2,
+          client_id: 2
         } as Contact;
         component.contactForm = {
           value: {
-            contact_id: '3',
-          },
+            contact_id: '3'
+          }
         } as FormGroup;
         const updateOldClientResult = await component.updateOldClient();
         expect(updateOldClientResult).toEqual(Const.SUCCESS);
@@ -217,12 +217,12 @@ describe('AddContact', () => {
       it('should fail to save the old client if nothing was modified in the database', async () => {
         component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 0 });
         component.dbData = {
-          client_id: 2,
+          client_id: 2
         } as Contact;
         component.contactForm = {
           value: {
-            contact_id: '3',
-          },
+            contact_id: '3'
+          }
         } as FormGroup;
         const updateOldClientResult = await component.updateOldClient();
         expect(updateOldClientResult).toEqual(Const.FAILURE);
@@ -239,8 +239,8 @@ describe('AddContact', () => {
       it('should fail to save the new client if it cannot be found in the database', async () => {
         component.contactForm = {
           value: {
-            client_id: '99',
-          },
+            client_id: '99'
+          }
         } as FormGroup;
         const updateClientResult = await component.updateClient();
         expect(updateClientResult).toEqual(Const.FAILURE);
@@ -249,12 +249,12 @@ describe('AddContact', () => {
       it('should fail to save the new client if nothing was modified in the database', async () => {
         component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 0 });
         component.dbData = {
-          client_id: 2,
+          client_id: 2
         } as Contact;
         component.contactForm = {
           value: {
-            contact_id: '3',
-          },
+            contact_id: '3'
+          }
         } as FormGroup;
         const updateClientResult = await component.updateClient();
         expect(updateClientResult).toEqual(Const.FAILURE);
@@ -264,8 +264,8 @@ describe('AddContact', () => {
         component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 0 });
         component.contactForm = {
           value: {
-            client_id: 2,
-          },
+            client_id: 2
+          }
         } as FormGroup;
         const updateClientResult = await component.updateClient();
         expect(updateClientResult).toEqual(Const.FAILURE);
@@ -275,8 +275,8 @@ describe('AddContact', () => {
         component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 1 });
         component.contactForm = {
           value: {
-            client_id: 2,
-          },
+            client_id: 2
+          }
         } as FormGroup;
         const updateClientResult = await component.updateClient();
         expect(updateClientResult).toEqual(Const.SUCCESS);
@@ -391,7 +391,7 @@ describe('AddContact', () => {
         phone: '2065551212',
         title: '',
         email: '',
-        client_id: null,
+        client_id: null
       });
 
       const preSaveSpy = spyOn(component, 'preSave');

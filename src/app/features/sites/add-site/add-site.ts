@@ -5,7 +5,7 @@ import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Client, Job, Site } from '../../../model/models';
+import { IClient, Job, Site } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/buttons/save-button';
@@ -33,10 +33,10 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
   siteForm!: FormGroup;
   submitted = false;
 
-  clients$: Observable<Client[]> | undefined;
+  clients$: Observable<IClient[]> | undefined;
   jobs$: Observable<Job[]> | undefined;
 
-  clients: Client[] = [];
+  clients: IClient[] = [];
 
   saveStatus = '';
 
@@ -213,7 +213,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
   }
 
   getCombinedData$(): Observable<{
-    clients: Client[];
+    clients: IClient[];
     jobs: Job[];
   }> {
     return combineLatest({

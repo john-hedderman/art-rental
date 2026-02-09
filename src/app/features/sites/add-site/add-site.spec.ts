@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 
 import { AddSite } from './add-site';
-import { Client, Job, Site } from '../../../model/models';
+import { IClient, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -19,7 +19,7 @@ const mockClient = {
   city: 'Springfield',
   contact_ids: [4, 6],
   job_ids: [40],
-  site_ids: [],
+  site_ids: []
 };
 
 const mockJob = {
@@ -28,26 +28,26 @@ const mockJob = {
   client_id: 3,
   site_id: 100,
   contact_ids: [4, 6],
-  art_ids: [11, 12],
+  art_ids: [11, 12]
 };
 
 const mockDataService = {
   clients$: of([
     { client_id: 1, name: 'Second City' },
     mockClient,
-    { client_id: 5, name: 'Funny Farm' },
-  ] as Client[]),
+    { client_id: 5, name: 'Funny Farm' }
+  ] as IClient[]),
   jobs$: of([{ job_id: 20 }, { job_id: 30 }, mockJob] as Job[]),
   saveDocument: () => Promise.resolve({ modifiedCount: 1 }),
-  reloadData: () => {},
+  reloadData: () => {}
 };
 
 const route = {
   snapshot: {
     paramMap: {
-      get: (key: string) => '100',
-    },
-  },
+      get: (key: string) => '100'
+    }
+  }
 } as ActivatedRoute;
 
 const siteForm = {
@@ -55,9 +55,9 @@ const siteForm = {
     site_id: 100,
     name: 'Auditorium',
     client_id: 3,
-    job_id: 40,
+    job_id: 40
   },
-  get: (key: string) => {},
+  get: (key: string) => {}
 } as FormGroup;
 
 describe('AddSite', () => {
@@ -73,8 +73,8 @@ describe('AddSite', () => {
         provideRouter([{ path: 'sites/list', component: SiteList }]),
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: DataService, useValue: mockDataService },
-      ],
+        { provide: DataService, useValue: mockDataService }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddSite);
@@ -153,9 +153,9 @@ describe('AddSite', () => {
       component.route = {
         snapshot: {
           paramMap: {
-            get: (key: string) => null,
-          },
-        },
+            get: (key: string) => null
+          }
+        }
       } as ActivatedRoute;
       component.preSave();
       expect(component.siteForm.value.site_id).not.toEqual(100);
@@ -196,15 +196,15 @@ describe('AddSite', () => {
     }));
 
     it('should update the client', async () => {
-      let saveClientResult = await component.updateClient();
+      const saveClientResult = await component.updateClient();
       expect(saveClientResult).toEqual(Const.SUCCESS);
     });
 
     it('should fail to save the client if it cannot be found in the database', async () => {
       component.siteForm = {
         value: {
-          client_id: '99',
-        },
+          client_id: '99'
+        }
       } as FormGroup;
       const saveClientResult = await component.updateClient();
       expect(saveClientResult).toEqual(Const.FAILURE);
@@ -282,8 +282,8 @@ describe('AddSite', () => {
           site_id: 100,
           name: 'Auditorium',
           client_id: 3,
-          job_id: 40,
-        } as Site,
+          job_id: 40
+        } as Site
       ];
 
       component.postSave('site');
@@ -310,7 +310,7 @@ describe('AddSite', () => {
         site_id: 100,
         name: 'Auditorium',
         client_id: 3,
-        job_id: 40,
+        job_id: 40
       });
 
       const preSaveSpy = spyOn(component, 'preSave');

@@ -5,7 +5,7 @@ import { distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Client, Contact } from '../../../model/models';
+import { IClient, Contact } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -41,8 +41,8 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
 
   saveStatus = '';
 
-  clients: Client[] = [];
-  clients$: Observable<Client[]> | undefined;
+  clients: IClient[] = [];
+  clients$: Observable<IClient[]> | undefined;
 
   dbData: Contact = {} as Contact;
 

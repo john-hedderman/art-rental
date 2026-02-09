@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { firstValueFrom, map, of } from 'rxjs';
 
 import { ClientDetail } from './client-detail';
-import { Client, Contact, Job, Site } from '../../../model/models';
+import { IClient, Contact, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -16,27 +16,27 @@ const mockDataService = {
   clients$: of([
     { client_id: 2 },
     { client_id: 4 },
-    { client_id: 6, name: 'Comedy Club', industry: 'Comedy', job_ids: [3], contact_ids: [11] },
-  ] as Client[]),
+    { client_id: 6, name: 'Comedy Club', industry: 'Comedy', job_ids: [3], contact_ids: [11] }
+  ] as IClient[]),
   contacts$: of([
     { contact_id: 10 },
     { contact_id: 11, client_id: 6, first_name: 'Frank', last_name: 'Stein' },
-    { contact_id: 12 },
+    { contact_id: 12 }
   ] as Contact[]),
   jobs$: of([
     { job_id: 1 },
     { job_id: 3, client_id: 6, job_number: '000007' },
-    { job_id: 5 },
+    { job_id: 5 }
   ] as Job[]),
-  sites$: of([{ site_id: 50 }, { site_id: 60 }, { site_id: 70, client_id: 6 }] as Site[]),
+  sites$: of([{ site_id: 50 }, { site_id: 60 }, { site_id: 70, client_id: 6 }] as Site[])
 };
 
 const mockActivatedRoute = {
   paramMap: of(
     convertToParamMap({
-      id: '6',
+      id: '6'
     })
-  ),
+  )
 };
 
 describe('ClientDetail', () => {
@@ -51,8 +51,8 @@ describe('ClientDetail', () => {
         provideHttpClient(),
         provideRouter([{ path: 'clients/list', component: ClientList }]),
         { provide: DataService, useValue: mockDataService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-      ],
+        { provide: ActivatedRoute, useValue: mockActivatedRoute }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ClientDetail);
@@ -92,7 +92,7 @@ describe('ClientDetail', () => {
       mockDataService.sites$ = of([
         { site_id: 50 },
         { site_id: 60 },
-        { site_id: 70, client_id: 6 },
+        { site_id: 70, client_id: 6 }
       ] as Site[]);
     }));
 

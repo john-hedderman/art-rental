@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Client, Contact } from '../../../model/models';
+import { IClient, Contact } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
@@ -111,7 +111,7 @@ export class ContactList implements OnInit, OnDestroy {
 
   getCombinedData$(): Observable<{
     contacts: Contact[];
-    clients: Client[];
+    clients: IClient[];
   }> {
     return combineLatest({
       contacts: this.dataService.contacts$,

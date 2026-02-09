@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
-import { IArt, IArtist, Client, Job, Site } from '../../../model/models';
+import { IArt, IArtist, IClient, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import { JobCard } from '../../../shared/components/job-card/job-card';
@@ -46,7 +46,7 @@ export class JobList implements OnInit, OnDestroy {
   filteredJobs: Job[] = [];
 
   selectedClientId = 'All';
-  clients: Client[] = [];
+  clients: IClient[] = [];
   selectedSiteId = 'All';
   sites: Site[] = [];
   filteredSites: Site[] = [];
@@ -97,7 +97,7 @@ export class JobList implements OnInit, OnDestroy {
     return job.job_id;
   }
 
-  trackByClientId(client: Client) {
+  trackByClientId(client: IClient) {
     return client.client_id;
   }
 
@@ -151,7 +151,7 @@ export class JobList implements OnInit, OnDestroy {
   getCombinedData$(): Observable<{
     art: IArt[];
     artists: IArtist[];
-    clients: Client[];
+    clients: IClient[];
     jobs: Job[];
     sites: Site[];
   }> {

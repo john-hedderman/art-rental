@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 import { provideRouter, Router } from '@angular/router';
 
 import { ClientList } from './client-list';
-import { Client } from '../../../model/models';
+import { IClient } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { AddClient } from '../add-client/add-client';
 
@@ -19,9 +19,9 @@ const mockDataService = {
       state: 'WA',
       industry: 'Comedy',
       job_ids: [3],
-      contact_ids: [11],
-    },
-  ] as Client[]),
+      contact_ids: [11]
+    }
+  ] as IClient[])
 };
 
 describe('ClientList', () => {
@@ -35,8 +35,8 @@ describe('ClientList', () => {
       providers: [
         provideHttpClient(),
         { provide: DataService, useValue: mockDataService },
-        provideRouter([{ path: 'clients/add', component: AddClient }]),
-      ],
+        provideRouter([{ path: 'clients/add', component: AddClient }])
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ClientList);
@@ -133,14 +133,14 @@ describe('ClientList', () => {
         { city: 'Springfield', state: 'OH' },
         { city: 'Anchorage', state: 'AK' },
         { city: 'Biloxi', state: 'MS' },
-        { city: 'Springfield', state: 'IL' },
+        { city: 'Springfield', state: 'IL' }
       ];
       const expectedRows = [
         { city: 'Anchorage', state: 'AK' },
         { city: 'Biloxi', state: 'MS' },
         { city: 'Carson City', state: 'NV' },
         { city: 'Springfield', state: 'IL' },
-        { city: 'Springfield', state: 'OH' },
+        { city: 'Springfield', state: 'OH' }
       ];
       const sortedList = [...rows].sort(component.locationComparator);
       expect(sortedList).toEqual(expectedRows);

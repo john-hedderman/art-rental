@@ -4,7 +4,7 @@ import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, take
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Client, Job, Site } from '../../../model/models';
+import { IClient, Job, Site } from '../../../model/models';
 import {
   ActionButton,
   ActionLink,
@@ -53,11 +53,11 @@ export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
   jobId = 0;
 
   site$: Observable<Site> | undefined;
-  client$: Observable<Client> | undefined;
+  client$: Observable<IClient> | undefined;
   job$: Observable<Job> | undefined;
 
   site: Site | undefined;
-  clients: Client[] = [];
+  clients: IClient[] = [];
   jobs: Job[] = [];
   job: Job | undefined;
 
@@ -180,7 +180,7 @@ export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
 
   getCombinedData$(): Observable<{
     siteId: number;
-    clients: Client[];
+    clients: IClient[];
     jobs: Job[];
     sites: Site[];
   }> {

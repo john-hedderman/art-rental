@@ -8,14 +8,14 @@ import { AddClient } from './add-client';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
-import { Client, Contact } from '../../../model/models';
+import { IClient, Contact } from '../../../model/models';
 import { Util } from '../../../shared/util/util';
 import { ClientList } from '../client-list/client-list';
 
 const mockDataService = {
   saveDocument: () => Promise.resolve({ modifiedCount: 1, message: '' }),
   deleteDocuments: () => Promise.resolve({ modifiedCount: 1, message: '' }),
-  reloadData: () => {},
+  reloadData: () => {}
 };
 
 const formContactsData = [
@@ -26,8 +26,8 @@ const formContactsData = [
     first_name: 'Billy',
     last_name: 'Crystal',
     phone: '2125551212',
-    title: '',
-  },
+    title: ''
+  }
 ];
 
 const formData = {
@@ -40,9 +40,9 @@ const formData = {
     state: 'NY',
     zip_code: '10001',
     industry: 'Comedy',
-    contacts: formContactsData,
+    contacts: formContactsData
   },
-  get: (key: string) => {},
+  get: (key: string) => {}
 } as FormGroup;
 
 const dbContactData = [
@@ -53,8 +53,8 @@ const dbContactData = [
     first_name: 'Billy',
     last_name: 'Crystal',
     phone: '2125551212',
-    title: '',
-  } as Contact,
+    title: ''
+  } as Contact
 ];
 
 const dbData = {
@@ -69,15 +69,15 @@ const dbData = {
   contacts: dbContactData,
   contact_ids: [2],
   job_ids: [],
-  site_ids: [],
-} as Client;
+  site_ids: []
+} as IClient;
 
 const route = {
   snapshot: {
     paramMap: {
-      get: (key: string) => '123',
-    },
-  },
+      get: (key: string) => '123'
+    }
+  }
 } as ActivatedRoute;
 
 describe('AddClient', () => {
@@ -93,8 +93,8 @@ describe('AddClient', () => {
         provideHttpClient(),
         provideRouter([{ path: 'clients/list', component: ClientList }]),
         provideHttpClientTesting(),
-        { provide: DataService, useValue: mockDataService },
-      ],
+        { provide: DataService, useValue: mockDataService }
+      ]
     }).compileComponents();
     httpTestingController = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(AddClient);
@@ -113,7 +113,7 @@ describe('AddClient', () => {
       state: [''],
       zip_code: [''],
       industry: [''],
-      contacts: component['fb'].array([]),
+      contacts: component['fb'].array([])
     });
   });
 
@@ -287,9 +287,9 @@ describe('AddClient', () => {
       component.route = {
         snapshot: {
           paramMap: {
-            get: (key: string) => null,
-          },
-        },
+            get: (key: string) => null
+          }
+        }
       } as ActivatedRoute;
       component.preSave();
       expect(component.clientForm.value.client_id).not.toEqual(123);
