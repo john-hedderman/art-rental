@@ -4,7 +4,7 @@ import { AsyncPipe } from '@angular/common';
 import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { IArt, IClient, Contact, Job, Site } from '../../../model/models';
+import { IArt, IClient, IContact, Job, Site } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
 import { ContactsTable } from '../../../shared/components/contacts-table/contacts-table';
@@ -41,7 +41,7 @@ import { ArtThumbnailCard } from '../../../shared/components/art-thumbnail-card/
   standalone: true
 })
 export class JobDetail extends DetailBase implements OnInit, OnDestroy {
-  @ViewChild('contactsTable') table!: DatatableComponent<Contact>;
+  @ViewChild('contactsTable') table!: DatatableComponent<IContact>;
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
 
   goToArtDetail = (id: number) => this.router.navigate(['/art', id]);
@@ -71,7 +71,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
   job$: Observable<Job> | undefined;
   art$: Observable<IArt[]> | undefined;
 
-  rows: Contact[] = [];
+  rows: IContact[] = [];
   columns: TableColumn[] = [];
 
   job: Job | undefined;
@@ -291,7 +291,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
     jobId: number;
     artwork: IArt[];
     clients: IClient[];
-    contacts: Contact[];
+    contacts: IContact[];
     jobs: Job[];
     sites: Site[];
   }> {

@@ -8,7 +8,7 @@ import { AddClient } from './add-client';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
-import { IClient, Contact } from '../../../model/models';
+import { IClient, IContact } from '../../../model/models';
 import { Util } from '../../../shared/util/util';
 import { ClientList } from '../client-list/client-list';
 
@@ -54,7 +54,7 @@ const dbContactData = [
     last_name: 'Crystal',
     phone: '2125551212',
     title: ''
-  } as Contact
+  } as IContact
 ];
 
 const dbData = {

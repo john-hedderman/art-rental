@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { ContactList } from './contact-list';
-import { IClient, Contact } from '../../../model/models';
+import { IClient, IContact } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 
 const mockDataService = {
@@ -17,7 +17,7 @@ const mockDataService = {
     { contact_id: 2, client_id: 5, first_name: 'Drac', last_name: 'Ula', title: 'Bloodsucker' },
     { contact_id: 4, client_id: 1, first_name: '', last_name: '' },
     { contact_id: 6, client_id: 3, first_name: 'Frank', last_name: 'Stein', title: 'Scary Guy' }
-  ] as Contact[])
+  ] as IContact[])
 };
 
 describe('ContactList', () => {

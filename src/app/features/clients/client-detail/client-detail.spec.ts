@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { firstValueFrom, map, of } from 'rxjs';
 
 import { ClientDetail } from './client-detail';
-import { IClient, Contact, Job, Site } from '../../../model/models';
+import { IClient, IContact, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -22,7 +22,7 @@ const mockDataService = {
     { contact_id: 10 },
     { contact_id: 11, client_id: 6, first_name: 'Frank', last_name: 'Stein' },
     { contact_id: 12 }
-  ] as Contact[]),
+  ] as IContact[]),
   jobs$: of([
     { job_id: 1 },
     { job_id: 3, client_id: 6, job_number: '000007' },

@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { firstValueFrom, of } from 'rxjs';
 
 import { ContactDetail } from './contact-detail';
-import { IClient, Contact } from '../../../model/models';
+import { IClient, IContact } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -22,7 +22,7 @@ const mockDataService = {
     { contact_id: 2 },
     { contact_id: 4, client_id: 3 },
     { contact_id: 6, client_id: 3, first_name: 'Frank', last_name: 'Stein', title: 'Scary Guy' }
-  ] as Contact[]),
+  ] as IContact[]),
   reloadData: () => {},
   deleteDocument: () => Promise.resolve({ deletedCount: 1 }),
   saveDocument: () => Promise.resolve({ modifiedCount: 1 })

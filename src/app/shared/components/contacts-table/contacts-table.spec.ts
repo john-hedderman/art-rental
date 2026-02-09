@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContactsTable } from './contacts-table';
-import { Contact } from '../../../model/models';
+import { IContact } from '../../../model/models';
 import { Router } from '@angular/router';
 
 const mockRows = [
   { contact_id: 10, client_id: 6, first_name: 'Drac', last_name: 'Ula' },
   { contact_id: 11, client_id: 6, first_name: 'Frank', last_name: 'Stein' },
-  { contact_id: 12, client_id: 6, first_name: 'The', last_name: 'Mummy' },
-] as Contact[];
+  { contact_id: 12, client_id: 6, first_name: 'The', last_name: 'Mummy' }
+] as IContact[];
 
 describe('ContactsTable', () => {
   let component: ContactsTable;
@@ -17,7 +17,7 @@ describe('ContactsTable', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ContactsTable],
+      imports: [ContactsTable]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContactsTable);

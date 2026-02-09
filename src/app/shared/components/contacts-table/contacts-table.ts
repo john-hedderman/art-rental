@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { Contact } from '../../../model/models';
+import { IContact } from '../../../model/models';
 import { Router } from '@angular/router';
 import { RowDetail } from '../../../directives/row-detail';
 
@@ -10,10 +10,10 @@ import { RowDetail } from '../../../directives/row-detail';
   imports: [NgxDatatableModule, RowDetail],
   templateUrl: './contacts-table.html',
   styleUrl: './contacts-table.scss',
-  standalone: true,
+  standalone: true
 })
 export class ContactsTable implements OnInit {
-  @ViewChild('contactsTable') table!: DatatableComponent<Contact>;
+  @ViewChild('contactsTable') table!: DatatableComponent<IContact>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
   @ViewChild('clientNameHeaderTemplate', { static: true })
@@ -22,11 +22,11 @@ export class ContactsTable implements OnInit {
   @ViewChild('phoneHeaderTemplate', { static: true }) phoneHeaderTemplate!: TemplateRef<any>;
   @ViewChild('phoneTemplate', { static: true }) phoneTemplate!: TemplateRef<any>;
 
-  @Input() rows: Contact[] = [];
+  @Input() rows: IContact[] = [];
 
   columns: TableColumn[] = [];
 
-  toggleExpandRow(row: Contact) {
+  toggleExpandRow(row: IContact) {
     this.table.rowDetail!.toggleExpandRow(row);
   }
 
@@ -61,28 +61,28 @@ export class ContactsTable implements OnInit {
         sortable: false,
         draggable: false,
         canAutoResize: false,
-        cellTemplate: this.arrowTemplate,
+        cellTemplate: this.arrowTemplate
       },
       {
         width: 250,
         name: 'Name',
         cellTemplate: this.nameTemplate,
-        comparator: this.nameComparator,
+        comparator: this.nameComparator
       },
       {
         width: 200,
         name: 'Client',
         headerTemplate: this.clientNameHeaderTemplate,
         cellTemplate: this.clientNameTemplate,
-        comparator: this.clientNameComparator,
+        comparator: this.clientNameComparator
       },
       {
         width: 150,
         prop: 'phone',
         name: 'Phone',
         headerTemplate: this.phoneHeaderTemplate,
-        cellTemplate: this.phoneTemplate,
-      },
+        cellTemplate: this.phoneTemplate
+      }
     ];
   }
 }

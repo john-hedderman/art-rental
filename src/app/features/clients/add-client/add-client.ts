@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { IClient, Contact } from '../../../model/models';
+import { IClient, IContact } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -42,7 +42,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
   footerData = new FooterActions([new SaveButton(), new ResetButton(), new CancelButton()]);
 
   dbData: IClient = {} as IClient;
-  contactsDBData: Contact[] = [];
+  contactsDBData: IContact[] = [];
   editMode = false;
 
   clientForm!: FormGroup;
@@ -72,7 +72,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
 
   mergeContactIds(clientFormData: any): any {
     const { contacts, ...allButContacts } = clientFormData;
-    const contact_ids = contacts.map((contact: Contact) => contact.contact_id);
+    const contact_ids = contacts.map((contact: IContact) => contact.contact_id);
     return { ...allButContacts, contact_ids, job_ids: [], site_ids: [] };
   }
 
@@ -165,7 +165,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
 
   populateContactData(contact_id: number) {
     this.http
-      .get<Contact[]>(`${environment.apiUrl}/data/contacts/${contact_id}?recordId=contact_id`)
+      .get<IContact[]>(`${environment.apiUrl}/data/contacts/${contact_id}?recordId=contact_id`)
       .subscribe((contacts) => {
         if (contacts && contacts.length === 1) {
           const contactDBData = contacts[0];

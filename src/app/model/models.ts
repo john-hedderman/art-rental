@@ -29,7 +29,7 @@ export interface IClient {
   zip_code: string;
   industry?: string;
   contact_ids: number[];
-  contacts?: Contact[];
+  contacts?: IContact[];
   site_ids: number[];
   sites?: Site[];
   job_ids: number[];
@@ -44,12 +44,12 @@ export interface Job {
   site_id: number;
   site?: Site;
   contact_ids: number[];
-  contacts?: Contact[];
+  contacts?: IContact[];
   art_ids: number[];
   art?: IArt[];
 }
 
-export interface Contact {
+export interface IContact {
   contact_id: number;
   first_name: string;
   last_name: string;

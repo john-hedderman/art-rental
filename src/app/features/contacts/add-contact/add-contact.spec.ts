@@ -9,7 +9,7 @@ import { AddContact } from './add-contact';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
-import { IClient, Contact } from '../../../model/models';
+import { IClient, IContact } from '../../../model/models';
 import { Util } from '../../../shared/util/util';
 import { ContactList } from '../contact-list/contact-list';
 
@@ -50,12 +50,12 @@ const mockContactData = [
     phone: '2065551212',
     title: '',
     client_id: 23
-  } as Contact
+  } as IContact
 ];
 
 const dbData = {
   client_id: 3
-} as Contact;
+} as IContact;
 
 const route = {
   snapshot: {
@@ -195,7 +195,7 @@ describe('AddContact', () => {
       it('should fail saving the old job if it cannot be found in the database', async () => {
         component.dbData = {
           client_id: 99
-        } as Contact;
+        } as IContact;
         const updateOldClientResult = await component.updateOldClient();
         expect(updateOldClientResult).toBe(Const.FAILURE);
       });
@@ -204,7 +204,7 @@ describe('AddContact', () => {
         component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 1 });
         component.dbData = {
           client_id: 2
-        } as Contact;
+        } as IContact;
         component.contactForm = {
           value: {
             contact_id: '3'
@@ -218,7 +218,7 @@ describe('AddContact', () => {
         component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 0 });
         component.dbData = {
           client_id: 2
-        } as Contact;
+        } as IContact;
         component.contactForm = {
           value: {
             contact_id: '3'
@@ -250,7 +250,7 @@ describe('AddContact', () => {
         component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 0 });
         component.dbData = {
           client_id: 2
-        } as Contact;
+        } as IContact;
         component.contactForm = {
           value: {
             contact_id: '3'

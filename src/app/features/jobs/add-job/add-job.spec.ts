@@ -7,7 +7,7 @@ import { FormGroup } from '@angular/forms';
 
 import { AddJob } from './add-job';
 import { DataService } from '../../../service/data-service';
-import { IClient, Contact, Job } from '../../../model/models';
+import { IClient, IContact, Job } from '../../../model/models';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
 import { Util } from '../../../shared/util/util';
@@ -28,7 +28,7 @@ const mockDataService = {
     { contact_id: 2, client_id: 5, first_name: 'Drac', last_name: 'Ula', title: 'Bloodsucker' },
     { contact_id: 4, client_id: 1, first_name: '', last_name: '' },
     { contact_id: 6, client_id: 3, first_name: 'Frank', last_name: 'Stein', title: 'Scary Guy' }
-  ] as Contact[]),
+  ] as IContact[]),
   sites$: of([{ site_id: 10 }, { site_id: 11, client_id: 3 }, { site_id: 12 }]),
   saveDocument: () => Promise.resolve({ modifiedCount: 1 }),
   reloadData: () => {}

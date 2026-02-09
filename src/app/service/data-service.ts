@@ -3,14 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { combineLatest, Observable, ReplaySubject, Subject, takeUntil } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { IArt, IArtist, IClient, Contact, Job, Site, ITag } from '../model/models';
+import { IArt, IArtist, IClient, IContact, Job, Site, ITag } from '../model/models';
 
 type Source = {
   art: Observable<IArt[]>;
   artists: Observable<IArtist[]>;
   clients: Observable<IClient[]>;
   jobs: Observable<Job[]>;
-  contacts: Observable<Contact[]>;
+  contacts: Observable<IContact[]>;
   sites: Observable<Site[]>;
   tags: Observable<ITag[]>;
 };
@@ -24,7 +24,7 @@ export class DataService implements OnDestroy {
   public art$: ReplaySubject<IArt[]> = new ReplaySubject(1);
   public artists$: ReplaySubject<IArtist[]> = new ReplaySubject(1);
   public clients$: ReplaySubject<IClient[]> = new ReplaySubject(1);
-  public contacts$: ReplaySubject<Contact[]> = new ReplaySubject(1);
+  public contacts$: ReplaySubject<IContact[]> = new ReplaySubject(1);
   public jobs$: ReplaySubject<Job[]> = new ReplaySubject(1);
   public sites$: ReplaySubject<Site[]> = new ReplaySubject(1);
   public tags$: ReplaySubject<ITag[]> = new ReplaySubject(1);
@@ -43,7 +43,7 @@ export class DataService implements OnDestroy {
       } else if (coll === 'clients') {
         source[coll] = this.loadData<IClient>(coll);
       } else if (coll === 'contacts') {
-        source[coll] = this.loadData<Contact>(coll);
+        source[coll] = this.loadData<IContact>(coll);
       } else if (coll === 'jobs') {
         source[coll] = this.loadData<Job>(coll);
       } else if (coll === 'sites') {

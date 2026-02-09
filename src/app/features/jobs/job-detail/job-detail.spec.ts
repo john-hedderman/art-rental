@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 
 import { JobDetail } from './job-detail';
-import { IArt, IClient, Contact, Job, Site } from '../../../model/models';
+import { IArt, IClient, IContact, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -64,7 +64,7 @@ const mockDataService = {
     { contact_id: 2 },
     { contact_id: 4, client_id: 3 },
     { contact_id: 6, client_id: 3, first_name: 'Frank', last_name: 'Stein', title: 'Scary Guy' }
-  ] as Contact[]),
+  ] as IContact[]),
   jobs$: mockJobs,
   sites$: mockSites,
   reloadData: () => {},

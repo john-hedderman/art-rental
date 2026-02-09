@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { IArt, IClient, Contact, Job, Site } from '../../../model/models';
+import { IArt, IClient, IContact, Job, Site } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -36,16 +36,16 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
   jobId!: number;
 
   dbData: Job = {} as Job;
-  contactsDBData: Contact[] = [];
+  contactsDBData: IContact[] = [];
 
   clients: IClient[] = [];
   sites: Site[] = [];
-  contacts: Contact[] = [];
+  contacts: IContact[] = [];
   art: IArt[] = [];
 
   clients$: Observable<IClient[]> | undefined;
   sites$: Observable<Site[]> | undefined;
-  contacts$: Observable<Contact[]> | undefined;
+  contacts$: Observable<IContact[]> | undefined;
   art$: Observable<IArt[]> | undefined;
 
   clientId: number | undefined;
@@ -250,7 +250,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     let newOption = new Option('TBD', 'tbd');
     menu?.add(newOption);
     const availableContacts = this.contacts.filter(
-      (contact: Contact) => contact.client_id === this.clientId
+      (contact: IContact) => contact.client_id === this.clientId
     );
     for (const clientContact of availableContacts) {
       newOption = new Option(
@@ -332,7 +332,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
   getCombinedData$(): Observable<{
     art: IArt[];
     clients: IClient[];
-    contacts: Contact[];
+    contacts: IContact[];
     sites: Site[];
   }> {
     return combineLatest({

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { IClient, Contact } from '../../../model/models';
+import { IClient, IContact } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
@@ -22,7 +22,7 @@ import { RowDetail } from '../../../directives/row-detail';
   }
 })
 export class ContactList implements OnInit, OnDestroy {
-  @ViewChild('contactsTable') table!: DatatableComponent<Contact>;
+  @ViewChild('contactsTable') table!: DatatableComponent<IContact>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('nameTemplate', { static: true }) nameTemplate!: TemplateRef<any>;
   @ViewChild('clientNameHeaderTemplate', { static: true })
@@ -36,13 +36,13 @@ export class ContactList implements OnInit, OnDestroy {
   headerData = new HeaderActions('contact-list', 'Contacts', [], []);
   footerData = new FooterActions([new AddButton('Add Contact', this.goToAddContact)]);
 
-  rows: Contact[] = [];
+  rows: IContact[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
 
   private readonly destroy$ = new Subject<void>();
 
-  toggleExpandRow(row: Contact) {
+  toggleExpandRow(row: IContact) {
     this.table.rowDetail!.toggleExpandRow(row);
   }
 
@@ -110,7 +110,7 @@ export class ContactList implements OnInit, OnDestroy {
   }
 
   getCombinedData$(): Observable<{
-    contacts: Contact[];
+    contacts: IContact[];
     clients: IClient[];
   }> {
     return combineLatest({

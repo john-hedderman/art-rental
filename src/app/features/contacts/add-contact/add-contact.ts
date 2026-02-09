@@ -5,7 +5,7 @@ import { distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { IClient, Contact } from '../../../model/models';
+import { IClient, IContact } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -44,7 +44,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
   clients: IClient[] = [];
   clients$: Observable<IClient[]> | undefined;
 
-  dbData: Contact = {} as Contact;
+  dbData: IContact = {} as IContact;
 
   contactId!: number;
   editMode = false;
@@ -72,7 +72,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
   resetForm() {
     this.submitted = false;
     if (this.editMode) {
-      this.populateForm<Contact>(Collections.Contacts, 'contact_id', this.contactId);
+      this.populateForm<IContact>(Collections.Contacts, 'contact_id', this.contactId);
     } else {
       this.contactForm.reset();
     }
@@ -247,7 +247,7 @@ export class AddContact extends AddBase implements OnInit, OnDestroy {
     });
 
     if (this.editMode) {
-      this.populateForm<Contact>(Collections.Contacts, 'contact_id', this.contactId);
+      this.populateForm<IContact>(Collections.Contacts, 'contact_id', this.contactId);
     }
   }
 
