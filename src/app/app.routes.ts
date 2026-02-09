@@ -35,18 +35,18 @@ export const routes: Routes = [
     children: [
       {
         path: 'list',
-        component: TagList,
+        component: TagList
       },
       {
         path: 'add',
-        component: AddTag,
+        component: AddTag
       },
       {
         path: '',
         redirectTo: 'list',
-        pathMatch: 'full',
-      },
-    ],
+        pathMatch: 'full'
+      }
+    ]
   },
   {
     path: 'art',
@@ -54,26 +54,26 @@ export const routes: Routes = [
     children: [
       {
         path: 'list',
-        component: ArtList,
+        component: ArtList
       },
       {
         path: 'add',
-        component: AddArt,
+        component: AddArt
       },
       {
         path: ':id',
-        component: ArtDetail,
+        component: ArtDetail
       },
       {
         path: ':id/edit',
-        component: AddArt,
+        component: AddArt
       },
       {
         path: '',
         redirectTo: 'list',
-        pathMatch: 'full',
-      },
-    ],
+        pathMatch: 'full'
+      }
+    ]
   },
   {
     path: 'artists',
@@ -81,26 +81,26 @@ export const routes: Routes = [
     children: [
       {
         path: 'list',
-        component: ArtistList,
+        component: ArtistList
       },
       {
         path: 'add',
-        component: AddArtist,
+        component: AddArtist
       },
       {
         path: ':id',
-        component: ArtistDetail,
+        component: ArtistDetail
       },
       {
         path: ':id/edit',
-        component: AddArtist,
+        component: AddArtist
       },
       {
         path: '',
         redirectTo: 'list',
-        pathMatch: 'full',
-      },
-    ],
+        pathMatch: 'full'
+      }
+    ]
   },
   {
     path: 'clients',
@@ -108,53 +108,26 @@ export const routes: Routes = [
     children: [
       {
         path: 'list',
-        component: ClientList,
+        component: ClientList
       },
       {
         path: 'add',
-        component: AddClient,
+        component: AddClient
       },
       {
         path: ':id',
-        component: ClientDetail,
+        component: ClientDetail
       },
       {
         path: ':id/edit',
-        component: AddClient,
+        component: AddClient
       },
       {
         path: '',
         redirectTo: 'list',
-        pathMatch: 'full',
-      },
-    ],
-  },
-  {
-    path: 'jobs',
-    component: JobsPage,
-    children: [
-      {
-        path: 'list',
-        component: JobList,
-      },
-      {
-        path: 'add',
-        component: AddJob,
-      },
-      {
-        path: ':id',
-        component: JobDetail,
-      },
-      {
-        path: ':id/edit',
-        component: AddJob,
-      },
-      {
-        path: '',
-        redirectTo: 'list',
-        pathMatch: 'full',
-      },
-    ],
+        pathMatch: 'full'
+      }
+    ]
   },
   {
     path: 'contacts',
@@ -162,26 +135,53 @@ export const routes: Routes = [
     children: [
       {
         path: 'list',
-        component: ContactList,
+        component: ContactList
       },
       {
         path: 'add',
-        component: AddContact,
+        component: AddContact
       },
       {
         path: ':id',
-        component: ContactDetail,
+        component: ContactDetail
       },
       {
         path: ':id/edit',
-        component: AddContact,
+        component: AddContact
       },
       {
         path: '',
         redirectTo: 'list',
-        pathMatch: 'full',
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
+    path: 'jobs',
+    component: JobsPage,
+    children: [
+      {
+        path: 'list',
+        component: JobList
       },
-    ],
+      {
+        path: 'add',
+        component: AddJob
+      },
+      {
+        path: ':id',
+        component: JobDetail
+      },
+      {
+        path: ':id/edit',
+        component: AddJob
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full'
+      }
+    ]
   },
   {
     path: 'sites',
@@ -189,30 +189,30 @@ export const routes: Routes = [
     children: [
       {
         path: 'list',
-        component: SiteList,
+        component: SiteList
       },
       {
         path: 'add',
-        component: AddSite,
+        component: AddSite
       },
       {
         path: ':id',
-        component: SiteDetail,
+        component: SiteDetail
       },
       {
         path: ':id/edit',
-        component: AddSite,
+        component: AddSite
       },
       {
         path: '',
         redirectTo: 'list',
-        pathMatch: 'full',
-      },
-    ],
+        pathMatch: 'full'
+      }
+    ]
   },
   {
     path: '',
     redirectTo: '/art',
-    pathMatch: 'full',
-  },
+    pathMatch: 'full'
+  }
 ];

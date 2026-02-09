@@ -28,14 +28,19 @@
       <ul class="navbar-nav ms-auto mb-0 align-items-baseline">
         <li class="nav-item dropdown">
           <a
-            class="nav-link ar-nav-link dropdown-toggle"
+            class="nav-link dropdown-toggle"
             role="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
             >Admin</a
           >
           <ul class="dropdown-menu p-1">
-            <a class="nav-link" routerLink="/tags" (click)="onClickNavLink($event)">Tags</a>
+            <a
+              class="nav-link ar-nav-link ar-drop-link"
+              routerLink="/tags"
+              (click)="onClickNavLink($event)"
+              >Tags</a
+            >
           </ul>
         </li>
         <li class="nav-item">
@@ -48,15 +53,25 @@
         </li>
         <li class="nav-item dropdown">
           <a
-            class="nav-link ar-nav-link dropdown-toggle"
+            class="nav-link dropdown-toggle"
             role="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
             >Clients</a
           >
           <ul class="dropdown-menu p-1">
-            <a class="nav-link" routerLink="/clients" (click)="onClickNavLink($event)">Clients</a>
-            <a class="nav-link" routerLink="/contacts" (click)="onClickNavLink($event)">Contacts</a>
+            <a
+              class="nav-link ar-nav-link ar-drop-link"
+              routerLink="/clients"
+              (click)="onClickNavLink($event)"
+              >Clients</a
+            >
+            <a
+              class="nav-link ar-nav-link ar-drop-link"
+              routerLink="/contacts"
+              (click)="onClickNavLink($event)"
+              >Contacts</a
+            >
           </ul>
         </li>
         <li class="nav-item">

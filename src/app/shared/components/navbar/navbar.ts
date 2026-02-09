@@ -9,7 +9,7 @@ import { RouteChangeService } from '../../../service/route-change-service';
   imports: [RouterLink],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
-  standalone: true,
+  standalone: true
 })
 export class Navbar implements OnInit, OnDestroy {
   @ViewChild('navbarToggler') navbarToggler: ElementRef | undefined;
@@ -46,15 +46,17 @@ export class Navbar implements OnInit, OnDestroy {
   init() {
     this.routeChangesService.routeChanges$.pipe(takeUntil(this.destroy$)).subscribe((url) => {
       const currentRouteSegment = this.firstSegment(url);
-      document.querySelectorAll('.ar-nav-link').forEach((link) => {
-        const routerLink = link.getAttribute('routerLink');
+      document.querySelectorAll('.ar-nav-link').forEach((linkEl) => {
+        const toggleEl = linkEl.closest('.dropdown')?.querySelector('.dropdown-toggle');
+        const routerLink = linkEl.getAttribute('routerLink');
         const routerLinkSegment = this.firstSegment(routerLink);
         if (routerLinkSegment === currentRouteSegment) {
-          link.classList.add('active');
-          link.setAttribute('aria-current', 'page');
+          linkEl.classList.add('active');
+          linkEl.setAttribute('aria-current', 'page');
+          toggleEl?.classList.add('active');
         } else {
-          link.classList.remove('active');
-          link.setAttribute('aria-current', '');
+          linkEl.classList.remove('active');
+          linkEl.setAttribute('aria-current', '');
         }
       });
     });

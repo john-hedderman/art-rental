@@ -39,7 +39,8 @@
     }
   }
 
-  .ar-nav-link {
+  .ar-nav-link,
+  .dropdown-toggle {
     color: var(--ar-navlink-color);
     cursor: pointer;
 
@@ -48,6 +49,15 @@
       font-weight: 700;
       text-decoration: underline;
       text-underline-offset: 6px;
+    }
+  }
+
+  .ar-drop-link {
+    color: black;
+
+    &.active {
+      font-size: inherit;
+      text-underline-offset: 3px;
     }
   }
 }
