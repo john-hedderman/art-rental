@@ -3,11 +3,11 @@ import { provideHttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 
 import { JobCard } from './job-card';
-import { Art, Job } from '../../../model/models';
+import { IArt, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 
-const mockArt = { art_id: 1, job_id: 11, artist_id: 4, title: 'Wonder Art' } as Art;
+const mockArt = { art_id: 1, job_id: 11, artist_id: 4, title: 'Wonder Art' } as IArt;
 const mockJob = { job_id: 11, client_id: 8, site_id: 15, job_number: '000007' } as Job;
 const mockWarehouse = { job_id: 1, job_number: 'No job', art_ids: [1, 2, 3] } as Job;
 
@@ -17,7 +17,7 @@ const mockDataService = {
   jobs$: of([mockWarehouse, { job_id: 10 }, mockJob, { job_id: 12, client_id: 9, site_id: 13 }]),
   sites$: of([{ site_id: 13 }, { site_id: 14 }, { site_id: 15, name: 'Area 51' }]),
   reloadData: () => {},
-  saveDocument: () => Promise.resolve({ modifiedCount: 1 }),
+  saveDocument: () => Promise.resolve({ modifiedCount: 1 })
 };
 
 const artData = { art: mockArt, oldJob: mockWarehouse };
@@ -38,7 +38,7 @@ describe('JobCard', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [JobCard],
-      providers: [provideHttpClient(), { provide: DataService, useValue: mockDataService }],
+      providers: [provideHttpClient(), { provide: DataService, useValue: mockDataService }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(JobCard);
@@ -63,7 +63,7 @@ describe('JobCard', () => {
       fixture.detectChanges();
 
       expect(component.job?.job_number).toBe('000007');
-      component.art$?.subscribe((art) => {
+      component.artwork$?.subscribe((art) => {
         expect(art[0].title).toBe('Wonder Art');
       });
     }));
@@ -75,7 +75,7 @@ describe('JobCard', () => {
       tick(1000);
       fixture.detectChanges();
 
-      expect(component.job_name).toBe('Warehouse');
+      expect(component.cardFooterContent).toBe('Warehouse');
     }));
   });
 
@@ -137,9 +137,9 @@ describe('JobCard', () => {
   });
 
   describe('Save art assignment', () => {
-    const updateArt = (art: Art, oldJob: Job, newJob: Job) => Promise.resolve(Const.SUCCESS);
-    const updateOldJob = (art: Art, newJob: Job) => Promise.resolve(Const.SUCCESS);
-    const updateNewJob = (art: Art, newJob: Job) => Promise.resolve(Const.SUCCESS);
+    const updateArt = (art: IArt, oldJob: Job, newJob: Job) => Promise.resolve(Const.SUCCESS);
+    const updateOldJob = (art: IArt, newJob: Job) => Promise.resolve(Const.SUCCESS);
+    const updateNewJob = (art: IArt, newJob: Job) => Promise.resolve(Const.SUCCESS);
 
     it('should attempt to save an art assignment to the database', fakeAsync(() => {
       const saveSpy = spyOn(component['artAssignmentService'], 'save');

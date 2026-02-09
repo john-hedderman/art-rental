@@ -1,4 +1,4 @@
-export interface Art {
+export interface IArt {
   art_id: number;
   title: string;
   file_name: string;
@@ -46,7 +46,7 @@ export interface Job {
   contact_ids: number[];
   contacts?: Contact[];
   art_ids: number[];
-  art?: Art[];
+  art?: IArt[];
 }
 
 export interface Contact {
@@ -107,8 +107,8 @@ export interface ITag {
   tag_id: number;
   name: string;
   art_ids: number[];
-  art?: Art[];
+  art?: IArt[];
   artist_ids: number[];
   artists?: IArtist[];
-  [key: string]: number | string | number[] | Art[] | IArtist[] | undefined;
+  [key: string]: number | string | number[] | IArt[] | IArtist[] | undefined;
 }

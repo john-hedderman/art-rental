@@ -7,7 +7,7 @@ import { PageHeader } from '../../../../shared/components/page-header/page-heade
 import { PageFooter } from '../../../../shared/components/page-footer/page-footer';
 import { FooterActions, HeaderActions } from '../../../../shared/actions/action-data';
 import { DataService } from '../../../../service/data-service';
-import { Art, IArtist, ITag } from '../../../../model/models';
+import { IArt, IArtist, ITag } from '../../../../model/models';
 import { OperationsService } from '../../../../service/operations-service';
 import { AddButton } from '../../../../shared/buttons/add-button';
 import { Collections } from '../../../../shared/enums/collections';
@@ -29,7 +29,7 @@ export class TagList implements OnInit, OnDestroy {
   headerData = new HeaderActions('tag-list', 'Tags', [], []);
   footerData = new FooterActions([new AddButton('Add Tag', this.goToAddTag)]);
 
-  art: Art[] = [];
+  art: IArt[] = [];
   artists: IArtist[] = [];
   detailedTags: ITag[] = [];
   tags$: Observable<ITag[]> | undefined;
@@ -67,7 +67,7 @@ export class TagList implements OnInit, OnDestroy {
     const artwork = this.art.filter((art) => art.tag_ids.includes(+tagId));
     for (const art of artwork) {
       const tag_ids = art.tag_ids.filter((tag_id) => tag_id !== +tagId);
-      let newArt: Art = { ...art, tag_ids };
+      let newArt: IArt = { ...art, tag_ids };
       try {
         delete (newArt as any)._id;
         const data = await this.dataService.saveDocument(
@@ -161,7 +161,7 @@ export class TagList implements OnInit, OnDestroy {
   }
 
   getCombinedData$(): Observable<{
-    artwork: Art[];
+    artwork: IArt[];
     producers: IArtist[];
     tags: ITag[];
   }> {

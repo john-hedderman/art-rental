@@ -3,9 +3,9 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { JobList } from './job-list';
 import { provideHttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { Art, Job } from '../../../model/models';
+import { IArt, Job } from '../../../model/models';
 
-const mockArtObservable: Observable<Art[]> = of([
+const mockArtObservable: Observable<IArt[]> = of([
   {
     art_id: 1,
     full_size_image_url: 'http://fake.art.com/aaa.jpg',
@@ -13,9 +13,9 @@ const mockArtObservable: Observable<Art[]> = of([
     file_name: '',
     tags: '',
     job_id: 0,
-    artist_id: 6,
-  },
-]);
+    artist_id: 6
+  }
+] as unknown as IArt[]);
 
 const mockJobsObservable: Observable<Job[]> = of([
   {
@@ -24,8 +24,8 @@ const mockJobsObservable: Observable<Job[]> = of([
     client_id: 2,
     site_id: 3,
     contact_ids: [],
-    art_ids: [],
-  },
+    art_ids: []
+  }
 ]);
 
 describe('JobList', () => {
@@ -35,7 +35,7 @@ describe('JobList', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [JobList],
-      providers: [provideHttpClient()],
+      providers: [provideHttpClient()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(JobList);

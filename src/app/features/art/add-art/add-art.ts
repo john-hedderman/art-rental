@@ -6,7 +6,7 @@ import { AsyncPipe } from '@angular/common';
 
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Art, IArtist, Client, Job, Site } from '../../../model/models';
+import { IArt, IArtist, Client, Job, Site } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -42,7 +42,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
 
   jobs: Job[] = [];
 
-  dbData: Art = {} as Art;
+  dbData: IArt = {} as IArt;
 
   artId!: number;
   editMode = false;
@@ -163,7 +163,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
   resetForm() {
     this.submitted = false;
     if (this.editMode) {
-      this.populateForm<Art>(Collections.Art, 'art_id', this.artId);
+      this.populateForm<IArt>(Collections.Art, 'art_id', this.artId);
     } else {
       this.clearForm();
     }
@@ -244,7 +244,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     });
 
     if (this.editMode) {
-      this.populateForm<Art>(Collections.Art, 'art_id', this.artId);
+      this.populateForm<IArt>(Collections.Art, 'art_id', this.artId);
     }
   }
 

@@ -10,7 +10,7 @@ import {
 } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { Art, IArtist, Client, Job, Site } from '../../../model/models';
+import { IArt, IArtist, Client, Job, Site } from '../../../model/models';
 import { ArtThumbnailCard } from '../art-thumbnail-card/art-thumbnail-card';
 import * as Const from '../../../constants';
 import { ArtAssignmentService } from '../../../service/art-assignment-service';
@@ -39,14 +39,14 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
 
   job: Job | undefined;
 
-  artwork: Art[] = [];
-  artwork$!: Observable<Art[]>;
+  artwork: IArt[] = [];
+  artwork$!: Observable<IArt[]>;
 
   private readonly destroy$ = new Subject<void>();
 
   readonly WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
 
-  trackByArtId(art: Art) {
+  trackByArtId(art: IArt) {
     return art.art_id;
   }
 
@@ -139,7 +139,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
     return returnVal || '';
   }
 
-  getFilteredArt$(artwork: Art[]): Observable<Art[]> {
+  getFilteredArt$(artwork: IArt[]): Observable<IArt[]> {
     return combineLatest({
       searchTerm: this.searchArtString$,
       artist: this.artistId$
@@ -150,7 +150,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
         const artistIdString = this.getSelectArtistId();
         let art = artwork;
         if (searchTermString || artistIdString) {
-          art = artwork.filter((art: Art) => {
+          art = artwork.filter((art: IArt) => {
             const titleMatch = art.title.toLowerCase().includes(searchTermString);
             const artistMatch = artistIdString === '' || art.artist?.artist_id === +artistIdString;
             return titleMatch && artistMatch;
@@ -164,7 +164,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  getDetailedArtwork(art: Art[], artists: IArtist[]): Art[] {
+  getDetailedArtwork(art: IArt[], artists: IArtist[]): IArt[] {
     return art
       .filter((piece) => piece.job_id === this.job_id)
       .map((piece) => {
@@ -183,7 +183,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getAppData$(): Observable<{
-    art: Art[];
+    art: IArt[];
     artists: IArtist[];
     clients: Client[];
     jobs: Job[];

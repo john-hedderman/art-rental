@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { Art, IArtist, Client, Job, Site, ITag } from '../../../model/models';
+import { IArt, IArtist, Client, Job, Site, ITag } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
@@ -49,8 +49,8 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
-  art: Art = {} as Art;
-  art$: Observable<Art> | undefined;
+  art: IArt = {} as IArt;
+  art$: Observable<IArt> | undefined;
   jobs: Job[] = [];
   tags: ITag[] = [];
 
@@ -206,7 +206,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
       this.artId = artId;
       this.jobs = jobs;
       this.tags = tags;
-      let artwork = art.find((piece: Art) => piece.art_id === artId);
+      let artwork = art.find((piece: IArt) => piece.art_id === artId);
       if (artwork) {
         let job = jobs.find((job) => job.job_id === artwork?.job_id);
         if (job) {
@@ -232,7 +232,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
 
   getCombinedData$(): Observable<{
     artId: number;
-    art: Art[];
+    art: IArt[];
     artists: IArtist[];
     clients: Client[];
     jobs: Job[];

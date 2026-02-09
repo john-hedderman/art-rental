@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 
 import { JobDetail } from './job-detail';
-import { Art, Client, Contact, Job, Site } from '../../../model/models';
+import { IArt, Client, Contact, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -16,7 +16,7 @@ const mockWarehouse = {
   client_id: 0,
   site_id: 0,
   contact_ids: [],
-  art_ids: [101, 102, 103],
+  art_ids: [101, 102, 103]
 };
 
 const mockJob = {
@@ -25,7 +25,7 @@ const mockJob = {
   client_id: 3,
   site_id: 100,
   contact_ids: [4, 6],
-  art_ids: [11, 12],
+  art_ids: [11, 12]
 };
 
 const mockJobsNoWarehouse = of([{ job_id: 20 }, { job_id: 30 }, mockJob] as Job[]);
@@ -35,15 +35,15 @@ const mockJobs = of([mockWarehouse, { job_id: 20 }, { job_id: 30 }, mockJob] as 
 const mockArtwork = of([
   { art_id: 10 },
   { art_id: 11, job_id: 40 },
-  { art_id: 12, job_id: 40 },
-] as Art[]);
+  { art_id: 12, job_id: 40 }
+] as IArt[]);
 
-const mockNoArtwork = of([] as Art[]);
+const mockNoArtwork = of([] as IArt[]);
 
 const mockSites = of([
   { site_id: 100, name: 'Auditorium', client_id: 3, job_id: 40 },
   { site_id: 101, client_id: 3, job_id: 0 },
-  { site_id: 102, job_id: 0 },
+  { site_id: 102, job_id: 0 }
 ] as Site[]);
 
 const mockDataService = {
@@ -56,24 +56,24 @@ const mockDataService = {
       city: 'Springfield',
       contact_ids: [4, 6],
       site_ids: [100, 101],
-      job_ids: [40],
+      job_ids: [40]
     },
-    { client_id: 5, name: 'Funny Farm' },
+    { client_id: 5, name: 'Funny Farm' }
   ] as Client[]),
   contacts$: of([
     { contact_id: 2 },
     { contact_id: 4, client_id: 3 },
-    { contact_id: 6, client_id: 3, first_name: 'Frank', last_name: 'Stein', title: 'Scary Guy' },
+    { contact_id: 6, client_id: 3, first_name: 'Frank', last_name: 'Stein', title: 'Scary Guy' }
   ] as Contact[]),
   jobs$: mockJobs,
   sites$: mockSites,
   reloadData: () => {},
   deleteDocument: () => Promise.resolve({ deletedCount: 1 }),
-  saveDocument: () => Promise.resolve({ modifiedCount: 1 }),
+  saveDocument: () => Promise.resolve({ modifiedCount: 1 })
 };
 
 const mockActivatedRoute = {
-  paramMap: of(convertToParamMap({ id: '40' })),
+  paramMap: of(convertToParamMap({ id: '40' }))
 };
 
 describe('JobDetail', () => {
@@ -88,8 +88,8 @@ describe('JobDetail', () => {
         provideRouter([]),
         provideHttpClient(),
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: DataService, useValue: mockDataService },
-      ],
+        { provide: DataService, useValue: mockDataService }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(JobDetail);
@@ -196,13 +196,13 @@ describe('JobDetail', () => {
         { first_name: 'Carson', last_name: 'Dyle' },
         { first_name: 'Aaron', last_name: 'Burr' },
         { first_name: 'Timothy', last_name: 'Leary' },
-        { first_name: 'George', last_name: 'Bailey' },
+        { first_name: 'George', last_name: 'Bailey' }
       ];
       const expectedRows = [
         { first_name: 'Aaron', last_name: 'Burr' },
         { first_name: 'Carson', last_name: 'Dyle' },
         { first_name: 'George', last_name: 'Bailey' },
-        { first_name: 'Timothy', last_name: 'Leary' },
+        { first_name: 'Timothy', last_name: 'Leary' }
       ];
       const sortedList = [...rows].sort(component.nameComparator);
       expect(sortedList).toEqual(expectedRows);

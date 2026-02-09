@@ -7,7 +7,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { AddArt } from './add-art';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
-import { Art, Job } from '../../../model/models';
+import { IArt, Job } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
 import { of } from 'rxjs';
@@ -32,7 +32,7 @@ const route = {
 
 const dbData = {
   job_id: 23
-} as Art;
+} as IArt;
 
 describe('AddArt', () => {
   let component: AddArt;
@@ -187,7 +187,7 @@ describe('AddArt', () => {
     it('should not save the old job if the art was not previously assigned to a job', async () => {
       component.dbData = {
         job_id: Const.NO_JOB
-      } as Art;
+      } as IArt;
       const updateOldJobResult = await component.updateOldJob();
       expect(updateOldJobResult).toEqual(Const.SUCCESS);
     });
@@ -196,7 +196,7 @@ describe('AddArt', () => {
       component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3 }] as Job[];
       component.dbData = {
         job_id: 99
-      } as Art;
+      } as IArt;
       const updateOldJobResult = await component.updateOldJob();
       expect(updateOldJobResult).toEqual(Const.FAILURE);
     });
@@ -206,7 +206,7 @@ describe('AddArt', () => {
       component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3, art_ids: [5, 6, 7] }] as Job[];
       component.dbData = {
         job_id: 3
-      } as Art;
+      } as IArt;
       component.artForm = {
         value: {
           art_id: 7
@@ -221,7 +221,7 @@ describe('AddArt', () => {
       component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3, art_ids: [5, 6, 7] }] as Job[];
       component.dbData = {
         job_id: 3
-      } as Art;
+      } as IArt;
       component.artForm = {
         value: {
           art_id: 7
@@ -274,7 +274,7 @@ describe('AddArt', () => {
       component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3, art_ids: [5, 6, 7] }] as Job[];
       component.dbData = {
         job_id: 4
-      } as Art;
+      } as IArt;
       component.artForm = {
         value: {
           job_id: 3,
@@ -337,7 +337,7 @@ describe('AddArt', () => {
           tag_ids: [1, 2, 3],
           artist_id: 456,
           job_id: 789
-        } as Art
+        } as IArt
       ];
 
       component.onClickReset();
@@ -377,7 +377,7 @@ describe('AddArt', () => {
           tag_ids: [1, 2, 3],
           artist_id: 456,
           job_id: 789
-        } as Art
+        } as IArt
       ];
 
       component.postSave('art');
@@ -420,7 +420,7 @@ describe('AddArt', () => {
           tag_ids: [1, 2, 3],
           artist_id: 456,
           job_id: 789
-        } as Art
+        } as IArt
       ];
 
       component.artForm.clearAsyncValidators();
