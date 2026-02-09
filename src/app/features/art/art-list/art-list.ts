@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 
 import { Card } from '../../../shared/components/card/card';
-import { Art, Artist, Client, Job, Site } from '../../../model/models';
+import { Art, IArtist, Client, Job, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -61,7 +61,7 @@ export class ArtList implements OnInit, OnDestroy {
 
   getCombinedData$(): Observable<{
     artwork: Art[];
-    artists: Artist[];
+    artists: IArtist[];
     clients: Client[];
     jobs: Job[];
     sites: Site[];

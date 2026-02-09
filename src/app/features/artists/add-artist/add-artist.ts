@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { Artist } from '../../../model/models';
+import { IArtist } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -19,7 +19,7 @@ import { ResetButton } from '../../../shared/buttons/reset-button';
   providers: [MessagesService],
   templateUrl: './add-artist.html',
   styleUrl: './add-artist.scss',
-  standalone: true,
+  standalone: true
 })
 export class AddArtist extends AddBase implements OnInit, OnDestroy {
   goToArtistList = () => this.router.navigate(['/artists', 'list']);
@@ -28,7 +28,7 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
     'Artists',
     '/artists/list',
     '',
-    this.goToArtistList,
+    this.goToArtistList
   );
   headerData = new HeaderActions('artist-add', 'Add Artist', [], [this.artistListLink.data]);
   footerData = new FooterActions([new SaveButton(), new ResetButton(), new CancelButton()]);
@@ -38,7 +38,7 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
 
   saveStatus = '';
 
-  dbData: Artist = {} as Artist;
+  dbData: IArtist = {} as IArtist;
 
   artistId!: number;
   editMode = false;
@@ -64,7 +64,7 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
       this.artistForm.value,
       Collections.Artists,
       this.editMode ? this.artistId : undefined,
-      this.editMode ? 'artist_id' : undefined,
+      this.editMode ? 'artist_id' : undefined
     );
   }
 
@@ -75,7 +75,7 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
   resetForm() {
     this.submitted = false;
     if (this.editMode) {
-      this.populateForm<Artist>(Collections.Artists, 'artist_id', this.artistId);
+      this.populateForm<IArtist>(Collections.Artists, 'artist_id', this.artistId);
     } else {
       this.clearForm();
     }
@@ -107,17 +107,17 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
     this.artistForm = this.fb.group({
       artist_id: this.artistId,
       name: [''],
-      photo_path: [''],
+      photo_path: ['']
     });
 
     if (this.editMode) {
-      this.populateForm<Artist>(Collections.Artists, 'artist_id', this.artistId);
+      this.populateForm<IArtist>(Collections.Artists, 'artist_id', this.artistId);
     }
   }
 
   constructor(
     private router: Router,
-    private fb: FormBuilder,
+    private fb: FormBuilder
   ) {
     super();
   }

@@ -10,7 +10,7 @@ import {
 } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { Art, Artist, Client, Job, Site } from '../../../model/models';
+import { Art, IArtist, Client, Job, Site } from '../../../model/models';
 import { ArtThumbnailCard } from '../art-thumbnail-card/art-thumbnail-card';
 import * as Const from '../../../constants';
 import { ArtAssignmentService } from '../../../service/art-assignment-service';
@@ -164,7 +164,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  getDetailedArtwork(art: Art[], artists: Artist[]): Art[] {
+  getDetailedArtwork(art: Art[], artists: IArtist[]): Art[] {
     return art
       .filter((piece) => piece.job_id === this.job_id)
       .map((piece) => {
@@ -184,7 +184,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
 
   getAppData$(): Observable<{
     art: Art[];
-    artists: Artist[];
+    artists: IArtist[];
     clients: Client[];
     jobs: Job[];
     sites: Site[];

@@ -8,24 +8,24 @@ import { AddArtist } from './add-artist';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
 import { Util } from '../../../shared/util/util';
-import { Artist } from '../../../model/models';
+import { IArtist } from '../../../model/models';
 
 const formData = {
   value: {
     artist_id: '123',
     name: 'Groucho Marx',
     photo_path: 'images/artists/groucho-marx.jpg',
-    tags: 'abstract, geometry',
+    tags: 'abstract, geometry'
   },
-  get: (key: string) => {},
+  get: (key: string) => {}
 } as FormGroup;
 
 const route = {
   snapshot: {
     paramMap: {
-      get: (key: string) => '123',
-    },
-  },
+      get: (key: string) => '123'
+    }
+  }
 } as ActivatedRoute;
 
 describe('AddArtist', () => {
@@ -36,7 +36,7 @@ describe('AddArtist', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AddArtist],
-      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
     }).compileComponents();
 
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -50,7 +50,7 @@ describe('AddArtist', () => {
       artist_id: Date.now(),
       name: [''],
       photo_path: [''],
-      tags: [''],
+      tags: ['']
     });
   });
 
@@ -94,9 +94,9 @@ describe('AddArtist', () => {
       component.route = {
         snapshot: {
           paramMap: {
-            get: (key: string) => null,
-          },
-        },
+            get: (key: string) => null
+          }
+        }
       } as ActivatedRoute;
       component.preSave();
       expect(component.artistForm.value.artist_id).not.toEqual(123);
@@ -158,8 +158,8 @@ describe('AddArtist', () => {
           artist_id: 123,
           name: 'George Clooney',
           photo_path: 'images/artists/george-clooney.jpg',
-          tags: 'cubist, geometry',
-        } as Artist,
+          tags: 'cubist, geometry'
+        } as unknown as IArtist
       ];
 
       component.onClickReset();
@@ -189,8 +189,8 @@ describe('AddArtist', () => {
           artist_id: 123,
           name: 'George Clooney',
           photo_path: 'images/artists/george-clooney.jpg',
-          tags: 'cubist, geometry',
-        } as Artist,
+          tags: 'cubist, geometry'
+        } as unknown as IArtist
       ];
 
       component.postSave('artist');
@@ -234,8 +234,8 @@ describe('AddArtist', () => {
           artist_id: 123,
           name: 'George Clooney',
           photo_path: 'images/artists/george-clooney.jpg',
-          tags: 'cubist, geometry',
-        } as Artist,
+          tags: 'cubist, geometry'
+        } as unknown as IArtist
       ];
 
       component.artistForm.clearAsyncValidators();

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 
-import { Artist, ITag } from '../../../model/models';
+import { IArtist, ITag } from '../../../model/models';
 import { Card } from '../../../shared/components/card/card';
 import { DataService } from '../../../service/data-service';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -25,8 +25,8 @@ export class ArtistList implements OnInit, OnDestroy {
   headerData = new HeaderActions('artist-list', 'Artists', [], []);
   footerData = new FooterActions([new AddButton('Add Artist', this.goToAddArtist)]);
 
-  artists: Artist[] = [];
-  artists$: Observable<Artist[]> | undefined;
+  artists: IArtist[] = [];
+  artists$: Observable<IArtist[]> | undefined;
 
   private readonly destroy$ = new Subject<void>();
 
@@ -40,7 +40,7 @@ export class ArtistList implements OnInit, OnDestroy {
   }
 
   getCombinedData$(): Observable<{
-    artists: Artist[];
+    artists: IArtist[];
     tags: ITag[];
   }> {
     return combineLatest({

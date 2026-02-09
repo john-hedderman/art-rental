@@ -3,11 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { combineLatest, Observable, ReplaySubject, Subject, takeUntil } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { Art, Artist, Client, Contact, Job, Site, ITag } from '../model/models';
+import { Art, IArtist, Client, Contact, Job, Site, ITag } from '../model/models';
 
 type Source = {
   art: Observable<Art[]>;
-  artists: Observable<Artist[]>;
+  artists: Observable<IArtist[]>;
   clients: Observable<Client[]>;
   jobs: Observable<Job[]>;
   contacts: Observable<Contact[]>;
@@ -22,7 +22,7 @@ export class DataService implements OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   public art$: ReplaySubject<Art[]> = new ReplaySubject(1);
-  public artists$: ReplaySubject<Artist[]> = new ReplaySubject(1);
+  public artists$: ReplaySubject<IArtist[]> = new ReplaySubject(1);
   public clients$: ReplaySubject<Client[]> = new ReplaySubject(1);
   public contacts$: ReplaySubject<Contact[]> = new ReplaySubject(1);
   public jobs$: ReplaySubject<Job[]> = new ReplaySubject(1);
@@ -39,7 +39,7 @@ export class DataService implements OnDestroy {
       if (coll === 'art') {
         source[coll] = this.loadData<Art>(coll);
       } else if (coll === 'artists') {
-        source[coll] = this.loadData<Artist>(coll);
+        source[coll] = this.loadData<IArtist>(coll);
       } else if (coll === 'clients') {
         source[coll] = this.loadData<Client>(coll);
       } else if (coll === 'contacts') {

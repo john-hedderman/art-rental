@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, distinctUntilChanged, map, Observable, Subject, takeUntil } from 'rxjs';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { Artist, ITag } from '../../../model/models';
+import { IArtist, ITag } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
@@ -56,7 +56,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
-  artist: Artist = {} as Artist;
+  artist: IArtist = {} as IArtist;
   artistId = 0;
   tags: ITag[] = [];
 
@@ -244,7 +244,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
 
   getCombinedData$(): Observable<{
     artistId: number;
-    artists: Artist[];
+    artists: IArtist[];
     tags: ITag[];
   }> {
     return combineLatest({

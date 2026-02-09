@@ -6,12 +6,12 @@ export interface Art {
   tag_ids: number[];
   tags?: ITag[];
   artist_id: number;
-  artist?: Artist;
+  artist?: IArtist;
   job_id: number;
   job?: Job;
 }
 
-export interface Artist {
+export interface IArtist {
   artist_id: number;
   name: string;
   photo_path: string;
@@ -109,6 +109,6 @@ export interface ITag {
   art_ids: number[];
   art?: Art[];
   artist_ids: number[];
-  artists?: Artist[];
-  [key: string]: number | string | number[] | Art[] | Artist[] | undefined;
+  artists?: IArtist[];
+  [key: string]: number | string | number[] | Art[] | IArtist[] | undefined;
 }
