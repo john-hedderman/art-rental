@@ -5,7 +5,7 @@ import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { IClient, Job, Site } from '../../../model/models';
+import { IClient, IJob, Site } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/buttons/save-button';
@@ -34,13 +34,13 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
   submitted = false;
 
   clients$: Observable<IClient[]> | undefined;
-  jobs$: Observable<Job[]> | undefined;
+  jobs$: Observable<IJob[]> | undefined;
 
   clients: IClient[] = [];
 
   saveStatus = '';
 
-  jobs: Job[] = [];
+  jobs: IJob[] = [];
 
   dbData: Site = {} as Site;
 
@@ -214,7 +214,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
 
   getCombinedData$(): Observable<{
     clients: IClient[];
-    jobs: Job[];
+    jobs: IJob[];
   }> {
     return combineLatest({
       clients: this.dataService.clients$,

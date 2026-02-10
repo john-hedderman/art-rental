@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 
-import { IArt, IArtist, Job } from '../../../model/models';
+import { IArt, IArtist, IJob } from '../../../model/models';
 import * as Const from '../../../constants';
 import { DataService } from '../../../service/data-service';
 
@@ -18,7 +18,7 @@ export class ArtThumbnailCard implements OnInit, OnDestroy, AfterViewInit {
   @Input() draggable = true;
 
   art: IArt | undefined;
-  job: Job | undefined;
+  job: IJob | undefined;
 
   private readonly destroy$ = new Subject<void>();
 
@@ -63,7 +63,7 @@ export class ArtThumbnailCard implements OnInit, OnDestroy, AfterViewInit {
   getCombinedData$(): Observable<{
     art: IArt[];
     artists: IArtist[];
-    jobs: Job[];
+    jobs: IJob[];
   }> {
     return combineLatest({
       art: this.dataService.art$,

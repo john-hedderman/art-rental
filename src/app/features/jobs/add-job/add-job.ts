@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { IArt, IClient, IContact, Job, Site } from '../../../model/models';
+import { IArt, IClient, IContact, IJob, Site } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -35,7 +35,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
   editMode = false;
   jobId!: number;
 
-  dbData: Job = {} as Job;
+  dbData: IJob = {} as IJob;
   contactsDBData: IContact[] = [];
 
   clients: IClient[] = [];
@@ -166,7 +166,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
   resetForm() {
     this.submitted = false;
     if (this.editMode) {
-      this.populateForm<Job>(Collections.Jobs, 'job_id', this.jobId);
+      this.populateForm<IJob>(Collections.Jobs, 'job_id', this.jobId);
     } else {
       this.clearForm();
     }
@@ -325,7 +325,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     });
 
     if (this.editMode) {
-      this.populateForm<Job>(Collections.Jobs, 'job_id', this.jobId);
+      this.populateForm<IJob>(Collections.Jobs, 'job_id', this.jobId);
     }
   }
 

@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 
 import { AddSite } from './add-site';
-import { IClient, Job, Site } from '../../../model/models';
+import { IClient, IJob, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -37,7 +37,7 @@ const mockDataService = {
     mockClient,
     { client_id: 5, name: 'Funny Farm' }
   ] as IClient[]),
-  jobs$: of([{ job_id: 20 }, { job_id: 30 }, mockJob] as Job[]),
+  jobs$: of([{ job_id: 20 }, { job_id: 30 }, mockJob] as IJob[]),
   saveDocument: () => Promise.resolve({ modifiedCount: 1 }),
   reloadData: () => {}
 };

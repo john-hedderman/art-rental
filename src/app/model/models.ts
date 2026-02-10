@@ -8,7 +8,7 @@ export interface IArt {
   artist_id: number;
   artist?: IArtist;
   job_id: number;
-  job?: Job;
+  job?: IJob;
 }
 
 export interface IArtist {
@@ -33,10 +33,10 @@ export interface IClient {
   site_ids: number[];
   sites?: Site[];
   job_ids: number[];
-  jobs?: Job[];
+  jobs?: IJob[];
 }
 
-export interface Job {
+export interface IJob {
   job_id: number;
   job_number: string;
   client_id: number;
@@ -71,7 +71,7 @@ export interface Site {
   client_id: number;
   client?: IClient;
   job_id: number;
-  job?: Job;
+  job?: IJob;
 }
 
 export interface HeaderData {

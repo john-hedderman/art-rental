@@ -7,7 +7,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { AddArt } from './add-art';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
-import { IArt, Job } from '../../../model/models';
+import { IArt, IJob } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Util } from '../../../shared/util/util';
 import { of } from 'rxjs';
@@ -193,7 +193,7 @@ describe('AddArt', () => {
     });
 
     it('should fail saving the old job if it cannot be found in the database', async () => {
-      component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3 }] as Job[];
+      component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3 }] as IJob[];
       component.dbData = {
         job_id: 99
       } as IArt;
@@ -203,7 +203,7 @@ describe('AddArt', () => {
 
     it('should successfully save the old job if something was modified in the database', async () => {
       component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 1 });
-      component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3, art_ids: [5, 6, 7] }] as Job[];
+      component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3, art_ids: [5, 6, 7] }] as IJob[];
       component.dbData = {
         job_id: 3
       } as IArt;
@@ -218,7 +218,7 @@ describe('AddArt', () => {
 
     it('should fail to save the old job if nothing was modified in the database', async () => {
       component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 0 });
-      component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3, art_ids: [5, 6, 7] }] as Job[];
+      component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3, art_ids: [5, 6, 7] }] as IJob[];
       component.dbData = {
         job_id: 3
       } as IArt;
@@ -259,7 +259,7 @@ describe('AddArt', () => {
     });
 
     it('should fail to save the new job if it cannot be found in the database', async () => {
-      component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3 }] as Job[];
+      component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3 }] as IJob[];
       component.artForm = {
         value: {
           job_id: 4
@@ -271,7 +271,7 @@ describe('AddArt', () => {
 
     it('should fail to save the new job if nothing was ultimately modified in the database', async () => {
       component.dataService.saveDocument = () => Promise.resolve({ modifiedCount: 0 });
-      component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3, art_ids: [5, 6, 7] }] as Job[];
+      component.jobs = [{ job_id: 1 }, { job_id: 2 }, { job_id: 3, art_ids: [5, 6, 7] }] as IJob[];
       component.dbData = {
         job_id: 4
       } as IArt;

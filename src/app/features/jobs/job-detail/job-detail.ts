@@ -4,7 +4,7 @@ import { AsyncPipe } from '@angular/common';
 import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { IArt, IClient, IContact, Job, Site } from '../../../model/models';
+import { IArt, IClient, IContact, IJob, Site } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Util } from '../../../shared/util/util';
 import { ContactsTable } from '../../../shared/components/contacts-table/contacts-table';
@@ -68,16 +68,16 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
   jobId = 0;
   clientId: number | undefined = 0;
 
-  job$: Observable<Job> | undefined;
+  job$: Observable<IJob> | undefined;
   art$: Observable<IArt[]> | undefined;
 
   rows: IContact[] = [];
   columns: TableColumn[] = [];
 
-  job: Job | undefined;
+  job: IJob | undefined;
   artwork: IArt[] = [];
   clients: IClient[] = [];
-  jobs: Job[] = [];
+  jobs: IJob[] = [];
   sites: Site[] = [];
 
   deleteStatus = '';
@@ -292,7 +292,7 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
     artwork: IArt[];
     clients: IClient[];
     contacts: IContact[];
-    jobs: Job[];
+    jobs: IJob[];
     sites: Site[];
   }> {
     return combineLatest({

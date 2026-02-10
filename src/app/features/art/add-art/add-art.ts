@@ -6,7 +6,7 @@ import { AsyncPipe } from '@angular/common';
 
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { IArt, IArtist, IClient, Job, Site } from '../../../model/models';
+import { IArt, IArtist, IClient, IJob, Site } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -38,9 +38,9 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
   saveStatus = '';
 
   artists$: Observable<IArtist[]> | undefined;
-  jobs$: Observable<Job[]> | undefined;
+  jobs$: Observable<IJob[]> | undefined;
 
-  jobs: Job[] = [];
+  jobs: IJob[] = [];
 
   dbData: IArt = {} as IArt;
 
@@ -250,7 +250,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
 
   getCombinedData$(): Observable<{
     artists: IArtist[];
-    jobs: Job[];
+    jobs: IJob[];
     clients: IClient[];
     sites: Site[];
   }> {

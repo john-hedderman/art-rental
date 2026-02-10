@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
-import { IArt, IArtist, IClient, Job, Site } from '../../../model/models';
+import { IArt, IArtist, IClient, IJob, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import { JobCard } from '../../../shared/components/job-card/job-card';
@@ -40,10 +40,10 @@ export class JobList implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   art$: Observable<IArt[]> | undefined;
-  jobs$: Observable<Job[]> | undefined;
+  jobs$: Observable<IJob[]> | undefined;
 
-  jobs: Job[] = [];
-  filteredJobs: Job[] = [];
+  jobs: IJob[] = [];
+  filteredJobs: IJob[] = [];
 
   selectedClientId = 'All';
   clients: IClient[] = [];
@@ -93,7 +93,7 @@ export class JobList implements OnInit, OnDestroy {
     return artist.artist_id;
   }
 
-  trackByJobId(job: Job) {
+  trackByJobId(job: IJob) {
     return job.job_id;
   }
 
@@ -152,7 +152,7 @@ export class JobList implements OnInit, OnDestroy {
     art: IArt[];
     artists: IArtist[];
     clients: IClient[];
-    jobs: Job[];
+    jobs: IJob[];
     sites: Site[];
   }> {
     return combineLatest({

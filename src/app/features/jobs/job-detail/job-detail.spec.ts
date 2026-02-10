@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 
 import { JobDetail } from './job-detail';
-import { IArt, IClient, IContact, Job, Site } from '../../../model/models';
+import { IArt, IClient, IContact, IJob, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -28,9 +28,9 @@ const mockJob = {
   art_ids: [11, 12]
 };
 
-const mockJobsNoWarehouse = of([{ job_id: 20 }, { job_id: 30 }, mockJob] as Job[]);
+const mockJobsNoWarehouse = of([{ job_id: 20 }, { job_id: 30 }, mockJob] as IJob[]);
 
-const mockJobs = of([mockWarehouse, { job_id: 20 }, { job_id: 30 }, mockJob] as Job[]);
+const mockJobs = of([mockWarehouse, { job_id: 20 }, { job_id: 30 }, mockJob] as IJob[]);
 
 const mockArtwork = of([
   { art_id: 10 },

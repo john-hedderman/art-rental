@@ -2,7 +2,7 @@ import { Injectable, OnDestroy, signal } from '@angular/core';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
-import { IArt, Job } from '../model/models';
+import { IArt, IJob } from '../model/models';
 import { DataService } from './data-service';
 import * as Const from '../constants';
 import * as Msgs from '../shared/strings';
@@ -21,11 +21,11 @@ export class ArtAssignmentService implements OnDestroy {
   private _assignedArt = signal<any>({ art: {}, oldJob: {}, newJob: {} });
   public assignedArt$: Observable<any> = toObservable(this._assignedArt);
 
-  public assignArt(art: IArt | undefined, oldJob: Job | undefined, newJob: Job | undefined) {
+  public assignArt(art: IArt | undefined, oldJob: IJob | undefined, newJob: IJob | undefined) {
     this._assignedArt.set({ art, oldJob, newJob });
   }
 
-  async updateArt(art: IArt | undefined, newJob: Job | undefined): Promise<string> {
+  async updateArt(art: IArt | undefined, newJob: IJob | undefined): Promise<string> {
     let result = Const.SUCCESS;
     let modifiedArt = { ...art };
     try {
@@ -48,7 +48,7 @@ export class ArtAssignmentService implements OnDestroy {
     return result;
   }
 
-  async updateOldJob(art: IArt | undefined, oldJob: Job | undefined): Promise<string> {
+  async updateOldJob(art: IArt | undefined, oldJob: IJob | undefined): Promise<string> {
     let result = Const.SUCCESS;
     let modifiedJob = { ...oldJob };
     try {
@@ -75,9 +75,9 @@ export class ArtAssignmentService implements OnDestroy {
     return result;
   }
 
-  async updateNewJob(art: IArt, newJob: Job): Promise<string> {
+  async updateNewJob(art: IArt, newJob: IJob): Promise<string> {
     let result = Const.SUCCESS;
-    let modifiedJob: Job = { ...newJob };
+    let modifiedJob: IJob = { ...newJob };
     try {
       const art_ids = modifiedJob.art_ids || [];
       art_ids.push(art.art_id);
@@ -101,7 +101,7 @@ export class ArtAssignmentService implements OnDestroy {
     return result;
   }
 
-  async save(art: IArt, oldJob: Job, newJob: Job): Promise<string> {
+  async save(art: IArt, oldJob: IJob, newJob: IJob): Promise<string> {
     const artStatus = await this.updateArt(art, newJob);
     const oldJobStatus = await this.updateOldJob(art, oldJob);
     const newJobStatus = await this.updateNewJob(art, newJob);

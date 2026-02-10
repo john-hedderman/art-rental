@@ -10,7 +10,7 @@ import {
 } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { IArt, IArtist, IClient, Job, Site } from '../../../model/models';
+import { IArt, IArtist, IClient, IJob, Site } from '../../../model/models';
 import { ArtThumbnailCard } from '../art-thumbnail-card/art-thumbnail-card';
 import * as Const from '../../../constants';
 import { ArtAssignmentService } from '../../../service/art-assignment-service';
@@ -37,7 +37,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
 
   cardFooterContent = '';
 
-  job: Job | undefined;
+  job: IJob | undefined;
 
   artwork: IArt[] = [];
   artwork$!: Observable<IArt[]>;
@@ -101,7 +101,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
     el.removeEventListener('drop', this.onDrop.bind(this));
   }
 
-  getDetailedJob(jobs: Job[], clients: IClient[], sites: Site[]): Job {
+  getDetailedJob(jobs: IJob[], clients: IClient[], sites: Site[]): IJob {
     const job = jobs.find((job) => job.job_id === this.job_id);
     if (job) {
       job.client = clients.find((client) => client.client_id === job.client_id);
@@ -109,11 +109,11 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
       job.art_ids = job.art_ids || [];
       return job;
     } else {
-      return {} as Job;
+      return {} as IJob;
     }
   }
 
-  createCardFooterContent(job: Job): string {
+  createCardFooterContent(job: IJob): string {
     const client = job.client?.name || 'client TBD';
     const site = job.site?.name || 'site TBD';
     return job.job_number === Const.WAREHOUSE_JOB_NUMBER
@@ -186,7 +186,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
     art: IArt[];
     artists: IArtist[];
     clients: IClient[];
-    jobs: Job[];
+    jobs: IJob[];
     sites: Site[];
   }> {
     return combineLatest({

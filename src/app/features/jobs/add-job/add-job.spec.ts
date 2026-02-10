@@ -7,7 +7,7 @@ import { FormGroup } from '@angular/forms';
 
 import { AddJob } from './add-job';
 import { DataService } from '../../../service/data-service';
-import { IClient, IContact, Job } from '../../../model/models';
+import { IClient, IContact, IJob } from '../../../model/models';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
 import { Util } from '../../../shared/util/util';
@@ -311,7 +311,7 @@ describe('AddJob', () => {
           site_id: 11,
           contact_ids: [6],
           art_ids: [40]
-        } as Job
+        } as IJob
       ];
 
       component.postSave('job');

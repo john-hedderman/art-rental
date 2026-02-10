@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { BehaviorSubject, of, ReplaySubject } from 'rxjs';
 
 import { SiteDetail } from './site-detail';
-import { IClient, Job, Site } from '../../../model/models';
+import { IClient, IJob, Site } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -27,7 +27,7 @@ const mockJob = {
   art_ids: [11, 12]
 };
 
-const mockJobs = of([{ job_id: 20 }, { job_id: 30 }, mockJob] as Job[]);
+const mockJobs = of([{ job_id: 20 }, { job_id: 30 }, mockJob] as IJob[]);
 
 const mockDataService = {
   clients$: of([
@@ -120,7 +120,7 @@ describe('SiteDetail', () => {
       tick(1000);
       fixture.detectChanges();
 
-      mockDataService.jobs$ = new ReplaySubject<Job[]>(undefined);
+      mockDataService.jobs$ = new ReplaySubject<IJob[]>(undefined);
       const siteNameEl = fixture.nativeElement.querySelector('.ar-site-detail__job-number');
       expect(siteNameEl.innerHTML).toContain('TBD');
     }));

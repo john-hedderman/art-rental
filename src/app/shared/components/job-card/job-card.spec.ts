@@ -3,13 +3,13 @@ import { provideHttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 
 import { JobCard } from './job-card';
-import { IArt, Job } from '../../../model/models';
+import { IArt, IJob } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 
 const mockArt = { art_id: 1, job_id: 11, artist_id: 4, title: 'Wonder Art' } as IArt;
-const mockJob = { job_id: 11, client_id: 8, site_id: 15, job_number: '000007' } as Job;
-const mockWarehouse = { job_id: 1, job_number: 'No job', art_ids: [1, 2, 3] } as Job;
+const mockJob = { job_id: 11, client_id: 8, site_id: 15, job_number: '000007' } as IJob;
+const mockWarehouse = { job_id: 1, job_number: 'No job', art_ids: [1, 2, 3] } as IJob;
 
 const mockDataService = {
   art$: of([mockArt, { art_id: 2, job_id: 12 }, { art_id: 3 }]),
@@ -137,9 +137,9 @@ describe('JobCard', () => {
   });
 
   describe('Save art assignment', () => {
-    const updateArt = (art: IArt, oldJob: Job, newJob: Job) => Promise.resolve(Const.SUCCESS);
-    const updateOldJob = (art: IArt, newJob: Job) => Promise.resolve(Const.SUCCESS);
-    const updateNewJob = (art: IArt, newJob: Job) => Promise.resolve(Const.SUCCESS);
+    const updateArt = (art: IArt, oldJob: IJob, newJob: IJob) => Promise.resolve(Const.SUCCESS);
+    const updateOldJob = (art: IArt, newJob: IJob) => Promise.resolve(Const.SUCCESS);
+    const updateNewJob = (art: IArt, newJob: IJob) => Promise.resolve(Const.SUCCESS);
 
     it('should attempt to save an art assignment to the database', fakeAsync(() => {
       const saveSpy = spyOn(component['artAssignmentService'], 'save');

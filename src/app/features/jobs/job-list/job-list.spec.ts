@@ -3,7 +3,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { JobList } from './job-list';
 import { provideHttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { IArt, Job } from '../../../model/models';
+import { IArt, IJob } from '../../../model/models';
 
 const mockArtObservable: Observable<IArt[]> = of([
   {
@@ -17,7 +17,7 @@ const mockArtObservable: Observable<IArt[]> = of([
   }
 ] as unknown as IArt[]);
 
-const mockJobsObservable: Observable<Job[]> = of([
+const mockJobsObservable: Observable<IJob[]> = of([
   {
     job_id: 1,
     job_number: '000005',
