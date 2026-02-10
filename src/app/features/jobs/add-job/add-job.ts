@@ -236,8 +236,11 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     const menu = document.getElementById('site_id') as HTMLSelectElement;
     let newOption = new Option('Select a job site...', '');
     menu?.add(newOption);
-    newOption = new Option('TBD', '0');
+    newOption = new Option('TBD', '1');
     menu?.add(newOption);
+    if (this.editMode) {
+      menu.value = this.dbData.site_id.toString();
+    }
     const clientSites = this.sites.filter((site) => site.client_id === this.clientId);
     for (const clientSite of clientSites) {
       newOption = new Option(clientSite.name, clientSite.site_id.toString());
@@ -288,7 +291,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
         option.selected = false;
       }
     }
-    if (!contactsAssigned) {
+    if (!contactsAssigned && contactsSelectEl.options[0]) {
       contactsSelectEl.options[0].selected = true;
     }
     contactsSelectEl.dispatchEvent(new Event('change'));
