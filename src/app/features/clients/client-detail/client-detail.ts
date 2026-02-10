@@ -76,6 +76,8 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
 
+  SITE_TBD_NAME = Const.SITE_TBD_NAME;
+
   private readonly destroy$ = new Subject<void>();
 
   override preDelete(): void {}
