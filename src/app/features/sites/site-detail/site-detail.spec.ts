@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { BehaviorSubject, of, ReplaySubject } from 'rxjs';
 
 import { SiteDetail } from './site-detail';
-import { IClient, IJob, Site } from '../../../model/models';
+import { IClient, IJob, ISite } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -16,7 +16,7 @@ const mockSites = of([
   mockSite,
   { site_id: 101, client_id: 3, job_id: 0 },
   { site_id: 102, job_id: 0 }
-] as Site[]);
+] as ISite[]);
 
 const mockJob = {
   job_id: 40,
@@ -110,7 +110,7 @@ describe('SiteDetail', () => {
     });
 
     it('should display the job number if assigned to a job', fakeAsync(() => {
-      mockDataService.sites$ = of([mockSite] as Site[]);
+      mockDataService.sites$ = of([mockSite] as ISite[]);
       const siteNameEl = fixture.nativeElement.querySelector('.ar-site-detail__job-number');
       expect(siteNameEl.innerHTML).toBe('007');
     }));

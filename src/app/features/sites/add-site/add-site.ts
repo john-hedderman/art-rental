@@ -5,7 +5,7 @@ import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { IClient, IJob, Site } from '../../../model/models';
+import { IClient, IJob, ISite } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { SaveButton } from '../../../shared/buttons/save-button';
@@ -42,7 +42,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
 
   jobs: IJob[] = [];
 
-  dbData: Site = {} as Site;
+  dbData: ISite = {} as ISite;
 
   siteId!: number;
   editMode = false;
@@ -153,7 +153,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
   resetForm() {
     this.submitted = false;
     if (this.editMode) {
-      this.populateForm<Site>(Collections.Sites, 'site_id', this.siteId);
+      this.populateForm<ISite>(Collections.Sites, 'site_id', this.siteId);
     } else {
       this.clearForm();
     }
@@ -208,7 +208,7 @@ export class AddSite extends AddBase implements OnInit, OnDestroy {
     });
 
     if (this.editMode) {
-      this.populateForm<Site>(Collections.Sites, 'site_id', this.siteId);
+      this.populateForm<ISite>(Collections.Sites, 'site_id', this.siteId);
     }
   }
 

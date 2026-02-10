@@ -31,7 +31,7 @@ export interface IClient {
   contact_ids: number[];
   contacts?: IContact[];
   site_ids: number[];
-  sites?: Site[];
+  sites?: ISite[];
   job_ids: number[];
   jobs?: IJob[];
 }
@@ -42,7 +42,7 @@ export interface IJob {
   client_id: number;
   client?: IClient;
   site_id: number;
-  site?: Site;
+  site?: ISite;
   contact_ids: number[];
   contacts?: IContact[];
   art_ids: number[];
@@ -60,7 +60,7 @@ export interface IContact {
   client?: IClient;
 }
 
-export interface Site {
+export interface ISite {
   site_id: number;
   name: string;
   address1: string;

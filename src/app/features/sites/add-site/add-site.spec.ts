@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 
 import { AddSite } from './add-site';
-import { IClient, IJob, Site } from '../../../model/models';
+import { IClient, IJob, ISite } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -283,7 +283,7 @@ describe('AddSite', () => {
           name: 'Auditorium',
           client_id: 3,
           job_id: 40
-        } as Site
+        } as ISite
       ];
 
       component.postSave('site');

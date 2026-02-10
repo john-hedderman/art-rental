@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { IArt, IArtist, IClient, IJob, Site, ITag } from '../../../model/models';
+import { IArt, IArtist, IClient, IJob, ISite, ITag } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
@@ -236,7 +236,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
     artists: IArtist[];
     clients: IClient[];
     jobs: IJob[];
-    sites: Site[];
+    sites: ISite[];
     tags: ITag[];
   }> {
     return combineLatest({

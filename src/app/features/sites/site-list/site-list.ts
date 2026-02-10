@@ -4,7 +4,7 @@ import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } f
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { IClient, Site } from '../../../model/models';
+import { IClient, ISite } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
@@ -23,7 +23,7 @@ import * as Const from '../../../constants';
   }
 })
 export class SiteList implements OnInit, OnDestroy {
-  @ViewChild('sitesTable') table!: DatatableComponent<Site>;
+  @ViewChild('sitesTable') table!: DatatableComponent<ISite>;
   @ViewChild('arrowTemplate', { static: true }) arrowTemplate!: TemplateRef<any>;
   @ViewChild('clientNameTemplate', { static: true }) clientNameTemplate!: TemplateRef<any>;
   @ViewChild('clientNameHeaderTemplate', { static: true })
@@ -37,13 +37,13 @@ export class SiteList implements OnInit, OnDestroy {
   headerData = new HeaderActions('site-list', 'Sites', [], []);
   footerData = new FooterActions([new AddButton('Add Site', this.goToAddSite)]);
 
-  rows: Site[] = [];
+  rows: ISite[] = [];
   columns: TableColumn[] = [];
   expanded: any = {};
 
   private readonly destroy$ = new Subject<void>();
 
-  toggleExpandRow(row: Site) {
+  toggleExpandRow(row: ISite) {
     this.table.rowDetail!.toggleExpandRow(row);
   }
 
@@ -110,7 +110,7 @@ export class SiteList implements OnInit, OnDestroy {
 
   getCombinedData$(): Observable<{
     clients: IClient[];
-    sites: Site[];
+    sites: ISite[];
   }> {
     return combineLatest({
       clients: this.dataService.clients$,

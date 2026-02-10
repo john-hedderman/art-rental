@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
-import { IClient, IContact, IJob, Site } from '../../../model/models';
+import { IClient, IContact, IJob, ISite } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { ContactsTable } from '../../../shared/components/contacts-table/contacts-table';
 import { Collections } from '../../../shared/enums/collections';
@@ -61,7 +61,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
 
   client$: Observable<IClient> | undefined;
   jobs$: Observable<IJob[]> | undefined;
-  sites$: Observable<Site[]> | undefined;
+  sites$: Observable<ISite[]> | undefined;
 
   rows: IContact[] = [];
   columns: TableColumn[] = [];
@@ -191,7 +191,7 @@ export class ClientDetail extends DetailBase implements OnInit, OnDestroy {
     clients: IClient[];
     contacts: IContact[];
     jobs: IJob[];
-    sites: Site[];
+    sites: ISite[];
   }> {
     return combineLatest({
       clientId: this.getClientId(),

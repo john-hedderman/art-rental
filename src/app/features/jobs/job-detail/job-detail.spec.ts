@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 
 import { JobDetail } from './job-detail';
-import { IArt, IClient, IContact, IJob, Site } from '../../../model/models';
+import { IArt, IClient, IContact, IJob, ISite } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import * as Msgs from '../../../shared/strings';
@@ -44,7 +44,7 @@ const mockSites = of([
   { site_id: 100, name: 'Auditorium', client_id: 3, job_id: 40 },
   { site_id: 101, client_id: 3, job_id: 0 },
   { site_id: 102, job_id: 0 }
-] as Site[]);
+] as ISite[]);
 
 const mockDataService = {
   art$: mockArtwork,
@@ -311,7 +311,7 @@ describe('JobDetail', () => {
       });
 
       it('should fail to update the site if it cannot be found in the database', fakeAsync(async () => {
-        mockDataService.sites$ = of([{ site_id: 1, job_id: 1 }] as Site[]);
+        mockDataService.sites$ = of([{ site_id: 1, job_id: 1 }] as ISite[]);
         component.init();
         tick(1000);
         const updateSiteResult = await component.updateSite();

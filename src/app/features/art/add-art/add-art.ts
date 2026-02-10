@@ -6,7 +6,7 @@ import { AsyncPipe } from '@angular/common';
 
 import { AddBase } from '../../../shared/components/base/add-base/add-base';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { IArt, IArtist, IClient, IJob, Site } from '../../../model/models';
+import { IArt, IArtist, IClient, IJob, ISite } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -252,7 +252,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
     artists: IArtist[];
     jobs: IJob[];
     clients: IClient[];
-    sites: Site[];
+    sites: ISite[];
   }> {
     return combineLatest({
       artists: this.dataService.artists$,

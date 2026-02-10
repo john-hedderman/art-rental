@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
-import { IArt, IClient, IContact, IJob, Site } from '../../../model/models';
+import { IArt, IClient, IContact, IJob, ISite } from '../../../model/models';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { Collections } from '../../../shared/enums/collections';
 import { ActionLink, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -39,12 +39,12 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
   contactsDBData: IContact[] = [];
 
   clients: IClient[] = [];
-  sites: Site[] = [];
+  sites: ISite[] = [];
   contacts: IContact[] = [];
   art: IArt[] = [];
 
   clients$: Observable<IClient[]> | undefined;
-  sites$: Observable<Site[]> | undefined;
+  sites$: Observable<ISite[]> | undefined;
   contacts$: Observable<IContact[]> | undefined;
   art$: Observable<IArt[]> | undefined;
 
@@ -333,7 +333,7 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
     art: IArt[];
     clients: IClient[];
     contacts: IContact[];
-    sites: Site[];
+    sites: ISite[];
   }> {
     return combineLatest({
       art: this.dataService.art$,

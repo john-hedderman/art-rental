@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
-import { IArt, IArtist, IClient, IJob, Site } from '../../../model/models';
+import { IArt, IArtist, IClient, IJob, ISite } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
 import { JobCard } from '../../../shared/components/job-card/job-card';
@@ -48,8 +48,8 @@ export class JobList implements OnInit, OnDestroy {
   selectedClientId = 'All';
   clients: IClient[] = [];
   selectedSiteId = 'All';
-  sites: Site[] = [];
-  filteredSites: Site[] = [];
+  sites: ISite[] = [];
+  filteredSites: ISite[] = [];
   artists: IArtist[] = [];
 
   WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
@@ -101,7 +101,7 @@ export class JobList implements OnInit, OnDestroy {
     return client.client_id;
   }
 
-  trackBySiteId(site: Site) {
+  trackBySiteId(site: ISite) {
     return site.site_id;
   }
 
@@ -153,7 +153,7 @@ export class JobList implements OnInit, OnDestroy {
     artists: IArtist[];
     clients: IClient[];
     jobs: IJob[];
-    sites: Site[];
+    sites: ISite[];
   }> {
     return combineLatest({
       art: this.dataService.art$,

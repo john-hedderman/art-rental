@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 
 import { SiteList } from './site-list';
 import { provideHttpClient } from '@angular/common/http';
-import { IClient, Site } from '../../../model/models';
+import { IClient, ISite } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Router } from '@angular/router';
 
@@ -23,7 +23,7 @@ const mockSites = of([
   { site_id: 100, name: 'Auditorium', client_id: 3, job_id: 40 },
   { site_id: 101, client_id: 3, job_id: 0 },
   { site_id: 102, job_id: 0 }
-] as Site[]);
+] as ISite[]);
 
 const mockDataService = {
   clients$: mockClients,
