@@ -128,8 +128,8 @@ export class AddJob extends AddBase implements OnInit, OnDestroy {
 
   async updateSite(): Promise<string> {
     const formData = this.jobForm.value;
-    if (formData.site_id === Const.TBD) {
-      return Const.SUCCESS; // site is TBD
+    if (formData.site_id === Const.SITE_TBD_ID) {
+      return Const.SUCCESS;
     }
     const site = this.sites.find((site) => site.site_id === formData.site_id);
     if (!site) {

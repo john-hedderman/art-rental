@@ -230,7 +230,7 @@ describe('AddJob', () => {
     it('should skip saving the site if it is TBD', async () => {
       component.jobForm = {
         value: {
-          site_id: Const.TBD
+          site_id: Const.SITE_TBD_ID
         }
       } as FormGroup;
       const saveSiteResult = await component.updateSite();

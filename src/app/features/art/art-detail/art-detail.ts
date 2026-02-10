@@ -67,7 +67,7 @@ export class ArtDetail extends DetailBase implements OnInit, OnDestroy {
   readonly OP_SUCCESS = Const.SUCCESS;
   readonly OP_FAILURE = Const.FAILURE;
   WAREHOUSE_JOB_NUMBER = Const.WAREHOUSE_JOB_NUMBER;
-  NO_SITE = Const.NO_SITE;
+  SITE_TBD_ID = Const.SITE_TBD_ID;
 
   private readonly destroy$ = new Subject<void>();
 

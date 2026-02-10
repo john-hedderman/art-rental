@@ -105,7 +105,7 @@ export class SiteDetail extends DetailBase implements OnInit, OnDestroy {
     }
     let result = Const.SUCCESS;
     try {
-      job.site_id = Const.NO_SITE;
+      job.site_id = Const.SITE_TBD_ID;
       delete (job as any)._id;
       const data = await this.dataService.saveDocument(job, Collections.Jobs, job.job_id, 'job_id');
       if (data.modifiedCount === 0) {

@@ -40,7 +40,7 @@
               </p>
               <p><span class="fw-bold">Client: </span>{{ art.job.client?.name }}</p>
               @if (art.job.site) {
-                @if (art.job.site.site_id !== NO_SITE) {
+                @if (art.job.site.site_id !== SITE_TBD_ID) {
                   <p class="fw-bold mb-0">Site:</p>
                   <p class="mb-0">{{ art.job.site.name }}</p>
                   <p class="mb-0">{{ art.job.site.address1 }}</p>

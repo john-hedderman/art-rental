@@ -177,8 +177,8 @@ export class JobDetail extends DetailBase implements OnInit, OnDestroy {
   }
 
   async updateSite(): Promise<string> {
-    if (this.job?.site_id === 0) {
-      return Const.SUCCESS; // site is TBD
+    if (this.job?.site_id === Const.SITE_TBD_ID) {
+      return Const.SUCCESS;
     }
     const site = this.sites.find((site) => site.job_id === this.jobId);
     if (!site) {

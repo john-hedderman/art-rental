@@ -305,7 +305,7 @@ describe('JobDetail', () => {
       });
 
       it('should skip updating the site if it is TBD', async () => {
-        component.job!.site_id = Const.TBD;
+        component.job!.site_id = Const.SITE_TBD_ID;
         const updateSiteResult = await component.updateSite();
         expect(updateSiteResult).toBe(Const.SUCCESS);
       });

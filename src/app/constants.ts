@@ -7,8 +7,9 @@ export const SUCCESS = 'success';
 export const FAILURE = 'failure';
 
 export const NO_JOB = 1;
-export const NO_SITE = 0;
-export const TBD = 0;
+
+export const SITE_TBD_ID = 1;
+export const SITE_TBD_NAME = 'Site TBD';
 
 export const STD_DELAY = 1500;
 export const CLEAR_ERROR_DELAY = 3000;

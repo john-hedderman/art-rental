@@ -53,7 +53,7 @@ export class JobList implements OnInit, OnDestroy {
   artists: IArtist[] = [];
 
   WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
-  TBD = Const.TBD;
+  SITE_TBD_ID = Const.SITE_TBD_ID;
 
   searchArtControl: FormControl = new FormControl('');
   searchArtString$!: Observable<string>;
@@ -68,7 +68,7 @@ export class JobList implements OnInit, OnDestroy {
       this.filteredSites = this.sites;
     } else {
       this.filteredSites = this.sites.filter((site) => site.client_id === +this.selectedClientId);
-      if (this.selectedSiteId !== 'All' && +this.selectedSiteId !== Const.TBD) {
+      if (this.selectedSiteId !== 'All' && +this.selectedSiteId !== Const.SITE_TBD_ID) {
         this.selectedSiteId = 'All';
       }
     }
@@ -109,7 +109,7 @@ export class JobList implements OnInit, OnDestroy {
     this.getCombinedData$().subscribe(({ art, artists, clients, jobs, sites }) => {
       this.artists = artists;
       this.clients = clients;
-      this.sites = sites.filter((site) => site.site_id !== Const.TBD);
+      this.sites = sites.filter((site) => site.site_id !== Const.SITE_TBD_ID);
 
       this.art$ = of(art);
       const validJobs = jobs
