@@ -65,7 +65,7 @@ export class JobList implements OnInit, OnDestroy {
 
   onSelectClient() {
     if (this.selectedClientId === 'All') {
-      this.filteredSites = this.sites;
+      this.filteredSites = this.sites.filter((site) => site.site_id !== Const.WAREHOUSE_SITE_ID);
     } else {
       this.filteredSites = this.sites.filter((site) => site.client_id === +this.selectedClientId);
       if (this.selectedSiteId !== 'All' && +this.selectedSiteId !== Const.SITE_TBD_ID) {
