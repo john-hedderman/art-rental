@@ -73,6 +73,9 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
   mergeContactIds(clientFormData: any): any {
     const { contacts, ...allButContacts } = clientFormData;
     const contact_ids = contacts.map((contact: IContact) => contact.contact_id);
+    if (this.editMode) {
+      return { ...allButContacts, contact_ids };
+    }
     return { ...allButContacts, contact_ids, job_ids: [], site_ids: [] };
   }
 
@@ -220,6 +223,8 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     // this also effectively touches the form fields, so the prepopulated fields that
     // the user has never touched can be considered valid, letting the form submission complete
     this.clientForm.get('client_id')?.setValue(this.dbData.client_id);
+    this.clientForm.get('job_ids')?.setValue(this.dbData.job_ids);
+    this.clientForm.get('site_ids')?.setValue(this.dbData.site_ids);
     this.clientForm.get('name')?.setValue(this.dbData.name);
     this.clientForm.get('address1')?.setValue(this.dbData.address1);
     this.clientForm.get('address2')?.setValue(this.dbData.address2);
@@ -243,6 +248,8 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
 
     this.clientForm = this.fb.group({
       client_id: this.clientId,
+      job_ids: [[]],
+      site_ids: [[]],
       name: [''],
       address1: [''],
       address2: [''],
