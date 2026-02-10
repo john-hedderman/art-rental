@@ -46,7 +46,7 @@ export class Navbar implements OnInit, OnDestroy {
   init() {
     this.routeChangesService.routeChanges$.pipe(takeUntil(this.destroy$)).subscribe((url) => {
       const currentRouteSegment = this.firstSegment(url);
-      document.querySelectorAll('.ar-nav-link').forEach((linkEl) => {
+      document.querySelectorAll('.nav-link').forEach((linkEl) => {
         const toggleEl = linkEl.closest('.dropdown')?.querySelector('.dropdown-toggle');
         const routerLink = linkEl.getAttribute('routerLink');
         const routerLinkSegment = this.firstSegment(routerLink);
@@ -56,7 +56,7 @@ export class Navbar implements OnInit, OnDestroy {
           toggleEl?.classList.add('active');
         } else {
           linkEl.classList.remove('active');
-          linkEl.setAttribute('aria-current', '');
+          linkEl.removeAttribute('aria-current');
         }
       });
     });
