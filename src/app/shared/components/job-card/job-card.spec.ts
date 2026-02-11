@@ -13,6 +13,7 @@ const mockWarehouse = { job_id: 1, job_number: 'No job', art_ids: [1, 2, 3] } as
 
 const mockDataService = {
   art$: of([mockArt, { art_id: 2, job_id: 12 }, { art_id: 3 }]),
+  artists$: of([{ artist_id: 4, name: 'George Clooney', photo_path: '', tag_ids: [] }]),
   clients$: of([{ client_id: 7 }, { client_id: 8, name: 'Amazon' }, { client_id: 9 }]),
   jobs$: of([mockWarehouse, { job_id: 10 }, mockJob, { job_id: 12, client_id: 9, site_id: 13 }]),
   sites$: of([{ site_id: 13 }, { site_id: 14 }, { site_id: 15, name: 'Area 51' }]),
@@ -57,6 +58,7 @@ describe('JobCard', () => {
 
     it('should load all data when the component is initialized', fakeAsync(async () => {
       component.job_id = mockJob.job_id;
+      component.getFilteredArt$ = () => of([mockArt]);
       mockDataService.jobs$ = of([mockJob]);
       component.init();
       tick(1000);
@@ -70,6 +72,7 @@ describe('JobCard', () => {
 
     it('should set the warehouse card footer content to indicate as much', fakeAsync(() => {
       component.job_id = mockWarehouse.job_id;
+      component.getFilteredArt$ = () => of([]);
       mockDataService.jobs$ = of([mockWarehouse]);
       component.init();
       tick(1000);
@@ -142,6 +145,7 @@ describe('JobCard', () => {
     const updateNewJob = (art: IArt, newJob: IJob) => Promise.resolve(Const.SUCCESS);
 
     it('should attempt to save an art assignment to the database', fakeAsync(() => {
+      component.job = mockJob;
       const saveSpy = spyOn(component['artAssignmentService'], 'save');
       const postSaveSpy = spyOn(component['artAssignmentService'], 'postSave');
 

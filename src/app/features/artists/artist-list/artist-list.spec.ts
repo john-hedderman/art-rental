@@ -12,8 +12,9 @@ const mockDataService = {
   artists$: of([
     { artist_id: 4, name: 'Vincent Van Gogh', tags: 'starry' },
     { artist_id: 5 },
-    { artist_id: 6, name: 'Claude Monet' },
+    { artist_id: 6, name: 'Claude Monet' }
   ]),
+  tags$: of([])
 };
 
 describe('ArtistList', () => {
@@ -29,9 +30,9 @@ describe('ArtistList', () => {
         { provide: DataService, useValue: mockDataService },
         provideRouter([
           { path: 'artists/:id', component: ArtistDetail },
-          { path: 'artists/add', component: AddArtist },
-        ]),
-      ],
+          { path: 'artists/add', component: AddArtist }
+        ])
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ArtistList);
@@ -71,16 +72,11 @@ describe('ArtistList', () => {
       expect(cardEls.length).toBe(3);
     });
 
-    it('should display the artist name and tags in the card', () => {
+    it('should display the artist name in the card', () => {
       const artNameEl = fixture.nativeElement.querySelector(
         'app-card:first-of-type .card-body .card-title'
       );
       expect(artNameEl.innerHTML).toBe('Vincent Van Gogh');
-
-      const artistNameEl = fixture.nativeElement.querySelector(
-        'app-card:first-of-type .card-body .card-text'
-      );
-      expect(artistNameEl.innerHTML).toBe('starry');
     });
   });
 

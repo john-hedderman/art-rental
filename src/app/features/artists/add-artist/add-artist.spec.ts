@@ -172,9 +172,6 @@ describe('AddArtist', () => {
 
       const nameEl = fixture.nativeElement.querySelector('#name') as HTMLInputElement;
       expect(nameEl.value).toBe('George Clooney');
-
-      const tagsEl = fixture.nativeElement.querySelector('#tags') as HTMLInputElement;
-      expect(tagsEl.value).toBe('cubist, geometry');
     }));
 
     it('should perform all post-save activity (edit mode)', fakeAsync(() => {

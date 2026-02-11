@@ -16,7 +16,14 @@ const mockDataService = {
   clients$: of([
     { client_id: 2 },
     { client_id: 4 },
-    { client_id: 6, name: 'Comedy Club', industry: 'Comedy', job_ids: [3], contact_ids: [11] }
+    {
+      client_id: 6,
+      name: 'Comedy Club',
+      industry: 'Comedy',
+      job_ids: [3],
+      contact_ids: [11],
+      site_ids: [70]
+    }
   ] as IClient[]),
   contacts$: of([
     { contact_id: 10 },

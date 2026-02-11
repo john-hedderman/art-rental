@@ -12,7 +12,7 @@ describe('Navbar', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Navbar],
-      providers: [provideRouter([{ path: 'art', component: ArtList }])],
+      providers: [provideRouter([{ path: 'art', component: ArtList }])]
     }).compileComponents();
 
     fixture = TestBed.createComponent(Navbar);
@@ -30,7 +30,7 @@ describe('Navbar', () => {
   describe('Navigation', () => {
     function clickNavLink() {
       const linkEl = fixture.nativeElement.querySelector(
-        '#arNavbarSupportedContent ul li:first-of-type a'
+        '#arNavbarSupportedContent ul li:nth-of-type(2) a'
       );
       expect(linkEl).toBeTruthy();
       linkEl.click();
@@ -42,7 +42,7 @@ describe('Navbar', () => {
       fixture.detectChanges();
 
       const clickedLink = fixture.nativeElement.querySelector(
-        '#arNavbarSupportedContent ul li:first-of-type a'
+        '#arNavbarSupportedContent ul li:nth-of-type(2) a'
       ) as HTMLAnchorElement;
       expect(clickedLink.classList.contains('active')).toBeTrue();
 

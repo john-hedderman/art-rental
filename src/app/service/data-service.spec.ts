@@ -12,6 +12,7 @@ const initialLoadURLs = [
   'http://localhost:3000/data/contacts',
   'http://localhost:3000/data/jobs',
   'http://localhost:3000/data/sites',
+  'http://localhost:3000/data/tags'
 ];
 
 const coll = Collections.Artists;
@@ -25,7 +26,7 @@ describe('DataService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     });
     httpTestingController = TestBed.inject(HttpTestingController);
     service = TestBed.inject(DataService);
@@ -145,7 +146,7 @@ describe('DataService', () => {
       const clientField = 'client_id';
       const mockData = {
         deletedCount: 1,
-        message: `Deleted documents in collection '${coll}'.`,
+        message: `Deleted documents in collection '${coll}'.`
       };
       const mockResponse = new Response(JSON.stringify(mockData));
 
@@ -161,7 +162,7 @@ describe('DataService', () => {
     it('should fail to delete documents if the response does not indicate success', async () => {
       const mockData = {
         deletedCount: 1,
-        message: `Deleted documents in collection '${coll}'.`,
+        message: `Deleted documents in collection '${coll}'.`
       };
       const mockResponse = new Response(JSON.stringify(mockData), options);
       const returnError = 'Delete response not ok. Status: 500';

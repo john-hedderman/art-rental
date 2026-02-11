@@ -111,8 +111,8 @@ describe('SiteDetail', () => {
 
     it('should display the job number if assigned to a job', fakeAsync(() => {
       mockDataService.sites$ = of([mockSite] as ISite[]);
-      const siteNameEl = fixture.nativeElement.querySelector('.ar-site-detail__job-number');
-      expect(siteNameEl.innerHTML).toBe('007');
+      const jobNumberEl = fixture.nativeElement.querySelector('.ar-site-detail__job-number a');
+      expect(jobNumberEl.innerHTML).toBe('007');
     }));
 
     it('should display TBD if there is no assigned job', fakeAsync(() => {

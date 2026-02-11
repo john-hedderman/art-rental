@@ -18,38 +18,40 @@ const artObservable = of([
     art_id: artId,
     full_size_image_url: 'http://fake.art.com/aaa.jpg',
     job_id: 8,
-    artist_id: 6,
-  },
+    artist_id: 6
+  }
 ]);
 
 const joblessArtObservable = of([
   {
     art_id: artId,
     full_size_image_url: 'http://fake.art.com/aaa.jpg',
-    job_id: 0,
+    job_id: 1,
     artist_id: 6,
-  },
+    job: { job_number: 'No job' }
+  }
 ]);
 
 const mockDataService = {
   reloadData: () => {},
   art$: artObservable,
   artists$: of([{ artist_id: 2 }, { artist_id: 4 }, { artist_id: 6, name: 'Claude Monet' }]),
+  clients$: of([{ client_id: 10 }, { client_id: 11 }, { client_id: 12 }]),
   jobs$: of([
     { job_id: 7 },
     { job_id: 8, job_number: '007', client_id: 10, site_id: 13, art_ids: [1, 3, 5] },
-    { job_id: 9 },
+    { job_id: 9 }
   ]),
-  clients$: of([{ client_id: 10 }, { client_id: 11 }, { client_id: 12 }]),
   sites$: of([{ site_id: 13 }, { site_id: 14 }, { site_id: 15 }]),
+  tags$: of([])
 };
 
 const mockActivatedRoute = {
   paramMap: of(
     convertToParamMap({
-      id: '5',
+      id: '5'
     })
-  ),
+  )
 };
 
 describe('ArtDetail', () => {
@@ -63,8 +65,8 @@ describe('ArtDetail', () => {
         provideRouter([]),
         provideHttpClient(),
         { provide: DataService, useValue: mockDataService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-      ],
+        { provide: ActivatedRoute, useValue: mockActivatedRoute }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ArtDetail);
@@ -117,7 +119,7 @@ describe('ArtDetail', () => {
 
     it("should display the artist's name", () => {
       const artistNameEl = fixture.nativeElement.querySelector('.ar-art-detail__artist-name');
-      expect(artistNameEl.innerHTML).toBe('Claude Monet');
+      expect(artistNameEl.innerHTML).toBe('Artist: Claude Monet');
     });
 
     it('should display the job number if one exists', () => {

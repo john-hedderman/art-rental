@@ -14,16 +14,17 @@ const mockDataService = {
   artists$: of([
     { artist_id: 2 },
     { artist_id: 4 },
-    { artist_id: 6, name: 'Claude Monet', photo_path: 'images/artists/claude-monet.jpg', tags: '' },
+    { artist_id: 6, name: 'Claude Monet', photo_path: 'images/artists/claude-monet.jpg', tags: '' }
   ]),
+  tags$: of([])
 };
 
 const mockActivatedRoute = {
   paramMap: of(
     convertToParamMap({
-      id: '6',
+      id: '6'
     })
-  ),
+  )
 };
 
 describe('ArtistDetail', () => {
@@ -37,8 +38,8 @@ describe('ArtistDetail', () => {
         provideRouter([]),
         provideHttpClient(),
         { provide: DataService, useValue: mockDataService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-      ],
+        { provide: ActivatedRoute, useValue: mockActivatedRoute }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ArtistDetail);
