@@ -57,6 +57,8 @@ export class ArtAssignmentService implements OnDestroy {
         : [];
       modifiedJob = { ...modifiedJob, art_ids };
       delete modifiedJob.art;
+      delete modifiedJob.client;
+      delete modifiedJob.contacts;
       delete modifiedJob.site;
       delete (modifiedJob as any)._id;
       const returnData = await this.dataService.saveDocument(
@@ -83,6 +85,8 @@ export class ArtAssignmentService implements OnDestroy {
       art_ids.push(art.art_id);
       modifiedJob = { ...modifiedJob, art_ids };
       delete modifiedJob.art;
+      delete modifiedJob.client;
+      delete modifiedJob.contacts;
       delete modifiedJob.site;
       delete (modifiedJob as any)._id;
       const returnData = await this.dataService.saveDocument(
