@@ -15,6 +15,7 @@ import { DataService } from '../../../service/data-service';
 export class ArtThumbnailCard implements OnInit, OnDestroy, AfterViewInit {
   @Input() job_id: number | undefined;
   @Input() art_id: number = 0;
+  @Input() artist_name: string | undefined = '';
   @Input() draggable = true;
 
   art: IArt | undefined;

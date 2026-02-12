@@ -1,33 +1,63 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
 <div class="container-fluid overflow-y-auto">
   <div class="row ar-page-content overflow-y-auto">
-    <div class="col-sm-12 col-md-6 p-3">
-      <div class="ar-artist-detail__image-container">
-        <img
-          src="{{ artist.photo_path }}"
-          class="img-fluid ar-rounded-start h-100"
-          alt="{{ artist.name }}"
-          title="{{ artist.name }}"
-        />
+    <div class="col">
+      <div class="row">
+        <div class="col-sm-12 col-md-6 p-3">
+          <div class="ar-artist-detail__image-container">
+            <img
+              src="{{ artist.photo_path }}"
+              class="img-fluid ar-rounded-start h-100"
+              alt="{{ artist.name }}"
+              title="{{ artist.name }}"
+            />
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-6 p-3">
+          <div class="row p-3">
+            <section class="ar-artist-detail__artist-name">
+              <h5 class="fw-bold pb-2 ar-heading">Name</h5>
+              @if (artist.name) {
+                <p class="pb-4">{{ artist.name }}</p>
+              } @else {
+                <p class="pb-4">Unknown</p>
+              }
+            </section>
+            <section class="ar-artist-detail__tags">
+              <h5 class="fw-bold pb-2 ar-heading">Tags</h5>
+              <app-tags
+                [assigneeField]="'artist_ids'"
+                [assigneeId]="artistId"
+                (removingTag)="removeTag($event)"
+                (addingTag)="addTag($event)"
+              ></app-tags>
+            </section>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="col-sm-12 col-md-6 p-3">
-      <div class="row p-3">
-        <section class="ar-artist-detail__artist-name">
-          <h5 class="fw-bold pb-2 ar-heading">Name</h5>
-          @if (artist.name) {
-            <p class="pb-4">{{ artist.name }}</p>
-          } @else {
-            <p class="pb-4">Unknown</p>
-          }
-          <h5 class="fw-bold pb-2 ar-heading">Tags</h5>
-        </section>
-        <app-tags
-          [assigneeField]="'artist_ids'"
-          [assigneeId]="artistId"
-          (removingTag)="removeTag($event)"
-          (addingTag)="addTag($event)"
-        ></app-tags>
+      <div class="row">
+        <div class="col-12">
+          <div class="row p-3">
+            <section class="ar-artist-detail__art">
+              <h5 class="fw-bold pb-2 ar-heading">Art</h5>
+              @if (art$ | async; as artwork) {
+                <div class="card-group ar-card-group overflow-y-auto ar-job-detail__art">
+                  @if (artwork.length === 0) {
+                    <span class="mt-3 ms-3">No art</span>
+                  } @else {
+                    @for (art of artwork; track $index) {
+                      <app-art-thumbnail-card
+                        [art_id]="art.art_id"
+                        [draggable]="false"
+                        class="ms-3 mt-3"
+                      ></app-art-thumbnail-card>
+                    }
+                  }
+                </div>
+              }
+            </section>
+          </div>
+        </div>
       </div>
     </div>
   </div>

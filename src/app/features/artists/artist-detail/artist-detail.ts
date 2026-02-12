@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, distinctUntilChanged, map, Observable, Subject, takeUntil } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { IArtist, ITag } from '../../../model/models';
+import { IArt, IArtist, ITag } from '../../../model/models';
 import { Collections } from '../../../shared/enums/collections';
 import { OperationsService } from '../../../service/operations-service';
 import * as Const from '../../../constants';
@@ -20,10 +21,11 @@ import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { Util } from '../../../shared/util/util';
 import { DetailBase } from '../../../shared/components/base/detail-base/detail-base';
 import { Tags } from '../../../shared/components/tags/tags';
+import { ArtThumbnailCard } from '../../../shared/components/art-thumbnail-card/art-thumbnail-card';
 
 @Component({
   selector: 'app-artist-detail',
-  imports: [PageHeader, PageFooter, Tags],
+  imports: [PageHeader, PageFooter, Tags, AsyncPipe, ArtThumbnailCard],
   providers: [MessagesService],
   templateUrl: './artist-detail.html',
   styleUrl: './artist-detail.scss',
@@ -59,6 +61,7 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
   artist: IArtist = {} as IArtist;
   artistId = 0;
   tags: ITag[] = [];
+  art$: Observable<IArt[]> | undefined;
 
   deleteStatus = '';
 
@@ -232,11 +235,15 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
   }
 
   init() {
-    this.getCombinedData$().subscribe(({ artistId, artists, tags }) => {
+    this.getCombinedData$().subscribe(({ artistId, art, artists, tags }) => {
       this.artistId = artistId;
       this.tags = tags;
       const artist = artists.find((artist) => artist.artist_id === artistId);
       if (artist) {
+        const artwork = art.filter((art) => art.artist_id === artist?.artist_id);
+        if (artwork) {
+          this.art$ = of(artwork);
+        }
         this.artist = artist;
       }
     });
@@ -244,11 +251,13 @@ export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {
 
   getCombinedData$(): Observable<{
     artistId: number;
+    art: IArt[];
     artists: IArtist[];
     tags: ITag[];
   }> {
     return combineLatest({
       artistId: this.getArtistId(),
+      art: this.dataService.art$,
       artists: this.dataService.artists$,
       tags: this.dataService.tags$
     }).pipe(takeUntil(this.destroy$), distinctUntilChanged());

@@ -8,5 +8,7 @@
     />
   </div>
   <p class="mt-1 mb-0 fst-italic lh-1 pb-1">{{ art?.title }}</p>
-  <p>{{ art?.artist?.name }}</p>
+  @if (artist_name) {
+    <p>{{ artist_name }}</p>
+  }
 </div>
