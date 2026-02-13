@@ -1,37 +1,48 @@
 <app-page-header [headerData]="headerData.data"></app-page-header>
 <div class="container-fluid overflow-y-auto">
-  <div class="row overflow-y-auto ar-page-content">
-    <div class="card-group ar-card-group p-3">
-      @if (tags$ | async; as tags) {
-        @for (tag of tags; track trackByTagId(tag)) {
-          <div
-            id="{{ tag.tag_id }}"
-            class="ar-tag-btn-container d-flex align-items-center ps-2 pe-1 py-2 me-3 mb-3 border rounded-2"
-          >
-            <button type="button" class="btn btn-sm btn-success me-2">{{ tag.name }}</button>
-            <!-- link the delete button to a warning modal if the tag is in use, otherwise just delete -->
-            @if (tag.art!.length > 0 || tag.artists!.length > 0) {
-              <button
-                type="button"
-                class="btn-close ar-btn-tag-delete me-1 p-0 rounded-0 border border-dark-subtle"
-                aria-label="Delete"
-                data-bs-toggle="modal"
-                data-bs-target="#confirmModal"
-                [attr.data-bs-tag-id]="tag.tag_id"
-              ></button>
-            } @else {
-              <button
-                type="button"
-                class="btn-close ar-btn-tag-delete me-1 p-0 rounded-0 border border-dark-subtle"
-                aria-label="Delete"
-                [attr.data-bs-tag-id]="tag.tag_id"
-                (click)="onClickDelete($event)"
-              ></button>
-            }
-          </div>
-        }
-      }
+  <div class="ar-page-content pt-3">
+    <div id="tag-search-container" class="d-flex">
+      <input
+        type="text"
+        #tagSearch
+        class="form-control me-2"
+        placeholder="Enter a new tag name..."
+        (focus)="onFocusTagInput()"
+      />
+      <button type="button" class="btn btn-sm btn-success" (click)="onClickAdd()">Add</button>
     </div>
+    <div class="mb-3">
+      <div id="tag-in-system" class="invalid-feedback">
+        This tag is already in the system. Please enter another name.
+      </div>
+    </div>
+    @if (tags$ | async; as tags) {
+      <p class="mb-4"></p>
+      @for (tag of tags; track $index) {
+        <button type="button" class="btn btn-sm ar-btn-tag me-2 mb-2">
+          {{ tag.name }}
+          <!-- link the delete button to a warning modal if the tag is in use, otherwise just delete -->
+          @if (tag.art!.length > 0 || tag.artists!.length > 0) {
+            <button
+              type="button"
+              class="btn-close align-bottom ar-btn-tag-delete"
+              aria-label="Delete"
+              data-bs-toggle="modal"
+              data-bs-target="#confirmModal"
+              [attr.data-bs-tag-id]="tag.tag_id"
+            ></button>
+          } @else {
+            <button
+              type="button"
+              class="btn-close align-bottom ar-btn-tag-delete"
+              aria-label="Delete"
+              [attr.data-bs-tag-id]="tag.tag_id"
+              (click)="onClickDelete($event)"
+            ></button>
+          }
+        </button>
+      }
+    }
   </div>
 </div>
 <app-page-footer [footerData]="footerData"></app-page-footer>

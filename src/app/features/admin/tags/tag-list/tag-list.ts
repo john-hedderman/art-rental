@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
@@ -24,14 +24,17 @@ import { MessagesService } from '../../../../service/messages-service';
   standalone: true
 })
 export class TagList implements OnInit, OnDestroy {
+  @ViewChild('tagSearch') tagSearch: ElementRef | undefined;
+
   goToAddTag = () => this.router.navigate(['/tags', 'add']);
 
   headerData = new HeaderActions('tag-list', 'Tags', [], []);
-  footerData = new FooterActions([new AddButton('Add Tag', this.goToAddTag)]);
+  footerData = new FooterActions([]);
 
   art: IArt[] = [];
   artists: IArtist[] = [];
   detailedTags: ITag[] = [];
+  tags: ITag[] = [];
   tags$: Observable<ITag[]> | undefined;
 
   private readonly destroy$ = new Subject<void>();
@@ -39,6 +42,49 @@ export class TagList implements OnInit, OnDestroy {
   deleteStatus = '';
 
   modalEl: HTMLDivElement | null = null;
+
+  onFocusTagInput() {
+    const tagInSystemEl = document.getElementById('tag-in-system') as HTMLDivElement;
+    tagInSystemEl.classList.remove('d-block');
+  }
+
+  onClickAdd() {
+    const tagSearchEl = this.tagSearch?.nativeElement as HTMLInputElement;
+    const tagValue = tagSearchEl.value.toLowerCase().trim();
+    tagSearchEl.value = '';
+    tagSearchEl.focus();
+
+    const tagInSystemEl = document.getElementById('tag-in-system') as HTMLDivElement;
+    if (tagValue !== '' && this.tags?.map((tag) => tag.name)?.includes(tagValue)) {
+      tagInSystemEl.classList.add('d-block');
+      return;
+    }
+    tagInSystemEl.classList.remove('d-block');
+
+    this.addTag(tagValue);
+  }
+
+  async addTag(name: string) {
+    const tagStatus = await this.saveTag(name);
+    this.messagesService.showStatus(
+      tagStatus,
+      Util.replaceTokens(Msgs.SAVED, { entity: 'tag' }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'tag' })
+    );
+    this.messagesService.clearStatus();
+    this.dataService.reloadData(['tags']);
+  }
+
+  async saveTag(name: string): Promise<string> {
+    const tagId = Date.now();
+    const data = {
+      tag_id: tagId,
+      name,
+      art_ids: [],
+      artist_ids: []
+    } as ITag;
+    return await this.operationsService.saveDocument(data, Collections.Tags);
+  }
 
   async onClickDelete(event: PointerEvent, tagIsInUse?: boolean) {
     const buttonEl = event.target as HTMLButtonElement;
@@ -151,6 +197,7 @@ export class TagList implements OnInit, OnDestroy {
           });
         this.detailedTags = [...detailedTags];
         this.sortByStringField(this.detailedTags, 'name');
+        this.tags = detailedTags;
         this.tags$ = of(this.detailedTags);
       }
       this.art = artwork;

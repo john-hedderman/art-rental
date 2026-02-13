@@ -1,12 +1,24 @@
-.ar-tag-btn-container {
-  background-color: #f3f3f3;
+.ar-btn-tag {
+  background-color: #078a97;
+  color: white;
+  border-radius: 500px;
+  cursor: default;
 
-  .ar-btn-tag {
-    background-color: #08a116;
-    color: white;
+  &:hover {
+    cursor: default;
   }
-}
 
-.ar-btn-tag-delete {
-  background-size: 0.625em;
+  &:active {
+    background-color: #078a97;
+  }
+
+  .ar-btn-tag-delete {
+    background-size: 0.625em;
+    filter: invert(1) brightness(1);
+    opacity: 1;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
