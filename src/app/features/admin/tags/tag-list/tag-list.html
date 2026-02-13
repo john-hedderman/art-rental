@@ -22,7 +22,7 @@
         <button type="button" class="btn btn-sm ar-btn-tag me-2 mb-2">
           {{ tag.name }}
           <!-- link the delete button to a warning modal if the tag is in use, otherwise just delete -->
-          @if (tag.art!.length > 0 || tag.artists!.length > 0) {
+          @if (tag.art_ids.length > 0 || tag.artist_ids.length > 0) {
             <button
               type="button"
               class="btn-close align-bottom ar-btn-tag-delete"

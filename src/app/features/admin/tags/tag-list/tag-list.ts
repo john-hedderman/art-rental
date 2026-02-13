@@ -186,19 +186,9 @@ export class TagList implements OnInit, OnDestroy {
   init() {
     this.getCombinedData$().subscribe(({ artwork, producers, tags }) => {
       if (tags && tags.length > 0) {
-        const detailedTags = tags
-          .map((tag) => {
-            const art = artwork.filter((piece) => tag.art_ids.includes(piece.art_id));
-            return { ...tag, art };
-          })
-          .map((tag) => {
-            const artists = producers.filter((artist) => tag.artist_ids.includes(artist.artist_id));
-            return { ...tag, artists };
-          });
-        this.detailedTags = [...detailedTags];
-        this.sortByStringField(this.detailedTags, 'name');
-        this.tags = detailedTags;
-        this.tags$ = of(this.detailedTags);
+        this.tags = tags;
+        this.sortByStringField(this.tags, 'name');
+        this.tags$ = of(this.tags);
       }
       this.art = artwork;
       this.artists = producers;
