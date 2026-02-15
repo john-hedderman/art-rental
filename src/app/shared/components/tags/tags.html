@@ -26,14 +26,10 @@
 </div>
 @if (assignedTags$ | async; as assignedTags) {
   @for (assignedTag of assignedTags; track $index) {
-    <button type="button" class="btn btn-sm btn-secondary ar-btn-tag me-2 mb-2">
-      {{ assignedTag.name }}
-      <button
-        class="btn-close align-bottom ar-btn-tag-delete"
-        aria-label="Delete"
-        (click)="onClickDeleteTag(assignedTag.tag_id)"
-        data-bs-theme="dark"
-      ></button>
-    </button>
+    <app-tag-pill
+      action="remove"
+      [tag]="assignedTag"
+      (onDeleteClicked)="onClickDeleteTag($event)"
+    ></app-tag-pill>
   }
 }

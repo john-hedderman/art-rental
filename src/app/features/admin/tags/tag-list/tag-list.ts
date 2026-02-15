@@ -9,16 +9,16 @@ import { FooterActions, HeaderActions } from '../../../../shared/actions/action-
 import { DataService } from '../../../../service/data-service';
 import { IArt, IArtist, ITag } from '../../../../model/models';
 import { OperationsService } from '../../../../service/operations-service';
-import { AddButton } from '../../../../shared/buttons/add-button';
 import { Collections } from '../../../../shared/enums/collections';
 import * as Const from '../../../../constants';
 import * as Msgs from '../../../../shared/strings';
 import { Util } from '../../../../shared/util/util';
 import { MessagesService } from '../../../../service/messages-service';
+import { TagPill } from '../../../../shared/components/tag-pill/tag-pill';
 
 @Component({
   selector: 'app-tag-list',
-  imports: [PageHeader, PageFooter, AsyncPipe],
+  imports: [PageHeader, PageFooter, AsyncPipe, TagPill],
   templateUrl: './tag-list.html',
   styleUrl: './tag-list.scss',
   standalone: true
@@ -86,9 +86,14 @@ export class TagList implements OnInit, OnDestroy {
     return await this.operationsService.saveDocument(data, Collections.Tags);
   }
 
-  async onClickDelete(event: PointerEvent, tagIsInUse?: boolean) {
-    const buttonEl = event.target as HTMLButtonElement;
-    const tagId = buttonEl.getAttribute('data-bs-tag-id');
+  async onClickDelete(event: any, tagIsInUse?: boolean) {
+    let tagId;
+    if (event instanceof Event) {
+      const buttonEl = event.target as HTMLButtonElement;
+      tagId = buttonEl.getAttribute('data-bs-tag-id');
+    } else {
+      tagId = event.toString();
+    }
     if (tagId) {
       this.deleteStatus = await this.deleteTag(tagId, tagIsInUse);
       this.messagesService.showStatus(

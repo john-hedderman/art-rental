@@ -5,10 +5,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { ITag } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
+import { TagPill } from '../tag-pill/tag-pill';
 
 @Component({
   selector: 'app-tags',
-  imports: [AsyncPipe, ReactiveFormsModule],
+  imports: [AsyncPipe, ReactiveFormsModule, TagPill],
   templateUrl: './tags.html',
   styleUrl: './tags.scss',
   standalone: true

@@ -1,0 +1,21 @@
+<button type="button" class="btn btn-sm ar-btn-tag me-2 mb-2">
+  {{ tag.name }}
+  @if (action === 'delete' && (tag.art_ids.length > 0 || tag.artist_ids.length > 0)) {
+    <button
+      type="button"
+      class="btn-close align-bottom ar-btn-tag-delete"
+      aria-label="Delete"
+      data-bs-toggle="modal"
+      data-bs-target="#confirmModal"
+      [attr.data-bs-tag-id]="tag.tag_id"
+    ></button>
+  } @else {
+    <button
+      type="button"
+      class="btn-close align-bottom ar-btn-tag-delete"
+      aria-label="Delete"
+      [attr.data-bs-tag-id]="tag.tag_id"
+      (click)="onDeleteClicked.emit(tag.tag_id)"
+    ></button>
+  }
+</button>
