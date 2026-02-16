@@ -14,7 +14,7 @@ import { MessagesService } from '../../../../service/messages-service';
   imports: [],
   templateUrl: './add-base.html',
   styleUrl: './add-base.scss',
-  standalone: true,
+  standalone: true
 })
 export abstract class AddBase {
   operationsService = inject(OperationsService);
@@ -37,7 +37,7 @@ export abstract class AddBase {
     this.messagesService.showStatus(
       this.saveStatus,
       Util.replaceTokens(Msgs.SAVED, { entity }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity }),
+      Util.replaceTokens(Msgs.SAVE_FAILED, { entity })
     );
     this.messagesService.clearStatus();
     this.resetForm();
@@ -57,16 +57,14 @@ export abstract class AddBase {
       });
   }
 
-  get saveBtn() {
-    return document.getElementById('saveBtn') as HTMLButtonElement;
-  }
-
   disableSaveBtn() {
-    this.saveBtn.disabled = true;
+    const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
+    saveBtn.disabled = true;
   }
 
   enableSaveBtn() {
-    this.saveBtn.disabled = false;
+    const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
+    saveBtn.disabled = false;
   }
 
   async submitForm(form: any, modifiedCollections: string[], entity: string) {
