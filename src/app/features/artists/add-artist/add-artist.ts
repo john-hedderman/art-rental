@@ -107,7 +107,8 @@ export class AddArtist extends AddBase implements OnInit, OnDestroy {
     this.artistForm = this.fb.group({
       artist_id: this.artistId,
       name: [''],
-      photo_path: ['']
+      photo_path: [''],
+      tag_ids: this.fb.array([])
     });
 
     if (this.editMode) {

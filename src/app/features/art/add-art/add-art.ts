@@ -239,6 +239,7 @@ export class AddArt extends AddBase implements OnInit, OnDestroy {
       title: [''],
       file_name: [''],
       full_size_image_url: [''],
+      tag_ids: this.fb.array([]),
       artist_id: [null],
       job_id: [null]
     });
