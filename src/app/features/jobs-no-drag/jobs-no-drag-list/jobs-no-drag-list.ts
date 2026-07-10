@@ -1,0 +1,181 @@
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  Observable,
+  of,
+  startWith,
+  Subject,
+  takeUntil
+} from 'rxjs';
+import { AsyncPipe } from '@angular/common';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { PageHeader } from '../../../shared/components/page-header/page-header';
+import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { IArt, IArtist, IClient, IJob, ISite } from '../../../model/models';
+import { DataService } from '../../../service/data-service';
+import * as Const from '../../../constants';
+import { JobCard } from '../../../shared/components/job-card/job-card';
+import { PageFooter } from '../../../shared/components/page-footer/page-footer';
+import { AddButton } from '../../../shared/buttons/add-button';
+
+@Component({
+  selector: 'app-jobs-no-drag-list',
+  imports: [FormsModule, PageHeader, AsyncPipe, JobCard, PageFooter, ReactiveFormsModule],
+  templateUrl: './jobs-no-drag-list.html',
+  styleUrl: './jobs-no-drag-list.scss',
+  standalone: true
+})
+export class JobsNoDragList implements OnInit, OnDestroy {
+  goToAddJob = () => this.router.navigate(['/jobs', 'add']);
+  goToJobDetail = (id: number) => this.router.navigate(['/jobs', id]);
+  noop = () => {};
+
+  headerData = new HeaderActions('job-list', 'Jobs', [], []);
+  footerData = new FooterActions([new AddButton('Add Job', this.goToAddJob)]);
+
+  private readonly destroy$ = new Subject<void>();
+
+  art$: Observable<IArt[]> | undefined;
+  jobs$: Observable<IJob[]> | undefined;
+
+  jobs: IJob[] = [];
+  filteredJobs: IJob[] = [];
+
+  selectedClientId = 'All';
+  clients: IClient[] = [];
+  selectedSiteId = 'All';
+  sites: ISite[] = [];
+  filteredSites: ISite[] = [];
+  artists: IArtist[] = [];
+
+  WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
+  SITE_TBD_ID = Const.SITE_TBD_ID;
+
+  searchArtControl: FormControl = new FormControl('');
+  searchArtString$!: Observable<string>;
+  searchArtStringAll$!: Observable<string>;
+
+  selectArtistControl: FormControl = new FormControl('');
+  artistId$!: Observable<string>;
+  artistIdAll$!: Observable<string>;
+
+  onSelectClient() {
+    if (this.selectedClientId === 'All') {
+      this.filteredSites = this.sites.filter((site) => site.site_id !== Const.WAREHOUSE_SITE_ID);
+    } else {
+      this.filteredSites = this.sites.filter((site) => site.client_id === +this.selectedClientId);
+      if (this.selectedSiteId !== 'All' && +this.selectedSiteId !== Const.SITE_TBD_ID) {
+        this.selectedSiteId = 'All';
+      }
+    }
+    this.filterJobs();
+  }
+
+  filterJobs() {
+    if (this.selectedClientId === 'All' && this.selectedSiteId === 'All') {
+      this.filteredJobs = this.jobs;
+    } else if (this.selectedClientId === 'All' && this.selectedSiteId !== 'All') {
+      this.filteredJobs = this.jobs.filter((job) => job.site_id === +this.selectedSiteId);
+    } else if (this.selectedClientId !== 'All' && this.selectedSiteId === 'All') {
+      this.filteredJobs = this.jobs.filter((job) => job.client_id === +this.selectedClientId);
+    } else {
+      this.filteredJobs = this.jobs.filter(
+        (job) => job.client_id === +this.selectedClientId && job.site_id === +this.selectedSiteId
+      );
+    }
+  }
+
+  trackByArtistId(artist: IArtist) {
+    return artist.artist_id;
+  }
+
+  trackByJobId(job: IJob) {
+    return job.job_id;
+  }
+
+  trackByClientId(client: IClient) {
+    return client.client_id;
+  }
+
+  trackBySiteId(site: ISite) {
+    return site.site_id;
+  }
+
+  init() {
+    this.getCombinedData$().subscribe(({ art, artists, clients, jobs, sites }) => {
+      this.artists = artists;
+      this.clients = clients;
+      this.sites = sites.filter((site) => site.site_id !== Const.SITE_TBD_ID);
+
+      this.art$ = of(art);
+      const validJobs = jobs
+        .filter((job) => job.job_id !== Const.WAREHOUSE_JOB_ID)
+        .map((job) => {
+          const site = sites.find((site) => site.site_id === job.site_id);
+          if (site) {
+            job = { ...job, site };
+          }
+          const artwork = art
+            .filter((piece) => piece.job_id === job.job_id)
+            .map((piece) => {
+              piece.artist = artists.find((artist) => artist.artist_id === piece.artist_id);
+              return piece;
+            });
+          if (artwork) {
+            job = { ...job, art: artwork };
+          }
+          return job;
+        });
+      this.jobs = validJobs;
+      this.jobs$ = of(validJobs);
+      this.onSelectClient();
+    });
+
+    this.searchArtString$ = this.searchArtControl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(300),
+      distinctUntilChanged()
+    );
+    this.searchArtStringAll$ = of('');
+
+    this.artistId$ = this.selectArtistControl.valueChanges.pipe(
+      startWith(this.selectArtistControl.value || '')
+    );
+    this.artistIdAll$ = of('');
+  }
+
+  getCombinedData$(): Observable<{
+    art: IArt[];
+    artists: IArtist[];
+    clients: IClient[];
+    jobs: IJob[];
+    sites: ISite[];
+  }> {
+    return combineLatest({
+      art: this.dataService.art$,
+      artists: this.dataService.artists$,
+      clients: this.dataService.clients$,
+      jobs: this.dataService.jobs$,
+      sites: this.dataService.sites$
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
+  }
+
+  constructor(
+    private dataService: DataService,
+    private cdr: ChangeDetectorRef,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.init();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}

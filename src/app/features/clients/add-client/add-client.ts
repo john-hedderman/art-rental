@@ -244,6 +244,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
     if (clientId) {
       this.clientId = +clientId;
       this.editMode = true;
+      this.headerData.data.headerTitle = 'Edit Client';
     }
 
     this.clientForm = this.fb.group({

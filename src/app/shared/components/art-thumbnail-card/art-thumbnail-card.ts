@@ -17,6 +17,7 @@ export class ArtThumbnailCard implements OnInit, OnDestroy, AfterViewInit {
   @Input() art_id: number = 0;
   @Input() artist_name: string | undefined = '';
   @Input() draggable = true;
+  @Input() isActive = true;
 
   art: IArt | undefined;
   job: IJob | undefined;
@@ -24,6 +25,10 @@ export class ArtThumbnailCard implements OnInit, OnDestroy, AfterViewInit {
   private readonly destroy$ = new Subject<void>();
 
   ART_THUMBNAIL_PATH = Const.ART_THUMBNAIL_PATH;
+
+  public onArtThumbnailClicked(x: any) {
+    console.warn('ArtThumbnailCard, x:', x);
+  }
 
   onDragStart(event: DragEvent) {
     if (event.dataTransfer) {

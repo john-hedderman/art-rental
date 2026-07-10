@@ -9,6 +9,8 @@
                 [art_id]="art.art_id"
                 [job_id]="job_id"
                 [draggable]="true"
+                [isActive]="isActive"
+                (click)="onClickArt($event, art.art_id)"
               ></app-art-thumbnail-card>
             }
           } @else {

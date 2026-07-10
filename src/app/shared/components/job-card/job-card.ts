@@ -1,4 +1,12 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {
   combineLatest,
   distinctUntilChanged,
@@ -35,6 +43,8 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   @Input() searchArtString$!: Observable<string>;
   @Input() artistId$!: Observable<string>;
 
+  @ViewChild(ArtThumbnailCard) artThumbnailCard!: ArtThumbnailCard;
+
   cardFooterContent = '';
 
   job: IJob | undefined;
@@ -45,6 +55,18 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   readonly WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
+
+  isActive = false;
+
+  onClickArt(event: Event, art_id: number) {
+    if (art_id) {
+      console.warn('selected art_id:', art_id);
+    }
+    const tgt = event.target as HTMLElement;
+    console.warn('tgt:', tgt);
+    tgt.classList.toggle('active');
+    // this.isActive = !this.isActive;
+  }
 
   trackByArtId(art: IArt) {
     return art.art_id;

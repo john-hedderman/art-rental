@@ -7,5 +7,5 @@
 // ensure that the back end node app is running on host 0.0.0.0
 
 export const environment = {
-  apiUrl: 'http://192.168.1.179:3000'
+  apiUrl: 'http://localhost:3000'
 };

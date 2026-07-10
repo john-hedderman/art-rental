@@ -11,6 +11,8 @@ import { ClientsPage } from './features/clients/clients-page';
 import { ClientList } from './features/clients/client-list/client-list';
 import { AddClient } from './features/clients/add-client/add-client';
 import { ClientDetail } from './features/clients/client-detail/client-detail';
+import { JobsNoDrag } from './features/jobs-no-drag/jobs-no-drag';
+import { JobsNoDragList } from './features/jobs-no-drag/jobs-no-drag-list/jobs-no-drag-list';
 import { JobsPage } from './features/jobs/jobs-page';
 import { JobList } from './features/jobs/job-list/job-list';
 import { AddJob } from './features/jobs/add-job/add-job';
@@ -175,6 +177,21 @@ export const routes: Routes = [
       {
         path: ':id/edit',
         component: AddJob
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
+    path: 'jobs-no-drag',
+    component: JobsNoDrag,
+    children: [
+      {
+        path: 'list',
+        component: JobsNoDragList
       },
       {
         path: '',
