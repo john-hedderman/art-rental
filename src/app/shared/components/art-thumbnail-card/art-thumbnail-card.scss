@@ -19,10 +19,6 @@
 
     .ar-thumbnail-rounded {
       border-radius: var(--ar-art-thumbnail-card-border-radius);
-
-      &.active {
-        border: 2px solid red;
-      }
     }
 
     &.active {

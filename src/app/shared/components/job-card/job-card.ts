@@ -42,6 +42,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   @Input() selectedArtistId: string | undefined;
   @Input() searchArtString$!: Observable<string>;
   @Input() artistId$!: Observable<string>;
+  @Input() isActiveJob = false;
 
   @ViewChild(ArtThumbnailCard) artThumbnailCard!: ArtThumbnailCard;
 
@@ -56,16 +57,14 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
 
   readonly WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
 
-  isActive = false;
+  activeArt = 0;
 
   onClickArt(event: Event, art_id: number) {
-    if (art_id) {
-      console.warn('selected art_id:', art_id);
-    }
-    const tgt = event.target as HTMLElement;
-    console.warn('tgt:', tgt);
-    tgt.classList.toggle('active');
-    // this.isActive = !this.isActive;
+    this.artAssignmentService.selectArt(art_id);
+  }
+
+  onClickFooter(event: Event) {
+    this.artAssignmentService.selectJob(this.job_id!);
   }
 
   trackByArtId(art: IArt) {
@@ -196,6 +195,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async init() {
+    this.subscribeToSelectedArt();
     this.getAppData$().subscribe(async ({ art, artists, clients, jobs, sites }) => {
       this.job = this.getDetailedJob(jobs, clients, sites);
       this.cardFooterContent = this.createCardFooterContent(this.job);
@@ -218,6 +218,13 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
       jobs: this.dataService.jobs$,
       sites: this.dataService.sites$
     }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
+  }
+
+  subscribeToSelectedArt() {
+    this.artAssignmentService.selectedArt$.pipe(takeUntil(this.destroy$)).subscribe((art_id) => {
+      // highlight the selected art; unhighlight it if you select it again
+      this.activeArt = art_id === this.activeArt ? 0 : art_id;
+    });
   }
 
   constructor(

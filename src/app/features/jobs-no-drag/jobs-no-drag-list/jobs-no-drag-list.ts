@@ -21,6 +21,7 @@ import * as Const from '../../../constants';
 import { JobCard } from '../../../shared/components/job-card/job-card';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
+import { ArtAssignmentService } from '../../../service/art-assignment-service';
 
 @Component({
   selector: 'app-jobs-no-drag-list',
@@ -62,6 +63,10 @@ export class JobsNoDragList implements OnInit, OnDestroy {
   selectArtistControl: FormControl = new FormControl('');
   artistId$!: Observable<string>;
   artistIdAll$!: Observable<string>;
+
+  isActiveJob = false;
+
+  activeJob = 0;
 
   onSelectClient() {
     if (this.selectedClientId === 'All') {
@@ -106,6 +111,7 @@ export class JobsNoDragList implements OnInit, OnDestroy {
   }
 
   init() {
+    this.subscribeToSelectedJob();
     this.getCombinedData$().subscribe(({ art, artists, clients, jobs, sites }) => {
       this.artists = artists;
       this.clients = clients;
@@ -164,10 +170,18 @@ export class JobsNoDragList implements OnInit, OnDestroy {
     }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
+  subscribeToSelectedJob() {
+    this.artAssignmentService.selectedJob$.pipe(takeUntil(this.destroy$)).subscribe((job_id) => {
+      // highlight the selected job; unhighlight it if you select it again
+      this.activeJob = job_id === this.activeJob ? 0 : job_id;
+    });
+  }
+
   constructor(
     private dataService: DataService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private artAssignmentService: ArtAssignmentService
   ) {}
 
   ngOnInit(): void {

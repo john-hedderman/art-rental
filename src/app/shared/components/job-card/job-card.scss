@@ -13,6 +13,8 @@
     min-height: var(--ar-job-card-min-height);
     box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2);
 
+    cursor: pointer;
+
     @media (max-width: 767px) {
       .ar-job-card__content > * {
         width: auto;
@@ -20,8 +22,8 @@
       }
     }
 
-    .hover:hover {
-      cursor: pointer;
+    &.active {
+      border: 2px solid blue;
     }
   }
 

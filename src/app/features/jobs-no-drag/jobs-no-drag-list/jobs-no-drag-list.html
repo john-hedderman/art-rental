@@ -30,9 +30,10 @@
           @if (art$ | async; as artwork) {
             <app-job-card
               [job_id]="WAREHOUSE_JOB_ID"
-              [cardData]="{ clickHandler: noop }"
               [searchArtString$]="searchArtString$"
               [artistId$]="artistId$"
+              [isActiveJob]="activeJob === WAREHOUSE_JOB_ID"
+              [class.active]="isActiveJob"
             ></app-job-card>
           }
         </div>
@@ -77,9 +78,10 @@
           @for (job of filteredJobs; track trackByJobId(job)) {
             <app-job-card
               [job_id]="job.job_id"
-              [cardData]="{ clickHandler: goToJobDetail.bind(null, job.job_id) }"
               [searchArtString$]="searchArtStringAll$"
               [artistId$]="artistIdAll$"
+              [isActiveJob]="activeJob === job.job_id"
+              [class.active]="isActiveJob"
             ></app-job-card>
           }
         </div>

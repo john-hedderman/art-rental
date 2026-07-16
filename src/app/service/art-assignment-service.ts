@@ -21,8 +21,23 @@ export class ArtAssignmentService implements OnDestroy {
   private _assignedArt = signal<any>({ art: {}, oldJob: {}, newJob: {} });
   public assignedArt$: Observable<any> = toObservable(this._assignedArt);
 
+  // allow emission of the same value twice, to allow for unhighlighting highlighted art upon second selection
+  private _selectedArt = signal<number>(0, { equal: () => false});
+  public selectedArt$: Observable<number> = toObservable(this._selectedArt);
+
+  private _selectedJob = signal<number>(0, { equal: () => false});
+  public selectedJob$: Observable<number> = toObservable(this._selectedJob);
+
   public assignArt(art: IArt | undefined, oldJob: IJob | undefined, newJob: IJob | undefined) {
     this._assignedArt.set({ art, oldJob, newJob });
+  }
+
+  public selectArt(art_id: number) {
+    this._selectedArt.set(art_id);
+  }
+
+  public selectJob(job_id: number) {
+    this._selectedJob.set(job_id);
   }
 
   async updateArt(art: IArt | undefined, newJob: IJob | undefined): Promise<string> {
