@@ -32,8 +32,8 @@
               [job_id]="WAREHOUSE_JOB_ID"
               [searchArtString$]="searchArtString$"
               [artistId$]="artistId$"
-              [isActiveJob]="activeJob === WAREHOUSE_JOB_ID"
-              [class.active]="isActiveJob"
+              [isSelectedJob]="selectedJob === WAREHOUSE_JOB_ID"
+              [class.active]="isSelectedJob"
             ></app-job-card>
           }
         </div>
@@ -80,8 +80,8 @@
               [job_id]="job.job_id"
               [searchArtString$]="searchArtStringAll$"
               [artistId$]="artistIdAll$"
-              [isActiveJob]="activeJob === job.job_id"
-              [class.active]="isActiveJob"
+              [isSelectedJob]="selectedJob === job.job_id"
+              [class.active]="isSelectedJob"
             ></app-job-card>
           }
         </div>

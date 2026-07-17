@@ -1,12 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   combineLatest,
   distinctUntilChanged,
@@ -34,7 +26,7 @@ import { DataService } from '../../../service/data-service';
     class: 'w-100'
   }
 })
-export class JobCard implements OnInit, AfterViewInit, OnDestroy {
+export class JobCard implements OnInit, OnDestroy {
   @Input() job_id: number | undefined;
   @Input() cardData: any = {
     clickHandler: null
@@ -42,12 +34,13 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   @Input() selectedArtistId: string | undefined;
   @Input() searchArtString$!: Observable<string>;
   @Input() artistId$!: Observable<string>;
-  @Input() isActiveJob = false;
+  @Input() isSelectedJob = false;
 
   @ViewChild(ArtThumbnailCard) artThumbnailCard!: ArtThumbnailCard;
 
   cardFooterContent = '';
 
+  jobs: IJob[] = [];
   job: IJob | undefined;
 
   artwork: IArt[] = [];
@@ -57,69 +50,27 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
 
   readonly WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
 
-  activeArt = 0;
+  selectedJob = 0;
+  selectedArt = 0;
 
   onClickArt(event: Event, art_id: number) {
-    this.artAssignmentService.selectArt(art_id);
+    event.stopPropagation(); // only select the art thumbnail, not the enclosing job card too
+    // only mark the art as the assignment source if it is not already assigned to the selected target job
+    if (this.job_id !== this.artAssignmentService.selectedJob) {
+      this.artAssignmentService.selectArt(art_id);
+    }
   }
 
-  onClickFooter(event: Event) {
-    this.artAssignmentService.selectJob(this.job_id!);
+  onClickJob(event: Event) {
+    // only mark this job as the assignment target if the currently selected art is not already assigned to this job
+    const containedArtIds = this.artwork.map((a) => a.art_id);
+    if (containedArtIds.indexOf(this.artAssignmentService.selectedArt) === -1) {
+      this.artAssignmentService.selectJob(this.job_id!);
+    }
   }
 
   trackByArtId(art: IArt) {
     return art.art_id;
-  }
-
-  onDragEnter(event: DragEvent) {
-    const el = this.elemRef.nativeElement;
-    if (event.dataTransfer?.types[0] === 'text/plain') {
-      el.querySelector('.ar-job-card__content')?.classList.add('droppable');
-      event.preventDefault();
-    }
-  }
-
-  onDragOver(event: DragEvent) {
-    if (event.dataTransfer?.types[0] === 'text/plain') {
-      event.preventDefault();
-    }
-  }
-
-  onDragLeave(event: DragEvent) {
-    const el = this.elemRef.nativeElement;
-    const targetEl = event.relatedTarget as EventTarget as Element;
-    if (targetEl?.closest && targetEl.closest('app-job-card') !== el) {
-      el.querySelector('.ar-job-card__content')?.classList.remove('droppable');
-    }
-  }
-
-  onDrop(event: DragEvent) {
-    const el = this.elemRef.nativeElement;
-    el.querySelector('.ar-job-card__content')?.classList.remove('droppable');
-
-    const artData = event.dataTransfer?.getData('text/plain');
-    if (artData) {
-      const { art, oldJob } = JSON.parse(artData);
-      if (oldJob.job_id === this.job_id) {
-        return;
-      }
-      const newJob = this.job;
-      this.artAssignmentService.assignArt(art, oldJob, newJob);
-    }
-  }
-
-  connectDroppable(el: HTMLElement) {
-    el.addEventListener('dragenter', this.onDragEnter.bind(this));
-    el.addEventListener('dragover', this.onDragOver.bind(this));
-    el.addEventListener('dragleave', this.onDragLeave.bind(this));
-    el.addEventListener('drop', this.onDrop.bind(this));
-  }
-
-  removeListeners(el: HTMLElement) {
-    el.removeEventListener('dragenter', this.onDragEnter.bind(this));
-    el.removeEventListener('dragover', this.onDragOver.bind(this));
-    el.removeEventListener('dragleave', this.onDragLeave.bind(this));
-    el.removeEventListener('drop', this.onDrop.bind(this));
   }
 
   getDetailedJob(jobs: IJob[], clients: IClient[], sites: ISite[]): IJob {
@@ -195,8 +146,9 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async init() {
-    this.subscribeToSelectedArt();
+    this.subscribeToAssignmentSelections();
     this.getAppData$().subscribe(async ({ art, artists, clients, jobs, sites }) => {
+      this.jobs = jobs;
       this.job = this.getDetailedJob(jobs, clients, sites);
       this.cardFooterContent = this.createCardFooterContent(this.job);
       this.artwork = this.getDetailedArtwork(art, artists);
@@ -220,11 +172,13 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
     }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
-  subscribeToSelectedArt() {
-    this.artAssignmentService.selectedArt$.pipe(takeUntil(this.destroy$)).subscribe((art_id) => {
-      // highlight the selected art; unhighlight it if you select it again
-      this.activeArt = art_id === this.activeArt ? 0 : art_id;
-    });
+  subscribeToAssignmentSelections() {
+    this.artAssignmentService.activeArtAssignmentSelections$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (assignmentSelections: { artId: number; jobId: number }) => {
+        this.selectedArt = this.artAssignmentService.selectedArt;
+        this.selectedJob = this.artAssignmentService.selectedJob;
+      });
   }
 
   constructor(
@@ -237,12 +191,7 @@ export class JobCard implements OnInit, AfterViewInit, OnDestroy {
     this.init();
   }
 
-  ngAfterViewInit(): void {
-    this.connectDroppable(this.elemRef.nativeElement);
-  }
-
   ngOnDestroy(): void {
-    this.removeListeners(this.elemRef.nativeElement);
     this.destroy$.next();
     this.destroy$.complete();
   }

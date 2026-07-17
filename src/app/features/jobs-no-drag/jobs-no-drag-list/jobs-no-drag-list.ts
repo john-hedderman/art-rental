@@ -64,9 +64,10 @@ export class JobsNoDragList implements OnInit, OnDestroy {
   artistId$!: Observable<string>;
   artistIdAll$!: Observable<string>;
 
-  isActiveJob = false;
+  isSelectedJob = false;
 
-  activeJob = 0;
+  selectedArt = 0;
+  selectedJob = 0;
 
   onSelectClient() {
     if (this.selectedClientId === 'All') {
@@ -111,7 +112,7 @@ export class JobsNoDragList implements OnInit, OnDestroy {
   }
 
   init() {
-    this.subscribeToSelectedJob();
+    this.subscribeToActiveAssignment();
     this.getCombinedData$().subscribe(({ art, artists, clients, jobs, sites }) => {
       this.artists = artists;
       this.clients = clients;
@@ -170,11 +171,13 @@ export class JobsNoDragList implements OnInit, OnDestroy {
     }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
-  subscribeToSelectedJob() {
-    this.artAssignmentService.selectedJob$.pipe(takeUntil(this.destroy$)).subscribe((job_id) => {
-      // highlight the selected job; unhighlight it if you select it again
-      this.activeJob = job_id === this.activeJob ? 0 : job_id;
-    });
+  subscribeToActiveAssignment() {
+    this.artAssignmentService.activeArtAssignmentSelections$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (assignmentSelections: { artId: number; jobId: number }) => {
+        this.selectedArt = this.artAssignmentService.selectedArt;
+        this.selectedJob = this.artAssignmentService.selectedJob;
+      });
   }
 
   constructor(

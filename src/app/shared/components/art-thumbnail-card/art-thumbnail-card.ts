@@ -1,9 +1,10 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 
 import { IArt, IArtist, IJob } from '../../../model/models';
 import * as Const from '../../../constants';
 import { DataService } from '../../../service/data-service';
+import { ArtAssignmentService } from '../../../service/art-assignment-service';
 
 @Component({
   selector: 'app-art-thumbnail-card',
@@ -12,12 +13,12 @@ import { DataService } from '../../../service/data-service';
   styleUrl: './art-thumbnail-card.scss',
   standalone: true
 })
-export class ArtThumbnailCard implements OnInit, OnDestroy, AfterViewInit {
+export class ArtThumbnailCard implements OnInit, OnDestroy {
   @Input() job_id: number | undefined;
   @Input() art_id: number = 0;
   @Input() artist_name: string | undefined = '';
   @Input() draggable = true;
-  @Input() isActiveArt = false;
+  @Input() isSelectedArt = false;
 
   art: IArt | undefined;
   job: IJob | undefined;
@@ -26,36 +27,15 @@ export class ArtThumbnailCard implements OnInit, OnDestroy, AfterViewInit {
 
   ART_THUMBNAIL_PATH = Const.ART_THUMBNAIL_PATH;
 
+  selectedArt = 0;
+  selectedJob = 0;
+
   public onArtThumbnailClicked(x: any) {
     console.warn('ArtThumbnailCard, x:', x);
   }
 
-  onDragStart(event: DragEvent) {
-    if (event.dataTransfer) {
-      let data;
-      if (this.art && this.job) {
-        data = { art: this.art, oldJob: this.job };
-      } else {
-        data = { art: {}, oldJob: {} };
-      }
-      event.dataTransfer?.setData('text/plain', JSON.stringify(data));
-      event.dataTransfer.effectAllowed = 'move';
-    }
-  }
-
-  onDragEnd(event: DragEvent) {}
-
-  connectDrag(el: HTMLElement) {
-    el.addEventListener('dragstart', this.onDragStart.bind(this));
-    el.addEventListener('dragend', this.onDragEnd.bind(this));
-  }
-
-  removeListeners(el: HTMLElement) {
-    el.removeEventListener('dragstart', this.onDragStart.bind(this));
-    el.removeEventListener('dragend', this.onDragEnd.bind(this));
-  }
-
   init() {
+    this.subscribeToActiveAssignment();
     this.getCombinedData$().subscribe(({ art, artists, jobs }) => {
       this.art = art.find((piece) => piece.art_id === this.art_id);
       if (this.art) {
@@ -78,25 +58,26 @@ export class ArtThumbnailCard implements OnInit, OnDestroy, AfterViewInit {
     }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
+  subscribeToActiveAssignment() {
+    this.artAssignmentService.activeArtAssignmentSelections$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (assignmentSelections: { artId: number; jobId: number }) => {
+        this.selectedArt = this.artAssignmentService.selectedArt;
+        this.selectedJob = this.artAssignmentService.selectedJob;
+      });
+  }
+
   constructor(
     private elemRef: ElementRef,
-    private dataService: DataService
+    private dataService: DataService,
+    private artAssignmentService: ArtAssignmentService
   ) {}
 
   ngOnInit(): void {
     this.init();
   }
 
-  ngAfterViewInit(): void {
-    if (this.draggable) {
-      this.connectDrag(this.elemRef.nativeElement);
-    }
-  }
-
   ngOnDestroy(): void {
-    if (this.draggable) {
-      this.removeListeners(this.elemRef.nativeElement);
-    }
     this.destroy$.next();
     this.destroy$.complete();
   }
