@@ -36,7 +36,7 @@ export class Navbar implements OnInit, OnDestroy {
     target?.classList.add('active');
   }
 
-  firstSegment(url: string | null): String {
+  firstSegment(url: string): string {
     if (!url || url.indexOf('/') !== 0 || url === '/') {
       return '';
     }
@@ -48,7 +48,7 @@ export class Navbar implements OnInit, OnDestroy {
       const currentRouteSegment = this.firstSegment(url);
       document.querySelectorAll('.nav-link').forEach((linkEl) => {
         const toggleEl = linkEl.closest('.dropdown')?.querySelector('.dropdown-toggle');
-        const routerLink = linkEl.getAttribute('routerLink');
+        const routerLink = linkEl.getAttribute('routerLink') || '';
         const routerLinkSegment = this.firstSegment(routerLink);
         if (routerLinkSegment === currentRouteSegment) {
           linkEl.classList.add('active');
