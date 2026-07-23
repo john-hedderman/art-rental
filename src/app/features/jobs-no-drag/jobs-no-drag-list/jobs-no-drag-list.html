@@ -2,7 +2,7 @@
 <div class="container-fluid overflow-y-auto">
   <div class="ar-page-content">
     <div class="row h-100 overflow-hidden">
-      <div class="col-6 pt-3 h-100 overflow-y-hidden">
+      <div class="col-6 pt-3 d-flex flex-column h-100 overflow-y-hidden">
         <div class="d-flex flex-wrap">
           <h5 class="fw-bold d-inline mt-1 ms-1 me-4 mb-4">Warehouse</h5>
           <input
@@ -26,7 +26,7 @@
             </select>
           </div>
         </div>
-        <div class="card-group mt-2 art-section-content overflow-y-auto">
+        <div class="card-group mt-2 pe-2 art-section-content overflow-y-auto">
           <app-job-card
             [job_id]="WAREHOUSE_JOB_ID"
             [searchArtString$]="searchArtString$"
@@ -36,7 +36,7 @@
           ></app-job-card>
         </div>
       </div>
-      <div class="col-6 pt-3 h-100 overflow-y-hidden">
+      <div class="col-6 d-flex flex-column pt-3 h-100 overflow-y-hidden">
         <div class="d-flex flex-wrap">
           <h5 class="fw-bold d-inline mt-1 ms-1 me-4 mb-4">Jobs</h5>
           <div class="d-flex w-100">
@@ -72,7 +72,7 @@
             </select>
           </div>
         </div>
-        <div class="card-group mt-2 jobs-section-content overflow-y-auto">
+        <div class="card-group mt-2 pe-2 jobs-section-content overflow-y-auto">
           @for (job of filteredJobs; track trackByJobId(job)) {
             <app-job-card
               [job_id]="job.job_id"
