@@ -9,12 +9,11 @@ import {
   Subject,
   takeUntil
 } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { IArt, IArtist, IClient, IJob, ISite } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
@@ -25,18 +24,56 @@ import { ArtAssignmentService } from '../../../service/art-assignment-service';
 
 @Component({
   selector: 'app-jobs-no-drag-list',
-  imports: [FormsModule, PageHeader, AsyncPipe, JobCard, PageFooter, ReactiveFormsModule],
+  imports: [FormsModule, PageHeader, JobCard, PageFooter, ReactiveFormsModule],
   templateUrl: './jobs-no-drag-list.html',
   styleUrl: './jobs-no-drag-list.scss',
   standalone: true
 })
 export class JobsNoDragList implements OnInit, OnDestroy {
-  goToAddJob = () => this.router.navigate(['/jobs', 'add']);
-  goToJobDetail = (id: number) => this.router.navigate(['/jobs', id]);
-  noop = () => {};
+  goToAddJob = () => {
+    this.router.navigate(['/jobs', 'add']);
+  };
+
+  assignButton = new ActionButton(
+    'assignBtn',
+    'Assign Art to Job',
+    'button',
+    'btn btn-primary ms-3',
+    true,
+    null,
+    null,
+    this.assignArtToJob.bind(this)
+  );
+
+  artDetailButton = new ActionButton(
+    'artDetailBtn',
+    'Art Detail',
+    'button',
+    'btn btn-primary ms-3',
+    true,
+    null,
+    null,
+    this.goToArtDetail.bind(this)
+  );
+
+  jobDetailButton = new ActionButton(
+    'jobDetailBtn',
+    'Job Detail',
+    'button',
+    'btn btn-primary ms-3',
+    true,
+    null,
+    null,
+    this.goToJobDetail.bind(this)
+  );
 
   headerData = new HeaderActions('job-list', 'Jobs', [], []);
-  footerData = new FooterActions([new AddButton('Add Job', this.goToAddJob)]);
+  footerData = new FooterActions([
+    new AddButton('Add Job', this.goToAddJob),
+    this.assignButton,
+    this.artDetailButton,
+    this.jobDetailButton
+  ]);
 
   private readonly destroy$ = new Subject<void>();
 
@@ -44,6 +81,7 @@ export class JobsNoDragList implements OnInit, OnDestroy {
   jobs$: Observable<IJob[]> | undefined;
 
   jobs: IJob[] = [];
+  warehouseJob: IJob | undefined;
   filteredJobs: IJob[] = [];
 
   selectedClientId = 'All';
@@ -66,8 +104,30 @@ export class JobsNoDragList implements OnInit, OnDestroy {
 
   isSelectedJob = false;
 
-  selectedArt = 0;
-  selectedJob = 0;
+  selectedArt: IArt | undefined;
+  selectedJob: IJob | undefined;
+
+  assignArtToJob() {
+    if (this.selectedArt !== undefined && this.selectedJob !== undefined) {
+      let oldJob = this.jobs.find((job) => {
+        return job.art_ids.indexOf(this.selectedArt!.art_id) !== -1;
+      });
+      if (!oldJob) {
+        if (this.warehouseJob?.art_ids.indexOf(this.selectedArt.art_id) !== -1) {
+          oldJob = this.warehouseJob;
+        }
+      }
+      this.artAssignmentService.assignArt(this.selectedArt, oldJob, this.selectedJob);
+    }
+  }
+
+  goToArtDetail() {
+    this.router.navigate(['/art', this.selectedArt?.art_id]);
+  }
+
+  goToJobDetail() {
+    this.router.navigate(['/jobs', this.selectedJob?.job_id]);
+  }
 
   onSelectClient() {
     if (this.selectedClientId === 'All') {
@@ -138,6 +198,8 @@ export class JobsNoDragList implements OnInit, OnDestroy {
           return job;
         });
       this.jobs = validJobs;
+      const warehouseJobs = jobs.filter((job) => job.job_id === Const.WAREHOUSE_JOB_ID);
+      this.warehouseJob = warehouseJobs ? warehouseJobs[0] : undefined;
       this.jobs$ = of(validJobs);
       this.onSelectClient();
     });
@@ -174,10 +236,24 @@ export class JobsNoDragList implements OnInit, OnDestroy {
   subscribeToActiveAssignment() {
     this.artAssignmentService.activeArtAssignmentSelections$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(async (assignmentSelections: { artId: number; jobId: number }) => {
-        this.selectedArt = this.artAssignmentService.selectedArt;
-        this.selectedJob = this.artAssignmentService.selectedJob;
-      });
+      .subscribe(
+        async (assignmentSelections: {
+          art: IArt | undefined;
+          job: IJob | undefined;
+          assignedJob?: IJob | undefined;
+        }) => {
+          this.selectedArt = this.artAssignmentService.selectedArt;
+          this.selectedJob = this.artAssignmentService.selectedJob;
+          this.assignButton.disabled = !!!this.selectedArt || !!!this.selectedJob; // disable Assign button unless both art and a job are selected
+          if (this.selectedJob && this.selectedJob.job_id === Const.WAREHOUSE_JOB_ID) {
+            this.assignButton.label = 'Remove Art from Job';
+          } else {
+            this.assignButton.label = 'Assign Art to Job';
+          }
+          this.artDetailButton.disabled = !!!this.selectedArt || !!this.selectedJob;
+          this.jobDetailButton.disabled = !!!this.selectedJob || !!this.selectedArt;
+        }
+      );
   }
 
   constructor(
@@ -192,6 +268,7 @@ export class JobsNoDragList implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.artAssignmentService.clearHighlights();
     this.destroy$.next();
     this.destroy$.complete();
   }

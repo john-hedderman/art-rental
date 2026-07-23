@@ -18,13 +18,19 @@ export class ArtAssignmentService implements OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
-  public selectedArt = 0;
-  public selectedJob = 0;
+  public selectedArt: IArt | undefined;
+  public selectedJob: IJob | undefined;
 
-  private _activeArtAssignmentSelections = signal<{ artId: number; jobId: number }>(
+  // making this signal's "equal" function return false allows emission of the same value twice, to enable unhighlighting something highlighted upon second selection
+  private _activeArtAssignmentSelections = signal<{
+    art: IArt | undefined;
+    job: IJob | undefined;
+    assignedJob?: IJob | undefined;
+  }>(
     {
-      artId: 0,
-      jobId: 0
+      art: undefined,
+      job: undefined,
+      assignedJob: undefined
     },
     { equal: () => false }
   );
@@ -32,21 +38,39 @@ export class ArtAssignmentService implements OnDestroy {
     this._activeArtAssignmentSelections
   );
 
-  // making ths signal's "equal" function return false allows emission of the same value twice, to enable unhighlighting something highlighted upon second selection
-  private _selectedArt = signal<number>(0, { equal: () => false });
-  public selectedArt$: Observable<number> = toObservable(this._selectedArt);
+  private _selectedArt = signal<IArt | undefined>(undefined, { equal: () => false });
+  public selectedArt$: Observable<IArt | undefined> = toObservable(this._selectedArt);
 
-  private _selectedJob = signal<number>(0, { equal: () => false });
-  public selectedJob$: Observable<number> = toObservable(this._selectedJob);
+  private _selectedJob = signal<IJob | undefined>(undefined, { equal: () => false });
+  public selectedJob$: Observable<IJob | undefined> = toObservable(this._selectedJob);
 
-  public selectArt(art_id: number) {
-    this.selectedArt = this.selectedArt === art_id ? 0 : art_id;
-    this._activeArtAssignmentSelections.set({ artId: art_id, jobId: this.selectedJob });
+  private _assignedArt = signal<{
+    art: IArt | undefined;
+    oldJob: IJob | undefined;
+    newJob: IJob | undefined;
+  }>({ art: undefined, oldJob: undefined, newJob: undefined });
+  public assignedArt$: Observable<{
+    art: IArt | undefined;
+    oldJob: IJob | undefined;
+    newJob: IJob | undefined;
+  }> = toObservable(this._assignedArt);
+
+  public selectArt(art: IArt | undefined, job: IJob | undefined) {
+    this.selectedArt = this.selectedArt?.art_id === art?.art_id ? undefined : art;
+    this._activeArtAssignmentSelections.set({
+      art,
+      job: this.selectedJob,
+      assignedJob: job
+    });
   }
 
-  public selectJob(job_id: number) {
-    this.selectedJob = this.selectedJob === job_id ? 0 : job_id;
-    this._activeArtAssignmentSelections.set({ artId: this.selectedArt, jobId: job_id });
+  public selectJob(art: IArt | undefined, job: IJob | undefined) {
+    this.selectedJob = this.selectedJob?.job_id === job?.job_id ? undefined : job;
+    this._activeArtAssignmentSelections.set({ art: this.selectedArt, job });
+  }
+
+  public assignArt(art: IArt | undefined, oldJob: IJob | undefined, newJob: IJob | undefined) {
+    this._assignedArt.set({ art, oldJob, newJob });
   }
 
   async updateArt(art: IArt | undefined, newJob: IJob | undefined): Promise<string> {
@@ -145,17 +169,37 @@ export class ArtAssignmentService implements OnDestroy {
     this.messagesService.clearStatus();
   }
 
+  clearHighlights() {
+    // unhighlight selected art and job
+    this.selectArt(undefined, undefined);
+    this.selectJob(undefined, undefined);
+  }
+
   subscribeToSelectedArt() {
-    this.selectedArt$.pipe(takeUntil(this.destroy$)).subscribe((art_id) => {
+    this.selectedArt$.pipe(takeUntil(this.destroy$)).subscribe((art) => {
       // highlight the selected art; unhighlight it if you select it again
-      this.selectedArt = art_id === this.selectedArt ? 0 : art_id;
+      this.selectedArt = art === this.selectedArt ? undefined : art;
     });
   }
 
   subscribeToSelectedJob() {
-    this.selectedJob$.pipe(takeUntil(this.destroy$)).subscribe((job_id) => {
+    this.selectedJob$.pipe(takeUntil(this.destroy$)).subscribe((job) => {
       // highlight the selected job; unhighlight it if you select it again
-      this.selectedJob = job_id === this.selectedJob ? 0 : job_id;
+      this.selectedJob = job === this.selectedJob ? undefined : job;
+    });
+  }
+
+  subscribeToAssignedArt() {
+    this.assignedArt$.pipe(takeUntil(this.destroy$)).subscribe(async (data) => {
+      let { art, oldJob, newJob } = data;
+      oldJob = oldJob || ({ job_id: Const.NO_JOB } as IJob);
+      newJob = newJob || ({ job_id: Const.NO_JOB } as IJob);
+      if (art?.art_id != undefined && oldJob?.job_id != undefined && newJob?.job_id != undefined) {
+        this.saveStatus = await this.save(art, oldJob, newJob);
+        this.postSave('job');
+        this.dataService.reloadData(['art', 'artists', 'jobs']);
+        this.clearHighlights();
+      }
     });
   }
 
@@ -165,6 +209,7 @@ export class ArtAssignmentService implements OnDestroy {
   ) {
     this.subscribeToSelectedArt();
     this.subscribeToSelectedJob();
+    this.subscribeToAssignedArt();
   }
 
   ngOnDestroy(): void {

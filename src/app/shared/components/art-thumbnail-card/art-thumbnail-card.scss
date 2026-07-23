@@ -7,6 +7,7 @@
 .ar-thumbnail-card__container {
   --ar-art-thumbnail-card-side: 94px;
   --ar-art-thumbnail-card-border-radius: 6px;
+  --ar-art-thumbnail-card-border-active-color: red;
 
   width: var(--ar-art-thumbnail-card-side);
   text-align: center;
@@ -22,7 +23,8 @@
     }
 
     &.active {
-      border: 2px solid red;
+      border: 1px solid var(--ar-art-thumbnail-card-border-active-color);
+      box-shadow: 0 0 10px var(--ar-art-thumbnail-card-border-active-color);
     }
 
     &:hover {

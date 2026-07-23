@@ -1,5 +1,9 @@
 <div class="ar-job-card__container">
-  <div class="card ar-job-card mb-3" [class.active]="isSelectedJob" (click)="onClickJob($event)">
+  <div
+    class="card ar-job-card mb-3"
+    [class.active]="isSelectedJob"
+    (click)="onClickJob($event, job)"
+  >
     <div class="row g-0 flex-grow-1 ar-job-card__content">
       <div class="card-group ar-art-card-group pt-3">
         @if (artwork$ | async; as artwork) {
@@ -9,8 +13,8 @@
                 [art_id]="art.art_id"
                 [job_id]="job_id"
                 [draggable]="true"
-                [isSelectedArt]="selectedArt === art.art_id"
-                (click)="onClickArt($event, art.art_id)"
+                [isSelectedArt]="selectedArt === art"
+                (click)="onClickArt($event, art)"
               ></app-art-thumbnail-card>
             }
           } @else {
@@ -21,8 +25,7 @@
         }
       </div>
     </div>
-    <!-- clicking on the card footer selects the job as the target for assigning the selected art -->
-    <div class="row g-0" [class.hover]="true">
+    <div class="row g-0">
       <div
         class="card-footer ar-job-card-footer"
         [class.warehouse-footer]="job_id === WAREHOUSE_JOB_ID"

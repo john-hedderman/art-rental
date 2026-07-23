@@ -50,22 +50,27 @@ export class JobCard implements OnInit, OnDestroy {
 
   readonly WAREHOUSE_JOB_ID = Const.WAREHOUSE_JOB_ID;
 
-  selectedJob = 0;
-  selectedArt = 0;
+  selectedJob: IJob | undefined;
+  selectedArt: IArt | undefined;
 
-  onClickArt(event: Event, art_id: number) {
+  onClickArt(event: Event, art: IArt) {
     event.stopPropagation(); // only select the art thumbnail, not the enclosing job card too
     // only mark the art as the assignment source if it is not already assigned to the selected target job
-    if (this.job_id !== this.artAssignmentService.selectedJob) {
-      this.artAssignmentService.selectArt(art_id);
+    if (this.job !== this.artAssignmentService.selectedJob) {
+      this.artAssignmentService.selectArt(art, this.job);
     }
   }
 
-  onClickJob(event: Event) {
-    // only mark this job as the assignment target if the currently selected art is not already assigned to this job
-    const containedArtIds = this.artwork.map((a) => a.art_id);
-    if (containedArtIds.indexOf(this.artAssignmentService.selectedArt) === -1) {
-      this.artAssignmentService.selectJob(this.job_id!);
+  onClickJob(event: Event, job: IJob | undefined) {
+    // allow selection when:
+    // 1. there is no selected art (to allow viewing job detail)
+    // 2. there is selected art and it is not already assigned to this job
+    if (
+      this.artAssignmentService.selectedArt == undefined ||
+      (this.artAssignmentService.selectedArt !== undefined &&
+        !this.artwork.map((a) => a.art_id).includes(this.artAssignmentService.selectedArt.art_id))
+    ) {
+      this.artAssignmentService.selectJob(this.selectedArt, job);
     }
   }
 

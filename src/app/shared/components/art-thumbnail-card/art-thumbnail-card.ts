@@ -27,8 +27,8 @@ export class ArtThumbnailCard implements OnInit, OnDestroy {
 
   ART_THUMBNAIL_PATH = Const.ART_THUMBNAIL_PATH;
 
-  selectedArt = 0;
-  selectedJob = 0;
+  selectedArt: IArt | undefined;
+  selectedJob: IJob | undefined;
 
   public onArtThumbnailClicked(x: any) {
     console.warn('ArtThumbnailCard, x:', x);

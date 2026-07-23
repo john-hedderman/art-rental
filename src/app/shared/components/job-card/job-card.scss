@@ -6,6 +6,7 @@
   --ar-job-card-side: 346px;
   --ar-job-card-min-height: 125px;
   --ar-job-card-border-radius: 6px;
+  --ar-job-card-border-active-color: blue;
 
   text-align: center;
 
@@ -23,7 +24,9 @@
     }
 
     &.active {
-      border: 2px solid blue;
+      margin: 5px;
+      border: 1px solid var(--ar-job-card-border-active-color);
+      box-shadow: 0 0 10px rgba(0, 0, 255, 0.5);
     }
   }
 

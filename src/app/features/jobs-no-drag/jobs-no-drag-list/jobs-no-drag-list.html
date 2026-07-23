@@ -27,15 +27,13 @@
           </div>
         </div>
         <div class="card-group mt-2 art-section-content overflow-y-auto">
-          @if (art$ | async; as artwork) {
-            <app-job-card
-              [job_id]="WAREHOUSE_JOB_ID"
-              [searchArtString$]="searchArtString$"
-              [artistId$]="artistId$"
-              [isSelectedJob]="selectedJob === WAREHOUSE_JOB_ID"
-              [class.active]="isSelectedJob"
-            ></app-job-card>
-          }
+          <app-job-card
+            [job_id]="WAREHOUSE_JOB_ID"
+            [searchArtString$]="searchArtString$"
+            [artistId$]="artistId$"
+            [isSelectedJob]="selectedJob?.job_id === WAREHOUSE_JOB_ID"
+            [class.active]="isSelectedJob"
+          ></app-job-card>
         </div>
       </div>
       <div class="col-6 pt-3 h-100 overflow-y-hidden">
@@ -80,7 +78,7 @@
               [job_id]="job.job_id"
               [searchArtString$]="searchArtStringAll$"
               [artistId$]="artistIdAll$"
-              [isSelectedJob]="selectedJob === job.job_id"
+              [isSelectedJob]="selectedJob?.job_id === job.job_id"
               [class.active]="isSelectedJob"
             ></app-job-card>
           }
