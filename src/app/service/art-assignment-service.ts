@@ -9,6 +9,7 @@ import * as Msgs from '../shared/strings';
 import { Collections } from '../shared/enums/collections';
 import { Util } from '../shared/util/util';
 import { MessagesService } from './messages-service';
+import { ArtAssignmentSelection } from '../model/models';
 
 @Injectable({
   providedIn: 'root'
@@ -22,15 +23,11 @@ export class ArtAssignmentService implements OnDestroy {
   public selectedJob: IJob | undefined;
 
   // making this signal's "equal" function return false allows emission of the same value twice, to enable unhighlighting something highlighted upon second selection
-  private _activeArtAssignmentSelections = signal<{
-    art: IArt | undefined;
-    job: IJob | undefined;
-    assignedJob?: IJob | undefined;
-  }>(
+  private _activeArtAssignmentSelections = signal<ArtAssignmentSelection>(
     {
       art: undefined,
-      job: undefined,
-      assignedJob: undefined
+      oldJob: undefined,
+      newJob: undefined
     },
     { equal: () => false }
   );
@@ -44,29 +41,29 @@ export class ArtAssignmentService implements OnDestroy {
   private _selectedJob = signal<IJob | undefined>(undefined, { equal: () => false });
   public selectedJob$: Observable<IJob | undefined> = toObservable(this._selectedJob);
 
-  private _assignedArt = signal<{
-    art: IArt | undefined;
-    oldJob: IJob | undefined;
-    newJob: IJob | undefined;
-  }>({ art: undefined, oldJob: undefined, newJob: undefined });
-  public assignedArt$: Observable<{
-    art: IArt | undefined;
-    oldJob: IJob | undefined;
-    newJob: IJob | undefined;
-  }> = toObservable(this._assignedArt);
+  private _assignedArt = signal<ArtAssignmentSelection>({
+    art: undefined,
+    oldJob: undefined,
+    newJob: undefined
+  });
+  public assignedArt$: Observable<ArtAssignmentSelection> = toObservable(this._assignedArt);
 
   public selectArt(art: IArt | undefined, job: IJob | undefined) {
     this.selectedArt = this.selectedArt?.art_id === art?.art_id ? undefined : art;
     this._activeArtAssignmentSelections.set({
       art,
-      job: this.selectedJob,
-      assignedJob: job
+      oldJob: this.selectedJob,
+      newJob: job
     });
   }
 
   public selectJob(art: IArt | undefined, job: IJob | undefined) {
     this.selectedJob = this.selectedJob?.job_id === job?.job_id ? undefined : job;
-    this._activeArtAssignmentSelections.set({ art: this.selectedArt, job });
+    this._activeArtAssignmentSelections.set({
+      art: this.selectedArt,
+      oldJob: this.selectedJob,
+      newJob: undefined
+    });
   }
 
   public assignArt(art: IArt | undefined, oldJob: IJob | undefined, newJob: IJob | undefined) {

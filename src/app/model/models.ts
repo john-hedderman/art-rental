@@ -112,3 +112,9 @@ export interface ITag {
   artists?: IArtist[];
   [key: string]: number | string | number[] | IArt[] | IArtist[] | undefined;
 }
+
+export interface ArtAssignmentSelection {
+  art: IArt | undefined;
+  oldJob: IJob | undefined;
+  newJob: IJob | undefined;
+}

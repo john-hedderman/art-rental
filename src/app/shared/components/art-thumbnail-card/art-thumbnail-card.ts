@@ -61,7 +61,7 @@ export class ArtThumbnailCard implements OnInit, OnDestroy {
   subscribeToActiveAssignment() {
     this.artAssignmentService.activeArtAssignmentSelections$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(async (assignmentSelections: { artId: number; jobId: number }) => {
+      .subscribe(async () => {
         this.selectedArt = this.artAssignmentService.selectedArt;
         this.selectedJob = this.artAssignmentService.selectedJob;
       });

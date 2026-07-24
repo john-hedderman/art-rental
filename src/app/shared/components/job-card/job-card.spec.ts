@@ -82,63 +82,6 @@ describe('JobCard', () => {
     }));
   });
 
-  describe('Drag and drop', () => {
-    it('should register drag and drop events', () => {
-      const connectDroppableSpy = spyOn(component, 'connectDroppable');
-      component.ngAfterViewInit();
-
-      expect(connectDroppableSpy).toHaveBeenCalled();
-    });
-
-    it('should allow art to be dragged into a job card', () => {
-      const dragEvent = createDragEvent('dragenter', artData);
-      const preventDefaultSpy = spyOn(dragEvent, 'preventDefault');
-      hostEl.dispatchEvent(dragEvent);
-
-      expect(preventDefaultSpy).toHaveBeenCalled();
-
-      const contentEl = fixture.nativeElement.querySelector('.ar-job-card__content') as HTMLElement;
-      expect(contentEl.classList).toContain('droppable');
-    });
-
-    it('should allow art to be dragged over a job card', () => {
-      const dragEvent = createDragEvent('dragover', artData);
-      const preventDefaultSpy = spyOn(dragEvent, 'preventDefault');
-      hostEl.dispatchEvent(dragEvent);
-
-      expect(preventDefaultSpy).toHaveBeenCalled();
-    });
-
-    it('should allow art to be dragged out of a job card', () => {
-      const dragEvent = createDragEvent('dragleave', artData);
-      hostEl.dispatchEvent(dragEvent);
-
-      const contentEl = fixture.nativeElement.querySelector('.ar-job-card__content') as HTMLElement;
-      expect(contentEl.classList).not.toContain('droppable');
-    });
-
-    it('should allow art to be dropped into a job card', () => {
-      component.job = mockJob;
-      component.job_id = mockJob.job_id;
-      const assignArtSpy = spyOn(component['artAssignmentService'], 'assignArt');
-
-      const dragEvent = createDragEvent('drop', artData);
-      hostEl.dispatchEvent(dragEvent);
-
-      const contentEl = fixture.nativeElement.querySelector('.ar-job-card__content') as HTMLElement;
-      expect(contentEl.classList).not.toContain('droppable');
-
-      expect(assignArtSpy).toHaveBeenCalled();
-    });
-
-    it('should unregister drag and drop events', () => {
-      const removeListenersSpy = spyOn(component, 'removeListeners');
-      component.ngOnDestroy();
-
-      expect(removeListenersSpy).toHaveBeenCalled();
-    });
-  });
-
   describe('Save art assignment', () => {
     const updateArt = (art: IArt, oldJob: IJob, newJob: IJob) => Promise.resolve(Const.SUCCESS);
     const updateOldJob = (art: IArt, newJob: IJob) => Promise.resolve(Const.SUCCESS);

@@ -237,24 +237,18 @@ export class JobsNoDragList implements OnInit, OnDestroy {
   subscribeToActiveAssignment() {
     this.artAssignmentService.activeArtAssignmentSelections$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        async (assignmentSelections: {
-          art: IArt | undefined;
-          job: IJob | undefined;
-          assignedJob?: IJob | undefined;
-        }) => {
-          this.selectedArt = this.artAssignmentService.selectedArt;
-          this.selectedJob = this.artAssignmentService.selectedJob;
-          this.assignButton.disabled = !!!this.selectedArt || !!!this.selectedJob; // disable Assign button unless both art and a job are selected
-          if (this.selectedJob && this.selectedJob.job_id === Const.WAREHOUSE_JOB_ID) {
-            this.assignButton.label = Msgs.UNASSIGN_ART_BUTTON_LABEL;
-          } else {
-            this.assignButton.label = Msgs.ASSIGN_ART_BUTTON_LABEL;
-          }
-          this.artDetailButton.disabled = !!!this.selectedArt || !!this.selectedJob;
-          this.jobDetailButton.disabled = !!!this.selectedJob || !!this.selectedArt;
+      .subscribe(async () => {
+        this.selectedArt = this.artAssignmentService.selectedArt;
+        this.selectedJob = this.artAssignmentService.selectedJob;
+        this.assignButton.disabled = !!!this.selectedArt || !!!this.selectedJob; // disable Assign button unless both art and a job are selected
+        if (this.selectedJob && this.selectedJob.job_id === Const.WAREHOUSE_JOB_ID) {
+          this.assignButton.label = Msgs.UNASSIGN_ART_BUTTON_LABEL;
+        } else {
+          this.assignButton.label = Msgs.ASSIGN_ART_BUTTON_LABEL;
         }
-      );
+        this.artDetailButton.disabled = !!!this.selectedArt || !!this.selectedJob;
+        this.jobDetailButton.disabled = !!!this.selectedJob || !!this.selectedArt;
+      });
   }
 
   constructor(
