@@ -3,6 +3,7 @@ import {
   combineLatest,
   debounceTime,
   distinctUntilChanged,
+  map,
   Observable,
   of,
   startWith,
@@ -11,6 +12,7 @@ import {
 } from 'rxjs';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
@@ -25,7 +27,7 @@ import { ArtAssignmentService } from '../../../service/art-assignment-service';
 
 @Component({
   selector: 'app-jobs-no-drag-list',
-  imports: [FormsModule, PageHeader, JobCard, PageFooter, ReactiveFormsModule],
+  imports: [FormsModule, PageHeader, JobCard, PageFooter, ReactiveFormsModule, AsyncPipe],
   templateUrl: './jobs-no-drag-list.html',
   styleUrl: './jobs-no-drag-list.scss',
   standalone: true
@@ -79,7 +81,10 @@ export class JobsNoDragList implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   art$: Observable<IArt[]> | undefined;
+  artists$: Observable<IArtist[]> | undefined;
+  clients$: Observable<IClient[]> | undefined;
   jobs$: Observable<IJob[]> | undefined;
+  filteredSites$: Observable<ISite[]> | undefined;
 
   jobs: IJob[] = [];
   warehouseJob: IJob | undefined;
@@ -139,6 +144,9 @@ export class JobsNoDragList implements OnInit, OnDestroy {
         this.selectedSiteId = 'All';
       }
     }
+    this.filteredSites$ = of(this.filteredSites).pipe(
+      map((sites: ISite[]) => [...sites].sort((a, b) => a.name.localeCompare(b.name)))
+    );
     this.filterJobs();
   }
 
@@ -176,7 +184,13 @@ export class JobsNoDragList implements OnInit, OnDestroy {
     this.subscribeToActiveAssignment();
     this.getCombinedData$().subscribe(({ art, artists, clients, jobs, sites }) => {
       this.artists = artists;
+      this.artists$ = of(artists).pipe(
+        map((artists: IArtist[]) => [...artists].sort((a, b) => a.name.localeCompare(b.name)))
+      );
       this.clients = clients;
+      this.clients$ = of(clients).pipe(
+        map((clients: IClient[]) => [...clients].sort((a, b) => a.name.localeCompare(b.name)))
+      );
       this.sites = sites.filter((site) => site.site_id !== Const.SITE_TBD_ID);
 
       this.art$ = of(art);

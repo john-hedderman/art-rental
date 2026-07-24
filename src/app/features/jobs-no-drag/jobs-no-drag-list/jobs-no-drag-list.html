@@ -20,7 +20,7 @@
               [formControl]="selectArtistControl"
             >
               <option [value]="''">All artists</option>
-              @for (artist of artists; track trackByArtistId(artist)) {
+              @for (artist of artists$ | async; track trackByArtistId(artist)) {
                 <option [value]="artist.artist_id">{{ artist.name }}</option>
               }
             </select>
@@ -49,7 +49,7 @@
               (change)="onSelectClient()"
             >
               <option value="All">All clients</option>
-              @for (client of clients; track trackByClientId(client)) {
+              @for (client of clients$ | async; track trackByClientId(client)) {
                 <option value="{{ client.client_id }}">{{ client.name }}</option>
               }
             </select>
@@ -66,8 +66,8 @@
             >
               <option value="All">All sites</option>
               <option value="{{ SITE_TBD_ID }}">TBD</option>
-              @for (site of filteredSites; track trackBySiteId(site)) {
-                <option value="{{ site.site_id }}">{{ site.name }}</option>
+              @for (site of filteredSites$ | async; track trackBySiteId(site)) {
+                <option [value]="site.site_id">{{ site.name }}</option>
               }
             </select>
           </div>
