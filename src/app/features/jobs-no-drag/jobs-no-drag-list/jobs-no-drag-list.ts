@@ -17,6 +17,7 @@ import { ActionButton, FooterActions, HeaderActions } from '../../../shared/acti
 import { IArt, IArtist, IClient, IJob, ISite } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
+import * as Msgs from '../../../shared/strings';
 import { JobCard } from '../../../shared/components/job-card/job-card';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
@@ -36,7 +37,7 @@ export class JobsNoDragList implements OnInit, OnDestroy {
 
   assignButton = new ActionButton(
     'assignBtn',
-    'Assign Art to Job',
+    Msgs.ASSIGN_ART_BUTTON_LABEL,
     'button',
     'btn btn-primary ms-3',
     true,
@@ -246,9 +247,9 @@ export class JobsNoDragList implements OnInit, OnDestroy {
           this.selectedJob = this.artAssignmentService.selectedJob;
           this.assignButton.disabled = !!!this.selectedArt || !!!this.selectedJob; // disable Assign button unless both art and a job are selected
           if (this.selectedJob && this.selectedJob.job_id === Const.WAREHOUSE_JOB_ID) {
-            this.assignButton.label = 'Remove Art from Job';
+            this.assignButton.label = Msgs.UNASSIGN_ART_BUTTON_LABEL;
           } else {
-            this.assignButton.label = 'Assign Art to Job';
+            this.assignButton.label = Msgs.ASSIGN_ART_BUTTON_LABEL;
           }
           this.artDetailButton.disabled = !!!this.selectedArt || !!this.selectedJob;
           this.jobDetailButton.disabled = !!!this.selectedJob || !!this.selectedArt;
