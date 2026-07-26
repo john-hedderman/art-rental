@@ -17,7 +17,6 @@ export class ArtThumbnailCard implements OnInit, OnDestroy {
   @Input() job_id: number | undefined;
   @Input() art_id: number = 0;
   @Input() artist_name: string | undefined = '';
-  @Input() draggable = true;
   @Input() isSelectedArt = false;
 
   art: IArt | undefined;
