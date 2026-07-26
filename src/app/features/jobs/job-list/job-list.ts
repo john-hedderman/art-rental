@@ -3,46 +3,91 @@ import {
   combineLatest,
   debounceTime,
   distinctUntilChanged,
+  map,
   Observable,
   of,
   startWith,
   Subject,
   takeUntil
 } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { IArt, IArtist, IClient, IJob, ISite } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import * as Const from '../../../constants';
+import * as Msgs from '../../../shared/strings';
 import { JobCard } from '../../../shared/components/job-card/job-card';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
+import { ArtAssignmentService } from '../../../service/art-assignment-service';
 
 @Component({
-  selector: 'app-job-list',
-  imports: [FormsModule, PageHeader, AsyncPipe, JobCard, PageFooter, ReactiveFormsModule],
+  selector: 'app-jobs-list',
+  imports: [FormsModule, PageHeader, JobCard, PageFooter, ReactiveFormsModule, AsyncPipe],
   templateUrl: './job-list.html',
   styleUrl: './job-list.scss',
   standalone: true
 })
 export class JobList implements OnInit, OnDestroy {
-  goToAddJob = () => this.router.navigate(['/jobs', 'add']);
-  goToJobDetail = (id: number) => this.router.navigate(['/jobs', id]);
-  noop = () => {};
+  goToAddJob = () => {
+    this.router.navigate(['/jobs', 'add']);
+  };
+
+  assignButton = new ActionButton(
+    'assignBtn',
+    Msgs.ASSIGN_ART_BUTTON_LABEL,
+    'button',
+    'btn btn-primary ms-3',
+    true,
+    null,
+    null,
+    this.assignArtToJob.bind(this)
+  );
+
+  artDetailButton = new ActionButton(
+    'artDetailBtn',
+    'Art Detail',
+    'button',
+    'btn btn-primary ms-3',
+    true,
+    null,
+    null,
+    this.goToArtDetail.bind(this)
+  );
+
+  jobDetailButton = new ActionButton(
+    'jobDetailBtn',
+    'Job Detail',
+    'button',
+    'btn btn-primary ms-3',
+    true,
+    null,
+    null,
+    this.goToJobDetail.bind(this)
+  );
 
   headerData = new HeaderActions('job-list', 'Jobs', [], []);
-  footerData = new FooterActions([new AddButton('Add Job', this.goToAddJob)]);
+  footerData = new FooterActions([
+    new AddButton('Add Job', this.goToAddJob),
+    this.assignButton,
+    this.artDetailButton,
+    this.jobDetailButton
+  ]);
 
   private readonly destroy$ = new Subject<void>();
 
   art$: Observable<IArt[]> | undefined;
+  artists$: Observable<IArtist[]> | undefined;
+  clients$: Observable<IClient[]> | undefined;
   jobs$: Observable<IJob[]> | undefined;
+  filteredSites$: Observable<ISite[]> | undefined;
 
   jobs: IJob[] = [];
+  warehouseJob: IJob | undefined;
   filteredJobs: IJob[] = [];
 
   selectedClientId = 'All';
@@ -63,6 +108,33 @@ export class JobList implements OnInit, OnDestroy {
   artistId$!: Observable<string>;
   artistIdAll$!: Observable<string>;
 
+  isSelectedJob = false;
+
+  selectedArt: IArt | undefined;
+  selectedJob: IJob | undefined;
+
+  assignArtToJob() {
+    if (this.selectedArt !== undefined && this.selectedJob !== undefined) {
+      let oldJob = this.jobs.find((job) => {
+        return job.art_ids.indexOf(this.selectedArt!.art_id) !== -1;
+      });
+      if (!oldJob) {
+        if (this.warehouseJob?.art_ids.indexOf(this.selectedArt.art_id) !== -1) {
+          oldJob = this.warehouseJob;
+        }
+      }
+      this.artAssignmentService.assignArt(this.selectedArt, oldJob, this.selectedJob);
+    }
+  }
+
+  goToArtDetail() {
+    this.router.navigate(['/art', this.selectedArt?.art_id]);
+  }
+
+  goToJobDetail() {
+    this.router.navigate(['/jobs', this.selectedJob?.job_id]);
+  }
+
   onSelectClient() {
     if (this.selectedClientId === 'All') {
       this.filteredSites = this.sites.filter((site) => site.site_id !== Const.WAREHOUSE_SITE_ID);
@@ -72,6 +144,9 @@ export class JobList implements OnInit, OnDestroy {
         this.selectedSiteId = 'All';
       }
     }
+    this.filteredSites$ = of(this.filteredSites).pipe(
+      map((sites: ISite[]) => [...sites].sort((a, b) => a.name.localeCompare(b.name)))
+    );
     this.filterJobs();
   }
 
@@ -106,9 +181,16 @@ export class JobList implements OnInit, OnDestroy {
   }
 
   init() {
+    this.subscribeToActiveAssignment();
     this.getCombinedData$().subscribe(({ art, artists, clients, jobs, sites }) => {
       this.artists = artists;
+      this.artists$ = of(artists).pipe(
+        map((artists: IArtist[]) => [...artists].sort((a, b) => a.name.localeCompare(b.name)))
+      );
       this.clients = clients;
+      this.clients$ = of(clients).pipe(
+        map((clients: IClient[]) => [...clients].sort((a, b) => a.name.localeCompare(b.name)))
+      );
       this.sites = sites.filter((site) => site.site_id !== Const.SITE_TBD_ID);
 
       this.art$ = of(art);
@@ -131,6 +213,8 @@ export class JobList implements OnInit, OnDestroy {
           return job;
         });
       this.jobs = validJobs;
+      const warehouseJobs = jobs.filter((job) => job.job_id === Const.WAREHOUSE_JOB_ID);
+      this.warehouseJob = warehouseJobs ? warehouseJobs[0] : undefined;
       this.jobs$ = of(validJobs);
       this.onSelectClient();
     });
@@ -164,10 +248,28 @@ export class JobList implements OnInit, OnDestroy {
     }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
   }
 
+  subscribeToActiveAssignment() {
+    this.artAssignmentService.activeArtAssignmentSelections$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async () => {
+        this.selectedArt = this.artAssignmentService.selectedArt;
+        this.selectedJob = this.artAssignmentService.selectedJob;
+        this.assignButton.disabled = !!!this.selectedArt || !!!this.selectedJob; // disable Assign button unless both art and a job are selected
+        if (this.selectedJob && this.selectedJob.job_id === Const.WAREHOUSE_JOB_ID) {
+          this.assignButton.label = Msgs.UNASSIGN_ART_BUTTON_LABEL;
+        } else {
+          this.assignButton.label = Msgs.ASSIGN_ART_BUTTON_LABEL;
+        }
+        this.artDetailButton.disabled = !!!this.selectedArt || !!this.selectedJob;
+        this.jobDetailButton.disabled = !!!this.selectedJob || !!this.selectedArt;
+      });
+  }
+
   constructor(
     private dataService: DataService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private artAssignmentService: ArtAssignmentService
   ) {}
 
   ngOnInit(): void {
@@ -175,6 +277,7 @@ export class JobList implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.artAssignmentService.clearHighlights();
     this.destroy$.next();
     this.destroy$.complete();
   }

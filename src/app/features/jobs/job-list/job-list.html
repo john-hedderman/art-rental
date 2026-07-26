@@ -2,7 +2,7 @@
 <div class="container-fluid overflow-y-auto">
   <div class="ar-page-content">
     <div class="row h-100 overflow-hidden">
-      <div class="col-6 pt-3 h-100 overflow-y-hidden">
+      <div class="col-6 pt-3 d-flex flex-column h-100 overflow-y-hidden">
         <div class="d-flex flex-wrap">
           <h5 class="fw-bold d-inline mt-1 ms-1 me-4 mb-4">Warehouse</h5>
           <input
@@ -20,24 +20,23 @@
               [formControl]="selectArtistControl"
             >
               <option [value]="''">All artists</option>
-              @for (artist of artists; track trackByArtistId(artist)) {
+              @for (artist of artists$ | async; track trackByArtistId(artist)) {
                 <option [value]="artist.artist_id">{{ artist.name }}</option>
               }
             </select>
           </div>
         </div>
-        <div class="card-group mt-2 art-section-content overflow-y-auto">
-          @if (art$ | async; as artwork) {
-            <app-job-card
-              [job_id]="WAREHOUSE_JOB_ID"
-              [cardData]="{ clickHandler: noop }"
-              [searchArtString$]="searchArtString$"
-              [artistId$]="artistId$"
-            ></app-job-card>
-          }
+        <div class="card-group mt-2 pe-2 art-section-content overflow-y-auto">
+          <app-job-card
+            [job_id]="WAREHOUSE_JOB_ID"
+            [searchArtString$]="searchArtString$"
+            [artistId$]="artistId$"
+            [isSelectedJob]="selectedJob?.job_id === WAREHOUSE_JOB_ID"
+            [class.active]="isSelectedJob"
+          ></app-job-card>
         </div>
       </div>
-      <div class="col-6 pt-3 h-100 overflow-y-hidden">
+      <div class="col-6 d-flex flex-column pt-3 h-100 overflow-y-hidden">
         <div class="d-flex flex-wrap">
           <h5 class="fw-bold d-inline mt-1 ms-1 me-4 mb-4">Jobs</h5>
           <div class="d-flex w-100">
@@ -50,7 +49,7 @@
               (change)="onSelectClient()"
             >
               <option value="All">All clients</option>
-              @for (client of clients; track trackByClientId(client)) {
+              @for (client of clients$ | async; track trackByClientId(client)) {
                 <option value="{{ client.client_id }}">{{ client.name }}</option>
               }
             </select>
@@ -67,19 +66,20 @@
             >
               <option value="All">All sites</option>
               <option value="{{ SITE_TBD_ID }}">TBD</option>
-              @for (site of filteredSites; track trackBySiteId(site)) {
-                <option value="{{ site.site_id }}">{{ site.name }}</option>
+              @for (site of filteredSites$ | async; track trackBySiteId(site)) {
+                <option [value]="site.site_id">{{ site.name }}</option>
               }
             </select>
           </div>
         </div>
-        <div class="card-group mt-2 jobs-section-content overflow-y-auto">
+        <div class="card-group mt-2 pe-2 jobs-section-content overflow-y-auto">
           @for (job of filteredJobs; track trackByJobId(job)) {
             <app-job-card
               [job_id]="job.job_id"
-              [cardData]="{ clickHandler: goToJobDetail.bind(null, job.job_id) }"
               [searchArtString$]="searchArtStringAll$"
               [artistId$]="artistIdAll$"
+              [isSelectedJob]="selectedJob?.job_id === job.job_id"
+              [class.active]="isSelectedJob"
             ></app-job-card>
           }
         </div>
