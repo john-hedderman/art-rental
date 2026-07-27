@@ -275,7 +275,8 @@ describe('AddClient', () => {
 
     it('should disable the Save button', () => {
       component.preSave();
-      expect(component.saveBtn.disabled).toBeTrue();
+      const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
+      expect(saveBtn.disabled).toBeTrue();
     });
 
     it('should set the client ID in the form to the route ID if present', () => {

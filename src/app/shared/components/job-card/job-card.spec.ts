@@ -10,25 +10,22 @@ import * as Const from '../../../constants';
 const mockArt = { art_id: 1, job_id: 11, artist_id: 4, title: 'Wonder Art' } as IArt;
 const mockJob = { job_id: 11, client_id: 8, site_id: 15, job_number: '000007' } as IJob;
 const mockWarehouse = { job_id: 1, job_number: 'No job', art_ids: [1, 2, 3] } as IJob;
+const mockJobs = [
+  mockWarehouse,
+  { job_id: 10 },
+  mockJob,
+  { job_id: 12, client_id: 9, site_id: 13 }
+];
 
 const mockDataService = {
   art$: of([mockArt, { art_id: 2, job_id: 12 }, { art_id: 3 }]),
   artists$: of([{ artist_id: 4, name: 'George Clooney', photo_path: '', tag_ids: [] }]),
   clients$: of([{ client_id: 7 }, { client_id: 8, name: 'Amazon' }, { client_id: 9 }]),
-  jobs$: of([mockWarehouse, { job_id: 10 }, mockJob, { job_id: 12, client_id: 9, site_id: 13 }]),
+  jobs$: of(mockJobs),
   sites$: of([{ site_id: 13 }, { site_id: 14 }, { site_id: 15, name: 'Area 51' }]),
   reloadData: () => {},
   saveDocument: () => Promise.resolve({ modifiedCount: 1 })
 };
-
-const artData = { art: mockArt, oldJob: mockWarehouse };
-const artDataFromOtherJob = { art: mockArt, oldJob: { job_id: 12, art_ids: undefined } };
-
-function createDragEvent(type: string, data: any) {
-  const dataTransfer = new DataTransfer();
-  dataTransfer.setData('text/plain', JSON.stringify(data));
-  return new DragEvent(type, { dataTransfer: dataTransfer });
-}
 
 describe('JobCard', () => {
   let component: JobCard;
@@ -52,6 +49,10 @@ describe('JobCard', () => {
   });
 
   describe('Initialization', () => {
+    beforeEach(() => {
+      mockDataService.jobs$ = of(mockJobs);
+    });
+
     it('should create', () => {
       expect(component).toBeTruthy();
     });
@@ -87,16 +88,18 @@ describe('JobCard', () => {
     const updateOldJob = (art: IArt, newJob: IJob) => Promise.resolve(Const.SUCCESS);
     const updateNewJob = (art: IArt, newJob: IJob) => Promise.resolve(Const.SUCCESS);
 
+    const selectedArt = { art_id: 99 } as IArt;
+    const oldJob = { job_id: 99 } as IJob;
+    const selectedJob = { job_id: 100 } as IJob;
+
     it('should attempt to save an art assignment to the database', fakeAsync(() => {
-      component.job = mockJob;
-      const saveSpy = spyOn(component['artAssignmentService'], 'save');
-      const postSaveSpy = spyOn(component['artAssignmentService'], 'postSave');
+      const saveSpy = spyOn(assignService, 'save');
+      const postSaveSpy = spyOn(assignService, 'postSave');
 
-      const dragEvent = createDragEvent('drop', artData);
-      hostEl.dispatchEvent(dragEvent);
+      assignService.assignArt(selectedArt, oldJob, selectedJob);
 
-      expect(saveSpy).toHaveBeenCalled();
       tick(1000);
+      expect(saveSpy).toHaveBeenCalled();
       expect(postSaveSpy).toHaveBeenCalled();
     }));
 
@@ -110,8 +113,7 @@ describe('JobCard', () => {
       });
 
       it('should save the art to the database', fakeAsync(() => {
-        const dragEvent = createDragEvent('drop', artData);
-        hostEl.dispatchEvent(dragEvent);
+        assignService.assignArt(selectedArt, oldJob, selectedJob);
 
         tick(1000);
         expect(assignService.saveStatus).toBe(Const.SUCCESS);
@@ -119,9 +121,7 @@ describe('JobCard', () => {
 
       it('should fail to save the art if nothing was modified in the database', fakeAsync(() => {
         assignService['dataService'].saveDocument = () => Promise.resolve({ modifiedCount: 0 });
-
-        const dragEvent = createDragEvent('drop', artData);
-        hostEl.dispatchEvent(dragEvent);
+        assignService.assignArt(selectedArt, oldJob, selectedJob);
 
         tick(1000);
         expect(assignService.saveStatus).toBe(Const.FAILURE);
@@ -138,8 +138,7 @@ describe('JobCard', () => {
       });
 
       it('should save the old job to the database', fakeAsync(() => {
-        const dragEvent = createDragEvent('drop', artData);
-        hostEl.dispatchEvent(dragEvent);
+        assignService.assignArt(selectedArt, oldJob, selectedJob);
 
         tick(1000);
         expect(assignService.saveStatus).toBe(Const.SUCCESS);
@@ -147,9 +146,7 @@ describe('JobCard', () => {
 
       it('should fail to save the old job if nothing was modified in the database', fakeAsync(() => {
         assignService['dataService'].saveDocument = () => Promise.resolve({ modifiedCount: 0 });
-
-        const dragEvent = createDragEvent('drop', artData);
-        hostEl.dispatchEvent(dragEvent);
+        assignService.assignArt(selectedArt, oldJob, selectedJob);
 
         tick(1000);
         expect(assignService.saveStatus).toBe(Const.FAILURE);
@@ -166,8 +163,7 @@ describe('JobCard', () => {
       });
 
       it('should save the new job to the database', fakeAsync(() => {
-        const dragEvent = createDragEvent('drop', artData);
-        hostEl.dispatchEvent(dragEvent);
+        assignService.assignArt(selectedArt, oldJob, selectedJob);
 
         tick(1000);
         expect(assignService.saveStatus).toBe(Const.SUCCESS);
@@ -175,9 +171,7 @@ describe('JobCard', () => {
 
       it('should fail to save the new job if nothing was modified in the database', fakeAsync(() => {
         assignService['dataService'].saveDocument = () => Promise.resolve({ modifiedCount: 0 });
-
-        const dragEvent = createDragEvent('drop', artData);
-        hostEl.dispatchEvent(dragEvent);
+        assignService.assignArt(selectedArt, oldJob, selectedJob);
 
         tick(1000);
         expect(assignService.saveStatus).toBe(Const.FAILURE);

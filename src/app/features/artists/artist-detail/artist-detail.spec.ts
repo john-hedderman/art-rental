@@ -11,6 +11,16 @@ import { Util } from '../../../shared/util/util';
 
 const mockDataService = {
   reloadData: () => {},
+  art$: of([
+    { art_id: 1 },
+    { art_id: 3 },
+    {
+      art_id: 5,
+      full_size_image_url: 'http://fake.art.com/aaa.jpg',
+      job_id: 8,
+      artist_id: 6
+    }
+  ]),
   artists$: of([
     { artist_id: 2 },
     { artist_id: 4 },
