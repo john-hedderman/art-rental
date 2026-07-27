@@ -52,6 +52,8 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
 
   saveStatus = '';
 
+  contactsTimeoutID = 0;
+
   preSave() {
     this.disableSaveBtn();
     const clientId = this.route.snapshot.paramMap.get('id');
@@ -193,7 +195,7 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
   populateContactsData() {
     this.contacts.clear();
     const contact_ids = this.dbData.contact_ids;
-    setTimeout(() => {
+    this.contactsTimeoutID = setTimeout(() => {
       for (const contact_id of contact_ids) {
         this.addContact(contact_id);
         this.populateContactData(contact_id);
@@ -279,5 +281,6 @@ export class AddClient extends AddBase implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.messagesService.clearStatus();
+    clearTimeout(this.contactsTimeoutID);
   }
 }
