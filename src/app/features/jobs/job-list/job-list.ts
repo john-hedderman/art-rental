@@ -221,7 +221,6 @@ export class JobList implements OnInit, OnDestroy {
 
     this.searchArtString$ = this.searchArtControl.valueChanges.pipe(
       startWith(''),
-      debounceTime(300),
       distinctUntilChanged()
     );
     this.searchArtStringAll$ = of('');
