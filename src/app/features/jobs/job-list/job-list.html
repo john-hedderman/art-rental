@@ -26,7 +26,7 @@
             </select>
           </div>
         </div>
-        <div class="card-group mt-2 pe-2 art-section-content overflow-y-auto">
+        <div class="mt-2 pe-2 overflow-y-auto">
           <app-job-card
             [job_id]="WAREHOUSE_JOB_ID"
             [searchArtString$]="searchArtString$"
@@ -72,7 +72,7 @@
             </select>
           </div>
         </div>
-        <div class="card-group mt-2 pe-2 jobs-section-content overflow-y-auto">
+        <div class="mt-2 pe-2 overflow-y-auto">
           @for (job of filteredJobs; track trackByJobId(job)) {
             <app-job-card
               [job_id]="job.job_id"
