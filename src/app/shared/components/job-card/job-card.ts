@@ -152,7 +152,7 @@ export class JobCard implements OnInit, OnDestroy {
 
   async init() {
     this.subscribeToAssignmentSelections();
-    this.getAppData$().subscribe(async ({ art, artists, clients, jobs, sites }) => {
+    this.getCombinedData$().subscribe(async ({ art, artists, clients, jobs, sites }) => {
       this.jobs = jobs;
       this.job = this.getDetailedJob(jobs, clients, sites);
       this.cardFooterContent = this.createCardFooterContent(this.job);
@@ -161,7 +161,7 @@ export class JobCard implements OnInit, OnDestroy {
     });
   }
 
-  getAppData$(): Observable<{
+  getCombinedData$(): Observable<{
     art: IArt[];
     artists: IArtist[];
     clients: IClient[];
