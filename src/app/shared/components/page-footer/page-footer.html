@@ -1,13 +1,12 @@
-<div class="row pt-3 page-footer">
+<div class="row">
   <div class="col-12 px-0">
-    <h5 class="pt-0 ar-heading"></h5>
-    <div class="text-center">
+    <div class="border-top d-flex flex-wrap justify-content-center pt-2">
       @for (button of footerData().buttons; track $index) {
         @if (button.clickHandler) {
           <button
             id="{{ button.id }}"
             type="{{ button.type }}"
-            class="{{ button.buttonClass }}"
+            class="{{ button.buttonClass }} mb-2"
             (click)="button.clickHandler()"
             [disabled]="button.disabled"
             [attr.data-bs-toggle]="button.dataBsToggle"
@@ -18,7 +17,7 @@
           <button
             id="{{ button.id }}"
             type="{{ button.type }}"
-            class="{{ button.buttonClass }}"
+            class="{{ button.buttonClass }} mb-2"
             [disabled]="button.disabled"
             [attr.data-bs-toggle]="button.dataBsToggle"
             [attr.data-bs-target]="button.dataBsTarget"

@@ -12,13 +12,16 @@ import * as Constants from '../../../constants';
   templateUrl: './page-header.html',
   styleUrl: './page-header.scss',
   standalone: true,
+  host: {
+    class: 'flex-shrink-0'
+  }
 })
 export class PageHeader {
   headerData = input<HeaderData>({
     page: '',
     headerTitle: '',
     headerButtons: [],
-    headerLinks: [],
+    headerLinks: []
   });
 
   readonly OP_SUCCESS = Constants.SUCCESS;

@@ -19,7 +19,10 @@
   --ar-border-color: #ccc;
   --ar-border-color-dark: #666;
 
-  --ar-navbar-height: 4.25rem;
+  --ar-navbar-height: 3.875rem;
+  @media (max-width: 576px) {
+    --ar-navbar-height: 4.375rem;
+  }
 
   --ar-navbar-brand-font-size-small: 1.125rem;
   --ar-navbar-brand-font-size: 1.5rem;
@@ -40,9 +43,13 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
+html,
 body {
   height: 100vh;
-  padding-top: var(--ar-navbar-height);
+}
+
+.ar-navbar-container {
+  height: var(--ar-navbar-height);
 }
 
 .ar-page-container {
@@ -83,4 +90,13 @@ body {
     display: flex;
     flex-flow: row wrap;
   }
+}
+
+.ar-page-footer {
+  flex: 0 0 0px;
+}
+
+.ar-flex-container {
+  flex: 1;
+  min-height: 0;
 }

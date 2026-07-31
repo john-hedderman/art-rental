@@ -7,9 +7,12 @@ import { FooterActions } from '../../actions/action-data';
   templateUrl: './page-footer.html',
   styleUrl: './page-footer.scss',
   standalone: true,
+  host: {
+    class: 'ar-page-footer'
+  }
 })
 export class PageFooter {
   footerData = input<FooterActions>({
-    buttons: [],
+    buttons: []
   });
 }

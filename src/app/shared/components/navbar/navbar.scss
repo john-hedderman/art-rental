@@ -8,11 +8,6 @@
   // can't set a height on the navbar, or the toggle button won't show the menu properly (a Bootstrap thing)
   background-color: var(--ar-navbar-bg);
 
-  // however, can set a height on an area within the navbar, to ensure a fixed navbar height for the body top padding
-  .ar-navbar-controls {
-    height: calc(var(--ar-navbar-height) - (2 * var(--bs-navbar-padding-y)));
-  }
-
   .ar-navbar-brand {
     color: var(--ar-navbar-brand-color);
 
