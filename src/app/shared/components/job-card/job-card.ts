@@ -128,9 +128,11 @@ export class JobCard implements OnInit, OnDestroy {
         let art = artwork;
         if (searchTermString || artistIdString) {
           art = artwork.filter((art: IArt) => {
-            const titleMatch = art.title.toLowerCase().includes(searchTermString);
+            const textMatch =
+              art.title.toLowerCase().includes(searchTermString) ||
+              art.artist?.name.toLowerCase().includes(searchTermString);
             const artistMatch = artistIdString === '' || art.artist?.artist_id === +artistIdString;
-            return titleMatch && artistMatch;
+            return textMatch && artistMatch;
           });
         }
         if (artist) {
