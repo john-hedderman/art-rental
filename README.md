@@ -48,6 +48,7 @@ Now edit src/environments/environment.development.ts to look like:
 
 ```bash
 export const environment = {
+  production: false,
   apiUrl: 'http://<server_IP_address>:3000'
 };
 ```
