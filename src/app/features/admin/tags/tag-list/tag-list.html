@@ -1,35 +1,36 @@
-<app-page-header [headerData]="headerData.data"></app-page-header>
-<div class="container-fluid overflow-y-auto">
-  <div class="ar-page-content pt-3">
-    <div id="tag-search-container" class="d-flex">
-      <input
-        type="text"
-        #tagSearch
-        class="form-control me-2"
-        placeholder="Enter a new tag name..."
-        (focus)="onFocusTagInput()"
-      />
-      <button type="button" class="btn btn-sm btn-success" (click)="onClickAdd()">Add</button>
-    </div>
-    <div class="mb-3">
-      <div id="tag-in-system" class="invalid-feedback">
-        This tag is already in the system. Please enter another name.
+<div class="d-flex flex-column h-100">
+  <app-page-header [headerData]="headerData.data"></app-page-header>
+  <div class="container-fluid ar-flex-container overflow-y-auto">
+    <div class="ar-page-content pt-3">
+      <div id="tag-search-container" class="d-flex">
+        <input
+          type="text"
+          #tagSearch
+          class="form-control me-2"
+          placeholder="Enter a new tag name..."
+          (focus)="onFocusTagInput()"
+        />
+        <button type="button" class="btn btn-sm btn-success" (click)="onClickAdd()">Add</button>
       </div>
-    </div>
-    @if (tags$ | async; as tags) {
-      <p class="mb-4"></p>
-      @for (tag of tags; track $index) {
-        <app-tag-pill
-          action="delete"
-          [tag]="tag"
-          (onDeleteClicked)="onClickDelete($event)"
-        ></app-tag-pill>
+      <div class="mb-3">
+        <div id="tag-in-system" class="invalid-feedback">
+          This tag is already in the system. Please enter another name.
+        </div>
+      </div>
+      @if (tags$ | async; as tags) {
+        <p class="mb-4"></p>
+        @for (tag of tags; track $index) {
+          <app-tag-pill
+            action="delete"
+            [tag]="tag"
+            (onDeleteClicked)="onClickDelete($event)"
+          ></app-tag-pill>
+        }
       }
-    }
+    </div>
   </div>
+  <app-page-footer [footerData]="footerData"></app-page-footer>
 </div>
-<app-page-footer [footerData]="footerData"></app-page-footer>
-
 <div
   class="modal"
   id="confirmModal"
