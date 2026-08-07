@@ -47,16 +47,9 @@ export class Art2List implements OnInit, OnDestroy {
         ]
       }
     ]);
-    console.warn(`updateVortex, updated the cache, cache data:`, this.dataCacheService.cacheData());
-    console.warn(`updateVortex, updated the cache, this.data:`, this.data);
   };
 
   updateMovement = () => {
-    console.warn(
-      `updateMovement, updating the cache, cache data:`,
-      this.dataCacheService.cacheData()
-    );
-    console.warn(`updateMovement, updating the cache, this.data:`, this.data);
     this.dataCacheService.updateCache([
       {
         type: 'art',
@@ -73,11 +66,6 @@ export class Art2List implements OnInit, OnDestroy {
         ]
       }
     ]);
-    console.warn(
-      `updateMovement, updated the cache, cache data:`,
-      this.dataCacheService.cacheData()
-    );
-    console.warn(`updateMovement, updated the cache, this.data:`, this.data);
   };
 
   updateVortexBtn = new ActionButton(
@@ -126,20 +114,13 @@ export class Art2List implements OnInit, OnDestroy {
 
   // argument data is the cache data
   enhanceArtData(data: any) {
-    console.warn(`enhanceArtData, entry, this.data:`, this.data);
-    console.warn(`enhanceArtData, entry, cache data:`, this.dataCacheService.cacheData());
-    // console.warn(`enhanceArtData`);
     if (data) {
-      console.warn(`enhanceArtData, data to enhance:`, data);
       const entries = Object.entries(data);
       for (let collectionData of entries) {
         const [dataType, dataData] = collectionData;
-        console.warn(`enhanceArtData, dataType:`, dataType);
-        console.warn(`enhanceArtData, dataData:`, dataData);
         this.data[dataType] = dataData;
       }
       // add artist, job, client, and site information to "art"
-      console.warn(`enhanceArtData, updating this.data['art']`);
       this.data['art'] = this.data['art']
         // this.data['art'] = this.data['art']
         .map((art: IArt) => {
@@ -168,18 +149,11 @@ export class Art2List implements OnInit, OnDestroy {
           }
           return art;
         });
-      console.warn(`enhanceArtData, updated this.data['art']`);
-    } else {
-      console.warn(`enhanceArtData, no data, doing nothing`);
     }
-    console.warn(`enhanceArtData, done, this.data:`, this.data);
-    console.warn(`enhanceArtData, done, cache data:`, this.dataCacheService.cacheData());
   }
 
   loadData(collections: any = []) {
-    console.warn(`loadData, calling cache service loadData2`);
-    this.dataCacheService.loadData2(collections);
-    console.warn(`loadData, called cache service loadData2`);
+    this.dataCacheService.loadData(collections);
   }
 
   constructor(
@@ -188,19 +162,12 @@ export class Art2List implements OnInit, OnDestroy {
   ) {
     effect(() => {
       const cacheData = this.dataCacheService.cacheData();
-      console.warn(`effect, cache data was updated, enhancing it, this.data:`, this.data);
-      console.warn(`effect, cache data was updated, enhancing it, cache data:`, cacheData);
-      // add artist, etc. information to the art portion of new cache data
       this.enhanceArtData(cacheData); // add related art data whenever the cache is updated
-      console.warn(`effect, cache data was updated and art data enhanced, this.data:`, this.data);
-      console.warn(`effect, cache data was updated and art data enhanced, cache data:`, cacheData);
     });
   }
 
   ngOnInit(): void {
-    console.warn(`ngOnInit, loading data`);
     this.loadData(['art', 'artists', 'jobs', 'clients', 'sites']);
-    console.warn(`ngOnInit, loaded data`);
   }
 
   ngOnDestroy(): void {
