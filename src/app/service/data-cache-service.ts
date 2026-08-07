@@ -21,17 +21,25 @@ export class DataCacheService {
       collection: 'artists',
       index: 'artist_id'
     },
-    jobs: {
-      collection: 'jobs',
-      index: 'job_id'
-    },
     clients: {
       collection: 'clients',
       index: 'client_id'
     },
+    contacts: {
+      collection: 'contacts',
+      index: 'contact_id'
+    },
+    jobs: {
+      collection: 'jobs',
+      index: 'job_id'
+    },
     sites: {
       collection: 'sites',
       index: 'site_id'
+    },
+    tags: {
+      collection: 'tags',
+      index: 'tag_id'
     }
   };
 
