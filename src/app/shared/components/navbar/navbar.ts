@@ -16,6 +16,9 @@ export class Navbar implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
+  isArt2FeatureVisible = false;
+  isStorePageFeatureVisible = true;
+
   onClickNavLink(event: PointerEvent) {
     // Force the expanded nav to collapse by clicking the toggle button
     const toggler = this.navbarToggler?.nativeElement;
@@ -60,6 +63,8 @@ export class Navbar implements OnInit, OnDestroy {
         }
       });
     });
+    this.isArt2FeatureVisible = localStorage.getItem('showArt2Feature') === 'true';
+    this.isStorePageFeatureVisible = localStorage.getItem('showStorePageFeature') === 'true';
   }
 
   constructor(private routeChangesService: RouteChangeService) {}

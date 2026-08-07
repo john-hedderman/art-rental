@@ -29,6 +29,7 @@ import { AddContact } from './features/contacts/add-contact/add-contact';
 import { TagsPage } from './features/admin/tags/tags-page';
 import { TagList } from './features/admin/tags/tag-list/tag-list';
 import { AddTag } from './features/admin/tags/add-tag/add-tag';
+import { StorePage } from './features/store-page/store-page';
 
 export const routes: Routes = [
   {
@@ -91,6 +92,10 @@ export const routes: Routes = [
         pathMatch: 'full'
       }
     ]
+  },
+  {
+    path: 'store',
+    component: StorePage
   },
   {
     path: 'artists',
