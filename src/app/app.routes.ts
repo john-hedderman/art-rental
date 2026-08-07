@@ -3,6 +3,8 @@ import { Routes } from '@angular/router';
 import { ArtPage } from './features/art/art-page';
 import { ArtList } from './features/art/art-list/art-list';
 import { AddArt } from './features/art/add-art/add-art';
+import { Art2Page } from './features/art2-page/art2-page';
+import { Art2List } from './features/art2-page/art2-list/art2-list';
 import { ArtistsPage } from './features/artists/artists-page';
 import { ArtistList } from './features/artists/artist-list/artist-list';
 import { AddArtist } from './features/artists/add-artist/add-artist';
@@ -67,6 +69,21 @@ export const routes: Routes = [
       {
         path: ':id/edit',
         component: AddArt
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
+    path: 'art2',
+    component: Art2Page,
+    children: [
+      {
+        path: 'list',
+        component: Art2List
       },
       {
         path: '',
