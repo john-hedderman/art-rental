@@ -30,6 +30,8 @@ import { TagsPage } from './features/admin/tags/tags-page';
 import { TagList } from './features/admin/tags/tag-list/tag-list';
 import { AddTag } from './features/admin/tags/add-tag/add-tag';
 import { StorePage } from './features/store-page/store-page';
+import { ArtStorePage } from './features/art-store-page/art-store-page';
+import { ArtStoreList } from './features/art-store-page/art-store-list/art-store-list';
 
 export const routes: Routes = [
   {
@@ -85,6 +87,21 @@ export const routes: Routes = [
       {
         path: 'list',
         component: Art2List
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
+    path: 'art-store',
+    component: ArtStorePage,
+    children: [
+      {
+        path: 'list',
+        component: ArtStoreList
       },
       {
         path: '',

@@ -17,7 +17,8 @@ export class Navbar implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   isArt2FeatureVisible = false;
-  isStorePageFeatureVisible = true;
+  isArtStoreFeatureVisible = false;
+  isStorePageFeatureVisible = false;
 
   onClickNavLink(event: PointerEvent) {
     // Force the expanded nav to collapse by clicking the toggle button
@@ -64,6 +65,7 @@ export class Navbar implements OnInit, OnDestroy {
       });
     });
     this.isArt2FeatureVisible = localStorage.getItem('showArt2Feature') === 'true';
+    this.isArtStoreFeatureVisible = localStorage.getItem('showArtStoreFeature') === 'true';
     this.isStorePageFeatureVisible = localStorage.getItem('showStorePageFeature') === 'true';
   }
 

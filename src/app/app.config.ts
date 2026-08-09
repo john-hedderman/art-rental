@@ -6,9 +6,10 @@ import {
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideStore } from '@ngrx/store';
-import { counterReducer } from '../app/features/store-page/+state/store-page.reducer';
-
+import { provideEffects } from '@ngrx/effects';
+import { artReducer } from '../app/features/art-store-page/+state/art-store-page.reducer';
 import { routes } from './app.routes';
+import { ArtEffects } from './features/art-store-page/+state/art-store-page.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,6 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(),
-    provideStore({ counter: counterReducer })
+    provideStore({ art: artReducer }),
+    provideEffects([ArtEffects])
   ]
 };
