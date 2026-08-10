@@ -1,6 +1,6 @@
 import { IArt, IArtist, IClient, IContact, IJob, ISite, ITag } from '../../model/models';
 
-export interface DataState {
+export interface AppState {
   data: {
     art: IArt[];
     artists: IArtist[];
@@ -14,7 +14,7 @@ export interface DataState {
   error: string | null;
 }
 
-export const initialState: DataState = {
+export const initialState: AppState = {
   data: {
     art: [],
     artists: [],

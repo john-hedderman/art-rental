@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { DataState } from '../../../core/+state/core-state';
+import { AppState } from '../../../core/+state/core-state';
 
-export const selectDataState = createFeatureSelector<DataState>('art');
+export const selectAppState = createFeatureSelector<AppState>('art');
 
-export const selectArt = createSelector(selectDataState, (state: DataState) => state.data.art);
+export const selectArt = createSelector(selectAppState, (state: AppState) => state.data.art);
