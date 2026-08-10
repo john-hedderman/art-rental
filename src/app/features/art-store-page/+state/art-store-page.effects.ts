@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, switchMap, of, combineLatest } from 'rxjs';
 import { DataService } from '../../../service/data-service';
-import { DataActions } from '../+state/art-store-page.actions';
+import { ArtDataActions } from '../+state/art-store-page.actions';
 import { IArt, IArtist, IClient, IJob, ISite } from '../../../model/models';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class ArtEffects {
   loadData$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(DataActions.loadData),
+        ofType(ArtDataActions.loadArtData),
         switchMap(() =>
           combineLatest({
             art: this.dataService.art$,
@@ -23,8 +23,10 @@ export class ArtEffects {
             sites: this.dataService.sites$
           }).pipe(
             map((allData) => this.enhanceArtData(allData)),
-            map((items) => DataActions.loadDataSuccess({ items })),
-            catchError((error) => of(DataActions.loadDataFailure({ errorMessage: error.message })))
+            map((artItems) => ArtDataActions.loadArtDataSuccess({ artItems })),
+            catchError((error) =>
+              of(ArtDataActions.loadArtDataFailure({ errorMessage: error.message }))
+            )
           )
         )
       );

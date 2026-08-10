@@ -8,8 +8,8 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
-import { DataActions } from '../+state/art-store-page.actions';
-import { selectItems } from '../+state/art-store-page.selectors';
+import { ArtDataActions } from '../+state/art-store-page.actions';
+import { selectArt } from '../+state/art-store-page.selectors';
 
 @Component({
   selector: 'app-art-store-list',
@@ -41,13 +41,13 @@ export class ArtStoreList implements OnInit {
 
   private store = inject(Store);
 
-  art$ = this.store.select((state) => state.items);
+  art$ = this.store.select((state) => state.data.art);
 
   constructor() {
-    this.art$ = this.store.select(selectItems);
+    this.art$ = this.store.select(selectArt);
   }
 
   ngOnInit(): void {
-    this.store.dispatch(DataActions.loadData());
+    this.store.dispatch(ArtDataActions.loadArtData());
   }
 }

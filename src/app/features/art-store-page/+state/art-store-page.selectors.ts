@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { DataState } from './art-store-page.reducer';
+import { DataState } from '../../../core/+state/core-state';
 
-export const selectItemsState = createFeatureSelector<DataState>('art');
+export const selectDataState = createFeatureSelector<DataState>('art');
 
-export const selectItems = createSelector(selectItemsState, (state: DataState) => state.items);
+export const selectArt = createSelector(selectDataState, (state: DataState) => state.data.art);
