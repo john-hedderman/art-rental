@@ -1,8 +1,31 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, input } from '@angular/core';
+import { Router } from '@angular/router';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { ContactsTable } from './contacts-table';
 import { IContact } from '../../../model/models';
-import { Router } from '@angular/router';
+
+@Component({
+  selector: 'ngx-datatable',
+  standalone: true,
+  template: '<div>Mock Datatable</div>'
+})
+export class MockDatatableComponent {
+  scrollbarV = input<boolean>(true);
+  rows = input<any[]>([]);
+}
+
+@Component({
+  selector: 'app-host',
+  standalone: true,
+  imports: [NgxDatatableModule],
+  template: `<ngx-datatable [scrollbarV]="scrollbarV" [rows]="rows"></ngx-datatable>`
+})
+export class MockHostComponent {
+  scrollbarV = true;
+  rows = [...mockRows];
+}
 
 const mockRows = [
   { contact_id: 10, client_id: 6, first_name: 'Drac', last_name: 'Ula' },
@@ -11,8 +34,10 @@ const mockRows = [
 ] as IContact[];
 
 describe('ContactsTable', () => {
-  let component: ContactsTable;
   let fixture: ComponentFixture<ContactsTable>;
+  let component: ContactsTable;
+  let hostFixture: ComponentFixture<MockHostComponent>;
+  let hostComponent: MockHostComponent;
   let router: Router;
 
   beforeEach(async () => {
@@ -22,6 +47,8 @@ describe('ContactsTable', () => {
 
     fixture = TestBed.createComponent(ContactsTable);
     component = fixture.componentInstance;
+    hostFixture = TestBed.createComponent(MockHostComponent);
+    hostComponent = hostFixture.componentInstance;
     router = TestBed.inject(Router);
     fixture.detectChanges();
   });
@@ -40,10 +67,9 @@ describe('ContactsTable', () => {
     // this happened at some point in app development, and I think it was resolved with styles
     // but it may be that style sheet imports are not working in the test environment if imported with @use
     it('should display the correct number of rows', () => {
-      component.table.scrollbarV = false;
-      component.rows = [...mockRows];
-      fixture.detectChanges();
-      const rowElements = fixture.nativeElement.querySelectorAll('.datatable-body-row');
+      hostComponent.scrollbarV = false;
+      hostFixture.detectChanges();
+      const rowElements = hostFixture.nativeElement.querySelectorAll('.datatable-body-row');
       expect(rowElements.length).toBe(mockRows.length);
     });
   });
