@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
@@ -22,6 +22,7 @@ import { ResetButton } from '../../../shared/buttons/reset-button';
   providers: [MessagesService],
   templateUrl: './add-job.html',
   styleUrl: './add-job.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class AddJob extends AddBase implements OnInit, OnDestroy {

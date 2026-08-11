@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { FooterActions } from '../../actions/action-data';
 
 @Component({
@@ -7,6 +7,7 @@ import { FooterActions } from '../../actions/action-data';
   templateUrl: './page-footer.html',
   styleUrl: './page-footer.scss',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     class: 'ar-page-footer'
   }

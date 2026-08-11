@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
@@ -19,6 +19,7 @@ import { ResetButton } from '../../../shared/buttons/reset-button';
   providers: [MessagesService],
   templateUrl: './add-artist.html',
   styleUrl: './add-artist.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class AddArtist extends AddBase implements OnInit, OnDestroy {

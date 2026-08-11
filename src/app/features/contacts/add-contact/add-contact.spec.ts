@@ -1,6 +1,6 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { of } from 'rxjs';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -76,7 +76,7 @@ describe('AddContact', () => {
       imports: [AddContact, ReactiveFormsModule],
       providers: [
         provideRouter([{ path: 'contacts/list', component: ContactList }]),
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: DataService, useValue: mockDataService }
       ]

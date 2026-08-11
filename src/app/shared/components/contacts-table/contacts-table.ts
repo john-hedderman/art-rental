@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { IContact } from '../../../model/models';
@@ -10,6 +10,7 @@ import { RowDetail } from '../../../directives/row-detail';
   imports: [NgxDatatableModule, RowDetail],
   templateUrl: './contacts-table.html',
   styleUrl: './contacts-table.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class ContactsTable implements OnInit {

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {
   combineLatest,
   debounceTime,
@@ -30,6 +30,7 @@ import { ArtAssignmentService } from '../../../service/art-assignment-service';
   imports: [FormsModule, PageHeader, JobCard, PageFooter, ReactiveFormsModule, AsyncPipe],
   templateUrl: './job-list.html',
   styleUrl: './job-list.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class JobList implements OnInit, OnDestroy {

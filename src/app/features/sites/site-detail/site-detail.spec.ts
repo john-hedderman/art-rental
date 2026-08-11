@@ -1,6 +1,6 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { BehaviorSubject, of, ReplaySubject } from 'rxjs';
 
 import { SiteDetail } from './site-detail';
@@ -63,7 +63,7 @@ describe('SiteDetail', () => {
       imports: [SiteDetail],
       providers: [
         provideRouter([]),
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: DataService, useValue: mockDataService }
       ]

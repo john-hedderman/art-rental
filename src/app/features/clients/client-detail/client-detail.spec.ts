@@ -1,6 +1,6 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { firstValueFrom, map, of } from 'rxjs';
 
 import { ClientDetail } from './client-detail';
@@ -55,7 +55,7 @@ describe('ClientDetail', () => {
     await TestBed.configureTestingModule({
       imports: [ClientDetail],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideRouter([{ path: 'clients/list', component: ClientList }]),
         { provide: DataService, useValue: mockDataService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute }

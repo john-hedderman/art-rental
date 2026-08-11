@@ -1,7 +1,7 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { ArtThumbnailCard } from './art-thumbnail-card';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { of } from 'rxjs';
 import { DataService } from '../../../service/data-service';
 
@@ -26,7 +26,7 @@ describe('ThumbnailCard', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ArtThumbnailCard],
-      providers: [provideHttpClient(), { provide: DataService, useValue: mockDataService }]
+      providers: [provideHttpClient(withXhr()), { provide: DataService, useValue: mockDataService }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ArtThumbnailCard);

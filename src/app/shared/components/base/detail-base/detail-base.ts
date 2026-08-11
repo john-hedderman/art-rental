@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { DataService } from '../../../../service/data-service';
 import { Util } from '../../../util/util';
@@ -8,6 +8,7 @@ import { Util } from '../../../util/util';
   imports: [],
   templateUrl: './detail-base.html',
   styleUrl: './detail-base.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
 })
 export abstract class DetailBase {

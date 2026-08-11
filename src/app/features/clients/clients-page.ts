@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -7,6 +7,7 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './clients-page.html',
   styleUrl: './clients-page.scss',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     class: 'flex-grow-1',
   },

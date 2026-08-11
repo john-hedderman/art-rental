@@ -4,7 +4,7 @@ import {
   provideZoneChangeDetection
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { artReducer } from '../app/features/art-store-page/+state/art-store-page.reducer';
@@ -16,7 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withXhr()),
     provideStore({ art: artReducer }),
     provideEffects([ArtEffects])
   ]

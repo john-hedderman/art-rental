@@ -1,4 +1,4 @@
-import { Component, Input, output } from '@angular/core';
+import { Component, Input, output, ChangeDetectionStrategy } from '@angular/core';
 import { ITag } from '../../../model/models';
 
 @Component({
@@ -6,6 +6,7 @@ import { ITag } from '../../../model/models';
   imports: [],
   templateUrl: './tag-pill.html',
   styleUrl: './tag-pill.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class TagPill {

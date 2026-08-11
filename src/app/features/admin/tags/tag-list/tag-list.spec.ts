@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 
 import { TagList } from './tag-list';
 
@@ -10,7 +10,7 @@ describe('TagList', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TagList],
-      providers: [provideHttpClient()]
+      providers: [provideHttpClient(withXhr())]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TagList);

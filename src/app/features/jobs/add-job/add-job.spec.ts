@@ -1,6 +1,6 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { of } from 'rxjs';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormGroup } from '@angular/forms';
@@ -65,7 +65,7 @@ describe('AddJob', () => {
       imports: [AddJob],
       providers: [
         provideRouter([{ path: 'jobs/list', component: JobList }]),
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: DataService, useValue: mockDataService }
       ]

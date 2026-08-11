@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
@@ -21,6 +21,7 @@ import { TagPill } from '../../../../shared/components/tag-pill/tag-pill';
   imports: [PageHeader, PageFooter, AsyncPipe, TagPill],
   templateUrl: './tag-list.html',
   styleUrl: './tag-list.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class TagList implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
@@ -38,6 +38,7 @@ import { ArtThumbnailCard } from '../../../shared/components/art-thumbnail-card/
   providers: [MessagesService],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class JobDetail extends DetailBase implements OnInit, OnDestroy {

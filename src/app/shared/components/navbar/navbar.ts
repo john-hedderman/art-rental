@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -9,6 +9,7 @@ import { RouteChangeService } from '../../../service/route-change-service';
   imports: [RouterLink],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class Navbar implements OnInit, OnDestroy {

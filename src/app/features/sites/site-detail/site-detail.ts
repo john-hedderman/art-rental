@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -27,6 +27,7 @@ import { DetailBase } from '../../../shared/components/base/detail-base/detail-b
   providers: [MessagesService],
   templateUrl: './site-detail.html',
   styleUrl: './site-detail.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class SiteDetail extends DetailBase implements OnInit, OnDestroy {

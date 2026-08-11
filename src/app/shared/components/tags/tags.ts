@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, output, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -12,6 +12,7 @@ import { TagPill } from '../tag-pill/tag-pill';
   imports: [AsyncPipe, ReactiveFormsModule, TagPill],
   templateUrl: './tags.html',
   styleUrl: './tags.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class Tags implements OnInit, OnDestroy {

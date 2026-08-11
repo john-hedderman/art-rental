@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -21,6 +21,7 @@ type CacheItem = {
   imports: [Card, PageHeader, FormsModule, PageFooter],
   templateUrl: './art2-list.html',
   styleUrl: './art2-list.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class Art2List implements OnInit, OnDestroy {

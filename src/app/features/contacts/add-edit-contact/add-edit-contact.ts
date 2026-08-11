@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
@@ -6,6 +6,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
   imports: [ReactiveFormsModule],
   templateUrl: './add-edit-contact.html',
   styleUrl: './add-edit-contact.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true,
 })
 export class AddEditContact implements OnInit {

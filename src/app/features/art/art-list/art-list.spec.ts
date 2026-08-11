@@ -1,5 +1,5 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { of } from 'rxjs';
 
 import { ArtList } from './art-list';
@@ -33,7 +33,7 @@ describe('ArtList', () => {
     await TestBed.configureTestingModule({
       imports: [ArtList],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         { provide: DataService, useValue: mockDataService },
         provideRouter([
           { path: 'art/:id', component: ArtDetail },

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 
 import { OperationsService } from './operations-service';
 import { DataService } from './data-service';
@@ -16,7 +16,7 @@ describe('OperationsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), { provide: DataService, useValue: mockDataService }],
+      providers: [provideHttpClient(withXhr()), { provide: DataService, useValue: mockDataService }],
     });
     service = TestBed.inject(OperationsService);
   });

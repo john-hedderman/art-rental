@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
@@ -16,6 +16,7 @@ import { AddButton } from '../../../shared/buttons/add-button';
   imports: [Card, PageHeader, FormsModule, PageFooter],
   templateUrl: './art-list.html',
   styleUrl: './art-list.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class ArtList implements OnInit, OnDestroy {

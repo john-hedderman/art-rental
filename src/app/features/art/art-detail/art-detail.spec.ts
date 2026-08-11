@@ -1,6 +1,6 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { of } from 'rxjs';
 
 import { ArtDetail } from './art-detail';
@@ -63,7 +63,7 @@ describe('ArtDetail', () => {
       imports: [ArtDetail],
       providers: [
         provideRouter([]),
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         { provide: DataService, useValue: mockDataService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute }
       ]

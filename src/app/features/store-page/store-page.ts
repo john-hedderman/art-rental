@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { selectCount } from './+state/store-page.selectors';
@@ -9,6 +9,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-store-page',
   standalone: true,
   imports: [AsyncPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div>Current Count: {{ count$ | async }}</div>
     <button (click)="onIncrement()">Increment</button>

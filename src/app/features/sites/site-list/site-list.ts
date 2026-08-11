@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
@@ -18,6 +18,7 @@ import * as Const from '../../../constants';
   templateUrl: './site-list.html',
   styleUrl: './site-list.scss',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     class: 'd-flex flex-column h-100'
   }

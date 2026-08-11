@@ -1,6 +1,6 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { firstValueFrom, of } from 'rxjs';
 
 import { ContactDetail } from './contact-detail';
@@ -45,7 +45,7 @@ describe('ContactDetail', () => {
           { path: 'contacts/list', component: ContactList },
           { path: 'contacts/:id/edit', component: AddContact }
         ]),
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: DataService, useValue: mockDataService }
       ]

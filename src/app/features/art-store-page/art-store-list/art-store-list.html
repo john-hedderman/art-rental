@@ -12,9 +12,9 @@
                 title: art.title
               },
               title: art.title,
-              text: art.artist?.name,
+              text: $safeNavigationMigration(art.artist?.name),
               footerText: art.job?.client
-                ? `<strong>Job: </strong>${art.job?.client?.name} (${art.job?.site?.name || 'Site TBD'})`
+                ? `<strong>Job: </strong>${$safeNavigationMigration(art.job?.client?.name)} (${art.job?.site?.name || 'Site TBD'})`
                 : '',
               clickHandler: goToArtDetail.bind(null, art.art_id)
             }"

@@ -1,4 +1,4 @@
-import { Component, computed, input, Signal } from '@angular/core';
+import { Component, computed, input, Signal, ChangeDetectionStrategy } from '@angular/core';
 import { HeaderData } from '../../../model/models';
 import { RouterLink } from '@angular/router';
 
@@ -12,6 +12,7 @@ import * as Constants from '../../../constants';
   templateUrl: './page-header.html',
   styleUrl: './page-header.scss',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     class: 'flex-shrink-0'
   }

@@ -1,7 +1,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { ArtAssignmentService } from './art-assignment-service';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { IArt, IJob } from '../model/models';
 
 const mockArt = { art_id: 1, job_id: 11, artist_id: 4, title: 'Wonder Art' } as IArt;
@@ -13,7 +13,7 @@ describe('ArtAssignment', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient()]
+      providers: [provideHttpClient(withXhr())]
     });
     service = TestBed.inject(ArtAssignmentService);
   });

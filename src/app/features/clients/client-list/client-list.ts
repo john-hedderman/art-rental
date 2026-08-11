@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxDatatableModule, TableColumn, DatatableComponent } from '@swimlane/ngx-datatable';
 import { distinctUntilChanged, Subject, takeUntil } from 'rxjs';
@@ -17,6 +17,7 @@ import { RowDetail } from '../../../directives/row-detail';
   templateUrl: './client-list.html',
   styleUrl: './client-list.scss',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     class: 'd-flex flex-column h-100'
   }

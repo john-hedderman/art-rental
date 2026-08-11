@@ -1,6 +1,6 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { of } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 
@@ -71,7 +71,7 @@ describe('AddSite', () => {
       imports: [AddSite],
       providers: [
         provideRouter([{ path: 'sites/list', component: SiteList }]),
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: DataService, useValue: mockDataService }
       ]

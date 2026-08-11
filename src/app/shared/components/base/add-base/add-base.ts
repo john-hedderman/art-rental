@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../../../../environments/environment';
@@ -14,6 +14,7 @@ import { MessagesService } from '../../../../service/messages-service';
   imports: [],
   templateUrl: './add-base.html',
   styleUrl: './add-base.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export abstract class AddBase {

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, ChangeDetectionStrategy } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { RowDetail } from './row-detail';
@@ -8,6 +8,7 @@ import * as Const from '../constants';
 @Component({
   standalone: true,
   imports: [RowDetail],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<div class="datatable-row-wrapper">
     <div class="row-detail-container" appRowDetail></div>
   </div>`,

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -28,6 +28,7 @@ import { Tags } from '../../../shared/components/tags/tags';
   providers: [MessagesService],
   templateUrl: './art-detail.html',
   styleUrl: './art-detail.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class ArtDetail extends DetailBase implements OnInit, OnDestroy {

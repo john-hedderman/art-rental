@@ -1,7 +1,7 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { JobList } from './job-list';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { IArt, IJob } from '../../../model/models';
 
@@ -35,7 +35,7 @@ describe('JobList', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [JobList],
-      providers: [provideHttpClient()]
+      providers: [provideHttpClient(withXhr())]
     }).compileComponents();
 
     fixture = TestBed.createComponent(JobList);

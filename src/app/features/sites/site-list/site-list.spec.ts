@@ -2,7 +2,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { of } from 'rxjs';
 
 import { SiteList } from './site-list';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { IClient, ISite } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Router } from '@angular/router';
@@ -38,7 +38,7 @@ describe('SiteList', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SiteList],
-      providers: [provideHttpClient(), { provide: DataService, useValue: mockDataService }]
+      providers: [provideHttpClient(withXhr()), { provide: DataService, useValue: mockDataService }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SiteList);

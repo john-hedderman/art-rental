@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { combineLatest, distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
@@ -16,6 +16,7 @@ import { AddButton } from '../../../shared/buttons/add-button';
   imports: [Card, PageHeader, PageFooter, AsyncPipe],
   templateUrl: './artist-list.html',
   styleUrl: './artist-list.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class ArtistList implements OnInit, OnDestroy {

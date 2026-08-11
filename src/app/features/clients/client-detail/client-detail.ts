@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
@@ -29,6 +29,7 @@ import { DetailBase } from '../../../shared/components/base/detail-base/detail-b
   providers: [MessagesService],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class ClientDetail extends DetailBase implements OnInit, OnDestroy {

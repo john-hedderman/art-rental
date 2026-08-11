@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AsyncPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
@@ -16,6 +16,7 @@ import { selectArt } from '../+state/art-store-page.selectors';
   imports: [Card, PageHeader, FormsModule, PageFooter, AsyncPipe],
   templateUrl: './art-store-list.html',
   styleUrl: './art-store-list.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class ArtStoreList implements OnInit {

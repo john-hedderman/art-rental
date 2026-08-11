@@ -51,7 +51,7 @@
                       <app-art-thumbnail-card
                         [art_id]="art.art_id"
                         [job_id]="jobId"
-                        [artist_name]="art.artist?.name"
+                        [artist_name]="$safeNavigationMigration(art.artist?.name)"
                         class="ms-3 mt-3"
                       ></app-art-thumbnail-card>
                     }

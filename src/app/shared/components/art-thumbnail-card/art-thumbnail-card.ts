@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 
 import { IArt, IArtist, IJob } from '../../../model/models';
@@ -11,6 +11,7 @@ import { ArtAssignmentService } from '../../../service/art-assignment-service';
   imports: [],
   templateUrl: './art-thumbnail-card.html',
   styleUrl: './art-thumbnail-card.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class ArtThumbnailCard implements OnInit, OnDestroy {

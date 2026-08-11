@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -27,6 +27,7 @@ import { ResetButton } from '../../../shared/buttons/reset-button';
   providers: [MessagesService],
   templateUrl: './add-client.html',
   styleUrl: './add-client.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class AddClient extends AddBase implements OnInit, OnDestroy {

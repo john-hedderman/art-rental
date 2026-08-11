@@ -1,5 +1,5 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -28,7 +28,7 @@ describe('ContactList', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ContactList],
-      providers: [provideHttpClient(), { provide: DataService, useValue: mockDataService }]
+      providers: [provideHttpClient(withXhr()), { provide: DataService, useValue: mockDataService }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContactList);

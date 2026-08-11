@@ -1,5 +1,5 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { of } from 'rxjs';
 
 import { ArtistList } from './artist-list';
@@ -26,7 +26,7 @@ describe('ArtistList', () => {
     await TestBed.configureTestingModule({
       imports: [ArtistList],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         { provide: DataService, useValue: mockDataService },
         provideRouter([
           { path: 'artists/:id', component: ArtistDetail },

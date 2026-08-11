@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import {
   combineLatest,
   distinctUntilChanged,
@@ -22,6 +22,7 @@ import { DataService } from '../../../service/data-service';
   templateUrl: './job-card.html',
   styleUrl: './job-card.scss',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     class: 'w-100'
   }

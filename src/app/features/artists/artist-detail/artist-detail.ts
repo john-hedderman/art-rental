@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, distinctUntilChanged, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -29,6 +29,7 @@ import { ArtThumbnailCard } from '../../../shared/components/art-thumbnail-card/
   providers: [MessagesService],
   templateUrl: './artist-detail.html',
   styleUrl: './artist-detail.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class ArtistDetail extends DetailBase implements OnInit, OnDestroy {

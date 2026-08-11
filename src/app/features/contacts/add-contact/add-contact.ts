@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
@@ -22,6 +22,7 @@ import { ResetButton } from '../../../shared/buttons/reset-button';
   providers: [MessagesService],
   templateUrl: './add-contact.html',
   styleUrl: './add-contact.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class AddContact extends AddBase implements OnInit, OnDestroy {

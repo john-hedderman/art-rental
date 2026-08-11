@@ -1,6 +1,6 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { FormGroup } from '@angular/forms';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
@@ -36,7 +36,7 @@ describe('AddArtist', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AddArtist],
-      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideRouter([]), provideHttpClient(withXhr()), provideHttpClientTesting()]
     }).compileComponents();
 
     httpTestingController = TestBed.inject(HttpTestingController);
