@@ -7,26 +7,66 @@ import { ClientList } from './client-list';
 import { IClient } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { AddClient } from '../add-client/add-client';
+import { Component, input } from '@angular/core';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+
+const mockRows = [
+  { client_id: 2 },
+  { client_id: 4 },
+  {
+    client_id: 6,
+    name: 'Comedy Club',
+    city: 'Walla Walla',
+    state: 'WA',
+    industry: 'Comedy',
+    job_ids: [3],
+    contact_ids: [11]
+  }
+] as IClient[];
+
+const mockColumns = [
+  {
+    width: 50
+  },
+  { width: 300, prop: 'name', name: 'Name' }
+];
+
+@Component({
+  selector: 'ngx-datatable',
+  standalone: true,
+  template: '<div>Mock Datatable</div>'
+})
+export class MockDatatableComponent {
+  scrollbarV = input<boolean>(true);
+  rows = input<any[]>([]);
+  columns = input<any[]>([]);
+}
+
+@Component({
+  selector: 'app-host',
+  standalone: true,
+  imports: [NgxDatatableModule],
+  template: `<ngx-datatable
+    [scrollbarV]="scrollbarV"
+    [rows]="rows"
+    [columns]="columns"
+  ></ngx-datatable>`
+})
+export class MockHostComponent {
+  scrollbarV = true;
+  rows = [...mockRows];
+  columns = [...mockColumns];
+}
 
 const mockDataService = {
-  clients$: of([
-    { client_id: 2 },
-    { client_id: 4 },
-    {
-      client_id: 6,
-      name: 'Comedy Club',
-      city: 'Walla Walla',
-      state: 'WA',
-      industry: 'Comedy',
-      job_ids: [3],
-      contact_ids: [11]
-    }
-  ] as IClient[])
+  clients$: of(mockRows)
 };
 
 describe('ClientList', () => {
-  let component: ClientList;
   let fixture: ComponentFixture<ClientList>;
+  let component: ClientList;
+  let hostFixture: ComponentFixture<MockHostComponent>;
+  let hostComponent: MockHostComponent;
   let router: Router;
 
   beforeEach(async () => {
@@ -41,6 +81,8 @@ describe('ClientList', () => {
 
     fixture = TestBed.createComponent(ClientList);
     component = fixture.componentInstance;
+    hostFixture = TestBed.createComponent(MockHostComponent);
+    hostComponent = hostFixture.componentInstance;
     router = TestBed.inject(Router);
     fixture.detectChanges();
   });
@@ -75,8 +117,11 @@ describe('ClientList', () => {
       expect(tableEl).toBeTruthy();
     });
 
-    it('should display populated rows in the table of clients', () => {
-      const cellLabelEl = fixture.nativeElement.querySelector(
+    fit('should display populated rows in the table of clients', () => {
+      hostComponent.scrollbarV = false;
+      hostFixture.detectChanges();
+
+      const cellLabelEl = hostFixture.nativeElement.querySelector(
         'datatable-row-wrapper:nth-of-type(3) datatable-body-cell:nth-of-type(2) span'
       );
       expect(cellLabelEl).toBeTruthy();
