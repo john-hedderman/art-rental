@@ -46,24 +46,24 @@
         <li class="nav-item">
           <a class="nav-link ar-nav-link" routerLink="/art" (click)="onClickNavLink($event)">Art</a>
         </li>
-        @if (isArt2FeatureVisible) {
+        @if (isCacheFeatureVisible) {
           <li class="nav-item">
             <a class="nav-link ar-nav-link" routerLink="/art2" (click)="onClickNavLink($event)"
-              >Art2</a
+              >Cache</a
             >
           </li>
         }
-        @if (isArtStoreFeatureVisible) {
+        @if (isStoreFeatureVisible) {
           <li class="nav-item">
             <a class="nav-link ar-nav-link" routerLink="/art-store" (click)="onClickNavLink($event)"
-              >Art Store</a
+              >Store</a
             >
           </li>
         }
-        @if (isStorePageFeatureVisible) {
+        @if (isCounterFeatureVisible) {
           <li class="nav-item">
             <a class="nav-link ar-nav-link" routerLink="/store" (click)="onClickNavLink($event)"
-              >Store</a
+              >Counter</a
             >
           </li>
         }

@@ -1,4 +1,11 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -17,9 +24,9 @@ export class Navbar implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
-  isArt2FeatureVisible = false;
-  isArtStoreFeatureVisible = false;
-  isStorePageFeatureVisible = false;
+  isCacheFeatureVisible = false;
+  isStoreFeatureVisible = false;
+  isCounterFeatureVisible = false;
 
   onClickNavLink(event: PointerEvent) {
     // Force the expanded nav to collapse by clicking the toggle button
@@ -65,9 +72,9 @@ export class Navbar implements OnInit, OnDestroy {
         }
       });
     });
-    this.isArt2FeatureVisible = localStorage.getItem('showArt2Feature') === 'true';
-    this.isArtStoreFeatureVisible = localStorage.getItem('showArtStoreFeature') === 'true';
-    this.isStorePageFeatureVisible = localStorage.getItem('showStorePageFeature') === 'true';
+    this.isCacheFeatureVisible = localStorage.getItem('showCacheFeature') === 'true';
+    this.isStoreFeatureVisible = localStorage.getItem('showStoreFeature') === 'true';
+    this.isCounterFeatureVisible = localStorage.getItem('showCounterFeature') === 'true';
   }
 
   constructor(private routeChangesService: RouteChangeService) {}
