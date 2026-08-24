@@ -1,16 +1,18 @@
 import { IArt, IArtist, IClient, IContact, IJob, ISite, ITag } from '../../model/models';
 
+export interface AppData {
+  art: IArt[];
+  artists: IArtist[];
+  clients: IClient[];
+  contacts: IContact[];
+  jobs: IJob[];
+  sites: ISite[];
+  tags: ITag[];
+}
 export interface AppState {
-  data: {
-    art: IArt[];
-    artists: IArtist[];
-    clients: IClient[];
-    contacts: IContact[];
-    jobs: IJob[];
-    sites: ISite[];
-    tags: ITag[];
-  };
+  data: AppData;
   loading: boolean;
+  opStatus: string | null;
   error: string | null;
 }
 
@@ -25,5 +27,6 @@ export const initialState: AppState = {
     tags: []
   },
   loading: false,
+  opStatus: null,
   error: null
 };

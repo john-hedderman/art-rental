@@ -4,7 +4,7 @@ import * as Const from '../constants';
 import { DataService } from './data-service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class OperationsService {
   private _status: WritableSignal<OperationStatus> = signal({ status: '', message: '' });
@@ -25,8 +25,8 @@ export class OperationsService {
   ): Promise<string> {
     let result = Const.SUCCESS;
     try {
-      const returnData = await this.dataService.saveDocument(data, collectionName, id, field);
-      if (returnData.modifiedCount === 0) {
+      const response = await this.dataService.saveDocument(data, collectionName, id, field);
+      if (response.modifiedCount === 0) {
         result = Const.FAILURE;
       }
     } catch (error) {
@@ -36,10 +36,58 @@ export class OperationsService {
     return result;
   }
 
+  async saveDocument2(
+    data: any,
+    collectionName: string,
+    id?: number,
+    field?: string
+  ): Promise<{
+    opStatus: string;
+    insertedId: number | undefined;
+    modifiedCount: number | undefined;
+  }> {
+    const result = {
+      opStatus: Const.SUCCESS,
+      insertedId: undefined,
+      modifiedCount: undefined
+    };
+    try {
+      const response = await this.dataService.saveDocument(data, collectionName, id, field);
+      if (id && response.modifiedCount === 0) {
+        result.opStatus = Const.FAILURE;
+      } else if (id) {
+        result.modifiedCount = response.modifiedCount;
+      }
+      if (!id && !response.insertedId) {
+        result.opStatus = Const.FAILURE;
+      } else if (!id) {
+        result.insertedId = response.insertedId;
+      }
+    } catch (error) {
+      console.error('Save error:', error);
+      result.opStatus = Const.FAILURE;
+    }
+    return result;
+  }
+
   async deleteDocument(collectionName: string, field: string, id: number): Promise<string> {
     let result = Const.SUCCESS;
     try {
       const returnData = await this.dataService.deleteDocument(collectionName, id, field);
+      if (returnData.deletedCount === 0) {
+        result = Const.FAILURE;
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      result = Const.FAILURE;
+    }
+    return result;
+  }
+
+  async deleteDocument2(collectionName: string, idField: string, id: number): Promise<string> {
+    let result = Const.SUCCESS;
+    try {
+      const returnData = await this.dataService.deleteDocument2(collectionName, idField, id);
       if (returnData.deletedCount === 0) {
         result = Const.FAILURE;
       }

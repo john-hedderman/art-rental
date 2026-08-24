@@ -41,21 +41,11 @@ export abstract class AddBase {
       Util.replaceTokens(Msgs.SAVE_FAILED, { entity })
     );
     this.messagesService.clearStatus();
-    this.resetForm();
     this.enableSaveBtn();
   }
 
   populateForm<T>(collection: string, recordId: string, id: number) {
-    this.http
-      .get<T[]>(`${environment.apiUrl}/data/${collection}/${id}?recordId=${recordId}`)
-      .subscribe((data) => {
-        if (data && data.length === 1) {
-          this.dbData = data[0];
-          if (this.dbData) {
-            this.populateData();
-          }
-        }
-      });
+    this.populateData();
   }
 
   disableSaveBtn() {
@@ -72,9 +62,8 @@ export abstract class AddBase {
     this.submitted = true;
     if (form.valid) {
       this.preSave();
-      this.saveStatus = await this.save();
+      await this.save();
       this.postSave(entity);
-      this.dataService.reloadData(modifiedCollections);
     }
   }
 

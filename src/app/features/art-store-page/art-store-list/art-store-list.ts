@@ -1,15 +1,18 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AsyncPipe } from '@angular/common';
+import { Router } from '@angular/router';
+import { Observable, Subject, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { Card } from '../../../shared/components/card/card';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
-import { ActionButton, FooterActions, HeaderActions } from '../../../shared/actions/action-data';
+import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
-import { ArtDataActions } from '../+state/art-store-page.actions';
-import { selectArt } from '../+state/art-store-page.selectors';
+import { selectArt, selectArtists, selectJobs } from '../../../core/+state/core.selectors';
+import { IArt, IArtist, IJob } from '../../../model/models';
+import { CoreDataActions } from '../../../core/+state/core.actions';
 
 @Component({
   selector: 'app-art-store-list',
@@ -19,36 +22,43 @@ import { selectArt } from '../+state/art-store-page.selectors';
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
-export class ArtStoreList implements OnInit {
-  goToArtDetail = (id: number) => {};
-  goToAddArt = () => {};
-
-  updateVortex = () => {};
-  updateVortexBtn = new ActionButton(
-    'updateVortexBtn',
-    'Update Ethereal Vortex Imagined',
-    'button',
-    'btn btn-primary ms-3',
-    false,
-    null,
-    null,
-    this.updateVortex
-  );
+export class ArtStoreList implements OnInit, OnDestroy {
+  goToArtDetail = (id: number) => this.router.navigate(['/art-store', id]);
+  goToAddArt = () => this.router.navigate(['/art-store', 'add']);
 
   headerData = new HeaderActions('art-store-list', 'Art', [], []);
-  footerData = new FooterActions([new AddButton('Add Art', this.goToAddArt), this.updateVortexBtn]);
+  footerData = new FooterActions([new AddButton('Add Art', this.goToAddArt)]);
 
   thumbnail_path = 'images/art/';
 
   private store = inject(Store);
 
-  art$ = this.store.select((state) => state.data.art);
+  art$: Observable<IArt[]>;
+  artists$: Observable<IArtist[]>;
+  jobs$: Observable<IJob[]>;
 
-  constructor() {
+  private readonly destroy$ = new Subject<void>();
+
+  constructor(private router: Router) {
     this.art$ = this.store.select(selectArt);
+    this.artists$ = this.store.select(selectArtists);
+    this.jobs$ = this.store.select(selectJobs);
+  }
+
+  loadData(dataObservable: Observable<any>, action: any, refresh: boolean = true) {
+    dataObservable.pipe(take(1)).subscribe((data) => {
+      if (refresh || !data || data.length === 0) {
+        this.store.dispatch(() => action());
+      }
+    });
   }
 
   ngOnInit(): void {
-    this.store.dispatch(ArtDataActions.loadArtData());
+    this.loadData(this.art$, CoreDataActions.loadAllData, true);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

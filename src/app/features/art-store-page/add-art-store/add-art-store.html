@@ -1,0 +1,144 @@
+<app-page-header [headerData]="headerData.data"></app-page-header>
+<div class="container-fluid overflow-y-auto">
+  <form
+    [formGroup]="artForm"
+    (ngSubmit)="onSubmit()"
+    class="needs-validation"
+    [class.was-validated]="submitted && artForm.invalid"
+    novalidate
+  >
+    <div class="row ar-page-content overflow-y-auto">
+      <div class="col-12 d-flex flex-column py-3">
+        <p>Please complete all required fields (<span class="text-danger">*</span>).</p>
+        <div class="row flex-grow-1">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-md-5 mt-3">
+                <label for="title" class="col-form-label"
+                  >Title <span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  id="title"
+                  formControlName="title"
+                  aria-describedby="title"
+                  class="form-control"
+                  required
+                />
+                <div class="invalid-feedback">Please provide a title.</div>
+              </div>
+              <div class="col-md-7 mt-3">
+                <label for="file_name" class="col-form-label me-3"
+                  >Image file name <span class="text-danger">*</span></label
+                >
+                <input
+                  type="checkbox"
+                  class="form-check-input m-2"
+                  value="no-image-available.jpg"
+                  id="file_name_tbd"
+                  (change)="onSelectFileNameTBD()"
+                  #fileNameTBD
+                />
+                <label for="file_name_tbd" class="form-check-label">TBD</label>
+                <input
+                  type="text"
+                  id="file_name"
+                  formControlName="file_name"
+                  aria-describedby="file_name"
+                  class="form-control"
+                  required
+                />
+                <div class="invalid-feedback">
+                  Please provide an image file name or check "TBD" to do it later.
+                </div>
+              </div>
+              <div class="col-12 mt-3">
+                <label for="full_size_image_url" class="col-form-label">Full size image URL</label>
+                <input
+                  type="text"
+                  id="full_size_image_url"
+                  formControlName="full_size_image_url"
+                  aria-describedby="full_size_image_url"
+                  class="form-control"
+                />
+              </div>
+              <div class="col-md-6 mt-3">
+                <label for="artist_id" class="col-form-label"
+                  >Artist <span class="text-danger">*</span></label
+                >
+                <select
+                  class="form-select"
+                  name="artist_id"
+                  id="artist_id"
+                  formControlName="artist_id"
+                  required
+                >
+                  <option value="" selected="selected">Select an artist...</option>
+                  <option value="0">Unknown</option>
+                  @for (artist of artists$ | async; track $index) {
+                    <option value="{{ artist.artist_id }}">{{ artist.name }}</option>
+                  }
+                </select>
+                <div class="invalid-feedback">Please select an artist.</div>
+              </div>
+              <div class="col-md-6 mt-3">
+                <label for="job_id" class="col-form-label"
+                  >Job <span class="text-danger">*</span></label
+                >
+                <select
+                  class="form-select"
+                  name="job_id"
+                  id="job_id"
+                  formControlName="job_id"
+                  required
+                >
+                  <option value="" selected="selected">Select a job...</option>
+                  <option value="1">Not on a job</option>
+                  @for (job of jobs$ | async; track $index) {
+                    @if (job.job_number !== 'No job') {
+                      <option value="{{ job.job_id }}">
+                        {{ job.job_number }}: {{ job.client?.name }} ({{ job.site?.name || 'TBD' }})
+                      </option>
+                    }
+                  }
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-page-footer [footerData]="footerData"></app-page-footer>
+  </form>
+</div>
+
+<div
+  class="modal"
+  id="confirmModal"
+  tabindex="-1"
+  aria-labelledby="confirmModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmModalLabel">Are you sure?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to reset the form? All changes will be lost.
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          (click)="onClickReset()"
+        >
+          Yes, reset
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

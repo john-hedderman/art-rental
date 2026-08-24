@@ -32,6 +32,8 @@ import { AddTag } from './features/admin/tags/add-tag/add-tag';
 import { StorePage } from './features/store-page/store-page';
 import { ArtStorePage } from './features/art-store-page/art-store-page';
 import { ArtStoreList } from './features/art-store-page/art-store-list/art-store-list';
+import { AddArtStore } from './features/art-store-page/add-art-store/add-art-store';
+import { ArtStoreDetail } from './features/art-store-page/art-store-detail/art-store-detail';
 
 export const routes: Routes = [
   {
@@ -102,6 +104,18 @@ export const routes: Routes = [
       {
         path: 'list',
         component: ArtStoreList
+      },
+      {
+        path: 'add',
+        component: AddArtStore
+      },
+      {
+        path: ':id',
+        component: ArtStoreDetail
+      },
+      {
+        path: ':id/edit',
+        component: AddArtStore
       },
       {
         path: '',

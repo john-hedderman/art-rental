@@ -1,6 +1,13 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { combineLatest, Observable, ReplaySubject, Subject, takeUntil } from 'rxjs';
+import {
+  combineLatest,
+  Observable,
+  ReplaySubject,
+  Subject,
+  takeUntil,
+  distinctUntilChanged
+} from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import { IArt, IArtist, IClient, IContact, IJob, ISite, ITag } from '../model/models';
@@ -28,6 +35,8 @@ export class DataService implements OnDestroy {
   public jobs$: ReplaySubject<IJob[]> = new ReplaySubject(1);
   public sites$: ReplaySubject<ISite[]> = new ReplaySubject(1);
   public tags$: ReplaySubject<ITag[]> = new ReplaySubject(1);
+
+  isStoreFeatureActive = false;
 
   loadData<T>(dataType: string): Observable<T[]> {
     return this.http.get<T[]>(`${environment.apiUrl}/data/${dataType}`);
@@ -145,6 +154,30 @@ export class DataService implements OnDestroy {
     }
   }
 
+  async deleteDocument2(collectionName: string, recordId: string, id: number): Promise<any> {
+    try {
+      const paramsObj = {} as any;
+      paramsObj['recordId'] = recordId;
+      const params = new URLSearchParams(paramsObj);
+      const response = await fetch(`${environment.apiUrl}/data/${collectionName}/${id}?${params}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!response.ok) {
+        throw new Error(
+          `Delete response not ok. Status: ${response.status} - ${response.statusText}`
+        );
+      }
+      const jsonData = await response.json();
+      return jsonData;
+    } catch (error: any) {
+      console.error('Delete failed. Fetch error:', error.message);
+      throw error;
+    }
+  }
+
   async deleteDocuments(collectionName: string, recordId: string, id: number): Promise<any> {
     try {
       const paramsObj = {} as any;
@@ -170,8 +203,31 @@ export class DataService implements OnDestroy {
     }
   }
 
+  getCombinedData$(): Observable<{
+    art: IArt[];
+    artists: IArtist[];
+    clients: IClient[];
+    contacts: IContact[];
+    jobs: IJob[];
+    sites: ISite[];
+    tags: ITag[];
+  }> {
+    return combineLatest({
+      art: this.loadData<IArt>('art'),
+      artists: this.loadData<IArtist>('artists'),
+      clients: this.loadData<IClient>('clients'),
+      contacts: this.loadData<IContact>('contacts'),
+      jobs: this.loadData<IJob>('jobs'),
+      sites: this.loadData<ISite>('sites'),
+      tags: this.loadData<ITag>('tags')
+    }).pipe(takeUntil(this.destroy$), distinctUntilChanged());
+  }
+
   constructor(private http: HttpClient) {
-    this.reloadData(['art', 'artists', 'clients', 'contacts', 'jobs', 'sites', 'tags']);
+    this.isStoreFeatureActive = localStorage.getItem('showStoreFeature') === 'true';
+    if (!this.isStoreFeatureActive) {
+      this.reloadData(['art', 'artists', 'clients', 'contacts', 'jobs', 'sites', 'tags']);
+    }
   }
 
   ngOnDestroy(): void {

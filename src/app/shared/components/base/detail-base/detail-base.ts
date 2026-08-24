@@ -9,7 +9,7 @@ import { Util } from '../../../util/util';
   templateUrl: './detail-base.html',
   styleUrl: './detail-base.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: true,
+  standalone: true
 })
 export abstract class DetailBase {
   dataService = inject(DataService);
@@ -19,11 +19,22 @@ export abstract class DetailBase {
   abstract deleteStatus: string;
   abstract postDelete(): void;
 
+  async deleteItem(callback?: any) {
+    this.preDelete();
+    await this.delete();
+    this.postDelete();
+    if (callback) {
+      callback();
+    }
+  }
+
   async deleteAndReload(modifiedCollections: string[], callback?: any) {
     this.preDelete();
     this.deleteStatus = await this.delete();
     this.postDelete();
-    this.dataService.reloadData(modifiedCollections, callback);
+    if (callback) {
+      callback();
+    }
   }
 
   jobResult(statuses: string[]): string {
