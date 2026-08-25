@@ -7,30 +7,17 @@
       @if (opStatus$ | async; as opStatus) {
         <div>
           <span
-            class="status-icon bi bi-check-circle d-inline-block me-2 text-{{ opStatus }}"
+            class="status-icon bi bi-{{
+              opStatus === OP_SUCCESS ? 'check' : 'exclamation'
+            }}-circle d-inline-block me-2 text-{{ opStatus === OP_SUCCESS ? 'success' : 'danger' }}"
           ></span
-          ><span class="status-message text-{{ opStatus }}">{{ opStatus }}</span>
+          ><span class="status-message text-{{ opStatus === OP_SUCCESS ? 'success' : 'danger' }}">
+            {{ opStatus === OP_SUCCESS ? 'Succeeded' : 'Failed' }}
+          </span>
         </div>
       } @else {
         <div></div>
       }
-
-      <!-- <div>
-        <span class="status-icon bi bi-check-circle d-inline-block me-2 text-success"></span
-        ><span class="status-message text-success">{{ opStatus$ | async }}</span>
-      </div> -->
-
-      <!-- @if (operationStatus().status === OP_SUCCESS) {
-        <div>
-          <span class="status-icon bi bi-check-circle d-inline-block me-2 text-success"></span
-          ><span class="status-message text-success">{{ operationStatus().message }}</span>
-        </div>
-      } @else if (operationStatus().status === OP_FAILURE) {
-        <div>
-          <span class="status-icon bi bi-exclamation-circle d-inline-block me-2 text-danger"></span
-          ><span class="status-message text-danger">{{ operationStatus().message }}</span>
-        </div>
-      } -->
     </div>
     @if (headerData().headerLinks.length > 0) {
       <div class="ms-3 me-2">

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, exhaustMap, map, of, take, tap } from 'rxjs';
+import { catchError, delay, exhaustMap, map, of } from 'rxjs';
 
 import { CoreDataActions } from './core.actions';
 import { AppData } from './core-state';
@@ -72,4 +72,14 @@ export class CoreEffects {
       return jobItem;
     });
   }
+
+  generalFailure$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CoreDataActions.generalFailure),
+      delay(2000),
+      map(() => {
+        return CoreDataActions.clearOpStatus();
+      })
+    );
+  });
 }

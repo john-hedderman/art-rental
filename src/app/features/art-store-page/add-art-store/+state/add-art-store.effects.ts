@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, delay, from, map, of, switchMap, tap } from 'rxjs';
+import { catchError, delay, from, map, of, switchMap } from 'rxjs';
 import { IJob } from '../../../../model/models';
 import { ArtActions, CoreDataActions } from '../../../../core/+state/core.actions';
 import { OperationsService } from '../../../../service/operations-service';
