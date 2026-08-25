@@ -70,24 +70,10 @@ export class OperationsService {
     return result;
   }
 
-  async deleteDocument(collectionName: string, field: string, id: number): Promise<string> {
+  async deleteDocument(collectionName: string, recordId: string, id: number): Promise<string> {
     let result = Const.SUCCESS;
     try {
-      const returnData = await this.dataService.deleteDocument(collectionName, id, field);
-      if (returnData.deletedCount === 0) {
-        result = Const.FAILURE;
-      }
-    } catch (error) {
-      console.error('Delete error:', error);
-      result = Const.FAILURE;
-    }
-    return result;
-  }
-
-  async deleteDocument2(collectionName: string, idField: string, id: number): Promise<string> {
-    let result = Const.SUCCESS;
-    try {
-      const returnData = await this.dataService.deleteDocument2(collectionName, idField, id);
+      const returnData = await this.dataService.deleteDocument(collectionName, recordId, id);
       if (returnData.deletedCount === 0) {
         result = Const.FAILURE;
       }

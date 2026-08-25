@@ -130,31 +130,7 @@ export class DataService implements OnDestroy {
     }
   }
 
-  async deleteDocument(collectionName: string, id: number, recordId: string): Promise<any> {
-    try {
-      const paramsObj = {} as any;
-      paramsObj['recordId'] = recordId;
-      const params = new URLSearchParams(paramsObj);
-      const response = await fetch(`${environment.apiUrl}/data/${collectionName}/${id}?${params}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      if (!response.ok) {
-        throw new Error(
-          `Delete response not ok. Status: ${response.status} - ${response.statusText}`
-        );
-      }
-      const jsonData = await response.json();
-      return jsonData;
-    } catch (error: any) {
-      console.error('Delete failed. Fetch error:', error.message);
-      throw error;
-    }
-  }
-
-  async deleteDocument2(collectionName: string, recordId: string, id: number): Promise<any> {
+  async deleteDocument(collectionName: string, recordId: string, id: number): Promise<any> {
     try {
       const paramsObj = {} as any;
       paramsObj['recordId'] = recordId;

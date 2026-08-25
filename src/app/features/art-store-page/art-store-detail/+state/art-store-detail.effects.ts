@@ -18,7 +18,7 @@ export class ArtDetailEffects {
       return this.actions$.pipe(
         ofType(ArtActions.deleteArtItem),
         switchMap(({ job, artId }) =>
-          from(this.operationsService.deleteDocument2('art', 'art_id', artId)).pipe(
+          from(this.operationsService.deleteDocument(Collections.Art, 'art_id', artId)).pipe(
             map((result) => {
               return ArtActions.deleteArtItemSuccess({ job, artId, result });
             }),
@@ -37,7 +37,10 @@ export class ArtDetailEffects {
       return this.actions$.pipe(
         ofType(ArtActions.deleteArtItemSuccess),
         switchMap((action) => {
-          const job = action.job;
+          const job = { ...action.job };
+          job.art_ids = [...job.art_ids.filter((art_id) => art_id !== action.artId)];
+          delete job.client;
+          delete job.site;
           const collection = Collections.Jobs;
           const idField = 'job_id';
           return of(

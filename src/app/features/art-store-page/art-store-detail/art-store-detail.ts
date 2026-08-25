@@ -103,7 +103,7 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
       artItem: this.store.select(selectArtById(this.artId)),
       jobs: this.store.select(selectJobs)
     })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(take(1))
       .subscribe(({ artItem, jobs }) => {
         const jobItem = jobs.find((job) => job.job_id === artItem.job_id);
         if (jobItem) {
