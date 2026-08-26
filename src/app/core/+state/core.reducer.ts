@@ -85,7 +85,7 @@ export const artRentalReducer = createReducer(
       ...state.data,
       jobs: [...state.data.jobs.filter((jobItem) => jobItem.job_id !== job.job_id), job]
     },
-    opStatus: result,
+    opStatus: Const.SUCCESS,
     error: null
   })),
 
