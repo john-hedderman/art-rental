@@ -72,8 +72,19 @@ export const artRentalReducer = createReducer(
   })),
   on(ArtActions.deleteArtItemSuccess, (state, { job, artId, result }) => ({
     ...state,
-    // data: { ...state.data, art: [] },
-    data: { ...state.data, art: [...state.data.art.filter((artItem) => artItem.art_id !== artId)] },
+    data: {
+      ...state.data,
+      art: state.data.art.filter((artItem) => artItem.art_id !== artId)
+    },
+    opStatus: result,
+    error: null
+  })),
+  on(ArtActions.deleteArtItemUpdateJobSuccess, (state, { job, result }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      jobs: [...state.data.jobs.filter((jobItem) => jobItem.job_id !== job.job_id), job]
+    },
     opStatus: result,
     error: null
   })),

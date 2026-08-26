@@ -45,7 +45,7 @@ export class ArtStoreList implements OnInit, OnDestroy {
     this.jobs$ = this.store.select(selectJobs);
   }
 
-  loadData(dataObservable: Observable<any>, action: any, refresh: boolean = true) {
+  loadData(dataObservable: Observable<any>, action: any, refresh?: boolean) {
     dataObservable.pipe(take(1)).subscribe((data) => {
       if (refresh || !data || data.length === 0) {
         this.store.dispatch(() => action());

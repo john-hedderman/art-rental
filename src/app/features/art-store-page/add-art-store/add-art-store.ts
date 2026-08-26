@@ -158,9 +158,9 @@ export class AddArtStore extends AddBase implements OnInit, OnDestroy {
     });
   }
 
-  loadData(dataObservable: Observable<any>, action: any) {
+  loadData(dataObservable: Observable<any>, action: any, refresh?: boolean) {
     dataObservable.pipe(take(1)).subscribe((data) => {
-      if (!data || data.length === 0) {
+      if (refresh || !data || data.length === 0) {
         this.store.dispatch(() => action());
       }
     });

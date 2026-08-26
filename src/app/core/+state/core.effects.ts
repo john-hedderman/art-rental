@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, delay, exhaustMap, map, of } from 'rxjs';
+import { catchError, delay, exhaustMap, map, of, take } from 'rxjs';
 
 import { CoreDataActions } from './core.actions';
 import { AppData } from './core-state';
@@ -17,6 +17,7 @@ export class CoreEffects {
       ofType(CoreDataActions.loadAllData),
       exhaustMap(() =>
         this.dataService.getCombinedData$().pipe(
+          take(1),
           map((data) => this.enhanceData(data)),
           map((data) => CoreDataActions.loadAllDataSuccess({ data })),
           catchError((error) =>

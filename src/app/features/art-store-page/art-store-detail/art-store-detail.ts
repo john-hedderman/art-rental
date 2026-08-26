@@ -112,6 +112,10 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
           ];
           const jobWithoutArt = { ...jobItem, art_ids: [...artIdsWithoutArt] };
           delete (jobWithoutArt as any)._id;
+          const jobItem2 = {
+            ...jobItem,
+            art_ids: jobItem.art_ids.filter((art_id) => art_id !== artItem.art_id)
+          };
           this.store.dispatch(
             ArtActions.deleteArtItem({
               art: artItem,
@@ -255,9 +259,9 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
     return result;
   }
 
-  loadData(dataObservable: Observable<any>, action: any) {
+  loadData(dataObservable: Observable<any>, action: any, refresh?: boolean) {
     dataObservable.pipe(take(1)).subscribe((data) => {
-      if (!data || data.length === 0) {
+      if (refresh || !data || data.length === 0) {
         this.store.dispatch(() => action());
       }
     });
