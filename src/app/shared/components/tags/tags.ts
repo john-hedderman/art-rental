@@ -8,15 +8,14 @@ import {
   ViewChild,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { delay, Observable, Subject, take } from 'rxjs';
+import { map, Observable, of, Subject, take, takeUntil } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { IArt, ITag } from '../../../model/models';
-import { DataService } from '../../../service/data-service';
+import { ITag } from '../../../model/models';
 import { TagPill } from '../tag-pill/tag-pill';
 import { Store } from '@ngrx/store';
-import { selectArt, selectTags } from '../../../core/+state/core.selectors';
+import { selectTags } from '../../../core/+state/core.selectors';
 import { CoreDataActions } from '../../../core/+state/core.actions';
 
 @Component({
@@ -38,7 +37,7 @@ export class Tags implements OnInit, OnDestroy {
   tags: ITag[] = [];
   tags$: Observable<ITag[]>;
   assignedTags: ITag[] | undefined;
-  assignedTags$: Observable<ITag[]> | undefined;
+  assignedTags$: Observable<ITag[] | undefined> | undefined;
 
   addingTag = output<number>();
   removingTag = output<number>();
@@ -82,10 +81,6 @@ export class Tags implements OnInit, OnDestroy {
     }
   }
 
-  sortByStringField(sortable: any[], field: string) {
-    sortable.sort((a: any, b: any) => (a[field] || '').localeCompare(b[field] || ''));
-  }
-
   loadData(dataObservable: Observable<any>, action: any, refresh?: boolean) {
     dataObservable.pipe(take(1)).subscribe((data) => {
       if (refresh || !data || data.length === 0) {
@@ -96,16 +91,20 @@ export class Tags implements OnInit, OnDestroy {
 
   init() {
     this.loadData(this.tags$, CoreDataActions.loadAllData, true);
-    this.tags$.pipe(take(1), delay(1000)).subscribe((tags) => {
-      this.tags = tags;
+    this.tags$.pipe(takeUntil(this.destroy$)).subscribe((tags) => {
+      this.tags = [...tags];
+      this.assignedTags = this.tags.filter((tag: ITag) =>
+        (<Array<number>>tag[this.assigneeField]).includes(this.assigneeId)
+      );
+      this.assignedTags$ = of(this.assignedTags);
     });
   }
 
-  constructor(
-    private dataService: DataService,
-    private store: Store
-  ) {
-    this.tags$ = this.store.select(selectTags);
+  constructor(private store: Store) {
+    this.tags$ = this.store
+      .select(selectTags)
+      .pipe(map((items) => [...items].sort((a, b) => a.name.localeCompare(b.name))));
+    this.assignedTags$ = of(this.assignedTags);
   }
 
   ngOnInit(): void {

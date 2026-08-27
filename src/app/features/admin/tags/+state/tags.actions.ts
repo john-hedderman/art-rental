@@ -1,12 +1,13 @@
 import { createActionGroup, props } from '@ngrx/store';
 
-import { IArt } from '../../../../model/models';
+import { IArt, ITag } from '../../../../model/models';
 
 export const TagActions = createActionGroup({
   source: 'Tags',
   events: {
-    'Assign Tag To Art': props<{ art: IArt; tagId: number }>(),
-    'Assign Tag To Art Success': props<{ art: IArt; tagId: number }>(),
-    'Assign Tag Update Art Success': props<{ art: IArt; tagId: number; result: string }>()
+    'Assign Tag To Art': props<{ art: IArt; tag: ITag }>(),
+    'Assign Tag To Art Success': props<{ art: IArt; tag: ITag }>(),
+    'Assign Tag To Art Update Tag': props<{ art: IArt; tag: ITag }>(),
+    'Assign Tag To Art Update Tag Success': props<{ art: IArt; tag: ITag }>()
   }
 });

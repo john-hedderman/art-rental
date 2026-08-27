@@ -22,7 +22,12 @@ import { Util } from '../../../shared/util/util';
 import * as Msgs from '../../../shared/strings';
 import { DetailBase } from '../../../shared/components/base/detail-base/detail-base';
 import { Collections } from '../../../shared/enums/collections';
-import { selectArt, selectJobs, selectOpStatus } from '../../../core/+state/core.selectors';
+import {
+  selectArt,
+  selectJobs,
+  selectOpStatus,
+  selectTags
+} from '../../../core/+state/core.selectors';
 import { ArtActions, CoreDataActions } from '../../../core/+state/core.actions';
 import { TagActions } from '../../admin/tags/+state/tags.actions';
 
@@ -44,7 +49,7 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
   artId = 0;
 
   art$: Observable<IArt[]>;
-  jobs$: Observable<IJob[] | undefined>;
+  tags$: Observable<ITag[]>;
   artItem$: Observable<IArt | undefined>;
 
   art: IArt = {} as IArt;
@@ -141,20 +146,25 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
   }
 
   async addTag(tagId: number) {
-    this.artItem$.pipe(take(1)).subscribe((art) => {
-      if (art?.tag_ids.indexOf(tagId) !== -1) {
-        return;
-      }
-      // 1. update art (with modified tag_ids)
-      this.art = art!;
-      this.store.dispatch(
-        TagActions.assignTagToArt({
-          art: this.art,
-          tagId
-        })
-        // 2. update tag (with modified art_ids)
-      );
-    });
+    combineLatest({
+      art: this.artItem$,
+      tags: this.tags$
+    })
+      .pipe(take(1))
+      .subscribe(({ art, tags }) => {
+        if (art?.tag_ids.indexOf(tagId) !== -1) {
+          return;
+        }
+        this.art = art!;
+        this.tags = tags;
+        const tag = this.tags.find((tagItem) => tagItem.tag_id === tagId)!;
+        this.store.dispatch(
+          TagActions.assignTagToArt({
+            art: this.art,
+            tag
+          })
+        );
+      });
   }
 
   // FIXME: once addTag is square, remove this
@@ -304,7 +314,7 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
     this.setArtId();
     this.art$ = this.store.select(selectArt);
     this.artItem$ = this.store.select(selectArtById(this.artId));
-    this.jobs$ = this.store.select(selectJobs);
+    this.tags$ = this.store.select(selectTags);
     this.opStatus$ = this.store.select(selectOpStatus);
   }
 
