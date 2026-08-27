@@ -81,4 +81,76 @@ export class TagEffects {
       })
     );
   });
+
+  removeTagFromArt$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(TagActions.removeTagFromArt),
+        switchMap(({ art, tag }) => {
+          const artItem = { ...art };
+          delete (artItem as any)._id;
+          delete artItem.artist;
+          delete artItem.job;
+          artItem.tag_ids = [...art.tag_ids.filter((tag_id) => tag_id !== tag.tag_id)];
+          return from(
+            this.dataService.saveDocument(artItem, Collections.Art, artItem.art_id, 'art_id')
+          ).pipe(
+            map((result) => {
+              return TagActions.removeTagFromArtSuccess({ art: artItem, tag });
+            }),
+            catchError((error) =>
+              of(CoreDataActions.generalFailure({ errorMessage: error.message }))
+            )
+          );
+        })
+      );
+    },
+    { functional: true }
+  );
+
+  removeTagFromArtSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(TagActions.removeTagFromArtSuccess),
+        switchMap(({ art, tag }) => {
+          return of(TagActions.removeTagFromArtUpdateTag({ art, tag }));
+        })
+      );
+    },
+    { functional: true }
+  );
+
+  removeTagFromArtUpdateTag$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(TagActions.removeTagFromArtUpdateTag),
+        switchMap(({ art, tag }) => {
+          const tagItem = { ...tag };
+          delete (tagItem as any)._id;
+          tagItem.art_ids = [...tag.art_ids.filter((art_id) => art_id !== art.art_id)];
+          return from(
+            this.dataService.saveDocument(tagItem, Collections.Tags, tagItem.tag_id, 'tag_id')
+          ).pipe(
+            map((result) => {
+              return TagActions.removeTagFromArtUpdateTagSuccess({ art, tag: tagItem });
+            }),
+            catchError((error) =>
+              of(CoreDataActions.generalFailure({ errorMessage: error.message }))
+            )
+          );
+        })
+      );
+    },
+    { functional: true }
+  );
+
+  removeTagFromArtUpdateTagSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TagActions.removeTagFromArtUpdateTagSuccess),
+      delay(2000),
+      map(() => {
+        return CoreDataActions.clearOpStatus();
+      })
+    );
+  });
 }

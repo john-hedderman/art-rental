@@ -144,6 +144,7 @@ export const artRentalReducer = createReducer(
   /*  UN/ASSIGN TAGS TO ART  */
   /*                         */
   /***************************/
+
   on(TagActions.assignTagToArt, (state) => ({
     ...state,
     loading: true,
@@ -167,6 +168,39 @@ export const artRentalReducer = createReducer(
     error: null
   })),
   on(TagActions.assignTagToArtUpdateTagSuccess, (state, { art, tag }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      tags: [...state.data.tags.filter((tagItem) => tagItem.tag_id !== tag.tag_id), tag]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+
+  on(TagActions.removeTagFromArt, (state) => ({
+    ...state,
+    loading: true,
+    opStatus: null,
+    error: null
+  })),
+  on(TagActions.removeTagFromArtSuccess, (state, { art, tag }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      art: [...state.data.art.filter((artItem) => artItem.art_id !== art.art_id), art]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+  on(TagActions.removeTagFromArtUpdateTag, (state, { art, tag }) => ({
+    ...state,
+    loading: true,
+    opStatus: null,
+    error: null
+  })),
+  on(TagActions.removeTagFromArtUpdateTagSuccess, (state, { art, tag }) => ({
     ...state,
     data: {
       ...state.data,

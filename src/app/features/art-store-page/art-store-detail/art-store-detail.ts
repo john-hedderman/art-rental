@@ -134,15 +134,20 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
   }
 
   async removeTag(tagId: number) {
-    this.removeTagFromArtStatus = await this.removeTagFromArt(tagId);
-    this.updateRemovedTagStatus = await this.updateRemovedTag(tagId);
-    this.messagesService.showStatus(
-      this.removeTagFromArtStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'art' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' })
-    );
-    this.messagesService.clearStatus();
-    this.dataService.reloadData(['art', 'tags']);
+    combineLatest({
+      art: this.artItem$,
+      tags: this.tags$
+    })
+      .pipe(take(1))
+      .subscribe(({ art, tags }) => {
+        const artItem = { ...art! } as IArt;
+        const tagItem = tags.find((tag) => tag.tag_id === tagId)!;
+        if (art?.tag_ids.indexOf(tagId) === -1) {
+          return;
+        }
+
+        this.store.dispatch(TagActions.removeTagFromArt({ art: artItem, tag: tagItem }));
+      });
   }
 
   async addTag(tagId: number) {
@@ -165,19 +170,6 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
           })
         );
       });
-  }
-
-  // FIXME: once addTag is square, remove this
-  async addTagOld(tagId: number) {
-    this.addTagToArtStatus = await this.addTagToArt(tagId);
-    this.updateAddedTagStatus = await this.updateAddedTag(tagId);
-    this.messagesService.showStatus(
-      this.addTagToArtStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity: 'art' }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity: 'art' })
-    );
-    this.messagesService.clearStatus();
-    this.dataService.reloadData(['art', 'tags']);
   }
 
   async onClickDelete() {
