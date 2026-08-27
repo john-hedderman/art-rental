@@ -3,6 +3,7 @@ import { createReducer, on } from '@ngrx/store';
 import { initialState } from './core-state';
 import { CoreDataActions, ArtActions } from './core.actions';
 import * as Const from '../../constants';
+import { TagActions } from '../../features/admin/tags/+state/tags.actions';
 
 export const artRentalReducer = createReducer(
   initialState,
@@ -132,6 +133,28 @@ export const artRentalReducer = createReducer(
     data: {
       ...state.data,
       jobs: [...state.data.jobs.filter((job) => job.job_id !== newJobItem?.job_id), newJobItem]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+
+  /***************************/
+  /*                         */
+  /*  UN/ASSIGN TAGS TO ART  */
+  /*                         */
+  /***************************/
+  on(TagActions.assignTagToArt, (state) => ({
+    ...state,
+    loading: true,
+    opStatus: null,
+    error: null
+  })),
+  on(TagActions.assignTagToArtSuccess, (state, { art, tagId }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      art: [...state.data.art.filter((artItem) => artItem.art_id !== art.art_id), art]
     },
     loading: false,
     opStatus: Const.SUCCESS,

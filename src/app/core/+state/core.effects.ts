@@ -34,7 +34,11 @@ export class CoreEffects {
     const dataTypes = { ...data };
     enhancedData.art = this.enhanceArtData(dataTypes);
     enhancedData.artists = artists;
+    enhancedData.clients = clients;
+    enhancedData.contacts = contacts;
     enhancedData.jobs = this.enhanceJobData(dataTypes);
+    enhancedData.sites = sites;
+    enhancedData.tags = tags;
     return enhancedData;
   }
 

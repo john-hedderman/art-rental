@@ -15,6 +15,7 @@ import { routes } from './app.routes';
 import { AddArtEffects } from './features/art-store-page/add-art-store/+state/add-art-store.effects';
 import { ArtDetailEffects } from './features/art-store-page/art-store-detail/+state/art-store-detail.effects';
 import { CoreEffects } from './core/+state/core.effects';
+import { TagEffects } from './features/admin/tags/+state/tags.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,7 +27,7 @@ export const appConfig: ApplicationConfig = {
       counter: counterReducer,
       artRental: artRentalReducer
     }),
-    provideEffects([AddArtEffects, ArtDetailEffects, CoreEffects]),
+    provideEffects([AddArtEffects, ArtDetailEffects, TagEffects, CoreEffects]),
     provideStoreDevtools({
       maxAge: 25, // Retains last 25 states
       logOnly: !isDevMode(), // Restrict extension in production

@@ -1,11 +1,23 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { distinctUntilChanged, Observable, of, Subject, takeUntil } from 'rxjs';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  output,
+  ViewChild,
+  ChangeDetectionStrategy
+} from '@angular/core';
+import { delay, Observable, Subject, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { ITag } from '../../../model/models';
+import { IArt, ITag } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { TagPill } from '../tag-pill/tag-pill';
+import { Store } from '@ngrx/store';
+import { selectArt, selectTags } from '../../../core/+state/core.selectors';
+import { CoreDataActions } from '../../../core/+state/core.actions';
 
 @Component({
   selector: 'app-tags',
@@ -24,7 +36,7 @@ export class Tags implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   tags: ITag[] = [];
-  tags$: Observable<ITag[]> | undefined;
+  tags$: Observable<ITag[]>;
   assignedTags: ITag[] | undefined;
   assignedTags$: Observable<ITag[]> | undefined;
 
@@ -74,22 +86,27 @@ export class Tags implements OnInit, OnDestroy {
     sortable.sort((a: any, b: any) => (a[field] || '').localeCompare(b[field] || ''));
   }
 
-  init() {
-    this.dataService.tags$
-      .pipe(takeUntil(this.destroy$), distinctUntilChanged())
-      .subscribe((tags) => {
-        this.tags = tags;
-        this.sortByStringField(this.tags, 'name');
-        this.tags$ = of(tags);
-        const assignedTags = tags.filter((tag: ITag) =>
-          (<Array<number>>tag[this.assigneeField]).includes(this.assigneeId)
-        );
-        this.assignedTags = assignedTags;
-        this.assignedTags$ = of(assignedTags);
-      });
+  loadData(dataObservable: Observable<any>, action: any, refresh?: boolean) {
+    dataObservable.pipe(take(1)).subscribe((data) => {
+      if (refresh || !data || data.length === 0) {
+        this.store.dispatch(() => action());
+      }
+    });
   }
 
-  constructor(private dataService: DataService) {}
+  init() {
+    this.loadData(this.tags$, CoreDataActions.loadAllData, true);
+    this.tags$.pipe(take(1), delay(1000)).subscribe((tags) => {
+      this.tags = tags;
+    });
+  }
+
+  constructor(
+    private dataService: DataService,
+    private store: Store
+  ) {
+    this.tags$ = this.store.select(selectTags);
+  }
 
   ngOnInit(): void {
     this.init();

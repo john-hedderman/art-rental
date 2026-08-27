@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
-import { combineLatest, Observable, Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, Observable, Subject, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import {
@@ -24,6 +24,7 @@ import { DetailBase } from '../../../shared/components/base/detail-base/detail-b
 import { Collections } from '../../../shared/enums/collections';
 import { selectArt, selectJobs, selectOpStatus } from '../../../core/+state/core.selectors';
 import { ArtActions, CoreDataActions } from '../../../core/+state/core.actions';
+import { TagActions } from '../../admin/tags/+state/tags.actions';
 
 @Component({
   selector: 'app-art-store-detail',
@@ -140,6 +141,24 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
   }
 
   async addTag(tagId: number) {
+    this.artItem$.pipe(take(1)).subscribe((art) => {
+      if (art?.tag_ids.indexOf(tagId) !== -1) {
+        return;
+      }
+      // 1. update art (with modified tag_ids)
+      this.art = art!;
+      this.store.dispatch(
+        TagActions.assignTagToArt({
+          art: this.art,
+          tagId
+        })
+        // 2. update tag (with modified art_ids)
+      );
+    });
+  }
+
+  // FIXME: once addTag is square, remove this
+  async addTagOld(tagId: number) {
     this.addTagToArtStatus = await this.addTagToArt(tagId);
     this.updateAddedTagStatus = await this.updateAddedTag(tagId);
     this.messagesService.showStatus(
@@ -268,7 +287,7 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
   }
 
   init(): void {
-    this.loadData(this.art$, CoreDataActions.loadAllData);
+    this.loadData(this.artItem$, CoreDataActions.loadAllData, true);
   }
 
   setArtId() {
