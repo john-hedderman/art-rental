@@ -21,7 +21,6 @@ import { MessagesService } from '../../../service/messages-service';
 import { Util } from '../../../shared/util/util';
 import * as Msgs from '../../../shared/strings';
 import { DetailBase } from '../../../shared/components/base/detail-base/detail-base';
-import { Collections } from '../../../shared/enums/collections';
 import {
   selectArt,
   selectJobs,
@@ -53,7 +52,6 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
   artItem$: Observable<IArt | undefined>;
 
   art: IArt = {} as IArt;
-  jobs: IJob[] = [];
   tags: ITag[] = [];
 
   WAREHOUSE_JOB_NUMBER = Const.WAREHOUSE_JOB_NUMBER;
@@ -73,19 +71,11 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
   );
   footerData = new FooterActions([this.editButton, new DeleteButton()]);
 
-  removeTagFromArtStatus = '';
-  updateRemovedTagStatus = '';
-
-  addTagToArtStatus = '';
-  updateAddedTagStatus = '';
-
   deleteStatus = '';
 
   private readonly destroy$ = new Subject<void>();
 
   opStatus$: Observable<string | null>;
-
-  opResult = '';
 
   override preDelete(): void {}
 
@@ -95,14 +85,7 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
     return 'DELETED!';
   }
 
-  override postDelete(): void {
-    this.messagesService.showStatus(
-      this.deleteStatus,
-      Util.replaceTokens(Msgs.DELETED, { entity: 'art' }),
-      Util.replaceTokens(Msgs.DELETE_FAILED, { entity: 'art' })
-    );
-    this.messagesService.clearStatus();
-  }
+  override postDelete(): void {}
 
   deleteArt() {
     combineLatest({
@@ -176,120 +159,12 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
     this.deleteItem(this.goToArtList);
   }
 
-  async removeTagFromArt(tagId: number): Promise<string> {
-    let result = Const.SUCCESS;
-    const art = this.art;
-    if (!art) {
-      console.error('Remove tag error, could not find the art to update');
-      return Const.FAILURE;
-    }
-    try {
-      art.tag_ids = art.tag_ids.filter((tag_id) => tag_id !== tagId);
-      delete (art as any)._id;
-      const returnData = await this.dataService.saveDocument(
-        art,
-        Collections.Art,
-        this.artId,
-        'art_id'
-      );
-      if (returnData.modifiedCount === 0) {
-        result = Const.FAILURE;
-      }
-    } catch (error) {
-      console.error('Update art error:', error);
-      result = Const.FAILURE;
-    }
-    return result;
-  }
-
-  async updateRemovedTag(tagId: number): Promise<string> {
-    let result = Const.SUCCESS;
-    const tag = this.tags.find((tag) => tag.tag_id === tagId);
-    if (!tag) {
-      console.error('Remove tag error, could not find the tag to update');
-      return Const.FAILURE;
-    }
-    try {
-      tag.art_ids = tag.art_ids.filter((art_id) => art_id !== this.artId);
-      delete (tag as any)._id;
-      const returnData = await this.dataService.saveDocument(
-        tag,
-        Collections.Tags,
-        tagId,
-        'tag_id'
-      );
-      if (returnData.modifiedCount === 0) {
-        result = Const.FAILURE;
-      }
-    } catch (error) {
-      console.error('Update tag error:', error);
-      result = Const.FAILURE;
-    }
-    return result;
-  }
-
-  async addTagToArt(tagId: number): Promise<string> {
-    let result = Const.SUCCESS;
-    const art = this.art;
-    if (!art) {
-      console.error('Add tag error, could not find the art to update');
-      return Const.FAILURE;
-    }
-    try {
-      art.tag_ids = [...art.tag_ids, tagId];
-      delete (art as any)._id;
-      const returnData = await this.dataService.saveDocument(
-        art,
-        Collections.Art,
-        this.artId,
-        'art_id'
-      );
-      if (returnData.modifiedCount === 0) {
-        result = Const.FAILURE;
-      }
-    } catch (error) {
-      console.error('Update art error:', error);
-      result = Const.FAILURE;
-    }
-    return result;
-  }
-
-  async updateAddedTag(tagId: number): Promise<string> {
-    let result = Const.SUCCESS;
-    const tag = this.tags.find((tag) => tag.tag_id === tagId);
-    if (!tag) {
-      console.error('Add tag error, could not find the tag to update');
-      return Const.FAILURE;
-    }
-    try {
-      tag.art_ids = [...tag.art_ids, this.artId];
-      delete (tag as any)._id;
-      const returnData = await this.dataService.saveDocument(
-        tag,
-        Collections.Tags,
-        tagId,
-        'tag_id'
-      );
-      if (returnData.modifiedCount === 0) {
-        result = Const.FAILURE;
-      }
-    } catch (error) {
-      console.error('Update tag error:', error);
-      result = Const.FAILURE;
-    }
-    return result;
-  }
-
   loadData(dataObservable: Observable<any>, action: any, refresh?: boolean) {
     dataObservable.pipe(take(1)).subscribe((data) => {
       if (refresh || !data || data.length === 0) {
         this.store.dispatch(() => action());
       }
     });
-  }
-
-  init(): void {
-    this.loadData(this.artItem$, CoreDataActions.loadAllData, true);
   }
 
   setArtId() {
@@ -311,7 +186,7 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.init();
+    this.loadData(this.artItem$, CoreDataActions.loadAllData, true);
   }
 
   ngOnDestroy(): void {
