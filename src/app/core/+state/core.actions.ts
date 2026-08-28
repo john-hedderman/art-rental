@@ -40,17 +40,10 @@ export const CoreDataActions = createActionGroup({
 export const ArtActions = createActionGroup({
   source: 'Art',
   events: {
-    'Delete Art Item': props<{ art: IArt; job: IJob; artId: number }>(),
-    'Delete Art Item Success': props<{ job: IJob; artId: number; result: string }>(),
-    'Delete Art Item Failure': props<{ errorMessage: string }>(),
-    'Delete Art Item Update Job': props<{
-      job: IJob;
-      collection: any;
-      idField: string;
-      jobId: number;
-    }>(),
-    'Delete Art Item Update Job Success': props<{ job: IJob; result: string }>(),
-    'Delete Art Item Update Job Failure': props<{ errorMessage: string }>(),
+    'Delete Art': props<{ art: IArt; job: IJob; artId: number }>(),
+    'Delete Art Success': props<{ job: IJob; artId: number; result: string }>(),
+    'Delete Art Update Job': props<{ job: IJob }>(),
+    'Delete Art Update Job Success': props<{ job: IJob; result: string }>(),
 
     'Add Or Edit Art': props<{
       isEdit: boolean;

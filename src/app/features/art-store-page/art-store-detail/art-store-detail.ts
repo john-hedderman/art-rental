@@ -72,7 +72,7 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
   override async delete(): Promise<string> {
     this.deleteArt();
     // FIXME: dummy return for now - will update all other pages' delete() methods to rely on state.opStatus
-    return 'DELETED!';
+    return '';
   }
 
   override postDelete(): void {}
@@ -86,17 +86,13 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
       .subscribe(({ artItem, jobs }) => {
         const jobItem = jobs.find((job) => job.job_id === artItem.job_id);
         if (jobItem) {
-          const artIdsWithoutArt = [
-            ...jobItem.art_ids?.filter((art_id) => art_id !== artItem.art_id)
-          ];
-          const jobWithoutArt = { ...jobItem, art_ids: [...artIdsWithoutArt] };
+          const jobWithoutArt = {
+            ...jobItem,
+            art_ids: jobItem.art_ids.filter((art_id) => art_id !== artItem.art_id)
+          };
           delete (jobWithoutArt as any)._id;
-          // const jobItem2 = {
-          //   ...jobItem,
-          //   art_ids: jobItem.art_ids.filter((art_id) => art_id !== artItem.art_id)
-          // };
           this.store.dispatch(
-            ArtActions.deleteArtItem({
+            ArtActions.deleteArt({
               art: artItem,
               job: jobWithoutArt,
               artId: artItem.art_id

@@ -1,11 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, from, map, mergeMap, of, switchMap } from 'rxjs';
+import { catchError, delay, from, map, mergeMap, of, switchMap } from 'rxjs';
 
 import { OperationsService } from '../../../../service/operations-service';
 import { DataService } from '../../../../service/data-service';
 import { Collections } from '../../../../shared/enums/collections';
 import { ArtActions, CoreDataActions } from '../../../../core/+state/core.actions';
+import * as Const from '../../../../constants';
 
 @Injectable()
 export class ArtDetailEffects {
@@ -13,14 +14,14 @@ export class ArtDetailEffects {
   private operationsService = inject(OperationsService);
   private dataService = inject(DataService);
 
-  deleteArtItem$ = createEffect(
+  deleteArt$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ArtActions.deleteArtItem),
+        ofType(ArtActions.deleteArt),
         switchMap(({ art, job, artId }) =>
           from(this.operationsService.deleteDocument(Collections.Art, 'art_id', artId)).pipe(
             map((result) => {
-              return ArtActions.deleteArtItemSuccess({ job, artId, result });
+              return ArtActions.deleteArtSuccess({ job, artId, result });
             }),
             catchError((error) =>
               of(CoreDataActions.generalFailure({ errorMessage: error.message }))
@@ -32,35 +33,35 @@ export class ArtDetailEffects {
     { functional: true }
   );
 
-  deleteArtItemSuccess$ = createEffect(
+  deleteArtSuccess$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ArtActions.deleteArtItemSuccess),
+        ofType(ArtActions.deleteArtSuccess),
         switchMap((action) => {
           const job = { ...action.job };
           job.art_ids = job.art_ids.filter((art_id) => art_id !== action.artId);
           delete job.client;
           delete job.site;
-          const collection = Collections.Jobs;
-          const idField = 'job_id';
-          return of(
-            ArtActions.deleteArtItemUpdateJob({ job, collection, idField, jobId: job.job_id })
-          );
+          // const collection = Collections.Jobs;
+          // const idField = 'job_id';
+          return of(ArtActions.deleteArtUpdateJob({ job }));
         })
       );
     },
     { functional: true }
   );
 
-  deleteArtItemUpdateJob$ = createEffect(
+  deleteArtUpdateJob$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(ArtActions.deleteArtItemUpdateJob),
-        mergeMap(({ job, collection, idField, jobId }) => {
-          return from(this.dataService.saveDocument(job, collection, jobId, idField)).pipe(
-            map((result) => ArtActions.deleteArtItemUpdateJobSuccess({ job, result })),
+        ofType(ArtActions.deleteArtUpdateJob),
+        mergeMap(({ job }) => {
+          return from(
+            this.dataService.saveDocument(job, Collections.Jobs, job.job_id, 'job_id')
+          ).pipe(
+            map((result) => ArtActions.deleteArtUpdateJobSuccess({ job, result })),
             catchError((error) =>
-              of(ArtActions.deleteArtItemUpdateJobFailure({ errorMessage: error.message }))
+              of(CoreDataActions.generalFailure({ errorMessage: error.message }))
             )
           );
         })
@@ -68,4 +69,14 @@ export class ArtDetailEffects {
     },
     { functional: true }
   );
+
+  deleteArtUpdateJobSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ArtActions.deleteArtUpdateJobSuccess),
+      delay(Const.STD_DELAY),
+      map(() => {
+        return CoreDataActions.clearOpStatus();
+      })
+    );
+  });
 }

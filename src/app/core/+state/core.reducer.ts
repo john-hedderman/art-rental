@@ -71,13 +71,13 @@ export const artRentalReducer = createReducer(
   /*              */
   /****************/
 
-  on(ArtActions.deleteArtItem, (state) => ({
+  on(ArtActions.deleteArt, (state) => ({
     ...state,
     loading: true,
     opStatus: null,
     error: null
   })),
-  on(ArtActions.deleteArtItemSuccess, (state, { job, artId, result }) => ({
+  on(ArtActions.deleteArtSuccess, (state, { job, artId, result }) => ({
     ...state,
     data: {
       ...state.data,
@@ -86,7 +86,7 @@ export const artRentalReducer = createReducer(
     opStatus: result,
     error: null
   })),
-  on(ArtActions.deleteArtItemUpdateJobSuccess, (state, { job, result }) => ({
+  on(ArtActions.deleteArtUpdateJobSuccess, (state, { job, result }) => ({
     ...state,
     data: {
       ...state.data,
