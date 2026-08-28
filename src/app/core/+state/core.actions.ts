@@ -55,17 +55,25 @@ export const ArtActions = createActionGroup({
     'Add Or Edit Art': props<{
       isEdit: boolean;
       artItem: IArt;
-      oldJobItem: IJob | undefined;
+      oldJobItem: IJob;
       newJobItem: IJob;
     }>(),
-    'Add Art Success': props<{ artItem: IArt; oldJobItem: IJob | undefined; newJobItem: IJob }>(),
-    'Edit Art Success': props<{ artItem: IArt; oldJobItem: IJob | undefined; newJobItem: IJob }>(),
-    'Add or Edit Art Update New Job': props<{ oldJobItem: IJob | undefined; newJobItem: IJob }>(),
+    'Add Art Success': props<{ artItem: IArt; oldJobItem: IJob; newJobItem: IJob }>(),
+    'Edit Art Success': props<{ artItem: IArt; oldJobItem: IJob; newJobItem: IJob }>(),
+    'Add or Edit Art Update New Job': props<{
+      artItem: IArt;
+      oldJobItem: IJob;
+      newJobItem: IJob;
+    }>(),
     'Add or Edit Art Update New Job Success': props<{
-      oldJobItem: IJob | undefined;
+      oldJobItem: IJob;
       newJobItem: IJob;
     }>(),
-    'Edit Art Update Old Job': props<{ oldJobItem: IJob | undefined; newJobItem: IJob }>(),
-    'Edit Art Update Old Job Success': props<{ oldJobItem: IJob; newJobItem: IJob }>()
+    'Edit Art Update Old Job': props<{ artItem: IArt; oldJobItem: IJob; newJobItem: IJob }>(),
+    'Edit Art Update Old Job Success': props<{
+      artItem: IArt;
+      oldJobItem: IJob;
+      newJobItem: IJob;
+    }>()
   }
 });

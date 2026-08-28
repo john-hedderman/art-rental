@@ -108,14 +108,14 @@ export const artRentalReducer = createReducer(
     opStatus: null,
     error: null
   })),
-  on(ArtActions.addArtSuccess, (state, { artItem }) => ({
+  on(ArtActions.addArtSuccess, (state, { artItem, oldJobItem, newJobItem }) => ({
     ...state,
     data: { ...state.data, art: [...state.data.art, artItem] },
     loading: false,
     opStatus: Const.SUCCESS,
     error: null
   })),
-  on(ArtActions.editArtSuccess, (state, { artItem }) => ({
+  on(ArtActions.editArtSuccess, (state, { artItem, oldJobItem, newJobItem }) => ({
     ...state,
     data: {
       ...state.data,
@@ -129,7 +129,7 @@ export const artRentalReducer = createReducer(
     ...state,
     data: {
       ...state.data,
-      jobs: [...state.data.jobs.filter((job) => job.job_id !== oldJobItem?.job_id), oldJobItem]
+      jobs: [...state.data.jobs.filter((job) => job.job_id !== oldJobItem.job_id), oldJobItem]
     },
     loading: false,
     opStatus: Const.SUCCESS,
@@ -139,7 +139,7 @@ export const artRentalReducer = createReducer(
     ...state,
     data: {
       ...state.data,
-      jobs: [...state.data.jobs.filter((job) => job.job_id !== newJobItem?.job_id), newJobItem]
+      jobs: [...state.data.jobs.filter((job) => job.job_id !== newJobItem.job_id), newJobItem]
     },
     loading: false,
     opStatus: Const.SUCCESS,

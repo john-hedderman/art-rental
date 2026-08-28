@@ -21,7 +21,7 @@ import { SaveButton } from '../../../shared/buttons/save-button';
 import { ResetButton } from '../../../shared/buttons/reset-button';
 import { CancelButton } from '../../../shared/buttons/cancel-button';
 import { Collections } from '../../../shared/enums/collections';
-import { selectArt, selectArtists, selectJobs } from '../../../core/+state/core.selectors';
+import { selectArtists, selectJobs } from '../../../core/+state/core.selectors';
 import { ArtActions, CoreDataActions } from '../../../core/+state/core.actions';
 import { selectArtById } from '../art-store-detail/+state/art-store-detail.selectors';
 
@@ -53,7 +53,6 @@ export class AddArtStore extends AddBase implements OnInit, OnDestroy {
 
   saveStatus = '';
 
-  art$: Observable<IArt[]>;
   artItem$: Observable<IArt>;
   artists$: Observable<IArtist[]>;
   jobs$: Observable<IJob[]>;
@@ -104,16 +103,16 @@ export class AddArtStore extends AddBase implements OnInit, OnDestroy {
 
   saveArt() {
     this.artItem$.pipe(take(1), withLatestFrom(this.jobs$)).subscribe(([art, jobs]) => {
-      const artItem = this.artForm.value;
       const oldJobId = this.editMode ? art.job_id : undefined;
       const newJobId = +this.artForm.value.job_id;
-      const oldJob = jobs.find((job) => job.job_id === oldJobId);
-      const oldJobItem = oldJob ? { ...oldJob } : undefined;
-      const newJobItem = jobs.find((job) => job.job_id === newJobId)!;
+      const oldJob = jobs.find((job) => job.job_id === oldJobId)!;
+      const oldJobItem = { ...oldJob } as IJob;
+      const newJob = jobs.find((job) => job.job_id === newJobId)!;
+      const newJobItem = { ...newJob } as IJob;
       this.store.dispatch(
         ArtActions.addOrEditArt({
           isEdit: this.editMode,
-          artItem,
+          artItem: this.artForm.value,
           oldJobItem,
           newJobItem
         })
@@ -123,8 +122,8 @@ export class AddArtStore extends AddBase implements OnInit, OnDestroy {
 
   preSave() {
     this.disableSaveBtn();
-    const artId = this.route.snapshot.paramMap.get('id');
-    this.artId = artId ? +artId : Date.now();
+    // const artId = this.route.snapshot.paramMap.get('id');
+    // this.artId = artId ? +artId : Date.now();
     this.artForm.value.art_id = this.artId;
     this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
     this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
@@ -158,32 +157,6 @@ export class AddArtStore extends AddBase implements OnInit, OnDestroy {
     });
   }
 
-  loadData(dataObservable: Observable<any>, action: any, refresh?: boolean) {
-    dataObservable.pipe(take(1)).subscribe((data) => {
-      if (refresh || !data || data.length === 0) {
-        this.store.dispatch(() => action());
-      }
-    });
-  }
-
-  init() {
-    this.loadData(this.art$, CoreDataActions.loadAllData);
-
-    this.artForm = this.fb.group({
-      art_id: this.artId,
-      title: [''],
-      file_name: [''],
-      full_size_image_url: [''],
-      tag_ids: this.fb.array([]),
-      artist_id: [null],
-      job_id: [null]
-    });
-
-    if (this.editMode) {
-      this.populateForm<IArt>(Collections.Art, 'art_id', this.artId);
-    }
-  }
-
   setArtId() {
     this.artId = Date.now();
     this.editMode = false;
@@ -201,7 +174,6 @@ export class AddArtStore extends AddBase implements OnInit, OnDestroy {
     private store: Store
   ) {
     super();
-    this.art$ = this.store.select(selectArt);
     this.artists$ = this.store
       .select(selectArtists)
       .pipe(map((artists: IArtist[]) => [...artists].sort((a, b) => a.name.localeCompare(b.name))));
@@ -216,11 +188,24 @@ export class AddArtStore extends AddBase implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.init();
+    this.store.dispatch(CoreDataActions.loadAllData({ refresh: true }));
+
+    this.artForm = this.fb.group({
+      art_id: this.artId,
+      title: [''],
+      file_name: [''],
+      full_size_image_url: [''],
+      tag_ids: this.fb.array([]),
+      artist_id: [null],
+      job_id: [null]
+    });
+
+    if (this.editMode) {
+      this.populateForm<IArt>(Collections.Art, 'art_id', this.artId);
+    }
   }
 
   ngOnDestroy(): void {
-    this.messagesService.clearStatus();
     this.destroy$.next();
     this.destroy$.complete();
   }

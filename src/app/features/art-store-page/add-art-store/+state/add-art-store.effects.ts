@@ -1,10 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, delay, from, map, of, switchMap } from 'rxjs';
+
 import { IJob } from '../../../../model/models';
 import { ArtActions, CoreDataActions } from '../../../../core/+state/core.actions';
 import { OperationsService } from '../../../../service/operations-service';
 import { Collections } from '../../../../shared/enums/collections';
+import * as Const from '../../../../constants';
 
 @Injectable()
 export class AddArtEffects {
@@ -21,7 +23,7 @@ export class AddArtEffects {
               artItem,
               Collections.Art,
               isEdit ? artItem.art_id : undefined,
-              'art_id'
+              isEdit ? 'art_id' : undefined
             )
           ).pipe(
             map((result) => {
@@ -34,7 +36,7 @@ export class AddArtEffects {
               } else if (isEdit && result.modifiedCount) {
                 return ArtActions.editArtSuccess({ artItem, oldJobItem, newJobItem });
               } else {
-                throw new Error('Database error. Art was not saved.');
+                throw new Error('Database error. The art was not saved.');
               }
             }),
             catchError((error) =>
@@ -52,9 +54,9 @@ export class AddArtEffects {
       return this.actions$.pipe(
         ofType(ArtActions.addArtSuccess),
         switchMap(({ artItem, oldJobItem, newJobItem }) => {
-          const job: IJob = { ...newJobItem! };
+          const job: IJob = { ...newJobItem };
           job.art_ids = [...job.art_ids, artItem.art_id];
-          return of(ArtActions.addOrEditArtUpdateNewJob({ oldJobItem, newJobItem: job }));
+          return of(ArtActions.addOrEditArtUpdateNewJob({ artItem, oldJobItem, newJobItem: job }));
         })
       );
     },
@@ -91,7 +93,7 @@ export class AddArtEffects {
   addOrEditArtUpdateNewJobSuccess$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ArtActions.addOrEditArtUpdateNewJobSuccess),
-      delay(2000),
+      delay(Const.STD_DELAY),
       map(() => {
         return CoreDataActions.clearOpStatus();
       })
@@ -103,14 +105,15 @@ export class AddArtEffects {
       return this.actions$.pipe(
         ofType(ArtActions.editArtSuccess),
         switchMap(({ artItem, oldJobItem, newJobItem }) => {
-          const oldJobId = oldJobItem?.job_id;
+          const oldJobId = oldJobItem.job_id;
           const newJobId = newJobItem.job_id;
           if (oldJobId === newJobId) {
             return of(CoreDataActions.clearOpStatus());
           }
-          const job: IJob = { ...oldJobItem! };
-          job.art_ids = [...job.art_ids, artItem.art_id];
-          return of(ArtActions.editArtUpdateOldJob({ oldJobItem: job, newJobItem }));
+          const job: IJob = { ...oldJobItem };
+          // job.art_ids = [...job.art_ids, artItem.art_id];
+          job.art_ids = job.art_ids.filter((art_id) => art_id !== artItem.art_id);
+          return of(ArtActions.editArtUpdateOldJob({ artItem, oldJobItem: job, newJobItem }));
         })
       );
     },
@@ -121,7 +124,7 @@ export class AddArtEffects {
     () => {
       return this.actions$.pipe(
         ofType(ArtActions.editArtUpdateOldJob),
-        switchMap(({ oldJobItem, newJobItem }) => {
+        switchMap(({ artItem, oldJobItem, newJobItem }) => {
           const job = { ...oldJobItem } as IJob;
           delete (job as any)._id;
           delete job.site;
@@ -132,7 +135,11 @@ export class AddArtEffects {
               if (!result.modifiedCount) {
                 throw new Error('Database error. The old job was not saved.');
               }
-              return ArtActions.editArtUpdateOldJobSuccess({ oldJobItem: job, newJobItem });
+              return ArtActions.editArtUpdateOldJobSuccess({
+                artItem,
+                oldJobItem: job,
+                newJobItem
+              });
             }),
             catchError((error) =>
               of(CoreDataActions.generalFailure({ errorMessage: error.message }))
@@ -147,8 +154,13 @@ export class AddArtEffects {
   editArtUpdateOldJobSuccess$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ArtActions.editArtUpdateOldJobSuccess),
-      switchMap(({ oldJobItem, newJobItem }) => {
-        return of(ArtActions.addOrEditArtUpdateNewJob({ oldJobItem, newJobItem }));
+      switchMap(({ artItem, oldJobItem, newJobItem }) => {
+        const newJob = { ...newJobItem };
+        newJob.art_ids = [
+          ...newJob.art_ids.filter((art_id) => art_id !== artItem.art_id),
+          artItem.art_id
+        ];
+        return of(ArtActions.addOrEditArtUpdateNewJob({ artItem, oldJobItem, newJobItem: newJob }));
       })
     );
   });
