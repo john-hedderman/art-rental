@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ChangeDetectionStrategy, OnDestroy } from '@
 import { FormsModule } from '@angular/forms';
 import { AsyncPipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { Observable, Subject, take } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { Card } from '../../../shared/components/card/card';
@@ -10,8 +10,8 @@ import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
-import { selectArt, selectArtists, selectJobs } from '../../../core/+state/core.selectors';
-import { IArt, IArtist, IJob } from '../../../model/models';
+import { selectArt } from '../../../core/+state/core.selectors';
+import { IArt } from '../../../model/models';
 import { CoreDataActions } from '../../../core/+state/core.actions';
 
 @Component({
@@ -32,29 +32,18 @@ export class ArtStoreList implements OnInit, OnDestroy {
   thumbnail_path = 'images/art/';
 
   private store = inject(Store);
+  private router = inject(Router);
 
   art$: Observable<IArt[]>;
-  artists$: Observable<IArtist[]>;
-  jobs$: Observable<IJob[]>;
 
   private readonly destroy$ = new Subject<void>();
 
-  constructor(private router: Router) {
+  constructor() {
     this.art$ = this.store.select(selectArt);
-    this.artists$ = this.store.select(selectArtists);
-    this.jobs$ = this.store.select(selectJobs);
-  }
-
-  loadData(dataObservable: Observable<any>, action: any, refresh?: boolean) {
-    dataObservable.pipe(take(1)).subscribe((data) => {
-      if (refresh || !data || data.length === 0) {
-        this.store.dispatch(() => action());
-      }
-    });
   }
 
   ngOnInit(): void {
-    this.loadData(this.art$, CoreDataActions.loadAllData, true);
+    this.store.dispatch(CoreDataActions.loadAllData({ refresh: true }));
   }
 
   ngOnDestroy(): void {

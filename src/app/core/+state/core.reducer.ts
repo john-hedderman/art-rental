@@ -13,12 +13,13 @@ export const artRentalReducer = createReducer(
   /*  DATA LOAD  */
   /*             */
   /***************/
+
   on(
     CoreDataActions.loadAllData,
     CoreDataActions.loadArt,
     CoreDataActions.loadArtists,
     CoreDataActions.loadJobs,
-    (state, { refresh }) => ({
+    (state) => ({
       ...state,
       loading: true,
       opStatus: null,
@@ -29,18 +30,21 @@ export const artRentalReducer = createReducer(
     ...state,
     data,
     loading: false,
+    opStatus: null,
     error: null
   })),
   on(CoreDataActions.loadArtistsSuccess, (state, { artistItems }) => ({
     ...state,
     data: { ...state.data, artists: [...artistItems] },
     loading: false,
+    opStatus: null,
     error: null
   })),
   on(CoreDataActions.loadJobsSuccess, (state, { jobItems }) => ({
     ...state,
     data: { ...state.data, jobs: [...jobItems] },
     loading: false,
+    opStatus: null,
     error: null
   })),
 
@@ -49,6 +53,7 @@ export const artRentalReducer = createReducer(
   /*  GENERAL ACTIONS  */
   /*                   */
   /*********************/
+
   on(CoreDataActions.generalFailure, (state, { errorMessage }) => ({
     ...state,
     loading: false,
@@ -65,6 +70,7 @@ export const artRentalReducer = createReducer(
   /*  DELETE ART  */
   /*              */
   /****************/
+
   on(ArtActions.deleteArtItem, (state) => ({
     ...state,
     loading: true,
@@ -95,6 +101,7 @@ export const artRentalReducer = createReducer(
   /*  ADD/EDIT ART  */
   /*                */
   /******************/
+
   on(ArtActions.addOrEditArt, (state) => ({
     ...state,
     loading: true,
