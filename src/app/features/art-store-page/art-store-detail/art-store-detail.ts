@@ -12,21 +12,13 @@ import {
 } from '../../../shared/actions/action-data';
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
-import { IArt, IJob, ITag } from '../../../model/models';
+import { IArt, ITag } from '../../../model/models';
 import { selectArtById } from './+state/art-store-detail.selectors';
 import * as Const from '../../../constants';
 import { Tags } from '../../../shared/components/tags/tags';
 import { DeleteButton } from '../../../shared/buttons/delete-button';
-import { MessagesService } from '../../../service/messages-service';
-import { Util } from '../../../shared/util/util';
-import * as Msgs from '../../../shared/strings';
 import { DetailBase } from '../../../shared/components/base/detail-base/detail-base';
-import {
-  selectArt,
-  selectJobs,
-  selectOpStatus,
-  selectTags
-} from '../../../core/+state/core.selectors';
+import { selectArt, selectJobs, selectTags } from '../../../core/+state/core.selectors';
 import { ArtActions, CoreDataActions } from '../../../core/+state/core.actions';
 import { TagActions } from '../../admin/tags/+state/tags.actions';
 
@@ -56,8 +48,8 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
 
   WAREHOUSE_JOB_NUMBER = Const.WAREHOUSE_JOB_NUMBER;
   SITE_TBD_ID = Const.SITE_TBD_ID;
-  readonly OP_SUCCESS = Const.SUCCESS;
-  readonly OP_FAILURE = Const.FAILURE;
+  OP_SUCCESS = Const.SUCCESS;
+  OP_FAILURE = Const.FAILURE;
 
   editButton = new ActionButton(
     'editBtn',
@@ -75,13 +67,11 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
-  opStatus$: Observable<string | null>;
-
   override preDelete(): void {}
 
   override async delete(): Promise<string> {
     this.deleteArt();
-    // FIXME: dummy return for now - will update all other pages' delete() methods to be similar, relying on state.opStatus
+    // FIXME: dummy return for now - will update all other pages' delete() methods to rely on state.opStatus
     return 'DELETED!';
   }
 
@@ -101,10 +91,10 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
           ];
           const jobWithoutArt = { ...jobItem, art_ids: [...artIdsWithoutArt] };
           delete (jobWithoutArt as any)._id;
-          const jobItem2 = {
-            ...jobItem,
-            art_ids: jobItem.art_ids.filter((art_id) => art_id !== artItem.art_id)
-          };
+          // const jobItem2 = {
+          //   ...jobItem,
+          //   art_ids: jobItem.art_ids.filter((art_id) => art_id !== artItem.art_id)
+          // };
           this.store.dispatch(
             ArtActions.deleteArtItem({
               art: artItem,
@@ -128,7 +118,6 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
         if (art?.tag_ids.indexOf(tagId) === -1) {
           return;
         }
-
         this.store.dispatch(TagActions.removeTagFromArt({ art: artItem, tag: tagItem }));
       });
   }
@@ -159,14 +148,6 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
     this.deleteItem(this.goToArtList);
   }
 
-  loadData(dataObservable: Observable<any>, action: any, refresh?: boolean) {
-    dataObservable.pipe(take(1)).subscribe((data) => {
-      if (refresh || !data || data.length === 0) {
-        this.store.dispatch(() => action());
-      }
-    });
-  }
-
   setArtId() {
     this.artId = +(this.route.snapshot.paramMap.get('id') || 0);
   }
@@ -174,7 +155,6 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private store: Store,
-    private messagesService: MessagesService,
     private route: ActivatedRoute
   ) {
     super();
@@ -182,15 +162,14 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
     this.art$ = this.store.select(selectArt);
     this.artItem$ = this.store.select(selectArtById(this.artId));
     this.tags$ = this.store.select(selectTags);
-    this.opStatus$ = this.store.select(selectOpStatus);
+    // this.opStatus$ = this.store.select(selectOpStatus);
   }
 
   ngOnInit(): void {
-    this.loadData(this.artItem$, CoreDataActions.loadAllData, true);
+    this.store.dispatch(CoreDataActions.loadAllData({ refresh: true }));
   }
 
   ngOnDestroy(): void {
-    this.messagesService.clearStatus();
     this.destroy$.next();
     this.destroy$.complete();
   }
