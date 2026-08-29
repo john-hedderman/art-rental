@@ -91,11 +91,11 @@ export class TagEffects {
           delete (artItem as any)._id;
           delete artItem.artist;
           delete artItem.job;
-          artItem.tag_ids = [...art.tag_ids.filter((tag_id) => tag_id !== tag.tag_id)];
+          artItem.tag_ids = art.tag_ids.filter((tag_id) => tag_id !== tag.tag_id);
           return from(
             this.dataService.saveDocument(artItem, Collections.Art, artItem.art_id, 'art_id')
           ).pipe(
-            map((result) => {
+            map(() => {
               return TagActions.removeTagFromArtSuccess({ art: artItem, tag });
             }),
             catchError((error) =>
