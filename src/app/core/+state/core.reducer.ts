@@ -174,7 +174,7 @@ export const artRentalReducer = createReducer(
     opStatus: null,
     error: null
   })),
-  on(TagActions.assignTagToArtUpdateTagSuccess, (state, { art, tag }) => ({
+  on(TagActions.assignTagToArtUpdateTagSuccess, (state, { tag }) => ({
     ...state,
     data: {
       ...state.data,

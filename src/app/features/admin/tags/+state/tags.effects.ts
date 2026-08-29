@@ -60,7 +60,7 @@ export class TagEffects {
             this.dataService.saveDocument(tagItem, Collections.Tags, tagItem.tag_id, 'tag_id')
           ).pipe(
             map((result) => {
-              return TagActions.assignTagToArtUpdateTagSuccess({ art, tag: tagItem });
+              return TagActions.assignTagToArtUpdateTagSuccess({ tag: tagItem });
             }),
             catchError((error) =>
               of(CoreDataActions.generalFailure({ errorMessage: error.message }))
