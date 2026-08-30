@@ -32,6 +32,7 @@ export const CoreDataActions = createActionGroup({
     'Load Data Failure': props<{ errorMessage: string }>(),
 
     'Clear Op Status': emptyProps(),
+    'Delay Clear Op Status': emptyProps(),
 
     'General Failure': props<{ errorMessage: string }>()
   }

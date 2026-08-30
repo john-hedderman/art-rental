@@ -6,6 +6,7 @@ import { CoreDataActions } from './core.actions';
 import { AppData } from './core-state';
 import { DataService } from '../../service/data-service';
 import { IArt, IArtist, IClient, IJob, ISite } from '../../model/models';
+import * as Const from '../../constants';
 
 @Injectable()
 export class CoreEffects {
@@ -31,6 +32,16 @@ export class CoreEffects {
   loadAllDataSuccess$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(CoreDataActions.loadAllDataSuccess),
+      map(() => {
+        return CoreDataActions.clearOpStatus();
+      })
+    );
+  });
+
+  delayClearOpStatus$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CoreDataActions.delayClearOpStatus),
+      delay(Const.STD_DELAY),
       map(() => {
         return CoreDataActions.clearOpStatus();
       })
