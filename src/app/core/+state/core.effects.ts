@@ -28,6 +28,15 @@ export class CoreEffects {
     );
   });
 
+  loadAllDataSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CoreDataActions.loadAllDataSuccess),
+      map(() => {
+        return CoreDataActions.clearOpStatus();
+      })
+    );
+  });
+
   enhanceData(data: AppData): AppData {
     const enhancedData: AppData = {} as AppData;
     const { art, artists, clients, contacts, jobs, sites, tags } = data;

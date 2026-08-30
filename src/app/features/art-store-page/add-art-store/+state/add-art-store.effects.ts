@@ -93,9 +93,8 @@ export class AddArtEffects {
   addOrEditArtUpdateNewJobSuccess$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ArtActions.addOrEditArtUpdateNewJobSuccess),
-      delay(Const.STD_DELAY),
       map(() => {
-        return CoreDataActions.clearOpStatus();
+        return CoreDataActions.loadAllData({ refresh: true });
       })
     );
   });

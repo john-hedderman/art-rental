@@ -122,7 +122,7 @@ export const artRentalReducer = createReducer(
       art: [...state.data.art.filter((art) => art.art_id !== artItem.art_id), artItem]
     },
     loading: false,
-    opStatus: Const.SUCCESS,
+    opStatus: null,
     error: null
   })),
   on(ArtActions.editArtUpdateOldJobSuccess, (state, { oldJobItem, newJobItem }) => ({
@@ -132,7 +132,7 @@ export const artRentalReducer = createReducer(
       jobs: [...state.data.jobs.filter((job) => job.job_id !== oldJobItem.job_id), oldJobItem]
     },
     loading: false,
-    opStatus: Const.SUCCESS,
+    opStatus: null,
     error: null
   })),
   on(ArtActions.addOrEditArtUpdateNewJobSuccess, (state, { oldJobItem, newJobItem }) => ({

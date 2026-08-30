@@ -124,7 +124,7 @@ export class AddArtStore extends AddBase implements OnInit, OnDestroy {
     this.disableSaveBtn();
     // const artId = this.route.snapshot.paramMap.get('id');
     // this.artId = artId ? +artId : Date.now();
-    this.artForm.value.art_id = this.artId;
+    this.artForm.get('art_id')?.setValue(this.artId);
     this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
     this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
     const filenameTBDEl = this.fileNameTBD?.nativeElement as HTMLInputElement;
