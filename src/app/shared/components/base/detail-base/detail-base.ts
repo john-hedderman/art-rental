@@ -19,6 +19,8 @@ export abstract class DetailBase {
   abstract deleteStatus: string;
   abstract postDelete(): void;
 
+  isStoreFeatureActive = localStorage.getItem('showStoreFeature') === 'true';
+
   async deleteItem(callback?: any) {
     this.preDelete();
     await this.delete();
@@ -32,8 +34,13 @@ export abstract class DetailBase {
     this.preDelete();
     this.deleteStatus = await this.delete();
     this.postDelete();
-    if (callback) {
-      callback();
+
+    if (this.isStoreFeatureActive) {
+      if (callback) {
+        callback();
+      }
+    } else {
+      this.dataService.reloadData(modifiedCollections, callback);
     }
   }
 

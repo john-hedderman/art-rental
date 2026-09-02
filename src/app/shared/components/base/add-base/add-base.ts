@@ -34,11 +34,10 @@ export abstract class AddBase {
   abstract save(): Promise<string>;
   abstract resetForm(): void;
 
-  isStoreFeatureActive = false;
+  isStoreFeatureActive = localStorage.getItem('showStoreFeature') === 'true';
 
   postSave(entity: string): void {
-    const isStoreFeatureActive = localStorage.getItem('showStoreFeature') === 'true';
-    if (!isStoreFeatureActive) {
+    if (!this.isStoreFeatureActive) {
       this.messagesService.showStatus(
         this.saveStatus,
         Util.replaceTokens(Msgs.SAVED, { entity }),
@@ -50,7 +49,6 @@ export abstract class AddBase {
   }
 
   populateForm<T>(collection: string, recordId: string, id: number) {
-    this.isStoreFeatureActive = localStorage.getItem('showStoreFeature') === 'true';
     if (this.isStoreFeatureActive) {
       this.populateData();
     } else {
@@ -81,8 +79,11 @@ export abstract class AddBase {
     this.submitted = true;
     if (form.valid) {
       this.preSave();
-      await this.save();
+      this.saveStatus = await this.save();
       this.postSave(entity);
+      if (!this.isStoreFeatureActive) {
+        this.dataService.reloadData(modifiedCollections);
+      }
     }
   }
 
