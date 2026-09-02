@@ -34,6 +34,8 @@ export abstract class AddBase {
   abstract save(): Promise<string>;
   abstract resetForm(): void;
 
+  isStoreFeatureActive = false;
+
   postSave(entity: string): void {
     const isStoreFeatureActive = localStorage.getItem('showStoreFeature') === 'true';
     if (!isStoreFeatureActive) {
@@ -48,7 +50,21 @@ export abstract class AddBase {
   }
 
   populateForm<T>(collection: string, recordId: string, id: number) {
-    this.populateData();
+    this.isStoreFeatureActive = localStorage.getItem('showStoreFeature') === 'true';
+    if (this.isStoreFeatureActive) {
+      this.populateData();
+    } else {
+      this.http
+        .get<T[]>(`${environment.apiUrl}/data/${collection}/${id}?recordId=${recordId}`)
+        .subscribe((data) => {
+          if (data && data.length === 1) {
+            this.dbData = data[0];
+            if (this.dbData) {
+              this.populateData();
+            }
+          }
+        });
+    }
   }
 
   disableSaveBtn() {
