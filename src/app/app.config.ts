@@ -28,11 +28,13 @@ export const appConfig: ApplicationConfig = {
       artRental: artRentalReducer
     }),
     provideEffects([AddArtEffects, ArtDetailEffects, TagEffects, CoreEffects]),
-    provideStoreDevtools({
-      maxAge: 25, // Retains last 25 states
-      logOnly: !isDevMode(), // Restrict extension in production
-      trace: true, // Tracks where actions were dispatched
-      traceLimit: 75
-    })
+    isDevMode()
+      ? provideStoreDevtools({
+          maxAge: 25, // Retains last 25 states
+          logOnly: !isDevMode(), // Restrict extension in production
+          trace: true, // Tracks where actions were dispatched
+          traceLimit: 75
+        })
+      : []
   ]
 };

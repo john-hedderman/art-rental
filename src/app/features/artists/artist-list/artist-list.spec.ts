@@ -7,6 +7,8 @@ import { DataService } from '../../../service/data-service';
 import { provideRouter, Router } from '@angular/router';
 import { ArtistDetail } from '../artist-detail/artist-detail';
 import { AddArtist } from '../add-artist/add-artist';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { initialState } from '../../../core/+state/core-state';
 
 const mockDataService = {
   artists$: of([
@@ -21,6 +23,7 @@ describe('ArtistList', () => {
   let component: ArtistList;
   let fixture: ComponentFixture<ArtistList>;
   let router: Router;
+  let store: MockStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -31,13 +34,15 @@ describe('ArtistList', () => {
         provideRouter([
           { path: 'artists/:id', component: ArtistDetail },
           { path: 'artists/add', component: AddArtist }
-        ])
+        ]),
+        provideMockStore({ initialState })
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ArtistList);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
+    store = TestBed.inject(MockStore);
     fixture.detectChanges();
   });
 

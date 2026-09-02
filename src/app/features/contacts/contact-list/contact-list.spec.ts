@@ -8,6 +8,8 @@ import { IClient, IContact } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { Component, inject, input } from '@angular/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { initialState } from '../../../core/+state/core-state';
 
 const mockContactRows = [
   { contact_id: 2, client_id: 5, first_name: 'Drac', last_name: 'Ula', title: 'Bloodsucker' },
@@ -77,11 +79,16 @@ describe('ContactList', () => {
   let hostFixture: ComponentFixture<MockHostComponent>;
   let hostComponent: MockHostComponent;
   let router: Router;
+  let store: MockStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ContactList],
-      providers: [provideHttpClient(withXhr()), { provide: DataService, useValue: mockDataService }]
+      providers: [
+        provideHttpClient(withXhr()),
+        { provide: DataService, useValue: mockDataService },
+        provideMockStore({ initialState })
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContactList);
@@ -89,6 +96,7 @@ describe('ContactList', () => {
     hostFixture = TestBed.createComponent(MockHostComponent);
     hostComponent = hostFixture.componentInstance;
     router = TestBed.inject(Router);
+    store = TestBed.inject(MockStore);
     fixture.detectChanges();
   });
 

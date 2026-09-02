@@ -1,11 +1,13 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { provideHttpClient, withXhr } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { of } from 'rxjs';
 
 import { SiteList } from './site-list';
-import { provideHttpClient, withXhr } from '@angular/common/http';
 import { IClient, ISite } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
-import { Router } from '@angular/router';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { initialState } from '../../../core/+state/core-state';
 
 const mockClients = of([
   { client_id: 1 },
@@ -34,16 +36,22 @@ describe('SiteList', () => {
   let component: SiteList;
   let fixture: ComponentFixture<SiteList>;
   let router: Router;
+  let store: MockStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SiteList],
-      providers: [provideHttpClient(withXhr()), { provide: DataService, useValue: mockDataService }]
+      providers: [
+        provideHttpClient(withXhr()),
+        { provide: DataService, useValue: mockDataService },
+        provideMockStore({ initialState })
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SiteList);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
+    store = TestBed.inject(MockStore);
     fixture.detectChanges();
   });
 

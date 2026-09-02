@@ -7,26 +7,29 @@ import { DataService } from '../../../service/data-service';
 import { provideRouter, Router } from '@angular/router';
 import { ArtDetail } from '../art-detail/art-detail';
 import { AddArt } from '../add-art/add-art';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { initialState } from '../../../core/+state/core-state';
 
 describe('ArtList', () => {
   let component: ArtList;
   let fixture: ComponentFixture<ArtList>;
   let router: Router;
+  let store: MockStore;
 
   const mockDataService = {
     art$: of([
       { art_id: 1, job_id: 11, artist_id: 4, title: 'Wonder Art' },
       { art_id: 2, job_id: 12 },
-      { art_id: 3 },
+      { art_id: 3 }
     ]),
     artists$: of([{ artist_id: 4, name: 'Fred Rogers' }, { artist_id: 5 }, { artist_id: 6 }]),
     clients$: of([{ client_id: 7 }, { client_id: 8, name: 'Amazon' }, { client_id: 9 }]),
     jobs$: of([
       { job_id: 10 },
       { job_id: 11, client_id: 8, site_id: 15 },
-      { job_id: 12, client_id: 9, site_id: 13 },
+      { job_id: 12, client_id: 9, site_id: 13 }
     ]),
-    sites$: of([{ site_id: 13 }, { site_id: 14 }, { site_id: 15, name: 'Area 51' }]),
+    sites$: of([{ site_id: 13 }, { site_id: 14 }, { site_id: 15, name: 'Area 51' }])
   };
 
   beforeEach(async () => {
@@ -37,14 +40,16 @@ describe('ArtList', () => {
         { provide: DataService, useValue: mockDataService },
         provideRouter([
           { path: 'art/:id', component: ArtDetail },
-          { path: 'art/add', component: AddArt },
+          { path: 'art/add', component: AddArt }
         ]),
-      ],
+        provideMockStore({ initialState })
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ArtList);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
+    store = TestBed.inject(MockStore);
     fixture.detectChanges();
   });
 

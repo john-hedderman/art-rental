@@ -116,7 +116,7 @@ describe('DataService', () => {
 
       (window.fetch as jasmine.Spy).and.resolveTo(mockResponse);
 
-      const returnData = await service.deleteDocument(Collections.Artists, id, field);
+      const returnData = await service.deleteDocument(Collections.Artists, field, id);
 
       flushInitialLoadingURLs();
 
@@ -132,7 +132,7 @@ describe('DataService', () => {
 
       let returnData;
       try {
-        returnData = await service.deleteDocument(Collections.Artists, id, field);
+        returnData = await service.deleteDocument(Collections.Artists, field, id);
       } catch (error) {
         returnData = returnError;
       }

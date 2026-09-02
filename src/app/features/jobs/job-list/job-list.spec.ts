@@ -4,6 +4,8 @@ import { JobList } from './job-list';
 import { provideHttpClient, withXhr } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { IArt, IJob } from '../../../model/models';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { initialState } from '../../../core/+state/core-state';
 
 const mockArtObservable: Observable<IArt[]> = of([
   {
@@ -31,15 +33,17 @@ const mockJobsObservable: Observable<IJob[]> = of([
 describe('JobList', () => {
   let component: JobList;
   let fixture: ComponentFixture<JobList>;
+  let store: MockStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [JobList],
-      providers: [provideHttpClient(withXhr())]
+      providers: [provideHttpClient(withXhr()), provideMockStore({ initialState })]
     }).compileComponents();
 
     fixture = TestBed.createComponent(JobList);
     component = fixture.componentInstance;
+    store = TestBed.inject(MockStore);
     fixture.detectChanges();
   });
 

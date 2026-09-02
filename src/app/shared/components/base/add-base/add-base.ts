@@ -35,12 +35,15 @@ export abstract class AddBase {
   abstract resetForm(): void;
 
   postSave(entity: string): void {
-    this.messagesService.showStatus(
-      this.saveStatus,
-      Util.replaceTokens(Msgs.SAVED, { entity }),
-      Util.replaceTokens(Msgs.SAVE_FAILED, { entity })
-    );
-    this.messagesService.clearStatus();
+    const isStoreFeatureActive = localStorage.getItem('showStoreFeature') === 'true';
+    if (!isStoreFeatureActive) {
+      this.messagesService.showStatus(
+        this.saveStatus,
+        Util.replaceTokens(Msgs.SAVED, { entity }),
+        Util.replaceTokens(Msgs.SAVE_FAILED, { entity })
+      );
+      this.messagesService.clearStatus();
+    }
     this.enableSaveBtn();
   }
 

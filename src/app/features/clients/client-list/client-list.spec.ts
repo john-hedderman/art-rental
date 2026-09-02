@@ -1,14 +1,16 @@
+import { Component, inject, input } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { provideHttpClient, withXhr } from '@angular/common/http';
 import { of } from 'rxjs';
 import { provideRouter, Router } from '@angular/router';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { ClientList } from './client-list';
 import { IClient } from '../../../model/models';
 import { DataService } from '../../../service/data-service';
 import { AddClient } from '../add-client/add-client';
-import { Component, inject, input } from '@angular/core';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { initialState } from '../../../core/+state/core-state';
 
 const mockRows = [
   { client_id: 2 },
@@ -79,6 +81,7 @@ describe('ClientList', () => {
   let hostFixture: ComponentFixture<MockHostComponent>;
   let hostComponent: MockHostComponent;
   let router: Router;
+  let store: MockStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -86,7 +89,8 @@ describe('ClientList', () => {
       providers: [
         provideHttpClient(withXhr()),
         { provide: DataService, useValue: mockDataService },
-        provideRouter([{ path: 'clients/add', component: AddClient }])
+        provideRouter([{ path: 'clients/add', component: AddClient }]),
+        provideMockStore({ initialState })
       ]
     }).compileComponents();
 
@@ -95,6 +99,7 @@ describe('ClientList', () => {
     hostFixture = TestBed.createComponent(MockHostComponent);
     hostComponent = hostFixture.componentInstance;
     router = TestBed.inject(Router);
+    store = TestBed.inject(MockStore);
     fixture.detectChanges();
   });
 
