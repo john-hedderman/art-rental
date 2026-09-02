@@ -13,7 +13,7 @@ import {
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { IArt, ITag } from '../../../model/models';
-import { selectArtById } from './+state/art-store-detail.selectors';
+import { selectArtById } from '../../art-store-page/+state/art-store.selectors';
 import * as Const from '../../../constants';
 import { Tags } from '../../../shared/components/tags/tags';
 import { DeleteButton } from '../../../shared/buttons/delete-button';

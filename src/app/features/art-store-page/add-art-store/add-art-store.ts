@@ -23,7 +23,7 @@ import { CancelButton } from '../../../shared/buttons/cancel-button';
 import { Collections } from '../../../shared/enums/collections';
 import { selectArtists, selectJobs } from '../../../core/+state/core.selectors';
 import { ArtActions, CoreDataActions } from '../../../core/+state/core.actions';
-import { selectArtById } from '../art-store-detail/+state/art-store-detail.selectors';
+import { selectArtById } from '../../art-store-page/+state/art-store.selectors';
 
 @Component({
   selector: 'app-add-art-store',
