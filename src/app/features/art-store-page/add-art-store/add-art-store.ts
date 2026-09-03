@@ -57,8 +57,6 @@ export class AddArtStore extends AddBase implements OnInit, OnDestroy {
   artists$: Observable<IArtist[]>;
   jobs$: Observable<IJob[]>;
 
-  jobs: IJob[] = [];
-
   artId!: number;
 
   onClickReset() {
@@ -122,8 +120,6 @@ export class AddArtStore extends AddBase implements OnInit, OnDestroy {
 
   preSave() {
     this.disableSaveBtn();
-    // const artId = this.route.snapshot.paramMap.get('id');
-    // this.artId = artId ? +artId : Date.now();
     this.artForm.get('art_id')?.setValue(this.artId);
     this.artForm.value.artist_id = parseInt(this.artForm.value.artist_id);
     this.artForm.value.job_id = parseInt(this.artForm.value.job_id);
