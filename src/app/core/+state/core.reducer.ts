@@ -103,7 +103,6 @@ export const artRentalReducer = createReducer(
   on(ArtActions.addOrEditArt, (state) => ({
     ...state,
     loading: true,
-    opStatus: null,
     error: null
   })),
   on(ArtActions.addArtSuccess, (state, { artItem, oldJobItem, newJobItem }) => ({
@@ -123,7 +122,7 @@ export const artRentalReducer = createReducer(
     opStatus: Const.SUCCESS,
     error: null
   })),
-  on(ArtActions.editArtUpdateOldJobSuccess, (state, { oldJobItem, newJobItem }) => ({
+  on(ArtActions.editArtUpdateOldJobSuccess, (state, { artItem, oldJobItem, newJobItem }) => ({
     ...state,
     data: {
       ...state.data,

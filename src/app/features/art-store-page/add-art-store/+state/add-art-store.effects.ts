@@ -27,8 +27,8 @@ export class AddArtEffects {
             )
           ).pipe(
             map((result) => {
-              const art = { ...artItem };
               if (!isEdit && result.insertedId) {
+                const art = { ...artItem };
                 (art as any)._id = result.insertedId;
                 return ArtActions.addArtSuccess({ artItem: art, oldJobItem, newJobItem });
               } else if (!isEdit && !result.insertedId) {
@@ -68,6 +68,7 @@ export class AddArtEffects {
       return this.actions$.pipe(
         ofType(ArtActions.addOrEditArtUpdateNewJob),
         switchMap(({ oldJobItem, newJobItem }) => {
+          const site = newJobItem.site;
           const job = { ...newJobItem } as IJob;
           delete (job as any)._id;
           delete job.site;
@@ -76,7 +77,11 @@ export class AddArtEffects {
           ).pipe(
             map((result) => {
               if (result.modifiedCount) {
-                return ArtActions.addOrEditArtUpdateNewJobSuccess({ oldJobItem, newJobItem: job });
+                const jobWithSiteForStore = { ...job, site };
+                return ArtActions.addOrEditArtUpdateNewJobSuccess({
+                  oldJobItem,
+                  newJobItem: jobWithSiteForStore
+                });
               }
               throw new Error('Database error. The new job was not saved.');
             }),
@@ -104,19 +109,14 @@ export class AddArtEffects {
     () => {
       return this.actions$.pipe(
         ofType(ArtActions.editArtSuccess),
-        switchMap(({ artItem, oldJobItem, newJobItem }) => {
-          const oldJobId = oldJobItem.job_id;
-          const newJobId = newJobItem.job_id;
-          if (oldJobId === newJobId) {
-            return [
-              CoreDataActions.loadAllData({ refresh: true }),
-              CoreDataActions.delayClearOpStatus()
-            ];
+        map(({ artItem, oldJobItem, newJobItem }) => {
+          if (oldJobItem.job_id === newJobItem.job_id) {
+            return CoreDataActions.loadAllData({ refresh: true });
           }
           const job: IJob = { ...oldJobItem };
           // job.art_ids = [...job.art_ids, artItem.art_id];
           job.art_ids = job.art_ids.filter((art_id) => art_id !== artItem.art_id);
-          return of(ArtActions.editArtUpdateOldJob({ artItem, oldJobItem: job, newJobItem }));
+          return ArtActions.editArtUpdateOldJob({ artItem, oldJobItem: job, newJobItem });
         })
       );
     },
@@ -128,7 +128,7 @@ export class AddArtEffects {
       return this.actions$.pipe(
         ofType(ArtActions.editArtUpdateOldJob),
         switchMap(({ artItem, oldJobItem, newJobItem }) => {
-          const job = { ...oldJobItem } as IJob;
+          const job = { ...oldJobItem };
           delete (job as any)._id;
           delete job.site;
           return from(
