@@ -12,7 +12,6 @@ export const TagActions = createActionGroup({
     'Remove Tag From Art': props<{ art: IArt; tag: ITag }>(),
     'Remove Tag From Art Success': props<{ art: IArt; tag: ITag }>(),
     'Remove Tag From Art Update Tag': props<{ art: IArt; tag: ITag }>(),
-    'Remove Tag From Art Update Tag Success': props<{ art: IArt; tag: ITag }>(),
-    'Remove Tag From Art Clear Status': emptyProps()
+    'Remove Tag From Art Update Tag Success': props<{ art: IArt; tag: ITag }>()
   }
 });

@@ -87,6 +87,8 @@ export class TagEffects {
       return this.actions$.pipe(
         ofType(TagActions.removeTagFromArt),
         switchMap(({ art, tag }) => {
+          const artist = art.artist;
+          const job = art.job;
           const artItem = { ...art };
           delete (artItem as any)._id;
           delete artItem.artist;
@@ -96,7 +98,9 @@ export class TagEffects {
             this.dataService.saveDocument(artItem, Collections.Art, artItem.art_id, 'art_id')
           ).pipe(
             map(() => {
-              return TagActions.removeTagFromArtSuccess({ art: artItem, tag });
+              // add artist and job info back into art item before passing it along for store insertion
+              const art = { ...artItem, artist, job };
+              return TagActions.removeTagFromArtSuccess({ art, tag });
             }),
             catchError((error) =>
               of(CoreDataActions.generalFailure({ errorMessage: error.message }))
@@ -147,21 +151,8 @@ export class TagEffects {
   removeTagFromArtUpdateTagSuccess$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(TagActions.removeTagFromArtUpdateTagSuccess),
-      switchMap(() => {
-        return [
-          CoreDataActions.loadAllData({ refresh: true }),
-          TagActions.removeTagFromArtClearStatus()
-        ];
-      })
-    );
-  });
-
-  removeTagFromArtClearStatus$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(TagActions.removeTagFromArtClearStatus),
-      delay(2000),
       map(() => {
-        return CoreDataActions.clearOpStatus();
+        return CoreDataActions.loadAllData({ refresh: true });
       })
     );
   });

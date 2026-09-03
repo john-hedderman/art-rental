@@ -51,19 +51,19 @@ export class CoreEffects {
   enhanceData(data: AppData): AppData {
     const enhancedData: AppData = {} as AppData;
     const { art, artists, clients, contacts, jobs, sites, tags } = data;
-    const dataTypes = { ...data };
-    enhancedData.art = this.enhanceArtData(dataTypes);
+    const allData = { ...data };
+    enhancedData.art = this.enhanceArtData(allData);
     enhancedData.artists = artists;
     enhancedData.clients = clients;
     enhancedData.contacts = contacts;
-    enhancedData.jobs = this.enhanceJobData(dataTypes);
+    enhancedData.jobs = this.enhanceJobData(allData);
     enhancedData.sites = sites;
     enhancedData.tags = tags;
     return enhancedData;
   }
 
   enhanceArtData(allData: AppData): IArt[] {
-    const { art, artists, clients, jobs, sites } = allData;
+    const { art, artists, clients, contacts, jobs, sites, tags } = allData;
     return art
       .map((artItem: IArt) => {
         let jobItem = jobs.find((job: IJob) => job.job_id === artItem.job_id);

@@ -22,7 +22,6 @@ export const artRentalReducer = createReducer(
     (state) => ({
       ...state,
       loading: true,
-      opStatus: null,
       error: null
     })
   ),
@@ -187,7 +186,6 @@ export const artRentalReducer = createReducer(
   on(TagActions.removeTagFromArt, (state) => ({
     ...state,
     loading: true,
-    opStatus: null,
     error: null
   })),
   on(TagActions.removeTagFromArtSuccess, (state, { art, tag }) => ({
@@ -203,7 +201,6 @@ export const artRentalReducer = createReducer(
   on(TagActions.removeTagFromArtUpdateTag, (state, { art, tag }) => ({
     ...state,
     loading: true,
-    opStatus: null,
     error: null
   })),
   on(TagActions.removeTagFromArtUpdateTagSuccess, (state, { art, tag }) => ({
