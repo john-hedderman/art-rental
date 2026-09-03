@@ -1,4 +1,4 @@
-import { createActionGroup, props } from '@ngrx/store';
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
 
 import { IArt, ITag } from '../../../../model/models';
 
@@ -12,6 +12,7 @@ export const TagActions = createActionGroup({
     'Remove Tag From Art': props<{ art: IArt; tag: ITag }>(),
     'Remove Tag From Art Success': props<{ art: IArt; tag: ITag }>(),
     'Remove Tag From Art Update Tag': props<{ art: IArt; tag: ITag }>(),
-    'Remove Tag From Art Update Tag Success': props<{ art: IArt; tag: ITag }>()
+    'Remove Tag From Art Update Tag Success': props<{ art: IArt; tag: ITag }>(),
+    'Remove Tag From Art Clear Status': emptyProps()
   }
 });

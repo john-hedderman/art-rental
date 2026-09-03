@@ -147,6 +147,18 @@ export class TagEffects {
   removeTagFromArtUpdateTagSuccess$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(TagActions.removeTagFromArtUpdateTagSuccess),
+      switchMap(() => {
+        return [
+          CoreDataActions.loadAllData({ refresh: true }),
+          TagActions.removeTagFromArtClearStatus()
+        ];
+      })
+    );
+  });
+
+  removeTagFromArtClearStatus$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TagActions.removeTagFromArtClearStatus),
       delay(2000),
       map(() => {
         return CoreDataActions.clearOpStatus();
