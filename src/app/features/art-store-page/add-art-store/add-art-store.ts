@@ -197,7 +197,9 @@ export class AddArtStore extends AddBase implements OnInit, OnDestroy {
     });
 
     if (this.editMode) {
-      this.populateForm<IArt>(Collections.Art, 'art_id', this.artId);
+      setTimeout(() => {
+        this.populateForm<IArt>(Collections.Art, 'art_id', this.artId);
+      }, 250);
     }
   }
 
