@@ -54,7 +54,7 @@ export const ArtActions = createActionGroup({
     }>(),
     'Add Art Success': props<{ artItem: IArt; oldJobItem: IJob; newJobItem: IJob }>(),
     'Edit Art Success': props<{ artItem: IArt; oldJobItem: IJob; newJobItem: IJob }>(),
-    'Add or Edit Art Update New Job': props<{
+    'Add Or Edit Art Update New Job': props<{
       artItem: IArt;
       oldJobItem: IJob;
       newJobItem: IJob;

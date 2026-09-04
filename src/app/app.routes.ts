@@ -16,6 +16,7 @@ import { AddArtist } from './features/artists/add-artist/add-artist';
 import { ArtistDetail } from './features/artists/artist-detail/artist-detail';
 import { ArtistsNgrxPage } from './features/artists-ngrx/artists-ngrx-page';
 import { ArtistsNgrxList } from './features/artists-ngrx/artists-ngrx-list/artists-ngrx-list';
+import { AddArtistNgrx } from './features/artists-ngrx/add-artist-ngrx/add-artist-ngrx';
 import { ClientsPage } from './features/clients/clients-page';
 import { ClientList } from './features/clients/client-list/client-list';
 import { AddClient } from './features/clients/add-client/add-client';
@@ -164,6 +165,10 @@ export const routes: Routes = [
       {
         path: 'list',
         component: ArtistsNgrxList
+      },
+      {
+        path: 'add',
+        component: AddArtistNgrx
       },
       {
         path: '',

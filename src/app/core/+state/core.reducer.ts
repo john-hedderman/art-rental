@@ -3,6 +3,7 @@ import { createReducer, on } from '@ngrx/store';
 import { initialState } from './core-state';
 import { CoreDataActions, ArtActions } from './core.actions';
 import * as Const from '../../constants';
+import { ArtistActions } from '../../features/artists-ngrx/+state/artists-ngrx.actions';
 import { TagActions } from '../../features/admin/tags/+state/tags.actions';
 
 export const artRentalReducer = createReducer(
@@ -207,6 +208,38 @@ export const artRentalReducer = createReducer(
     data: {
       ...state.data,
       tags: [...state.data.tags.filter((tagItem) => tagItem.tag_id !== tag.tag_id), tag]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+
+  /*********************/
+  /*                   */
+  /*  ADD/EDIT ARTIST  */
+  /*                   */
+  /*********************/
+
+  on(ArtistActions.addOrEditArtist, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  })),
+  on(ArtistActions.addArtistSuccess, (state, { artist }) => ({
+    ...state,
+    data: { ...state.data, artists: [...state.data.artists, artist] },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+  on(ArtistActions.editArtistSuccess, (state, { artist }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      artists: [
+        ...state.data.artists.filter((artistItem) => artistItem.artist_id !== artist.artist_id),
+        artist
+      ]
     },
     loading: false,
     opStatus: Const.SUCCESS,

@@ -1,0 +1,79 @@
+<app-page-header [headerData]="headerData.data"></app-page-header>
+<div class="container-fluid overflow-y-auto">
+  <form
+    [formGroup]="artistForm"
+    (ngSubmit)="onSubmit()"
+    class="needs-validation"
+    [class.was-validated]="submitted && artistForm.invalid"
+    novalidate
+  >
+    <div class="row ar-page-content overflow-y-auto">
+      <div class="col-12 d-flex flex-column py-3">
+        <p>Please complete all required fields (<span class="text-danger">*</span>).</p>
+        <div class="row flex-grow-1">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-md-6">
+                <label for="name" class="col-form-label"
+                  >Artist name <span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  id="name"
+                  formControlName="name"
+                  aria-describedby="name"
+                  class="form-control"
+                  autocomplete="name"
+                  required
+                />
+                <div class="invalid-feedback">Please provide an artist name.</div>
+              </div>
+              <div class="col-md-6">
+                <label for="photo_path" class="col-form-label">Photo path</label>
+                <input
+                  type="text"
+                  id="photo_path"
+                  formControlName="photo_path"
+                  aria-describedby="photo_path"
+                  class="form-control"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-page-footer [footerData]="footerData"></app-page-footer>
+  </form>
+</div>
+
+<div
+  class="modal"
+  id="confirmModal"
+  tabindex="-1"
+  aria-labelledby="confirmModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmModalLabel">Are you sure?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to reset the form? All changes will be lost.
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          (click)="onClickReset()"
+        >
+          Yes, reset
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
