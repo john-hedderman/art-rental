@@ -36,7 +36,7 @@ export class DataService implements OnDestroy {
   public sites$: ReplaySubject<ISite[]> = new ReplaySubject(1);
   public tags$: ReplaySubject<ITag[]> = new ReplaySubject(1);
 
-  isStoreFeatureActive = false;
+  isNgrxFeatureActive = false;
 
   loadData<T>(dataType: string): Observable<T[]> {
     return this.http.get<T[]>(`${environment.apiUrl}/data/${dataType}`);
@@ -200,8 +200,8 @@ export class DataService implements OnDestroy {
   }
 
   constructor(private http: HttpClient) {
-    this.isStoreFeatureActive = localStorage.getItem('showStoreFeature') === 'true';
-    if (!this.isStoreFeatureActive) {
+    this.isNgrxFeatureActive = localStorage.getItem('showNgrxFeature') === 'true';
+    if (!this.isNgrxFeatureActive) {
       this.reloadData(['art', 'artists', 'clients', 'contacts', 'jobs', 'sites', 'tags']);
     }
   }

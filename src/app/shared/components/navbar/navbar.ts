@@ -25,7 +25,7 @@ export class Navbar implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   isCacheFeatureVisible = false;
-  isStoreFeatureActive = false;
+  isNgrxFeatureActive = false;
   isCounterFeatureVisible = false;
 
   onClickNavLink(event: PointerEvent) {
@@ -73,7 +73,7 @@ export class Navbar implements OnInit, OnDestroy {
       });
     });
     this.isCacheFeatureVisible = localStorage.getItem('showCacheFeature') === 'true';
-    this.isStoreFeatureActive = localStorage.getItem('showStoreFeature') === 'true';
+    this.isNgrxFeatureActive = localStorage.getItem('showNgrxFeature') === 'true';
     this.isCounterFeatureVisible = localStorage.getItem('showCounterFeature') === 'true';
   }
 

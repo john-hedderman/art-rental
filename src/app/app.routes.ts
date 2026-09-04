@@ -3,12 +3,19 @@ import { Routes } from '@angular/router';
 import { ArtPage } from './features/art/art-page';
 import { ArtList } from './features/art/art-list/art-list';
 import { AddArt } from './features/art/add-art/add-art';
+import { ArtDetail } from './features/art/art-detail/art-detail';
 import { Art2Page } from './features/art2-page/art2-page';
 import { Art2List } from './features/art2-page/art2-list/art2-list';
+import { ArtStorePage } from './features/art-store-page/art-store-page';
+import { ArtStoreList } from './features/art-store-page/art-store-list/art-store-list';
+import { AddArtStore } from './features/art-store-page/add-art-store/add-art-store';
+import { ArtStoreDetail } from './features/art-store-page/art-store-detail/art-store-detail';
 import { ArtistsPage } from './features/artists/artists-page';
 import { ArtistList } from './features/artists/artist-list/artist-list';
 import { AddArtist } from './features/artists/add-artist/add-artist';
 import { ArtistDetail } from './features/artists/artist-detail/artist-detail';
+import { ArtistsNgrxPage } from './features/artists-ngrx/artists-ngrx-page';
+import { ArtistsNgrxList } from './features/artists-ngrx/artists-ngrx-list/artists-ngrx-list';
 import { ClientsPage } from './features/clients/clients-page';
 import { ClientList } from './features/clients/client-list/client-list';
 import { AddClient } from './features/clients/add-client/add-client';
@@ -17,23 +24,18 @@ import { JobsPage } from './features/jobs/jobs-page';
 import { JobList } from './features/jobs/job-list/job-list';
 import { AddJob } from './features/jobs/add-job/add-job';
 import { JobDetail } from './features/jobs/job-detail/job-detail';
-import { ArtDetail } from './features/art/art-detail/art-detail';
 import { ContactsPage } from './features/contacts/contacts-page';
 import { ContactList } from './features/contacts/contact-list/contact-list';
+import { AddContact } from './features/contacts/add-contact/add-contact';
+import { ContactDetail } from './features/contacts/contact-detail/contact-detail';
 import { SitesPage } from './features/sites/sites-page';
 import { SiteList } from './features/sites/site-list/site-list';
 import { AddSite } from './features/sites/add-site/add-site';
 import { SiteDetail } from './features/sites/site-detail/site-detail';
-import { ContactDetail } from './features/contacts/contact-detail/contact-detail';
-import { AddContact } from './features/contacts/add-contact/add-contact';
 import { TagsPage } from './features/admin/tags/tags-page';
 import { TagList } from './features/admin/tags/tag-list/tag-list';
 import { AddTag } from './features/admin/tags/add-tag/add-tag';
 import { StorePage } from './features/store-page/store-page';
-import { ArtStorePage } from './features/art-store-page/art-store-page';
-import { ArtStoreList } from './features/art-store-page/art-store-list/art-store-list';
-import { AddArtStore } from './features/art-store-page/add-art-store/add-art-store';
-import { ArtStoreDetail } from './features/art-store-page/art-store-detail/art-store-detail';
 
 export const routes: Routes = [
   {
@@ -147,6 +149,21 @@ export const routes: Routes = [
       {
         path: ':id/edit',
         component: AddArtist
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
+    path: 'artists-ngrx',
+    component: ArtistsNgrxPage,
+    children: [
+      {
+        path: 'list',
+        component: ArtistsNgrxList
       },
       {
         path: '',

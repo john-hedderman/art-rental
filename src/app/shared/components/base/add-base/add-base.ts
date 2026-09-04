@@ -34,10 +34,10 @@ export abstract class AddBase {
   abstract save(): Promise<string>;
   abstract resetForm(): void;
 
-  isStoreFeatureActive = localStorage.getItem('showStoreFeature') === 'true';
+  isNgrxFeatureActive = localStorage.getItem('showNgrxFeature') === 'true';
 
   postSave(entity: string): void {
-    if (!this.isStoreFeatureActive) {
+    if (!this.isNgrxFeatureActive) {
       this.messagesService.showStatus(
         this.saveStatus,
         Util.replaceTokens(Msgs.SAVED, { entity }),
@@ -49,7 +49,7 @@ export abstract class AddBase {
   }
 
   populateForm<T>(collection: string, recordId: string, id: number) {
-    if (this.isStoreFeatureActive) {
+    if (this.isNgrxFeatureActive) {
       this.populateData();
     } else {
       this.http
@@ -81,7 +81,7 @@ export abstract class AddBase {
       this.preSave();
       this.saveStatus = await this.save();
       this.postSave(entity);
-      if (!this.isStoreFeatureActive) {
+      if (!this.isNgrxFeatureActive) {
         this.dataService.reloadData(modifiedCollections);
       }
     }

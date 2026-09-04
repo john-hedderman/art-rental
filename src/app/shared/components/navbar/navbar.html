@@ -53,10 +53,10 @@
             >
           </li>
         }
-        @if (isStoreFeatureActive) {
+        @if (isNgrxFeatureActive) {
           <li class="nav-item">
             <a class="nav-link ar-nav-link" routerLink="/art-store" (click)="onClickNavLink($event)"
-              >Store</a
+              >ArtNgrx</a
             >
           </li>
         }
@@ -72,6 +72,16 @@
             >Artists</a
           >
         </li>
+        @if (isNgrxFeatureActive) {
+          <li class="nav-item">
+            <a
+              class="nav-link ar-nav-link"
+              routerLink="/artists-ngrx"
+              (click)="onClickNavLink($event)"
+              >ArtistsNgrx</a
+            >
+          </li>
+        }
         <li class="nav-item dropdown">
           <a
             class="nav-link dropdown-toggle"
