@@ -36,6 +36,17 @@ export interface IClient {
   jobs?: IJob[];
 }
 
+export interface IContact {
+  contact_id: number;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  title: string;
+  email?: string;
+  client_id: number;
+  client?: IClient;
+}
+
 export interface IJob {
   job_id: number;
   job_number: string;
@@ -47,17 +58,6 @@ export interface IJob {
   contacts?: IContact[];
   art_ids: number[];
   art?: IArt[];
-}
-
-export interface IContact {
-  contact_id: number;
-  first_name: string;
-  last_name: string;
-  phone: string;
-  title: string;
-  email?: string;
-  client_id: number;
-  client?: IClient;
 }
 
 export interface ISite {
@@ -72,6 +72,16 @@ export interface ISite {
   client?: IClient;
   job_id: number;
   job?: IJob;
+}
+
+export interface ITag {
+  tag_id: number;
+  name: string;
+  art_ids: number[];
+  art?: IArt[];
+  artist_ids: number[];
+  artists?: IArtist[];
+  [key: string]: number | string | number[] | IArt[] | IArtist[] | undefined;
 }
 
 export interface HeaderData {
@@ -101,16 +111,6 @@ export interface HeaderLink {
 export interface OperationStatus {
   status: string;
   message: string;
-}
-
-export interface ITag {
-  tag_id: number;
-  name: string;
-  art_ids: number[];
-  art?: IArt[];
-  artist_ids: number[];
-  artists?: IArtist[];
-  [key: string]: number | string | number[] | IArt[] | IArtist[] | undefined;
 }
 
 export interface ArtAssignmentSelection {
