@@ -43,7 +43,7 @@ export class ArtStoreList implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(CoreDataActions.loadAllData({ refresh: true }));
+    this.store.dispatch(CoreDataActions.loadAllData({ refresh: false }));
   }
 
   ngOnDestroy(): void {

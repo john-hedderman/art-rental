@@ -22,5 +22,6 @@ export const selectSites = createSelector(selectAppState, (state: AppState) => s
 export const selectTags = createSelector(selectAppState, (state: AppState) => state.data.tags);
 
 export const selectLoading = createSelector(selectAppState, (state: AppState) => state.loading);
+export const selectLoaded = createSelector(selectAppState, (state: AppState) => state.loaded);
 export const selectOpStatus = createSelector(selectAppState, (state: AppState) => state.opStatus);
 export const selectError = createSelector(selectAppState, (state: AppState) => state.error);

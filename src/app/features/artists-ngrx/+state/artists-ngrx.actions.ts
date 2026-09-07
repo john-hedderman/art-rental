@@ -1,5 +1,5 @@
 import { createActionGroup, props } from '@ngrx/store';
-import { IArtist } from '../../../model/models';
+import { IArtist, ITag } from '../../../model/models';
 
 export const ArtistActions = createActionGroup({
   source: 'Artists',
@@ -9,6 +9,11 @@ export const ArtistActions = createActionGroup({
       artist: IArtist;
     }>(),
     'Add Artist Success': props<{ artist: IArtist }>(),
-    'Edit Artist Success': props<{ artist: IArtist }>()
+    'Edit Artist Success': props<{ artist: IArtist }>(),
+
+    'Delete Artist': props<{ artist: IArtist; tags: ITag[] }>(),
+    'Delete Artist Success': props<{ artist: IArtist; tags: ITag[] }>(),
+    'Delete Artist Update Tags': props<{ artist: IArtist; tags: ITag[] }>(),
+    'Delete Artist Update Tags Success': props<{ artist: IArtist; tags: ITag[] }>()
   }
 });

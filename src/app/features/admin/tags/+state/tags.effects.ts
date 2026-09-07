@@ -156,4 +156,159 @@ export class TagEffects {
       })
     );
   });
+
+  assignTagToArtist$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(TagActions.assignTagToArtist),
+        switchMap(({ artist, tag }) => {
+          const artistItem = { ...artist };
+          delete (artistItem as any)._id;
+          artistItem.tag_ids = [
+            ...artist.tag_ids.filter((tag_id) => tag_id !== tag.tag_id),
+            tag.tag_id
+          ];
+          return from(
+            this.dataService.saveDocument(
+              artistItem,
+              Collections.Artists,
+              artistItem.artist_id,
+              'artist_id'
+            )
+          ).pipe(
+            map((result) => {
+              return TagActions.assignTagToArtistSuccess({ artist: artistItem, tag });
+            }),
+            catchError((error) =>
+              of(CoreDataActions.generalFailure({ errorMessage: error.message }))
+            )
+          );
+        })
+      );
+    },
+    { functional: true }
+  );
+
+  assignTagToArtistSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(TagActions.assignTagToArtistSuccess),
+        switchMap(({ artist, tag }) => {
+          return of(TagActions.assignTagToArtistUpdateTag({ artist, tag }));
+        })
+      );
+    },
+    { functional: true }
+  );
+
+  assignTagToArtistUpdateTag$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(TagActions.assignTagToArtistUpdateTag),
+        switchMap(({ artist, tag }) => {
+          const tagItem = { ...tag };
+          delete (tagItem as any)._id;
+          tagItem.artist_ids = [
+            ...tag.artist_ids.filter((artist_id) => artist_id !== artist.artist_id),
+            artist.artist_id
+          ];
+          return from(
+            this.dataService.saveDocument(tagItem, Collections.Tags, tagItem.tag_id, 'tag_id')
+          ).pipe(
+            map((result) => {
+              return TagActions.assignTagToArtistUpdateTagSuccess({ tag: tagItem });
+            }),
+            catchError((error) =>
+              of(CoreDataActions.generalFailure({ errorMessage: error.message }))
+            )
+          );
+        })
+      );
+    },
+    { functional: true }
+  );
+
+  assignTagToArtistUpdateTagSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TagActions.assignTagToArtistUpdateTagSuccess),
+      delay(2000),
+      map(() => {
+        return CoreDataActions.clearOpStatus();
+      })
+    );
+  });
+
+  removeTagFromArtist$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(TagActions.removeTagFromArtist),
+        switchMap(({ artist, tag }) => {
+          const artistItem = { ...artist };
+          delete (artistItem as any)._id;
+          artistItem.tag_ids = artist.tag_ids.filter((tag_id) => tag_id !== tag.tag_id);
+          return from(
+            this.dataService.saveDocument(
+              artistItem,
+              Collections.Artists,
+              artistItem.artist_id,
+              'artist_id'
+            )
+          ).pipe(
+            map(() => TagActions.removeTagFromArtistSuccess({ artist, tag })),
+            catchError((error) =>
+              of(CoreDataActions.generalFailure({ errorMessage: error.message }))
+            )
+          );
+        })
+      );
+    },
+    { functional: true }
+  );
+
+  removeTagFromArtistSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(TagActions.removeTagFromArtistSuccess),
+        switchMap(({ artist, tag }) => {
+          return of(TagActions.removeTagFromArtistUpdateTag({ artist, tag }));
+        })
+      );
+    },
+    { functional: true }
+  );
+
+  removeTagFromArtistUpdateTag$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(TagActions.removeTagFromArtistUpdateTag),
+        switchMap(({ artist, tag }) => {
+          const tagItem = { ...tag };
+          delete (tagItem as any)._id;
+          tagItem.artist_ids = [
+            ...tag.artist_ids.filter((artist_id) => artist_id !== artist.artist_id)
+          ];
+          return from(
+            this.dataService.saveDocument(tagItem, Collections.Tags, tagItem.tag_id, 'tag_id')
+          ).pipe(
+            map((result) => {
+              return TagActions.removeTagFromArtistUpdateTagSuccess({ artist, tag: tagItem });
+            }),
+            catchError((error) =>
+              of(CoreDataActions.generalFailure({ errorMessage: error.message }))
+            )
+          );
+        })
+      );
+    },
+    { functional: true }
+  );
+
+  removeTagFromArtistUpdateTagSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TagActions.removeTagFromArtistUpdateTagSuccess),
+      map(() => {
+        return CoreDataActions.loadAllData({ refresh: true });
+      })
+    );
+  });
 }

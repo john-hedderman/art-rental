@@ -12,6 +12,7 @@ export interface AppData {
 export interface AppState {
   data: AppData;
   loading: boolean;
+  loaded: boolean;
   opStatus: string | null;
   error: string | null;
 }
@@ -27,6 +28,7 @@ export const initialState: AppState = {
     tags: []
   },
   loading: false,
+  loaded: false,
   opStatus: null,
   error: null
 };

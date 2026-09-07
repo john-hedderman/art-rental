@@ -39,6 +39,6 @@ export class ArtistsNgrxList implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(CoreDataActions.loadAllData({ refresh: true }));
+    this.store.dispatch(CoreDataActions.loadAllData({ refresh: false }));
   }
 }

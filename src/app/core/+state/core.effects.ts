@@ -1,25 +1,31 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, delay, exhaustMap, map, of, take } from 'rxjs';
+import { concatLatestFrom } from '@ngrx/operators';
+import { catchError, delay, exhaustMap, filter, map, of, take } from 'rxjs';
 
 import { CoreDataActions } from './core.actions';
 import { AppData } from './core-state';
 import { DataService } from '../../service/data-service';
 import { IArt, IArtist, IClient, IJob, ISite } from '../../model/models';
 import * as Const from '../../constants';
+import { selectLoaded } from './core.selectors';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class CoreEffects {
   private actions$ = inject(Actions);
   private dataService = inject(DataService);
+  private store = inject(Store);
 
   loadAllData$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(CoreDataActions.loadAllData),
-      exhaustMap(() =>
+      concatLatestFrom(() => this.store.select(selectLoaded)),
+      filter(([action, loaded]) => action.refresh || !loaded),
+      exhaustMap((action) =>
         this.dataService.getCombinedData$().pipe(
           take(1),
-          map((data) => this.enhanceData(data)),
+          map((data: AppData) => this.enhanceData(data)),
           map((data) => CoreDataActions.loadAllDataSuccess({ data })),
           catchError((error) =>
             of(CoreDataActions.loadDataFailure({ errorMessage: error.message }))
@@ -54,6 +60,7 @@ export class CoreEffects {
     const allData = { ...data };
     enhancedData.art = this.enhanceArtData(allData);
     enhancedData.artists = artists;
+    // enhancedData.artists = this.enhanceArtistsData(allData);
     enhancedData.clients = clients;
     enhancedData.contacts = contacts;
     enhancedData.jobs = this.enhanceJobData(allData);
@@ -86,6 +93,14 @@ export class CoreEffects {
         return artItem;
       });
   }
+
+  // enhanceArtistsData(allData: AppData): IArtist[] {
+  //   const { art, artists, clients, contacts, jobs, sites, tags } = allData;
+  //   return artists
+  //   .map((artist: IArtist) => {
+  //     const artItems = art.filter((artItem) => artItem.artist_id === artist.artist_id);
+  //   })
+  // }
 
   enhanceJobData(allData: AppData): IJob[] {
     const { clients, jobs, sites } = allData;

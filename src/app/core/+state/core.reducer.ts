@@ -30,12 +30,14 @@ export const artRentalReducer = createReducer(
     ...state,
     data,
     loading: false,
+    loaded: true,
     error: null
   })),
   on(CoreDataActions.loadArtistsSuccess, (state, { artistItems }) => ({
     ...state,
     data: { ...state.data, artists: [...artistItems] },
     loading: false,
+    loaded: true,
     opStatus: null,
     error: null
   })),
@@ -43,6 +45,7 @@ export const artRentalReducer = createReducer(
     ...state,
     data: { ...state.data, jobs: [...jobItems] },
     loading: false,
+    loaded: true,
     opStatus: null,
     error: null
   })),
@@ -56,6 +59,7 @@ export const artRentalReducer = createReducer(
   on(CoreDataActions.generalFailure, (state, { errorMessage }) => ({
     ...state,
     loading: false,
+    loaded: true,
     opStatus: Const.FAILURE,
     error: errorMessage
   })),
@@ -214,6 +218,82 @@ export const artRentalReducer = createReducer(
     error: null
   })),
 
+  /******************************/
+  /*                            */
+  /*  UN/ASSIGN TAGS TO ARTIST  */
+  /*                            */
+  /******************************/
+
+  on(TagActions.assignTagToArtist, (state) => ({
+    ...state,
+    loading: true,
+    opStatus: null,
+    error: null
+  })),
+  on(TagActions.assignTagToArtistSuccess, (state, { artist, tag }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      artists: [
+        ...state.data.artists.filter((artistItem) => artistItem.artist_id !== artist.artist_id),
+        artist
+      ]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+  on(TagActions.assignTagToArtistUpdateTag, (state, { artist, tag }) => ({
+    ...state,
+    loading: true,
+    opStatus: null,
+    error: null
+  })),
+  on(TagActions.assignTagToArtistUpdateTagSuccess, (state, { tag }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      tags: [...state.data.tags.filter((tagItem) => tagItem.tag_id !== tag.tag_id), tag]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+
+  on(TagActions.removeTagFromArtist, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  })),
+  on(TagActions.removeTagFromArtistSuccess, (state, { artist, tag }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      artists: [
+        ...state.data.artists.filter((artistItem) => artistItem.artist_id !== artist.artist_id),
+        artist
+      ]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+  on(TagActions.removeTagFromArtistUpdateTag, (state, { artist, tag }) => ({
+    ...state,
+    loading: true,
+    error: null
+  })),
+  on(TagActions.removeTagFromArtistUpdateTagSuccess, (state, { artist, tag }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      tags: [...state.data.tags.filter((tagItem) => tagItem.tag_id !== tag.tag_id), tag]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+
   /*********************/
   /*                   */
   /*  ADD/EDIT ARTIST  */
@@ -242,6 +322,48 @@ export const artRentalReducer = createReducer(
       ]
     },
     loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+
+  /*******************/
+  /*                 */
+  /*  DELETE ARTIST  */
+  /*                 */
+  /*******************/
+
+  on(ArtistActions.deleteArtist, (state) => ({
+    ...state,
+    loading: true,
+    opStatus: null,
+    error: null
+  })),
+  on(ArtistActions.deleteArtistSuccess, (state, { artist, tags }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      artists: state.data.artists.filter((artistItem) => artistItem.artist_id !== artist.artist_id)
+    },
+    error: null
+  })),
+  on(ArtistActions.deleteArtistUpdateTagsSuccess, (state, { artist, tags }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      tags: [
+        ...state.data.tags.filter((tagItem) => {
+          let result = false;
+          for (const tag of tags) {
+            if (tag.tag_id !== tagItem.tag_id) {
+              result = true;
+              break;
+            }
+          }
+          return result;
+        }),
+        ...tags
+      ]
+    },
     opStatus: Const.SUCCESS,
     error: null
   }))

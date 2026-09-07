@@ -17,6 +17,7 @@ import { ArtDetailEffects } from './features/art-store-page/art-store-detail/+st
 import { CoreEffects } from './core/+state/core.effects';
 import { TagEffects } from './features/admin/tags/+state/tags.effects';
 import { AddArtistEffects } from './features/artists-ngrx/add-artist-ngrx/+state/add-artist-ngrx.effects';
+import { ArtistDetailEffects } from './features/artists-ngrx/+state/artists-ngrx.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -28,7 +29,14 @@ export const appConfig: ApplicationConfig = {
       counter: counterReducer,
       artRental: artRentalReducer
     }),
-    provideEffects([AddArtEffects, ArtDetailEffects, AddArtistEffects, TagEffects, CoreEffects]),
+    provideEffects([
+      AddArtEffects,
+      ArtDetailEffects,
+      AddArtistEffects,
+      ArtistDetailEffects,
+      TagEffects,
+      CoreEffects
+    ]),
     isDevMode()
       ? provideStoreDevtools({
           maxAge: 25, // Retains last 25 states

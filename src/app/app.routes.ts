@@ -37,6 +37,7 @@ import { TagsPage } from './features/admin/tags/tags-page';
 import { TagList } from './features/admin/tags/tag-list/tag-list';
 import { AddTag } from './features/admin/tags/add-tag/add-tag';
 import { StorePage } from './features/store-page/store-page';
+import { ArtistNgrxDetail } from './features/artists-ngrx/artist-ngrx-detail/artist-ngrx-detail';
 
 export const routes: Routes = [
   {
@@ -169,6 +170,10 @@ export const routes: Routes = [
       {
         path: 'add',
         component: AddArtistNgrx
+      },
+      {
+        path: ':id',
+        component: ArtistNgrxDetail
       },
       {
         path: '',
