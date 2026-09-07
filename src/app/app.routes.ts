@@ -176,6 +176,10 @@ export const routes: Routes = [
         component: ArtistNgrxDetail
       },
       {
+        path: ':id/edit',
+        component: AddArtistNgrx
+      },
+      {
         path: '',
         redirectTo: 'list',
         pathMatch: 'full'

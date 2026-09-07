@@ -15,6 +15,7 @@ import { ResetButton } from '../../../shared/buttons/reset-button';
 import { CancelButton } from '../../../shared/buttons/cancel-button';
 import { selectArtistById } from '../../artists-ngrx/+state/artists-ngrx.selectors';
 import { ArtistActions } from '../+state/artists-ngrx.actions';
+import { CoreDataActions } from '../../../core/+state/core.actions';
 
 @Component({
   imports: [PageHeader, ReactiveFormsModule, PageFooter],
@@ -57,9 +58,11 @@ export class AddArtistNgrx extends AddBase implements OnInit, OnDestroy {
   override populateData(): void {
     // this also effectively touches the form fields, so those prepopulated fields that
     // the user has never touched can be considered valid, letting the form submission complete
-    this.artistForm.get('artist_id')?.setValue(this.dbData.artist_id);
-    this.artistForm.get('name')?.setValue(this.dbData.name);
-    this.artistForm.get('photo_path')?.setValue(this.dbData.photo_path);
+    this.artistItem$.pipe(take(1)).subscribe((artistItem) => {
+      this.artistForm.get('artist_id')?.setValue(artistItem.artist_id);
+      this.artistForm.get('name')?.setValue(artistItem.name);
+      this.artistForm.get('photo_path')?.setValue(artistItem.photo_path);
+    });
   }
 
   override preSave(): void {
@@ -123,6 +126,8 @@ export class AddArtistNgrx extends AddBase implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.store.dispatch(CoreDataActions.loadAllData({ refresh: false }));
+
     this.artistForm = this.fb.group({
       artist_id: this.artistId,
       name: [''],
@@ -131,7 +136,9 @@ export class AddArtistNgrx extends AddBase implements OnInit, OnDestroy {
     });
 
     if (this.editMode) {
-      this.populateForm<IArtist>(Collections.Artists, 'artist_id', this.artistId);
+      setTimeout(() => {
+        this.populateForm<IArtist>(Collections.Artists, 'artist_id', this.artistId);
+      }, 250);
     }
   }
 
