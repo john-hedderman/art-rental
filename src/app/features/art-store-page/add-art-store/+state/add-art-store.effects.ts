@@ -100,9 +100,7 @@ export class AddArtEffects {
     return this.actions$.pipe(
       ofType(ArtActions.addOrEditArtUpdateNewJobSuccess),
       delay(Const.STD_DELAY),
-      switchMap(() => {
-        return [CoreDataActions.loadAllData({ refresh: true }), CoreDataActions.clearOpStatus()];
-      })
+      map(() => CoreDataActions.clearOpStatus())
     );
   });
 
@@ -112,10 +110,9 @@ export class AddArtEffects {
         ofType(ArtActions.editArtSuccess),
         map(({ artItem, oldJobItem, newJobItem }) => {
           if (oldJobItem.job_id === newJobItem.job_id) {
-            return CoreDataActions.loadAllData({ refresh: true });
+            return CoreDataActions.clearOpStatus();
           }
           const job: IJob = { ...oldJobItem };
-          // job.art_ids = [...job.art_ids, artItem.art_id];
           job.art_ids = job.art_ids.filter((art_id) => art_id !== artItem.art_id);
           return ArtActions.editArtUpdateOldJob({ artItem, oldJobItem: job, newJobItem });
         })

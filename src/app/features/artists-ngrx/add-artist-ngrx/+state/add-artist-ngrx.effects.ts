@@ -6,7 +6,6 @@ import { ArtistActions } from '../../+state/artists-ngrx.actions';
 import { OperationsService } from '../../../../service/operations-service';
 import { Collections } from '../../../../shared/enums/collections';
 import { CoreDataActions } from '../../../../core/+state/core.actions';
-import { IArtist } from '../../../../model/models';
 import * as Const from '../../../../constants';
 
 @Injectable()
@@ -52,9 +51,7 @@ export class AddArtistEffects {
     return this.actions$.pipe(
       ofType(ArtistActions.addArtistSuccess),
       delay(Const.STD_DELAY),
-      switchMap(() => {
-        return [CoreDataActions.loadAllData({ refresh: true }), CoreDataActions.clearOpStatus()];
-      })
+      map(() => CoreDataActions.clearOpStatus())
     );
   });
 }
