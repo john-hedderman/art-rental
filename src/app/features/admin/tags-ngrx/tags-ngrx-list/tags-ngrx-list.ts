@@ -7,20 +7,15 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import { combineLatest, map, Observable, Subject, take } from 'rxjs';
+import { map, Observable, Subject, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AsyncPipe } from '@angular/common';
 
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { FooterActions, HeaderActions } from '../../../../shared/actions/action-data';
 import { IArt, IArtist, ITag } from '../../../../model/models';
-import { DataService } from '../../../../service/data-service';
-import { Collections } from '../../../../shared/enums/collections';
-import { OperationsService } from '../../../../service/operations-service';
-import { selectArt, selectArtists, selectTags } from '../../../../core/+state/core.selectors';
+import { selectTags } from '../../../../core/+state/core.selectors';
 import { TagPill } from '../../../../shared/components/tag-pill/tag-pill';
-import * as Const from '../../../../constants';
-import { Util } from '../../../../shared/util/util';
 import { PageFooter } from '../../../../shared/components/page-footer/page-footer';
 import { CoreDataActions } from '../../../../core/+state/core.actions';
 import { TagsNgrxActions } from '../+state/tags-ngrx.actions';
@@ -38,19 +33,11 @@ export class TagsNgrxList implements OnInit, OnDestroy {
   @ViewChild('tagSearch') tagSearch: ElementRef | undefined;
 
   private store = inject(Store);
-  private dataService = inject(DataService);
-  private operationsService = inject(OperationsService);
 
   headerData = new HeaderActions('tag-list', 'Tags', [], []);
   footerData = new FooterActions([]);
 
-  art: IArt[] = [];
-  artists: IArtist[] = [];
-  tags: ITag[] = [];
-
   tags$: Observable<ITag[]>;
-
-  deleteStatus = '';
 
   modalEl: HTMLDivElement | null = null;
 
@@ -68,13 +55,14 @@ export class TagsNgrxList implements OnInit, OnDestroy {
     tagSearchEl.focus();
 
     const tagInSystemEl = document.getElementById('tag-in-system') as HTMLDivElement;
-    if (tagValue !== '' && this.tags?.map((tag) => tag.name)?.includes(tagValue)) {
-      tagInSystemEl.classList.add('d-block');
-      return;
-    }
-    tagInSystemEl.classList.remove('d-block');
-
-    this.addTag(tagValue);
+    this.tags$.pipe(take(1)).subscribe((tags) => {
+      if (tagValue !== '' && tags.map((tag) => tag.name)?.includes(tagValue)) {
+        tagInSystemEl.classList.add('d-block');
+        return;
+      }
+      tagInSystemEl.classList.remove('d-block');
+      this.addTag(tagValue);
+    });
   }
 
   async addTag(name: string) {
@@ -125,16 +113,7 @@ export class TagsNgrxList implements OnInit, OnDestroy {
   }
 
   init() {
-    combineLatest({
-      art: this.store.select(selectArt),
-      artists: this.store.select(selectArtists),
-      tags: this.store.select(selectTags)
-    })
-      .pipe(take(1))
-      .subscribe(({ art, artists, tags }) => {
-        this.tags = tags;
-      });
-
+    this.store.dispatch(CoreDataActions.loadAllData({ refresh: false }));
     this.initModal();
   }
 
@@ -146,7 +125,6 @@ export class TagsNgrxList implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.init();
-    this.store.dispatch(CoreDataActions.loadAllData({ refresh: false }));
   }
 
   ngOnDestroy(): void {
