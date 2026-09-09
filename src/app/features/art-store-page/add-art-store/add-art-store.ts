@@ -22,7 +22,8 @@ import { ResetButton } from '../../../shared/buttons/reset-button';
 import { CancelButton } from '../../../shared/buttons/cancel-button';
 import { Collections } from '../../../shared/enums/collections';
 import { selectArtists, selectJobs } from '../../../core/+state/core.selectors';
-import { ArtActions, CoreDataActions } from '../../../core/+state/core.actions';
+import { CoreDataActions } from '../../../core/+state/core.actions';
+import { ArtActions } from '../+state/art-store.actions';
 import { selectArtById } from '../../art-store-page/+state/art-store.selectors';
 
 @Component({

@@ -1,8 +1,9 @@
 import { createReducer, on } from '@ngrx/store';
 
 import { initialState } from './core-state';
-import { CoreDataActions, ArtActions } from './core.actions';
+import { CoreDataActions } from './core.actions';
 import * as Const from '../../constants';
+import { ArtActions } from '../../features/art-store-page/+state/art-store.actions';
 import { ArtistActions } from '../../features/artists-ngrx/+state/artists-ngrx.actions';
 import { TagActions } from '../../features/admin/tags/+state/tags.actions';
 import { TagsNgrxActions } from '../../features/admin/tags-ngrx/+state/tags-ngrx.actions';

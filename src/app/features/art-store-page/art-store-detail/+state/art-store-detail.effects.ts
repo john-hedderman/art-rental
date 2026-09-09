@@ -5,7 +5,8 @@ import { catchError, delay, from, map, mergeMap, of, switchMap } from 'rxjs';
 import { OperationsService } from '../../../../service/operations-service';
 import { DataService } from '../../../../service/data-service';
 import { Collections } from '../../../../shared/enums/collections';
-import { ArtActions, CoreDataActions } from '../../../../core/+state/core.actions';
+import { CoreDataActions } from '../../../../core/+state/core.actions';
+import { ArtActions } from '../../+state/art-store.actions';
 import * as Const from '../../../../constants';
 
 @Injectable()

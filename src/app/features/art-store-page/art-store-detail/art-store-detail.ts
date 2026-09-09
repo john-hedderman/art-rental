@@ -19,7 +19,8 @@ import { Tags } from '../../../shared/components/tags/tags';
 import { DeleteButton } from '../../../shared/buttons/delete-button';
 import { DetailBase } from '../../../shared/components/base/detail-base/detail-base';
 import { selectArt, selectJobs, selectTags } from '../../../core/+state/core.selectors';
-import { ArtActions, CoreDataActions } from '../../../core/+state/core.actions';
+import { CoreDataActions } from '../../../core/+state/core.actions';
+import { ArtActions } from '../+state/art-store.actions';
 import { TagActions } from '../../admin/tags/+state/tags.actions';
 
 @Component({
