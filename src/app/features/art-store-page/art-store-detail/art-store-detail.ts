@@ -159,11 +159,10 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
     this.art$ = this.store.select(selectArt);
     this.artItem$ = this.store.select(selectArtById(this.artId));
     this.tags$ = this.store.select(selectTags);
-    // this.opStatus$ = this.store.select(selectOpStatus);
   }
 
   ngOnInit(): void {
-    this.store.dispatch(CoreDataActions.loadAllData({ refresh: true }));
+    this.store.dispatch(CoreDataActions.loadAllData({ refresh: false }));
   }
 
   ngOnDestroy(): void {

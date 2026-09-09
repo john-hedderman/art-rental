@@ -21,9 +21,7 @@ export class ArtDetailEffects {
         ofType(ArtActions.deleteArt),
         switchMap(({ art, job, artId }) =>
           from(this.operationsService.deleteDocument(Collections.Art, 'art_id', artId)).pipe(
-            map((result) => {
-              return ArtActions.deleteArtSuccess({ job, artId, result });
-            }),
+            map((result) => ArtActions.deleteArtSuccess({ job, artId, result })),
             catchError((error) =>
               of(CoreDataActions.generalFailure({ errorMessage: error.message }))
             )
@@ -43,8 +41,6 @@ export class ArtDetailEffects {
           job.art_ids = job.art_ids.filter((art_id) => art_id !== action.artId);
           delete job.client;
           delete job.site;
-          // const collection = Collections.Jobs;
-          // const idField = 'job_id';
           return of(ArtActions.deleteArtUpdateJob({ job }));
         })
       );
@@ -75,9 +71,7 @@ export class ArtDetailEffects {
     return this.actions$.pipe(
       ofType(ArtActions.deleteArtUpdateJobSuccess),
       delay(Const.STD_DELAY),
-      map(() => {
-        return CoreDataActions.clearOpStatus();
-      })
+      map(() => CoreDataActions.clearOpStatus())
     );
   });
 }

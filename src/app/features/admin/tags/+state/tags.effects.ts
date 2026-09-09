@@ -148,15 +148,6 @@ export class TagEffects {
     { functional: true }
   );
 
-  removeTagFromArtUpdateTagSuccess$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(TagsNgrxActions.removeTagFromArtUpdateTagSuccess),
-      map(() => {
-        return CoreDataActions.loadAllData({ refresh: true });
-      })
-    );
-  });
-
   assignTagToArtist$ = createEffect(
     () => {
       return this.actions$.pipe(
@@ -302,13 +293,4 @@ export class TagEffects {
     },
     { functional: true }
   );
-
-  removeTagFromArtistUpdateTagSuccess$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(TagsNgrxActions.removeTagFromArtistUpdateTagSuccess),
-      map(() => {
-        return CoreDataActions.loadAllData({ refresh: true });
-      })
-    );
-  });
 }
