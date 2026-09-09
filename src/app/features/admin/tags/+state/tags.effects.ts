@@ -2,10 +2,10 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, delay, from, map, of, switchMap } from 'rxjs';
 
-import { TagActions } from './tags.actions';
 import { CoreDataActions } from '../../../../core/+state/core.actions';
 import { DataService } from '../../../../service/data-service';
 import { Collections } from '../../../../shared/enums/collections';
+import { TagsNgrxActions } from '../../tags-ngrx/+state/tags-ngrx.actions';
 
 @Injectable()
 export class TagEffects {
@@ -15,7 +15,7 @@ export class TagEffects {
   assignTagToArt$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(TagActions.assignTagToArt),
+        ofType(TagsNgrxActions.assignTagToArt),
         switchMap(({ art, tag }) => {
           const artItem = { ...art };
           delete (artItem as any)._id;
@@ -24,7 +24,7 @@ export class TagEffects {
             this.dataService.saveDocument(artItem, Collections.Art, artItem.art_id, 'art_id')
           ).pipe(
             map((result) => {
-              return TagActions.assignTagToArtSuccess({ art: artItem, tag });
+              return TagsNgrxActions.assignTagToArtSuccess({ art: artItem, tag });
             }),
             catchError((error) =>
               of(CoreDataActions.generalFailure({ errorMessage: error.message }))
@@ -39,9 +39,9 @@ export class TagEffects {
   assignTagToArtSuccess$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(TagActions.assignTagToArtSuccess),
+        ofType(TagsNgrxActions.assignTagToArtSuccess),
         switchMap(({ art, tag }) => {
-          return of(TagActions.assignTagToArtUpdateTag({ art, tag }));
+          return of(TagsNgrxActions.assignTagToArtUpdateTag({ art, tag }));
         })
       );
     },
@@ -51,7 +51,7 @@ export class TagEffects {
   assignTagToArtUpdateTag$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(TagActions.assignTagToArtUpdateTag),
+        ofType(TagsNgrxActions.assignTagToArtUpdateTag),
         switchMap(({ art, tag }) => {
           const tagItem = { ...tag };
           delete (tagItem as any)._id;
@@ -60,7 +60,7 @@ export class TagEffects {
             this.dataService.saveDocument(tagItem, Collections.Tags, tagItem.tag_id, 'tag_id')
           ).pipe(
             map((result) => {
-              return TagActions.assignTagToArtUpdateTagSuccess({ tag: tagItem });
+              return TagsNgrxActions.assignTagToArtUpdateTagSuccess({ tag: tagItem });
             }),
             catchError((error) =>
               of(CoreDataActions.generalFailure({ errorMessage: error.message }))
@@ -74,7 +74,7 @@ export class TagEffects {
 
   assignTagToArtUpdateTagSuccess$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(TagActions.assignTagToArtUpdateTagSuccess),
+      ofType(TagsNgrxActions.assignTagToArtUpdateTagSuccess),
       delay(2000),
       map(() => {
         return CoreDataActions.clearOpStatus();
@@ -85,7 +85,7 @@ export class TagEffects {
   removeTagFromArt$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(TagActions.removeTagFromArt),
+        ofType(TagsNgrxActions.removeTagFromArt),
         switchMap(({ art, tag }) => {
           const artist = art.artist;
           const job = art.job;
@@ -100,7 +100,7 @@ export class TagEffects {
             map(() => {
               // add artist and job info back into art item before passing it along for store insertion
               const art = { ...artItem, artist, job };
-              return TagActions.removeTagFromArtSuccess({ art, tag });
+              return TagsNgrxActions.removeTagFromArtSuccess({ art, tag });
             }),
             catchError((error) =>
               of(CoreDataActions.generalFailure({ errorMessage: error.message }))
@@ -115,9 +115,9 @@ export class TagEffects {
   removeTagFromArtSuccess$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(TagActions.removeTagFromArtSuccess),
+        ofType(TagsNgrxActions.removeTagFromArtSuccess),
         switchMap(({ art, tag }) => {
-          return of(TagActions.removeTagFromArtUpdateTag({ art, tag }));
+          return of(TagsNgrxActions.removeTagFromArtUpdateTag({ art, tag }));
         })
       );
     },
@@ -127,7 +127,7 @@ export class TagEffects {
   removeTagFromArtUpdateTag$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(TagActions.removeTagFromArtUpdateTag),
+        ofType(TagsNgrxActions.removeTagFromArtUpdateTag),
         switchMap(({ art, tag }) => {
           const tagItem = { ...tag };
           delete (tagItem as any)._id;
@@ -136,7 +136,7 @@ export class TagEffects {
             this.dataService.saveDocument(tagItem, Collections.Tags, tagItem.tag_id, 'tag_id')
           ).pipe(
             map((result) => {
-              return TagActions.removeTagFromArtUpdateTagSuccess({ art, tag: tagItem });
+              return TagsNgrxActions.removeTagFromArtUpdateTagSuccess({ art, tag: tagItem });
             }),
             catchError((error) =>
               of(CoreDataActions.generalFailure({ errorMessage: error.message }))
@@ -150,7 +150,7 @@ export class TagEffects {
 
   removeTagFromArtUpdateTagSuccess$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(TagActions.removeTagFromArtUpdateTagSuccess),
+      ofType(TagsNgrxActions.removeTagFromArtUpdateTagSuccess),
       map(() => {
         return CoreDataActions.loadAllData({ refresh: true });
       })
@@ -160,7 +160,7 @@ export class TagEffects {
   assignTagToArtist$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(TagActions.assignTagToArtist),
+        ofType(TagsNgrxActions.assignTagToArtist),
         switchMap(({ artist, tag }) => {
           const artistItem = { ...artist };
           delete (artistItem as any)._id;
@@ -177,7 +177,7 @@ export class TagEffects {
             )
           ).pipe(
             map((result) => {
-              return TagActions.assignTagToArtistSuccess({ artist: artistItem, tag });
+              return TagsNgrxActions.assignTagToArtistSuccess({ artist: artistItem, tag });
             }),
             catchError((error) =>
               of(CoreDataActions.generalFailure({ errorMessage: error.message }))
@@ -192,9 +192,9 @@ export class TagEffects {
   assignTagToArtistSuccess$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(TagActions.assignTagToArtistSuccess),
+        ofType(TagsNgrxActions.assignTagToArtistSuccess),
         switchMap(({ artist, tag }) => {
-          return of(TagActions.assignTagToArtistUpdateTag({ artist, tag }));
+          return of(TagsNgrxActions.assignTagToArtistUpdateTag({ artist, tag }));
         })
       );
     },
@@ -204,7 +204,7 @@ export class TagEffects {
   assignTagToArtistUpdateTag$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(TagActions.assignTagToArtistUpdateTag),
+        ofType(TagsNgrxActions.assignTagToArtistUpdateTag),
         switchMap(({ artist, tag }) => {
           const tagItem = { ...tag };
           delete (tagItem as any)._id;
@@ -216,7 +216,7 @@ export class TagEffects {
             this.dataService.saveDocument(tagItem, Collections.Tags, tagItem.tag_id, 'tag_id')
           ).pipe(
             map((result) => {
-              return TagActions.assignTagToArtistUpdateTagSuccess({ tag: tagItem });
+              return TagsNgrxActions.assignTagToArtistUpdateTagSuccess({ tag: tagItem });
             }),
             catchError((error) =>
               of(CoreDataActions.generalFailure({ errorMessage: error.message }))
@@ -230,7 +230,7 @@ export class TagEffects {
 
   assignTagToArtistUpdateTagSuccess$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(TagActions.assignTagToArtistUpdateTagSuccess),
+      ofType(TagsNgrxActions.assignTagToArtistUpdateTagSuccess),
       delay(2000),
       map(() => {
         return CoreDataActions.clearOpStatus();
@@ -241,7 +241,7 @@ export class TagEffects {
   removeTagFromArtist$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(TagActions.removeTagFromArtist),
+        ofType(TagsNgrxActions.removeTagFromArtist),
         switchMap(({ artist, tag }) => {
           const artistItem = { ...artist };
           delete (artistItem as any)._id;
@@ -254,7 +254,7 @@ export class TagEffects {
               'artist_id'
             )
           ).pipe(
-            map(() => TagActions.removeTagFromArtistSuccess({ artist, tag })),
+            map(() => TagsNgrxActions.removeTagFromArtistSuccess({ artist, tag })),
             catchError((error) =>
               of(CoreDataActions.generalFailure({ errorMessage: error.message }))
             )
@@ -268,9 +268,9 @@ export class TagEffects {
   removeTagFromArtistSuccess$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(TagActions.removeTagFromArtistSuccess),
+        ofType(TagsNgrxActions.removeTagFromArtistSuccess),
         switchMap(({ artist, tag }) => {
-          return of(TagActions.removeTagFromArtistUpdateTag({ artist, tag }));
+          return of(TagsNgrxActions.removeTagFromArtistUpdateTag({ artist, tag }));
         })
       );
     },
@@ -280,7 +280,7 @@ export class TagEffects {
   removeTagFromArtistUpdateTag$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(TagActions.removeTagFromArtistUpdateTag),
+        ofType(TagsNgrxActions.removeTagFromArtistUpdateTag),
         switchMap(({ artist, tag }) => {
           const tagItem = { ...tag };
           delete (tagItem as any)._id;
@@ -291,7 +291,7 @@ export class TagEffects {
             this.dataService.saveDocument(tagItem, Collections.Tags, tagItem.tag_id, 'tag_id')
           ).pipe(
             map((result) => {
-              return TagActions.removeTagFromArtistUpdateTagSuccess({ artist, tag: tagItem });
+              return TagsNgrxActions.removeTagFromArtistUpdateTagSuccess({ artist, tag: tagItem });
             }),
             catchError((error) =>
               of(CoreDataActions.generalFailure({ errorMessage: error.message }))
@@ -305,7 +305,7 @@ export class TagEffects {
 
   removeTagFromArtistUpdateTagSuccess$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(TagActions.removeTagFromArtistUpdateTagSuccess),
+      ofType(TagsNgrxActions.removeTagFromArtistUpdateTagSuccess),
       map(() => {
         return CoreDataActions.loadAllData({ refresh: true });
       })

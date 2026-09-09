@@ -5,7 +5,6 @@ import { CoreDataActions } from './core.actions';
 import * as Const from '../../constants';
 import { ArtActions } from '../../features/art-store-page/+state/art-store.actions';
 import { ArtistActions } from '../../features/artists-ngrx/+state/artists-ngrx.actions';
-import { TagActions } from '../../features/admin/tags/+state/tags.actions';
 import { TagsNgrxActions } from '../../features/admin/tags-ngrx/+state/tags-ngrx.actions';
 
 export const artRentalReducer = createReducer(
@@ -222,13 +221,13 @@ export const artRentalReducer = createReducer(
   /*                         */
   /***************************/
 
-  on(TagActions.assignTagToArt, (state) => ({
+  on(TagsNgrxActions.assignTagToArt, (state) => ({
     ...state,
     loading: true,
     opStatus: null,
     error: null
   })),
-  on(TagActions.assignTagToArtSuccess, (state, { art, tag }) => ({
+  on(TagsNgrxActions.assignTagToArtSuccess, (state, { art, tag }) => ({
     ...state,
     data: {
       ...state.data,
@@ -238,13 +237,13 @@ export const artRentalReducer = createReducer(
     opStatus: Const.SUCCESS,
     error: null
   })),
-  on(TagActions.assignTagToArtUpdateTag, (state, { art, tag }) => ({
+  on(TagsNgrxActions.assignTagToArtUpdateTag, (state, { art, tag }) => ({
     ...state,
     loading: true,
     opStatus: null,
     error: null
   })),
-  on(TagActions.assignTagToArtUpdateTagSuccess, (state, { tag }) => ({
+  on(TagsNgrxActions.assignTagToArtUpdateTagSuccess, (state, { tag }) => ({
     ...state,
     data: {
       ...state.data,
@@ -255,12 +254,12 @@ export const artRentalReducer = createReducer(
     error: null
   })),
 
-  on(TagActions.removeTagFromArt, (state) => ({
+  on(TagsNgrxActions.removeTagFromArt, (state) => ({
     ...state,
     loading: true,
     error: null
   })),
-  on(TagActions.removeTagFromArtSuccess, (state, { art, tag }) => ({
+  on(TagsNgrxActions.removeTagFromArtSuccess, (state, { art, tag }) => ({
     ...state,
     data: {
       ...state.data,
@@ -270,12 +269,12 @@ export const artRentalReducer = createReducer(
     opStatus: Const.SUCCESS,
     error: null
   })),
-  on(TagActions.removeTagFromArtUpdateTag, (state, { art, tag }) => ({
+  on(TagsNgrxActions.removeTagFromArtUpdateTag, (state, { art, tag }) => ({
     ...state,
     loading: true,
     error: null
   })),
-  on(TagActions.removeTagFromArtUpdateTagSuccess, (state, { art, tag }) => ({
+  on(TagsNgrxActions.removeTagFromArtUpdateTagSuccess, (state, { art, tag }) => ({
     ...state,
     data: {
       ...state.data,
@@ -292,13 +291,13 @@ export const artRentalReducer = createReducer(
   /*                            */
   /******************************/
 
-  on(TagActions.assignTagToArtist, (state) => ({
+  on(TagsNgrxActions.assignTagToArtist, (state) => ({
     ...state,
     loading: true,
     opStatus: null,
     error: null
   })),
-  on(TagActions.assignTagToArtistSuccess, (state, { artist, tag }) => ({
+  on(TagsNgrxActions.assignTagToArtistSuccess, (state, { artist, tag }) => ({
     ...state,
     data: {
       ...state.data,
@@ -311,13 +310,13 @@ export const artRentalReducer = createReducer(
     opStatus: Const.SUCCESS,
     error: null
   })),
-  on(TagActions.assignTagToArtistUpdateTag, (state, { artist, tag }) => ({
+  on(TagsNgrxActions.assignTagToArtistUpdateTag, (state, { artist, tag }) => ({
     ...state,
     loading: true,
     opStatus: null,
     error: null
   })),
-  on(TagActions.assignTagToArtistUpdateTagSuccess, (state, { tag }) => ({
+  on(TagsNgrxActions.assignTagToArtistUpdateTagSuccess, (state, { tag }) => ({
     ...state,
     data: {
       ...state.data,
@@ -328,12 +327,12 @@ export const artRentalReducer = createReducer(
     error: null
   })),
 
-  on(TagActions.removeTagFromArtist, (state) => ({
+  on(TagsNgrxActions.removeTagFromArtist, (state) => ({
     ...state,
     loading: true,
     error: null
   })),
-  on(TagActions.removeTagFromArtistSuccess, (state, { artist, tag }) => ({
+  on(TagsNgrxActions.removeTagFromArtistSuccess, (state, { artist, tag }) => ({
     ...state,
     data: {
       ...state.data,
@@ -346,12 +345,12 @@ export const artRentalReducer = createReducer(
     opStatus: Const.SUCCESS,
     error: null
   })),
-  on(TagActions.removeTagFromArtistUpdateTag, (state, { artist, tag }) => ({
+  on(TagsNgrxActions.removeTagFromArtistUpdateTag, (state, { artist, tag }) => ({
     ...state,
     loading: true,
     error: null
   })),
-  on(TagActions.removeTagFromArtistUpdateTagSuccess, (state, { artist, tag }) => ({
+  on(TagsNgrxActions.removeTagFromArtistUpdateTagSuccess, (state, { artist, tag }) => ({
     ...state,
     data: {
       ...state.data,

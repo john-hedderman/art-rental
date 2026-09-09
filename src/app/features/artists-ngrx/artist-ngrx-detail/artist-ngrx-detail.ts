@@ -21,7 +21,7 @@ import { selectArt, selectArtists, selectTags } from '../../../core/+state/core.
 import { selectArtistById } from '../+state/artists-ngrx.selectors';
 import { CoreDataActions } from '../../../core/+state/core.actions';
 import { ArtistActions } from '../+state/artists-ngrx.actions';
-import { TagActions } from '../../admin/tags/+state/tags.actions';
+import { TagsNgrxActions } from '../../admin/tags-ngrx/+state/tags-ngrx.actions';
 
 @Component({
   imports: [PageHeader, Tags, AsyncPipe, ArtThumbnailCard, PageFooter],
@@ -120,7 +120,9 @@ export class ArtistNgrxDetail extends DetailBase implements OnInit, OnDestroy {
         if (artistItem?.tag_ids.indexOf(tagId) === -1) {
           return;
         }
-        this.store.dispatch(TagActions.removeTagFromArtist({ artist: artistItem, tag: tagItem }));
+        this.store.dispatch(
+          TagsNgrxActions.removeTagFromArtist({ artist: artistItem, tag: tagItem })
+        );
       });
   }
 
@@ -138,7 +140,7 @@ export class ArtistNgrxDetail extends DetailBase implements OnInit, OnDestroy {
         this.tags = tags;
         const tag = this.tags.find((tagItem) => tagItem.tag_id === tagId)!;
         this.store.dispatch(
-          TagActions.assignTagToArtist({
+          TagsNgrxActions.assignTagToArtist({
             artist: this.artist,
             tag
           })

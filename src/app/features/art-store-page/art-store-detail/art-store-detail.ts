@@ -21,7 +21,7 @@ import { DetailBase } from '../../../shared/components/base/detail-base/detail-b
 import { selectArt, selectJobs, selectTags } from '../../../core/+state/core.selectors';
 import { CoreDataActions } from '../../../core/+state/core.actions';
 import { ArtActions } from '../+state/art-store.actions';
-import { TagActions } from '../../admin/tags/+state/tags.actions';
+import { TagsNgrxActions } from '../../admin/tags-ngrx/+state/tags-ngrx.actions';
 
 @Component({
   selector: 'app-art-store-detail',
@@ -115,7 +115,7 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
         if (art?.tag_ids.indexOf(tagId) === -1) {
           return;
         }
-        this.store.dispatch(TagActions.removeTagFromArt({ art: artItem, tag: tagItem }));
+        this.store.dispatch(TagsNgrxActions.removeTagFromArt({ art: artItem, tag: tagItem }));
       });
   }
 
@@ -133,7 +133,7 @@ export class ArtStoreDetail extends DetailBase implements OnInit, OnDestroy {
         this.tags = tags;
         const tag = this.tags.find((tagItem) => tagItem.tag_id === tagId)!;
         this.store.dispatch(
-          TagActions.assignTagToArt({
+          TagsNgrxActions.assignTagToArt({
             art: this.art,
             tag
           })
