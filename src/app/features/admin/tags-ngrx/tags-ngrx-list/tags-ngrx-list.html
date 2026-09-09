@@ -1,0 +1,65 @@
+<div class="d-flex flex-column h-100">
+  <app-page-header [headerData]="headerData.data"></app-page-header>
+  <div class="container-fluid ar-flex-container overflow-y-auto">
+    <div class="ar-page-content pt-3">
+      <div id="tag-search-container" class="d-flex">
+        <input
+          type="text"
+          #tagSearch
+          class="form-control me-2"
+          placeholder="Enter a new tag name..."
+          (focus)="onFocusTagInput()"
+        />
+        <button type="button" class="btn btn-sm btn-success" (click)="onClickAdd()">Add</button>
+      </div>
+      <div class="mb-3">
+        <div id="tag-in-system" class="invalid-feedback">
+          This tag is already in the system. Please enter another name.
+        </div>
+      </div>
+      @if (tags$ | async; as tags) {
+        <p class="mb-4"></p>
+        @for (tag of tags; track $index) {
+          <app-tag-pill
+            action="delete"
+            [tag]="tag"
+            (onDeleteClicked)="onClickDelete($event)"
+          ></app-tag-pill>
+        }
+      }
+    </div>
+  </div>
+  <app-page-footer [footerData]="footerData"></app-page-footer>
+</div>
+<div
+  class="modal"
+  id="confirmModal"
+  tabindex="-1"
+  aria-labelledby="confirmModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmModalLabel">Are you sure?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        This tag is in use. If you delete it, it will be removed from any artwork and artists to
+        which it now applies. Are you sure you want to delete it from the system?
+      </div>
+      <div class="modal-footer">
+        <button
+          id="confirmedDeleteBtn"
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          (click)="onClickDelete($event, true)"
+        >
+          Yes, delete
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

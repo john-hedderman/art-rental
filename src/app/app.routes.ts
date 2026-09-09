@@ -38,6 +38,8 @@ import { TagList } from './features/admin/tags/tag-list/tag-list';
 import { AddTag } from './features/admin/tags/add-tag/add-tag';
 import { StorePage } from './features/store-page/store-page';
 import { ArtistNgrxDetail } from './features/artists-ngrx/artist-ngrx-detail/artist-ngrx-detail';
+import { TagsNgrxPage } from './features/admin/tags-ngrx/tags-ngrx-page';
+import { TagsNgrxList } from './features/admin/tags-ngrx/tags-ngrx-list/tags-ngrx-list';
 
 export const routes: Routes = [
   {
@@ -51,6 +53,21 @@ export const routes: Routes = [
       {
         path: 'add',
         component: AddTag
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
+    path: 'tags-ngrx',
+    component: TagsNgrxPage,
+    children: [
+      {
+        path: 'list',
+        component: TagsNgrxList
       },
       {
         path: '',

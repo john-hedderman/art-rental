@@ -5,6 +5,7 @@ import { CoreDataActions, ArtActions } from './core.actions';
 import * as Const from '../../constants';
 import { ArtistActions } from '../../features/artists-ngrx/+state/artists-ngrx.actions';
 import { TagActions } from '../../features/admin/tags/+state/tags.actions';
+import { TagsNgrxActions } from '../../features/admin/tags-ngrx/+state/tags-ngrx.actions';
 
 export const artRentalReducer = createReducer(
   initialState,
@@ -142,6 +143,72 @@ export const artRentalReducer = createReducer(
     data: {
       ...state.data,
       jobs: [...state.data.jobs.filter((job) => job.job_id !== newJobItem.job_id), newJobItem]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+
+  /*********************/
+  /*                   */
+  /*  ADD/DELETE TAGS  */
+  /*                   */
+  /*********************/
+
+  on(TagsNgrxActions.addTag, (state) => ({
+    ...state,
+    loading: true,
+    opStatus: null,
+    error: null
+  })),
+  on(TagsNgrxActions.addTagSuccess, (state, { tag }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      tags: [...state.data.tags, tag]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+
+  on(TagsNgrxActions.deleteTag, (state) => ({
+    ...state,
+    loading: true,
+    opStatus: null,
+    error: null
+  })),
+  on(TagsNgrxActions.deleteTagSuccess, (state, { tag }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      tags: [...state.data.tags.filter((tagItem) => tagItem.tag_id !== tag.tag_id)]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+  on(TagsNgrxActions.deleteTagUpdateArtSuccess, (state, { tag, art }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      art: state.data.art.map((artItem) => {
+        const match = art.find((pieceOfArt) => pieceOfArt.art_id === artItem.art_id);
+        return match ? match : artItem;
+      })
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+  on(TagsNgrxActions.deleteTagUpdateArtistsSuccess, (state, { tag, artists }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      artists: state.data.artists.map((artistItem) => {
+        const match = artists.find((artist) => artist.artist_id === artistItem.artist_id);
+        return match ? match : artistItem;
+      })
     },
     loading: false,
     opStatus: Const.SUCCESS,

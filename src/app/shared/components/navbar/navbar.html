@@ -41,6 +41,14 @@
               (click)="onClickNavLink($event)"
               >Tags</a
             >
+            @if (isNgrxFeatureActive) {
+              <a
+                class="nav-link ar-nav-link ar-drop-link"
+                routerLink="/tags-ngrx"
+                (click)="onClickNavLink($event)"
+                >TagsNgrx</a
+              >
+            }
           </ul>
         </li>
         <li class="nav-item">
