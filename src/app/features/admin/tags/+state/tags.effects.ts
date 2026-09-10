@@ -6,6 +6,7 @@ import { CoreDataActions } from '../../../../core/+state/core.actions';
 import { DataService } from '../../../../service/data-service';
 import { Collections } from '../../../../shared/enums/collections';
 import { TagsNgrxActions } from '../../tags-ngrx/+state/tags-ngrx.actions';
+import * as Const from '../../../../constants';
 
 @Injectable()
 export class TagEffects {
@@ -245,7 +246,7 @@ export class TagEffects {
               'artist_id'
             )
           ).pipe(
-            map(() => TagsNgrxActions.removeTagFromArtistSuccess({ artist, tag })),
+            map(() => TagsNgrxActions.removeTagFromArtistSuccess({ artist: artistItem, tag })),
             catchError((error) =>
               of(CoreDataActions.generalFailure({ errorMessage: error.message }))
             )
@@ -293,4 +294,12 @@ export class TagEffects {
     },
     { functional: true }
   );
+
+  removeTagFromArtistUpdateTagSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TagsNgrxActions.removeTagFromArtistUpdateTagSuccess),
+      delay(Const.STD_DELAY),
+      map(() => CoreDataActions.clearOpStatus())
+    );
+  });
 }
