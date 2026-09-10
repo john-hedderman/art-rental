@@ -6,7 +6,7 @@ import { catchError, delay, exhaustMap, filter, map, of, take } from 'rxjs';
 import { CoreDataActions } from './core.actions';
 import { AppData } from './core-state';
 import { DataService } from '../../service/data-service';
-import { IArt, IArtist, IClient, IJob, ISite } from '../../model/models';
+import { IArt, IArtist, IClient, IContact, IJob, ISite } from '../../model/models';
 import * as Const from '../../constants';
 import { selectLoaded } from './core.selectors';
 import { Store } from '@ngrx/store';
@@ -60,9 +60,8 @@ export class CoreEffects {
     const allData = { ...data };
     enhancedData.art = this.enhanceArtData(allData);
     enhancedData.artists = artists;
-    // enhancedData.artists = this.enhanceArtistsData(allData);
-    enhancedData.clients = clients;
-    enhancedData.contacts = contacts;
+    enhancedData.clients = this.enhanceClientData(allData);
+    enhancedData.contacts = this.enhanceContactData(allData);
     enhancedData.jobs = this.enhanceJobData(allData);
     enhancedData.sites = sites;
     enhancedData.tags = tags;
@@ -94,13 +93,30 @@ export class CoreEffects {
       });
   }
 
-  // enhanceArtistsData(allData: AppData): IArtist[] {
-  //   const { art, artists, clients, contacts, jobs, sites, tags } = allData;
-  //   return artists
-  //   .map((artist: IArtist) => {
-  //     const artItems = art.filter((artItem) => artItem.artist_id === artist.artist_id);
-  //   })
-  // }
+  enhanceClientData(allData: AppData): IClient[] {
+    const { art, artists, clients, contacts, jobs, sites, tags } = allData;
+    return clients.map((clientItem: IClient) => {
+      const contactItems = contacts.filter((contact) => contact.client_id === clientItem.client_id);
+      clientItem = contactItems.length ? { ...clientItem, contacts: contactItems } : clientItem;
+      const jobItems = jobs.filter((job) => job.client_id === clientItem.client_id);
+      clientItem = jobItems.length ? { ...clientItem, jobs: jobItems } : clientItem;
+      const siteItems = sites.filter((site) => site.client_id === clientItem.client_id);
+      clientItem = siteItems.length ? { ...clientItem, sites: siteItems } : clientItem;
+      return clientItem;
+    });
+  }
+
+  enhanceContactData(allData: AppData): IContact[] {
+    const { art, artists, clients, contacts, jobs, sites, tags } = allData;
+    return contacts.map((contactItem: IContact) => {
+      const clientItems = clients.filter((client) =>
+        client.contact_ids.includes(contactItem.contact_id)
+      );
+      contactItem =
+        clientItems.length === 1 ? { ...contactItem, client: clientItems[0] } : contactItem;
+      return contactItem;
+    });
+  }
 
   enhanceJobData(allData: AppData): IJob[] {
     const { clients, jobs, sites } = allData;

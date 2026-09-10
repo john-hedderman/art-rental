@@ -6,6 +6,10 @@
   .datatable-scroll {
     max-height: 200px !important;
   }
+
+  &.scroll-vertical .datatable-grid {
+    flex: auto !important;
+  }
 }
 
 @media (max-width: 767px) {
