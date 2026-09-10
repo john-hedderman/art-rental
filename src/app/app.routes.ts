@@ -40,6 +40,10 @@ import { StorePage } from './features/store-page/store-page';
 import { ArtistNgrxDetail } from './features/artists-ngrx/artist-ngrx-detail/artist-ngrx-detail';
 import { TagsNgrxPage } from './features/admin/tags-ngrx/tags-ngrx-page';
 import { TagsNgrxList } from './features/admin/tags-ngrx/tags-ngrx-list/tags-ngrx-list';
+import { ClientsNgrxPage } from './features/clients-ngrx/clients-ngrx-page';
+import { ClientNgrxList } from './features/clients-ngrx/client-ngrx-list/client-ngrx-list';
+import { ClientNgrxDetail } from './features/clients-ngrx/client-ngrx-detail/client-ngrx-detail';
+import { AddClientNgrx } from './features/clients-ngrx/add-client-ngrx/add-client-ngrx';
 
 export const routes: Routes = [
   {
@@ -222,6 +226,29 @@ export const routes: Routes = [
       {
         path: ':id/edit',
         component: AddClient
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
+    path: 'clients-ngrx',
+    component: ClientsNgrxPage,
+    children: [
+      {
+        path: 'list',
+        component: ClientNgrxList
+      },
+      {
+        path: 'add',
+        component: AddClientNgrx
+      },
+      {
+        path: ':id',
+        component: ClientNgrxDetail
       },
       {
         path: '',

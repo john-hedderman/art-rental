@@ -105,6 +105,14 @@
               (click)="onClickNavLink($event)"
               >Clients</a
             >
+            @if (isNgrxFeatureActive) {
+              <a
+                class="nav-link ar-nav-link ar-drop-link"
+                routerLink="/clients-ngrx"
+                (click)="onClickNavLink($event)"
+                >ClientsNgrx</a
+              >
+            }
             <a
               class="nav-link ar-nav-link ar-drop-link"
               routerLink="/contacts"

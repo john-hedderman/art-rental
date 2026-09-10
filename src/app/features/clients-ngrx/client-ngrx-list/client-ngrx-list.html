@@ -1,0 +1,60 @@
+<div class="d-flex flex-column h-100">
+  <app-page-header [headerData]="headerData.data"></app-page-header>
+  <div class="container-fluid gx-0 ar-flex-container overflow-y-auto">
+    <div class="row ar-page-content mx-0">
+      <ngx-datatable
+        #clientsTable
+        class="material h-100 px-0"
+        [rows]="rows"
+        [columns]="columns"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [rowHeight]="50"
+        [scrollbarV]="true"
+        (activate)="onActivate($event)"
+        [messages]="{ emptyMessage: 'No clients' }"
+      >
+        <ngx-datatable-row-detail [rowHeight]="50">
+          <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+            @if (row.city && row.state) {
+              <div class="row-detail-container" appRowDetail>
+                <div>{{ row.city }}, {{ row.state }} &mdash; {{ row.industry }}</div>
+              </div>
+            }
+          </ng-template>
+        </ngx-datatable-row-detail>
+      </ngx-datatable>
+    </div>
+  </div>
+  <app-page-footer [footerData]="footerData"></app-page-footer>
+</div>
+
+<ng-template #arrowTemplate let-row="row" let-expanded="expanded">
+  <a
+    [class.bi-chevron-right]="!expanded"
+    [class.bi-chevron-down]="expanded"
+    title="Expand/Collapse Row"
+    (click)="toggleExpandRow(row)"
+    class="desktop-hidden bi"
+  ></a>
+</ng-template>
+
+<ng-template #locationHeaderTemplate let-column="column">
+  <span class="mobile-hidden">{{ column.name }}</span>
+</ng-template>
+
+<ng-template #locationTemplate let-value="value" let-row="row">
+  <span class="mobile-hidden">
+    @if (row.city && row.state) {
+      {{ row.city }}, {{ row.state }}
+    }
+  </span>
+</ng-template>
+
+<ng-template #businessHeaderTemplate let-column="column">
+  <span class="mobile-hidden">{{ column.name }}</span>
+</ng-template>
+
+<ng-template #businessTemplate let-value="value">
+  <span class="mobile-hidden">{{ value }}</span>
+</ng-template>
