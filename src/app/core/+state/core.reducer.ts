@@ -6,6 +6,7 @@ import * as Const from '../../constants';
 import { ArtActions } from '../../features/art-store-page/+state/art-store.actions';
 import { ArtistActions } from '../../features/artists-ngrx/+state/artists-ngrx.actions';
 import { TagsNgrxActions } from '../../features/admin/tags-ngrx/+state/tags-ngrx.actions';
+import { ClientsNgrxActions } from '../../features/clients-ngrx/+state/clients-ngrx.actions';
 
 export const artRentalReducer = createReducer(
   initialState,
@@ -69,37 +70,6 @@ export const artRentalReducer = createReducer(
     opStatus: null
   })),
 
-  /****************/
-  /*              */
-  /*  DELETE ART  */
-  /*              */
-  /****************/
-
-  on(ArtActions.deleteArt, (state) => ({
-    ...state,
-    loading: true,
-    opStatus: null,
-    error: null
-  })),
-  on(ArtActions.deleteArtSuccess, (state, { job, artId, result }) => ({
-    ...state,
-    data: {
-      ...state.data,
-      art: state.data.art.filter((artItem) => artItem.art_id !== artId)
-    },
-    opStatus: result,
-    error: null
-  })),
-  on(ArtActions.deleteArtUpdateJobSuccess, (state, { job, result }) => ({
-    ...state,
-    data: {
-      ...state.data,
-      jobs: [...state.data.jobs.filter((jobItem) => jobItem.job_id !== job.job_id), job]
-    },
-    opStatus: Const.SUCCESS,
-    error: null
-  })),
-
   /******************/
   /*                */
   /*  ADD/EDIT ART  */
@@ -143,6 +113,134 @@ export const artRentalReducer = createReducer(
     data: {
       ...state.data,
       jobs: [...state.data.jobs.filter((job) => job.job_id !== newJobItem.job_id), newJobItem]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+
+  /****************/
+  /*              */
+  /*  DELETE ART  */
+  /*              */
+  /****************/
+
+  on(ArtActions.deleteArt, (state) => ({
+    ...state,
+    loading: true,
+    opStatus: null,
+    error: null
+  })),
+  on(ArtActions.deleteArtSuccess, (state, { job, artId, result }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      art: state.data.art.filter((artItem) => artItem.art_id !== artId)
+    },
+    opStatus: result,
+    error: null
+  })),
+  on(ArtActions.deleteArtUpdateJobSuccess, (state, { job, result }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      jobs: [...state.data.jobs.filter((jobItem) => jobItem.job_id !== job.job_id), job]
+    },
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+
+  /*********************/
+  /*                   */
+  /*  ADD/EDIT ARTIST  */
+  /*                   */
+  /*********************/
+
+  on(ArtistActions.addOrEditArtist, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  })),
+  on(ArtistActions.addArtistSuccess, (state, { artist }) => ({
+    ...state,
+    data: { ...state.data, artists: [...state.data.artists, artist] },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+  on(ArtistActions.editArtistSuccess, (state, { artist }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      artists: [
+        ...state.data.artists.filter((artistItem) => artistItem.artist_id !== artist.artist_id),
+        artist
+      ]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+
+  /*******************/
+  /*                 */
+  /*  DELETE ARTIST  */
+  /*                 */
+  /*******************/
+
+  on(ArtistActions.deleteArtist, (state) => ({
+    ...state,
+    loading: true,
+    opStatus: null,
+    error: null
+  })),
+  on(ArtistActions.deleteArtistSuccess, (state, { artist, tags }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      artists: state.data.artists.filter((artistItem) => artistItem.artist_id !== artist.artist_id)
+    },
+    error: null
+  })),
+  on(ArtistActions.deleteArtistUpdateTagsSuccess, (state, { artist, tags }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      tags: [
+        ...state.data.tags.filter((tagItem) => {
+          let result = false;
+          for (const tag of tags) {
+            if (tag.tag_id !== tagItem.tag_id) {
+              result = true;
+              break;
+            }
+          }
+          return result;
+        }),
+        ...tags
+      ]
+    },
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+
+  /*********************/
+  /*                   */
+  /*  ADD/EDIT CLIENT  */
+  /*                   */
+  /*********************/
+
+  on(ClientsNgrxActions.addOrEditClient, (state) => ({
+    ...state,
+    loading: true,
+    opStatus: null,
+    error: null
+  })),
+  on(ClientsNgrxActions.addClientSuccess, (state, { client }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      clients: [...state.data.clients, client]
     },
     loading: false,
     opStatus: Const.SUCCESS,
@@ -357,80 +455,6 @@ export const artRentalReducer = createReducer(
       tags: [...state.data.tags.filter((tagItem) => tagItem.tag_id !== tag.tag_id), tag]
     },
     loading: false,
-    opStatus: Const.SUCCESS,
-    error: null
-  })),
-
-  /*********************/
-  /*                   */
-  /*  ADD/EDIT ARTIST  */
-  /*                   */
-  /*********************/
-
-  on(ArtistActions.addOrEditArtist, (state) => ({
-    ...state,
-    loading: true,
-    error: null
-  })),
-  on(ArtistActions.addArtistSuccess, (state, { artist }) => ({
-    ...state,
-    data: { ...state.data, artists: [...state.data.artists, artist] },
-    loading: false,
-    opStatus: Const.SUCCESS,
-    error: null
-  })),
-  on(ArtistActions.editArtistSuccess, (state, { artist }) => ({
-    ...state,
-    data: {
-      ...state.data,
-      artists: [
-        ...state.data.artists.filter((artistItem) => artistItem.artist_id !== artist.artist_id),
-        artist
-      ]
-    },
-    loading: false,
-    opStatus: Const.SUCCESS,
-    error: null
-  })),
-
-  /*******************/
-  /*                 */
-  /*  DELETE ARTIST  */
-  /*                 */
-  /*******************/
-
-  on(ArtistActions.deleteArtist, (state) => ({
-    ...state,
-    loading: true,
-    opStatus: null,
-    error: null
-  })),
-  on(ArtistActions.deleteArtistSuccess, (state, { artist, tags }) => ({
-    ...state,
-    data: {
-      ...state.data,
-      artists: state.data.artists.filter((artistItem) => artistItem.artist_id !== artist.artist_id)
-    },
-    error: null
-  })),
-  on(ArtistActions.deleteArtistUpdateTagsSuccess, (state, { artist, tags }) => ({
-    ...state,
-    data: {
-      ...state.data,
-      tags: [
-        ...state.data.tags.filter((tagItem) => {
-          let result = false;
-          for (const tag of tags) {
-            if (tag.tag_id !== tagItem.tag_id) {
-              result = true;
-              break;
-            }
-          }
-          return result;
-        }),
-        ...tags
-      ]
-    },
     opStatus: Const.SUCCESS,
     error: null
   }))

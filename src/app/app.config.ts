@@ -19,6 +19,7 @@ import { TagEffects } from './features/admin/tags/+state/tags.effects';
 import { AddArtistEffects } from './features/artists-ngrx/add-artist-ngrx/+state/add-artist-ngrx.effects';
 import { ArtistDetailEffects } from './features/artists-ngrx/+state/artists-ngrx.effects';
 import { TagsNgrxEffects } from './features/admin/tags-ngrx/+state/tags-ngrx.effects';
+import { ClientsNgrxEffects } from './features/clients-ngrx/+state/clients-ngrx.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -35,6 +36,7 @@ export const appConfig: ApplicationConfig = {
       ArtDetailEffects,
       AddArtistEffects,
       ArtistDetailEffects,
+      ClientsNgrxEffects,
       TagEffects,
       TagsNgrxEffects,
       CoreEffects
