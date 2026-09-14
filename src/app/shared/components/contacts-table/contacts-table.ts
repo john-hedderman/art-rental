@@ -1,4 +1,11 @@
-import { Component, Input, OnInit, TemplateRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { IContact } from '../../../model/models';

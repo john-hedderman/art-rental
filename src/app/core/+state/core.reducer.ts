@@ -246,6 +246,25 @@ export const artRentalReducer = createReducer(
     opStatus: Const.SUCCESS,
     error: null
   })),
+  on(
+    ClientsNgrxActions.addOrEditClientUpdateContactsSuccess,
+    (state, { isEdit, client, contacts }) => ({
+      ...state,
+      data: {
+        ...state.data,
+        contacts: [
+          ...state.data.contacts.map((contactItem) => {
+            const match = contacts.find((contact) => contact.contact_id !== contactItem.contact_id);
+            return match ? match : contactItem;
+          }),
+          ...contacts
+        ]
+      },
+      loading: false,
+      opStatus: Const.SUCCESS,
+      error: null
+    })
+  ),
 
   /*********************/
   /*                   */

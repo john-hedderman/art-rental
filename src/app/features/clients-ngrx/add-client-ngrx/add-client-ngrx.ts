@@ -168,24 +168,31 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
 
   async save(): Promise<string> {
     this.saveClient();
-    return '';
-  }
-
-  async saveClient(): Promise<string> {
-    const formData = this.mergeContactIds(this.clientForm.value);
-
-    this.store.dispatch(
-      ClientsNgrxActions.addOrEditClient({
-        isEdit: this.editMode,
-        client: formData
-      })
-    );
-
     // FIXME: dummy return for now - will update all other pages' save() methods to be similar, relying on state.opStatus
     return '';
   }
 
-  mergeContactIds(clientFormData: any): any {
+  async saveClient(): Promise<string> {
+    this.clientForm.get('client_id')?.setValue(this.clientId);
+    for (const control of this.contacts.controls) {
+      control.get('client_id')?.setValue(this.clientId);
+    }
+
+    const client = this.mergeContactIds(this.clientForm.value);
+
+    this.store.dispatch(
+      ClientsNgrxActions.addOrEditClient({
+        isEdit: this.editMode,
+        client,
+        contacts: this.clientForm.value.contacts
+      })
+    );
+
+    // FIXME: dummy return for now - will update all other pages' similar methods, relying on state.opStatus
+    return '';
+  }
+
+  mergeContactIds(clientFormData: any): IClient {
     const { contacts, ...allButContacts } = clientFormData;
     const contact_ids = contacts.map((contact: IContact) => contact.contact_id);
     if (this.editMode) {
@@ -193,41 +200,6 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
     }
     return { ...allButContacts, contact_ids, job_ids: [], site_ids: [] };
   }
-
-  // async deleteContacts() {
-  //   const collection = Collections.Contacts;
-  //   let returnData;
-  //   let result = Const.SUCCESS;
-  //   try {
-  //     returnData = await this.dataService.deleteDocuments(collection, 'client_id', this.clientId);
-  //     if (returnData.message.indexOf('failed') !== -1) {
-  //       result = Const.FAILURE;
-  //     }
-  //   } catch (error) {
-  //     console.error('Error deleting contacts:', error);
-  //     result = Const.FAILURE;
-  //   }
-  //   return result;
-  // }
-
-  // async saveContacts(): Promise<string> {
-  //   const contactsFormData = this.clientForm.value.contacts;
-  //   const collection = Collections.Contacts;
-  //   let result = Const.SUCCESS;
-  //   for (const contactFormData of contactsFormData) {
-  //     contactFormData.client_id = this.clientId;
-  //     try {
-  //       const returnData = await this.dataService.saveDocument(contactFormData, collection);
-  //       if (!returnData.insertedId) {
-  //         result = Const.FAILURE;
-  //       }
-  //     } catch (error) {
-  //       console.error('Error saving contact:', error);
-  //       result = Const.FAILURE;
-  //     }
-  //   }
-  //   return result;
-  // }
 
   constructor() {
     super();

@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
-import { delay, map, Observable, Subject, take, takeUntil } from 'rxjs';
+import { map, Observable, Subject, takeUntil } from 'rxjs';
 import { TableColumn } from '@swimlane/ngx-datatable';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -106,7 +106,8 @@ export class ClientNgrxDetail extends DetailBase implements OnInit, OnDestroy {
   }
 
   setClientId() {
-    this.clientId = +(this.route.snapshot.paramMap.get('id') || 0);
+    const clientId = this.route.snapshot.paramMap.get('id');
+    this.clientId = clientId ? +clientId : 0;
   }
 
   constructor() {

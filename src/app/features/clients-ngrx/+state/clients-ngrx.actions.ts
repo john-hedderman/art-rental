@@ -7,11 +7,17 @@ export const ClientsNgrxActions = createActionGroup({
     'Add Or Edit Client': props<{
       isEdit: boolean;
       client: IClient;
+      contacts: IContact[];
     }>(),
-    'Add Client Success': props<{ client: IClient }>(),
-    'Edit Client Success': props<{ client: IClient }>(),
-    'Add Or Edit Client Update Contacts': props<{ client: IClient; contacts: IContact[] }>(),
+    'Add Client Success': props<{ isEdit: boolean; client: IClient; contacts: IContact[] }>(),
+    'Edit Client Success': props<{ isEdit: boolean; client: IClient; contacts: IContact[] }>(),
+    'Add Or Edit Client Update Contacts': props<{
+      isEdit: boolean;
+      client: IClient;
+      contacts: IContact[];
+    }>(),
     'Add Or Edit Client Update Contacts Success': props<{
+      isEdit: boolean;
       client: IClient;
       contacts: IContact[];
     }>(),
