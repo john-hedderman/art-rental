@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   AbstractControl,
@@ -16,10 +16,12 @@ import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { SaveButton } from '../../../shared/buttons/save-button';
 import { ResetButton } from '../../../shared/buttons/reset-button';
 import { CancelButton } from '../../../shared/buttons/cancel-button';
-import { IClient, IContact } from '../../../model/models';
-import { Collections } from '../../../shared/enums/collections';
-import { environment } from '../../../../environments/environment';
+import { IClient } from '../../../model/models';
 import { ClientsNgrxActions } from '../+state/clients-ngrx.actions';
+import { Subject, takeUntil, withLatestFrom } from 'rxjs';
+import { selectClientById } from '../+state/clients-ngrx.selectors';
+import { CoreDataActions } from '../../../core/+state/core.actions';
+import { selectContactsByClientId } from '../../contacts-ngrx/+state/contacts-ngrx.selectors';
 
 @Component({
   imports: [PageHeader, ReactiveFormsModule, PageFooter],
@@ -45,19 +47,16 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
   headerData = new HeaderActions('client-add', 'Add Client', [], [this.clientListLink.data]);
   footerData = new FooterActions([new SaveButton(), new ResetButton(), new CancelButton()]);
 
+  override submitted = false;
+  override dbData: IClient = {} as IClient;
+  override editMode = false;
+  override saveStatus = '';
+  override populateData(): void {}
+  override resetForm(): void {}
+
   clientForm!: FormGroup;
-  submitted = false;
-
   clientId!: number;
-
-  dbData: IClient = {} as IClient;
-  contactsDBData: IContact[] = [];
-
-  editMode = false;
-
-  saveStatus = '';
-
-  contactsTimeoutID = 0;
+  destroy$ = new Subject<void>();
 
   async onSubmit(): Promise<void> {
     this.submitForm(this.clientForm, ['clients', 'contacts'], 'client');
@@ -90,115 +89,75 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
   }
 
   onClickReset() {
-    this.resetForm();
-  }
-
-  resetForm() {
     this.submitted = false;
     if (this.editMode) {
-      this.populateForm<IClient>(Collections.Clients, 'client_id', this.clientId);
+      this.setForm();
     } else {
-      this.clearForm();
+      this.clientForm.reset();
       this.contacts.clear();
     }
   }
 
-  clearForm() {
-    this.clientForm.reset();
-  }
-
-  populateData() {
-    // this also effectively touches the form fields, so the prepopulated fields that
-    // the user has never touched can be considered valid, letting the form submission complete
-    this.clientForm.get('client_id')?.setValue(this.dbData.client_id);
-    this.clientForm.get('job_ids')?.setValue(this.dbData.job_ids);
-    this.clientForm.get('site_ids')?.setValue(this.dbData.site_ids);
-    this.clientForm.get('name')?.setValue(this.dbData.name);
-    this.clientForm.get('address1')?.setValue(this.dbData.address1);
-    this.clientForm.get('address2')?.setValue(this.dbData.address2);
-    this.clientForm.get('city')?.setValue(this.dbData.city);
-    this.clientForm.get('state')?.setValue(this.dbData.state);
-    this.clientForm.get('zip_code')?.setValue(this.dbData.zip_code);
-    this.clientForm.get('industry')?.setValue(this.dbData.industry);
-
-    this.populateContactsData();
-  }
-
-  populateContactData(contact_id: number) {
-    this.http
-      .get<IContact[]>(`${environment.apiUrl}/data/contacts/${contact_id}?recordId=contact_id`)
-      .subscribe((contacts) => {
-        if (contacts && contacts.length === 1) {
-          const contactDBData = contacts[0];
-          if (contactDBData) {
-            this.contactsDBData.push(contactDBData);
-            const contactControl = this.contacts.controls.find(
-              (control) => control.value.contact_id === contactDBData.contact_id
-            );
-            if (contactControl) {
-              contactControl.get('first_name')?.setValue(contactDBData.first_name);
-              contactControl.get('last_name')?.setValue(contactDBData.last_name);
-              contactControl.get('phone')?.setValue(contactDBData.phone);
-              contactControl.get('title')?.setValue(contactDBData.title);
-              contactControl.get('email')?.setValue(contactDBData.email);
-              contactControl.get('client_id')?.setValue(contactDBData.client_id);
-            }
+  setForm() {
+    this.store
+      .select(selectClientById(this.clientId))
+      .pipe(
+        takeUntil(this.destroy$),
+        withLatestFrom(this.store.select(selectContactsByClientId(this.clientId)))
+      )
+      .subscribe(([storeClientData, storeContactsData]) => {
+        if (storeClientData) {
+          this.clientForm.reset();
+          while (this.contacts.length) {
+            this.removeContact(0);
           }
+          const contact_ids = storeContactsData.map((contact) => contact.contact_id);
+          for (const contact_id of contact_ids) {
+            this.addContact(contact_id);
+          }
+          const newClientFormData = { ...storeClientData, contacts: [...storeContactsData] };
+          this.clientForm.reset(newClientFormData);
         }
       });
   }
 
-  populateContactsData() {
-    this.contacts.clear();
-    const contact_ids = this.dbData.contact_ids;
-    this.contactsTimeoutID = setTimeout(() => {
-      for (const contact_id of contact_ids) {
-        this.addContact(contact_id);
-        this.populateContactData(contact_id);
-      }
-    }, 100);
-  }
-
-  preSave() {
+  override preSave(): void {
     this.disableSaveBtn();
     const clientId = this.route.snapshot.paramMap.get('id');
     this.clientId = clientId ? +clientId : Date.now();
     this.clientForm.value.client_id = this.clientId;
   }
 
-  async save(): Promise<string> {
+  override async save(): Promise<string> {
+    this.submitted = false;
     this.saveClient();
     // FIXME: dummy return for now - will update all other pages' save() methods to be similar, relying on state.opStatus
     return '';
   }
 
-  async saveClient(): Promise<string> {
+  async saveClient() {
     this.clientForm.get('client_id')?.setValue(this.clientId);
     for (const control of this.contacts.controls) {
       control.get('client_id')?.setValue(this.clientId);
     }
 
-    const client = this.mergeContactIds(this.clientForm.value);
+    const client = { ...this.clientForm.value } as IClient;
+    client.contact_ids = client.contacts?.map((contact) => contact.contact_id) || [];
+    delete client.contacts;
 
     this.store.dispatch(
-      ClientsNgrxActions.addOrEditClient({
+      ClientsNgrxActions.updateClient({
         isEdit: this.editMode,
         client,
         contacts: this.clientForm.value.contacts
       })
     );
 
-    // FIXME: dummy return for now - will update all other pages' similar methods, relying on state.opStatus
-    return '';
-  }
-
-  mergeContactIds(clientFormData: any): IClient {
-    const { contacts, ...allButContacts } = clientFormData;
-    const contact_ids = contacts.map((contact: IContact) => contact.contact_id);
     if (this.editMode) {
-      return { ...allButContacts, contact_ids };
+      setTimeout(() => {
+        this.setForm();
+      }, 1000);
     }
-    return { ...allButContacts, contact_ids, job_ids: [], site_ids: [] };
   }
 
   constructor() {
@@ -230,12 +189,15 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
       contacts: this.fb.array([])
     });
 
+    this.store.dispatch(CoreDataActions.loadAllData({ refresh: false }));
+
     if (this.editMode) {
-      this.populateForm<IClient>(Collections.Clients, 'client_id', this.clientId);
+      this.setForm();
     }
   }
 
   ngOnDestroy(): void {
-    clearTimeout(this.contactsTimeoutID);
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

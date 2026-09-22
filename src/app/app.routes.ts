@@ -251,6 +251,10 @@ export const routes: Routes = [
         component: ClientNgrxDetail
       },
       {
+        path: ':id/edit',
+        component: AddClientNgrx
+      },
+      {
         path: '',
         redirectTo: 'list',
         pathMatch: 'full'

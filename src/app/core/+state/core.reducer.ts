@@ -230,41 +230,94 @@ export const artRentalReducer = createReducer(
   /*                   */
   /*********************/
 
-  on(ClientsNgrxActions.addOrEditClient, (state) => ({
+  on(ClientsNgrxActions.updateClient, (state) => ({
     ...state,
     loading: true,
     opStatus: null,
     error: null
   })),
-  on(ClientsNgrxActions.addClientSuccess, (state, { client }) => ({
+  on(ClientsNgrxActions.updateClientSuccess, (state, { client }) => ({
     ...state,
     data: {
       ...state.data,
-      clients: [...state.data.clients, client]
+      clients: [
+        ...state.data.clients.filter((clientItem) => clientItem.client_id !== client.client_id),
+        client
+      ]
     },
     loading: false,
     opStatus: Const.SUCCESS,
     error: null
   })),
-  on(
-    ClientsNgrxActions.addOrEditClientUpdateContactsSuccess,
-    (state, { isEdit, client, contacts }) => ({
-      ...state,
-      data: {
-        ...state.data,
-        contacts: [
-          ...state.data.contacts.map((contactItem) => {
-            const match = contacts.find((contact) => contact.contact_id !== contactItem.contact_id);
-            return match ? match : contactItem;
-          }),
-          ...contacts
-        ]
-      },
-      loading: false,
-      opStatus: Const.SUCCESS,
-      error: null
-    })
-  ),
+  on(ClientsNgrxActions.updateClientDeleteContactsSuccess, (state, { client, contacts }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      contacts: state.data.contacts.filter(
+        (contactItem) => contactItem.client_id !== client.client_id
+      )
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+  on(ClientsNgrxActions.updateClientAddContactsSuccess, (state, { client, contacts }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      contacts: [...contacts]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+
+  /*******************/
+  /*                 */
+  /*  DELETE CLIENT  */
+  /*                 */
+  /*******************/
+
+  on(ClientsNgrxActions.deleteClient, (state) => ({
+    ...state,
+    loading: true,
+    opStatus: null,
+    error: null
+  })),
+  on(ClientsNgrxActions.deleteClientSuccess, (state, { client }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      clients: state.data.clients.filter((clientItem) => clientItem.client_id !== client.client_id)
+    },
+    error: null
+  })),
+  on(ClientsNgrxActions.deleteClientDeleteContactsSuccess, (state, { client, contacts }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      contacts: state.data.contacts.filter(
+        (contactItem) => !client.contact_ids.includes(contactItem.contact_id)
+      )
+    },
+    error: null
+  })),
+  on(ClientsNgrxActions.deleteClientDeleteJobsSuccess, (state, { client, jobs }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      jobs: state.data.jobs.filter((jobItem) => !client.job_ids.includes(jobItem.job_id))
+    },
+    error: null
+  })),
+  on(ClientsNgrxActions.deleteClientDeleteSitesSuccess, (state, { client, sites }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      sites: state.data.sites.filter((siteItem) => !client.site_ids.includes(siteItem.site_id))
+    },
+    error: null
+  })),
 
   /*********************/
   /*                   */

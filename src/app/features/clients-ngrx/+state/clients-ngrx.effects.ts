@@ -8,17 +8,25 @@ import { Collections } from '../../../shared/enums/collections';
 import * as Const from '../../../constants';
 import { CoreDataActions } from '../../../core/+state/core.actions';
 import { Store } from '@ngrx/store';
-import { selectContacts } from '../../../core/+state/core.selectors';
+import { selectContacts, selectJobs, selectSites } from '../../../core/+state/core.selectors';
+import { DataService } from '../../../service/data-service';
 
 @Injectable()
 export class ClientsNgrxEffects {
   private actions$ = inject(Actions);
   private operationsService = inject(OperationsService);
+  private dataService = inject(DataService);
   private store = inject(Store);
 
-  addOrEditClient$ = createEffect(() => {
+  /*********************/
+  /*                   */
+  /*  Add/Edit Client  */
+  /*                   */
+  /*********************/
+
+  updateClient$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ClientsNgrxActions.addOrEditClient),
+      ofType(ClientsNgrxActions.updateClient),
       switchMap(({ isEdit, client, contacts }) =>
         from(
           this.operationsService.saveDocument2(
@@ -30,11 +38,11 @@ export class ClientsNgrxEffects {
         ).pipe(
           map((result) => {
             if (!isEdit && result.insertedId) {
-              return ClientsNgrxActions.addClientSuccess({ isEdit, client, contacts });
+              return ClientsNgrxActions.updateClientSuccess({ client, contacts });
             } else if (!isEdit && !result.insertedId) {
               throw new Error('Database error. The client was not saved.');
             } else if (isEdit && result.modifiedCount) {
-              return ClientsNgrxActions.editClientSuccess({ isEdit, client, contacts });
+              return ClientsNgrxActions.updateClientSuccess({ client, contacts });
             } else {
               throw new Error('Database error. The client was not saved.');
             }
@@ -45,31 +53,41 @@ export class ClientsNgrxEffects {
     );
   });
 
-  addClientSuccess$ = createEffect(() => {
+  updateClientSuccess$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ClientsNgrxActions.addClientSuccess),
-      switchMap(({ isEdit, client, contacts }) =>
-        of(ClientsNgrxActions.addOrEditClientUpdateContacts({ isEdit, client, contacts }))
+      ofType(ClientsNgrxActions.updateClientSuccess),
+      switchMap(({ client, contacts }) =>
+        from(
+          this.dataService.deleteDocuments(Collections.Contacts, 'client_id', client.client_id)
+        ).pipe(
+          map((result) => {
+            // TODO: start using an object for "result" instead of a string, and check deletedCount
+            if (result.message.indexOf('failed') !== -1) {
+              throw new Error(
+                'Database error. Any contacts changes were not saved in the database.'
+              );
+            } else {
+              return ClientsNgrxActions.updateClientDeleteContactsSuccess({
+                client,
+                contacts
+              });
+            }
+          }),
+          catchError((error) => of(CoreDataActions.generalFailure({ errorMessage: error.message })))
+        )
       )
     );
   });
 
-  addOrEditClientUpdateContacts$ = createEffect(() => {
+  updateClientAddContacts$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ClientsNgrxActions.addOrEditClientUpdateContacts),
-      switchMap(({ isEdit, client, contacts }) => {
-        const resultObserver = from(contacts).pipe(
+      ofType(ClientsNgrxActions.updateClientDeleteContactsSuccess),
+      switchMap(({ client, contacts }) =>
+        from(contacts).pipe(
           mergeMap((contactItem) => {
             const contact = { ...contactItem };
             contact.client_id = client.client_id;
-            return from(
-              this.operationsService.saveDocument2(
-                contact,
-                Collections.Contacts,
-                isEdit ? contact.contact_id : undefined,
-                isEdit ? 'contact_id' : undefined
-              )
-            );
+            return from(this.operationsService.saveDocument2(contact, Collections.Contacts));
           }),
           take(1),
           withLatestFrom(this.store.select(selectContacts)),
@@ -84,23 +102,151 @@ export class ClientsNgrxEffects {
             const uniqueStoreContacts = storeContacts.filter(
               (contact) => !excludedIds.has(contact.contact_id)
             );
-            const newContacts = uniqueStoreContacts.concat(editedContacts);
-            return ClientsNgrxActions.addOrEditClientUpdateContactsSuccess({
-              isEdit,
+            const newFullContacts = uniqueStoreContacts.concat(editedContacts);
+            return ClientsNgrxActions.updateClientAddContactsSuccess({
               client,
-              contacts: newContacts
+              contacts: newFullContacts
             });
           }),
           catchError((error) => of(CoreDataActions.generalFailure({ errorMessage: error.message })))
+        )
+      )
+    );
+  });
+
+  updateClientAddContactsSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ClientsNgrxActions.updateClientAddContactsSuccess),
+      delay(Const.STD_DELAY),
+      map(() => CoreDataActions.clearOpStatus())
+    );
+  });
+
+  /*******************/
+  /*                 */
+  /*  Delete Client  */
+  /*                 */
+  /*******************/
+
+  deleteClient$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ClientsNgrxActions.deleteClient),
+      switchMap(({ client }) =>
+        from(
+          this.operationsService.deleteDocument(Collections.Clients, 'client_id', client.client_id)
+        ).pipe(
+          map((result) => ClientsNgrxActions.deleteClientSuccess({ client })),
+          catchError((error) => of(CoreDataActions.generalFailure({ errorMessage: error.message })))
+        )
+      )
+    );
+  });
+
+  deleteClientDeleteContacts$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ClientsNgrxActions.deleteClientSuccess),
+      withLatestFrom(this.store.select(selectContacts)),
+      switchMap(([{ client }, contacts]) => {
+        const clientContacts = contacts.filter((contact) => contact.client_id === client.client_id);
+        if (!clientContacts || !clientContacts.length) {
+          return of([]).pipe(
+            map(() =>
+              ClientsNgrxActions.deleteClientDeleteContactsSuccess({
+                client,
+                contacts: clientContacts
+              })
+            ),
+            catchError((error) =>
+              of(CoreDataActions.generalFailure({ errorMessage: error.message }))
+            )
+          );
+        }
+        return from(
+          this.dataService.deleteDocuments(Collections.Contacts, 'client_id', client.client_id)
+        ).pipe(
+          map((result) =>
+            ClientsNgrxActions.deleteClientDeleteContactsSuccess({
+              client,
+              contacts: clientContacts
+            })
+          ),
+          catchError((error) => of(CoreDataActions.generalFailure({ errorMessage: error.message })))
         );
-        return resultObserver;
       })
     );
   });
 
-  addOrEditClientUpdateContactsSuccess$ = createEffect(() => {
+  deleteClientDeleteJobs$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ClientsNgrxActions.addOrEditClientUpdateContactsSuccess),
+      ofType(ClientsNgrxActions.deleteClientSuccess),
+      withLatestFrom(this.store.select(selectJobs)),
+      switchMap(([{ client }, jobs]) => {
+        const clientJobs = jobs.filter((job) => client.job_ids.includes(job.job_id));
+        if (!clientJobs || !clientJobs.length) {
+          return of([]).pipe(
+            map(() =>
+              ClientsNgrxActions.deleteClientDeleteJobsSuccess({
+                client,
+                jobs: clientJobs
+              })
+            ),
+            catchError((error) =>
+              of(CoreDataActions.generalFailure({ errorMessage: error.message }))
+            )
+          );
+        }
+        return from(
+          this.dataService.deleteDocuments(Collections.Jobs, 'client_id', client.client_id)
+        ).pipe(
+          map((result) =>
+            ClientsNgrxActions.deleteClientDeleteJobsSuccess({
+              client,
+              jobs: clientJobs
+            })
+          ),
+          catchError((error) => of(CoreDataActions.generalFailure({ errorMessage: error.message })))
+        );
+      })
+    );
+  });
+
+  deleteClientDeleteSites$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ClientsNgrxActions.deleteClientSuccess),
+      withLatestFrom(this.store.select(selectSites)),
+      switchMap(([{ client }, sites]) => {
+        const clientSites = sites.filter((site) => client.site_ids.includes(site.site_id));
+        if (!clientSites || !clientSites.length) {
+          return of([]).pipe(
+            map(() =>
+              ClientsNgrxActions.deleteClientDeleteSitesSuccess({
+                client,
+                sites: clientSites
+              })
+            ),
+            catchError((error) =>
+              of(CoreDataActions.generalFailure({ errorMessage: error.message }))
+            )
+          );
+        }
+        return from(
+          this.dataService.deleteDocuments(Collections.Sites, 'client_id', client.client_id)
+        ).pipe(
+          map((result) =>
+            ClientsNgrxActions.deleteClientDeleteSitesSuccess({
+              client,
+              sites: clientSites
+            })
+          ),
+          catchError((error) => of(CoreDataActions.generalFailure({ errorMessage: error.message })))
+        );
+      })
+    );
+  });
+
+  deleteClientClearStatusSuccess$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ClientsNgrxActions.deleteClientSuccess),
       delay(Const.STD_DELAY),
       map(() => CoreDataActions.clearOpStatus())
     );

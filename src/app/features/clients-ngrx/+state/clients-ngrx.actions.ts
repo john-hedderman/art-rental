@@ -4,31 +4,29 @@ import { IArtist, IClient, IContact, IJob, ISite, ITag } from '../../../model/mo
 export const ClientsNgrxActions = createActionGroup({
   source: 'Clients',
   events: {
-    'Add Or Edit Client': props<{
+    'Update Client': props<{
       isEdit: boolean;
       client: IClient;
       contacts: IContact[];
     }>(),
-    'Add Client Success': props<{ isEdit: boolean; client: IClient; contacts: IContact[] }>(),
-    'Edit Client Success': props<{ isEdit: boolean; client: IClient; contacts: IContact[] }>(),
-    'Add Or Edit Client Update Contacts': props<{
-      isEdit: boolean;
+    'Update Client Success': props<{ client: IClient; contacts: IContact[] }>(),
+    'Update Client Update Contacts': props<{
       client: IClient;
       contacts: IContact[];
     }>(),
-    'Add Or Edit Client Update Contacts Success': props<{
-      isEdit: boolean;
+    'Update Client Delete Contacts Success': props<{
+      client: IClient;
+      contacts: IContact[];
+    }>(),
+    'Update Client Add Contacts Success': props<{
       client: IClient;
       contacts: IContact[];
     }>(),
 
-    'Delete Client': props<{ client: IClient; tags: ITag[] }>(),
-    'Delete Client Success': props<{ client: IClient; tags: ITag[] }>(),
-    'Delete Client Update Contacts': props<{ client: IClient; contacts: IContact[] }>(),
-    'Delete Client Update Contacts Success': props<{ client: IClient; contacts: IContact[] }>(),
-    'Delete Client Update Jobs': props<{ client: IClient; jobs: IJob[] }>(),
-    'Delete Client Update Jobs Success': props<{ client: IClient; jobs: IJob[] }>(),
-    'Delete Client Update Sites': props<{ client: IClient; sites: ISite[] }>(),
-    'Delete Client Update Sites Success': props<{ client: IClient; sites: ISite[] }>()
+    'Delete Client': props<{ client: IClient }>(),
+    'Delete Client Success': props<{ client: IClient }>(),
+    'Delete Client Delete Contacts Success': props<{ client: IClient; contacts: IContact[] }>(),
+    'Delete Client Delete Jobs Success': props<{ client: IClient; jobs: IJob[] }>(),
+    'Delete Client Delete Sites Success': props<{ client: IClient; sites: ISite[] }>()
   }
 });

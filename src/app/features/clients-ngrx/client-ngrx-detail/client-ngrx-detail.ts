@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
-import { map, Observable, Subject, takeUntil } from 'rxjs';
+import { map, Observable, Subject, take, takeUntil } from 'rxjs';
 import { TableColumn } from '@swimlane/ngx-datatable';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -29,6 +29,7 @@ import { selectContacts, selectJobs, selectSites } from '../../../core/+state/co
 import { Store } from '@ngrx/store';
 import { selectClientById } from '../+state/clients-ngrx.selectors';
 import { CoreDataActions } from '../../../core/+state/core.actions';
+import { ClientsNgrxActions } from '../+state/clients-ngrx.actions';
 
 @Component({
   imports: [PageHeader, AsyncPipe, RouterLink, ContactsTable, PageFooter],
@@ -46,7 +47,7 @@ export class ClientNgrxDetail extends DetailBase implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
 
   goToClientList = () => this.router.navigate(['/clients-ngrx', 'list']);
-  goToEditClient = () => this.router.navigate(['/clients', this.clientId, 'edit']);
+  goToEditClient = () => this.router.navigate(['/clients-ngrx', this.clientId, 'edit']);
   clientListLink = new ActionLink(
     'clientListLink',
     'Clients',
@@ -86,10 +87,8 @@ export class ClientNgrxDetail extends DetailBase implements OnInit, OnDestroy {
   override preDelete(): void {}
 
   override async delete(): Promise<string> {
-    // const clientStatus = await this.deleteClient();
-    // const contactsStatus = await this.deleteContacts();
-    // const sitesStatus = await this.deleteSites();
-    // return this.jobResult([clientStatus, contactsStatus, sitesStatus]);
+    this.deleteClient();
+    // FIXME: dummy return for now - will update all other pages' delete() methods to be similar, relying on state.opStatus
     return '';
   }
 
@@ -97,6 +96,15 @@ export class ClientNgrxDetail extends DetailBase implements OnInit, OnDestroy {
 
   async onClickDelete() {
     this.deleteAndReload(['clients', 'contacts', 'sites'], this.goToClientList);
+  }
+
+  deleteClient() {
+    this.store
+      .select(selectClientById(this.clientId))
+      .pipe(take(1))
+      .subscribe((client) => {
+        this.store.dispatch(ClientsNgrxActions.deleteClient({ client }));
+      });
   }
 
   nameComparator(valueA: any, valueB: any, rowA: any, rowB: any): number {
