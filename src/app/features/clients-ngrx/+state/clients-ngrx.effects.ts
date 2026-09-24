@@ -27,10 +27,12 @@ export class ClientsNgrxEffects {
   updateClient$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ClientsNgrxActions.updateClient),
-      switchMap(({ isEdit, client, contacts }) =>
-        from(
+      switchMap(({ isEdit, client, contacts }) => {
+        const clientWithoutContacts = { ...client };
+        delete clientWithoutContacts.contacts;
+        return from(
           this.operationsService.saveDocument2(
-            client,
+            clientWithoutContacts,
             Collections.Clients,
             isEdit ? client.client_id : undefined,
             isEdit ? 'client_id' : undefined
@@ -48,8 +50,8 @@ export class ClientsNgrxEffects {
             }
           }),
           catchError((error) => of(CoreDataActions.generalFailure({ errorMessage: error.message })))
-        )
-      )
+        );
+      })
     );
   });
 

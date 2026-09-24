@@ -4,6 +4,11 @@ import { IArtist, IClient, IContact, IJob, ISite, ITag } from '../../../model/mo
 export const ClientsNgrxActions = createActionGroup({
   source: 'Clients',
   events: {
+    'Update Client Form Data': props<{
+      clientData: IClient;
+      contactsData: IContact[];
+    }>(),
+
     'Update Client': props<{
       isEdit: boolean;
       client: IClient;

@@ -1,12 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -16,15 +10,17 @@ import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { SaveButton } from '../../../shared/buttons/save-button';
 import { ResetButton } from '../../../shared/buttons/reset-button';
 import { CancelButton } from '../../../shared/buttons/cancel-button';
-import { IClient } from '../../../model/models';
+import { IClient, IContact } from '../../../model/models';
 import { ClientsNgrxActions } from '../+state/clients-ngrx.actions';
-import { Subject, takeUntil, withLatestFrom } from 'rxjs';
+import { Observable, Subject, take, takeUntil, withLatestFrom } from 'rxjs';
 import { selectClientById } from '../+state/clients-ngrx.selectors';
 import { CoreDataActions } from '../../../core/+state/core.actions';
 import { selectContactsByClientId } from '../../contacts-ngrx/+state/contacts-ngrx.selectors';
+import { AsyncPipe } from '@angular/common';
+import { selectContacts } from '../../../core/+state/core.selectors';
 
 @Component({
-  imports: [PageHeader, ReactiveFormsModule, PageFooter],
+  imports: [PageHeader, ReactiveFormsModule, PageFooter, AsyncPipe],
   selector: 'app-add-client-ngrx',
   styleUrl: './add-client-ngrx.scss',
   templateUrl: './add-client-ngrx.html',
@@ -58,6 +54,9 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
   clientId!: number;
   destroy$ = new Subject<void>();
 
+  client$: Observable<IClient> | undefined;
+  contacts$: Observable<IContact[]> | undefined;
+
   async onSubmit(): Promise<void> {
     this.submitForm(this.clientForm, ['clients', 'contacts'], 'client');
   }
@@ -74,57 +73,89 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
         client_id: this.clientId
       })
     );
+
+    const formContactIds = this.clientForm.value.contacts.map(
+      (contact: IContact) => contact.contact_id
+    );
+
+    const clientFormData: IClient = this.clientForm.value;
+    clientFormData.contact_ids = formContactIds;
+
+    this.store
+      .select(selectContacts)
+      .pipe(take(1))
+      .subscribe((storeContacts) => {
+        const excludedIds = new Set(formContactIds);
+        const uniqueContacts = storeContacts.filter(
+          (contact) => !excludedIds.has(contact.contact_id)
+        );
+        const allContacts = uniqueContacts.concat(this.clientForm.value.contacts);
+
+        this.store.dispatch(
+          ClientsNgrxActions.updateClientFormData({
+            clientData: clientFormData,
+            contactsData: allContacts
+          })
+        );
+      });
   }
 
   get contacts(): FormArray {
     return this.clientForm.get('contacts') as FormArray;
   }
 
-  trackByContactId(_index: number, v: AbstractControl) {
-    return v.value.contact_id;
+  trackByContactId(_index: number, v: IContact) {
+    return v.contact_id;
   }
 
   removeContact(index: number): void {
+    const formContactIdsBeforeRemoval = this.clientForm.value.contacts.map(
+      (contact: IContact) => contact.contact_id
+    );
+
     this.contacts.removeAt(index);
+
+    const formContactIdsAfterRemoval = this.clientForm.value.contacts.map(
+      (contact: IContact) => contact.contact_id
+    );
+
+    const clientFormData: IClient = this.clientForm.value;
+    clientFormData.contact_ids = formContactIdsAfterRemoval;
+
+    this.store
+      .select(selectContacts)
+      .pipe(take(1))
+      .subscribe((storeContacts) => {
+        const excludedIds = new Set(formContactIdsBeforeRemoval);
+        const uniqueContacts = storeContacts.filter(
+          (contact) => !excludedIds.has(contact.contact_id)
+        );
+        const allContacts = uniqueContacts.concat(this.clientForm.value.contacts);
+
+        this.store.dispatch(
+          ClientsNgrxActions.updateClientFormData({
+            clientData: clientFormData,
+            contactsData: allContacts
+          })
+        );
+      });
   }
 
   onClickReset() {
     this.submitted = false;
-    if (this.editMode) {
-      this.setForm();
-    } else {
-      this.clientForm.reset();
-      this.contacts.clear();
-    }
-  }
-
-  setForm() {
-    this.store
-      .select(selectClientById(this.clientId))
-      .pipe(
-        takeUntil(this.destroy$),
-        withLatestFrom(this.store.select(selectContactsByClientId(this.clientId)))
-      )
-      .subscribe(([storeClientData, storeContactsData]) => {
-        if (storeClientData) {
-          this.clientForm.reset();
-          while (this.contacts.length) {
-            this.removeContact(0);
-          }
-          const contact_ids = storeContactsData.map((contact) => contact.contact_id);
-          for (const contact_id of contact_ids) {
-            this.addContact(contact_id);
-          }
-          const newClientFormData = { ...storeClientData, contacts: [...storeContactsData] };
-          this.clientForm.reset(newClientFormData);
-        }
-      });
+    this.client$!.pipe(take(1)).subscribe((data) => {
+      this.clientForm.patchValue(data, { emitEvent: false });
+    });
   }
 
   override preSave(): void {
     this.disableSaveBtn();
-    const clientId = this.route.snapshot.paramMap.get('id');
-    this.clientId = clientId ? +clientId : Date.now();
+
+    if (!this.clientId) {
+      const clientId = this.route.snapshot.paramMap.get('id');
+      this.clientId = clientId ? +clientId : Date.now();
+    }
+
     this.clientForm.value.client_id = this.clientId;
   }
 
@@ -143,7 +174,6 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
 
     const client = { ...this.clientForm.value } as IClient;
     client.contact_ids = client.contacts?.map((contact) => contact.contact_id) || [];
-    delete client.contacts;
 
     this.store.dispatch(
       ClientsNgrxActions.updateClient({
@@ -152,12 +182,6 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
         contacts: this.clientForm.value.contacts
       })
     );
-
-    if (this.editMode) {
-      setTimeout(() => {
-        this.setForm();
-      }, 1000);
-    }
   }
 
   constructor() {
@@ -165,7 +189,7 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.clientId = 0;
+    this.clientId = Date.now();
     this.editMode = false;
 
     const clientId = this.route.snapshot.paramMap.get('id');
@@ -191,9 +215,13 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
 
     this.store.dispatch(CoreDataActions.loadAllData({ refresh: false }));
 
-    if (this.editMode) {
-      this.setForm();
-    }
+    this.client$ = this.store
+      .select(selectClientById(this.clientId))
+      .pipe(takeUntil(this.destroy$));
+
+    this.contacts$ = this.store
+      .select(selectContactsByClientId(this.clientId))
+      .pipe(takeUntil(this.destroy$));
   }
 
   ngOnDestroy(): void {

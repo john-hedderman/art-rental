@@ -224,6 +224,24 @@ export const artRentalReducer = createReducer(
     error: null
   })),
 
+  /************************/
+  /*                      */
+  /*  UPDATE CLIENT FORM  */
+  /*                      */
+  /************************/
+
+  on(ClientsNgrxActions.updateClientFormData, (state, { clientData, contactsData }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      clients: [
+        ...state.data.clients.filter((clientItem) => clientItem.client_id !== clientData.client_id),
+        clientData
+      ],
+      contacts: [...contactsData]
+    }
+  })),
+
   /*********************/
   /*                   */
   /*  ADD/EDIT CLIENT  */

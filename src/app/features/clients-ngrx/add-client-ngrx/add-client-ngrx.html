@@ -171,10 +171,11 @@
                 </button>
               </section>
 
+              <!-- @if (contacts.length > 0) { -->
               <section formArrayName="contacts" class="mt-0">
                 @for (
-                  clientContactGroup of contacts.controls;
-                  track trackByContactId($index, clientContactGroup);
+                  contact of contacts$ | async;
+                  track trackByContactId($index, contact);
                   let i = $index
                 ) {
                   <div [formGroupName]="i" class="row pt-1 border-top ar-contact-row mt-4">
@@ -248,6 +249,7 @@
                   </div>
                 }
               </section>
+              <!-- } -->
             </div>
           </div>
         </div>
