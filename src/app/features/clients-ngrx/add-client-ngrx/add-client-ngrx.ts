@@ -214,7 +214,7 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
       address1: [''],
       address2: [''],
       city: [''],
-      state: [''],
+      state: ['', { nonNullable: true }],
       zip_code: [''],
       industry: [''],
       contacts: this.fb.array([])
