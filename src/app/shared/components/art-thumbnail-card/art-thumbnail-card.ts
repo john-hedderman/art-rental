@@ -1,4 +1,11 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { combineLatest, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 
 import { IArt, IArtist, IJob } from '../../../model/models';
@@ -29,10 +36,6 @@ export class ArtThumbnailCard implements OnInit, OnDestroy {
 
   selectedArt: IArt | undefined;
   selectedJob: IJob | undefined;
-
-  public onArtThumbnailClicked(x: any) {
-    console.warn('ArtThumbnailCard, x:', x);
-  }
 
   init() {
     this.subscribeToActiveAssignment();

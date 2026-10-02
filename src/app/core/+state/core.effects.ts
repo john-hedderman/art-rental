@@ -44,16 +44,6 @@ export class CoreEffects {
     );
   });
 
-  delayClearOpStatus$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(CoreDataActions.delayClearOpStatus),
-      delay(Const.STD_DELAY),
-      map(() => {
-        return CoreDataActions.clearOpStatus();
-      })
-    );
-  });
-
   enhanceData(data: AppData): AppData {
     const enhancedData: AppData = {} as AppData;
     const { art, artists, clients, contacts, jobs, sites, tags } = data;

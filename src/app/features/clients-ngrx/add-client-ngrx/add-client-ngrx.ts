@@ -1,6 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { Store } from '@ngrx/store';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -16,11 +22,10 @@ import { Observable, Subject, take, takeUntil, withLatestFrom } from 'rxjs';
 import { selectClientById } from '../+state/clients-ngrx.selectors';
 import { CoreDataActions } from '../../../core/+state/core.actions';
 import { selectContactsByClientId } from '../../contacts-ngrx/+state/contacts-ngrx.selectors';
-import { AsyncPipe } from '@angular/common';
 import { selectContacts } from '../../../core/+state/core.selectors';
 
 @Component({
-  imports: [PageHeader, ReactiveFormsModule, PageFooter, AsyncPipe],
+  imports: [PageHeader, ReactiveFormsModule, PageFooter],
   selector: 'app-add-client-ngrx',
   styleUrl: './add-client-ngrx.scss',
   templateUrl: './add-client-ngrx.html',
@@ -61,10 +66,10 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
     this.submitForm(this.clientForm, ['clients', 'contacts'], 'client');
   }
 
-  addContact(contact_id?: number): void {
+  addContactControl(contact_id: number) {
     this.contacts.push(
       this.fb.group({
-        contact_id: contact_id || Date.now(),
+        contact_id: contact_id,
         first_name: [''],
         last_name: [''],
         phone: [''],
@@ -73,31 +78,10 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
         client_id: this.clientId
       })
     );
+  }
 
-    const formContactIds = this.clientForm.value.contacts.map(
-      (contact: IContact) => contact.contact_id
-    );
-
-    const clientFormData: IClient = this.clientForm.value;
-    clientFormData.contact_ids = formContactIds;
-
-    this.store
-      .select(selectContacts)
-      .pipe(take(1))
-      .subscribe((storeContacts) => {
-        const excludedIds = new Set(formContactIds);
-        const uniqueContacts = storeContacts.filter(
-          (contact) => !excludedIds.has(contact.contact_id)
-        );
-        const allContacts = uniqueContacts.concat(this.clientForm.value.contacts);
-
-        this.store.dispatch(
-          ClientsNgrxActions.updateClientFormData({
-            clientData: clientFormData,
-            contactsData: allContacts
-          })
-        );
-      });
+  addContact(contact_id?: number): void {
+    this.addContactControl(contact_id || Date.now());
   }
 
   get contacts(): FormArray {
@@ -108,6 +92,10 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
     return v.contact_id;
   }
 
+  trackByControlContactId(_index: number, v: AbstractControl) {
+    return v.value.contact_id;
+  }
+
   removeContact(index: number): void {
     const formContactIdsBeforeRemoval = this.clientForm.value.contacts.map(
       (contact: IContact) => contact.contact_id
@@ -115,37 +103,56 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
 
     this.contacts.removeAt(index);
 
-    const formContactIdsAfterRemoval = this.clientForm.value.contacts.map(
-      (contact: IContact) => contact.contact_id
-    );
+    if (this.editMode) {
+      const formContactIdsAfterRemoval = this.clientForm.value.contacts.map(
+        (contact: IContact) => contact.contact_id
+      );
 
-    const clientFormData: IClient = this.clientForm.value;
-    clientFormData.contact_ids = formContactIdsAfterRemoval;
+      const clientFormData: IClient = this.clientForm.value;
+      clientFormData.contact_ids = formContactIdsAfterRemoval;
 
-    this.store
-      .select(selectContacts)
-      .pipe(take(1))
-      .subscribe((storeContacts) => {
-        const excludedIds = new Set(formContactIdsBeforeRemoval);
-        const uniqueContacts = storeContacts.filter(
-          (contact) => !excludedIds.has(contact.contact_id)
-        );
-        const allContacts = uniqueContacts.concat(this.clientForm.value.contacts);
+      this.store
+        .select(selectContacts)
+        .pipe(take(1))
+        .subscribe((storeContacts) => {
+          const excludedIds = new Set(formContactIdsBeforeRemoval);
+          const uniqueContacts = storeContacts.filter(
+            (contact) => !excludedIds.has(contact.contact_id)
+          );
+          const allContacts = uniqueContacts.concat(this.clientForm.value.contacts);
 
-        this.store.dispatch(
-          ClientsNgrxActions.updateClientFormData({
-            clientData: clientFormData,
-            contactsData: allContacts
-          })
-        );
-      });
+          this.store.dispatch(
+            ClientsNgrxActions.updateClientFormData({
+              clientData: clientFormData,
+              contactsData: allContacts
+            })
+          );
+        });
+    }
   }
 
   onClickReset() {
     this.submitted = false;
-    this.client$!.pipe(take(1)).subscribe((data) => {
-      this.clientForm.patchValue(data, { emitEvent: false });
-    });
+    if (this.editMode) {
+      this.store
+        .select(selectClientById(this.clientId))
+        .pipe(take(1), withLatestFrom(this.store.select(selectContactsByClientId(this.clientId))))
+        .subscribe(([storeClientData, storeContactsData]) => {
+          if (storeClientData) {
+            this.clientForm.reset();
+            if (storeContactsData && storeContactsData.length) {
+              this.contacts.clear();
+              for (let contact of storeContactsData) {
+                this.addContactControl(contact.contact_id);
+              }
+            }
+          }
+          this.clientForm.patchValue(storeClientData, { emitEvent: false });
+        });
+    } else {
+      this.clientForm.reset();
+      this.contacts.clear();
+    }
   }
 
   override preSave(): void {
@@ -222,6 +229,20 @@ export class AddClientNgrx extends AddBase implements OnInit, OnDestroy {
     this.contacts$ = this.store
       .select(selectContactsByClientId(this.clientId))
       .pipe(takeUntil(this.destroy$));
+
+    this.client$.subscribe((clientData: IClient) => {
+      if (this.editMode) {
+        if (clientData) {
+          if (clientData.contacts) {
+            this.contacts.clear();
+            for (let contact of clientData.contacts) {
+              this.addContactControl(contact.contact_id);
+            }
+          }
+          this.clientForm.patchValue(clientData, { emitEvent: false });
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
