@@ -6,6 +6,7 @@
         @for (art of art$ | async; track $index) {
           <app-card
             [cardData]="{
+              artwork: true,
               imageData: {
                 source: `${thumbnail_path}${art.file_name}`,
                 alt: art.title,

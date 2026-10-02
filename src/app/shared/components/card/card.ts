@@ -6,18 +6,19 @@ import { Component, input, ChangeDetectionStrategy } from '@angular/core';
   templateUrl: './card.html',
   styleUrl: './card.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: true,
+  standalone: true
 })
 export class Card {
   cardData = input<any>({
+    artwork: false,
     imageData: {
       source: '',
       alt: '',
-      title: '',
+      title: ''
     },
     title: '',
     text: '',
     footerText: '',
-    clickHandler: null,
+    clickHandler: null
   });
 }

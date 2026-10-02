@@ -1,6 +1,6 @@
 <div class="card ar-card" (click)="cardData().clickHandler($event)">
   <div class="row g-0">
-    <div class="col-1 ar-img-container">
+    <div class="col-1 ar-img-container" [class.ar-art-frame]="cardData().artwork">
       <img
         src="{{ cardData().imageData.source }}"
         class="img-fluid ar-rounded-start h-100"

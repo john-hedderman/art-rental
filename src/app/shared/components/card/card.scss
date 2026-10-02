@@ -30,6 +30,26 @@
     }
   }
 
+  .ar-art-frame {
+    display: inline-block;
+    padding: 10px;
+    background-color: #fff;
+
+    border: 10px solid #977507;
+
+    box-shadow:
+      inset 0 0 5px rgba(0, 0, 0, 0.5),
+      0 10px 20px rgba(0, 0, 0, 0.3),
+      0 0 0 3px #975107;
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+  }
+
   .ar-text-container {
     height: var(--ar-card-side-length);
   }
