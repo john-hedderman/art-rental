@@ -7,6 +7,7 @@ import { ArtActions } from '../../features/art-store-page/+state/art-store.actio
 import { ArtistActions } from '../../features/artists-ngrx/+state/artists-ngrx.actions';
 import { TagsNgrxActions } from '../../features/admin/tags-ngrx/+state/tags-ngrx.actions';
 import { ClientsNgrxActions } from '../../features/clients-ngrx/+state/clients-ngrx.actions';
+import { ContactsNgrxActions } from '../../features/contacts-ngrx/+state/contacts-ngrx.actions';
 
 export const artRentalReducer = createReducer(
   initialState,
@@ -334,6 +335,78 @@ export const artRentalReducer = createReducer(
       ...state.data,
       sites: state.data.sites.filter((siteItem) => !client.site_ids.includes(siteItem.site_id))
     },
+    error: null
+  })),
+
+  /**********************/
+  /*                    */
+  /*  ADD/EDIT CONTACT  */
+  /*                    */
+  /**********************/
+
+  on(ContactsNgrxActions.updateContact, (state) => ({
+    ...state,
+    loading: true,
+    opStatus: null,
+    error: null
+  })),
+  on(ContactsNgrxActions.updateContactSuccess, (state, { contact }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      contacts: [
+        ...state.data.contacts.filter(
+          (contactItem) => contactItem.contact_id !== contact.contact_id
+        ),
+        contact
+      ]
+    }
+  })),
+  on(ContactsNgrxActions.updateContactUpdateClientSuccess, (state, { client }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      clients: [
+        ...state.data.clients.filter((clientItem) => clientItem.client_id !== client.client_id),
+        client
+      ]
+    },
+    loading: false,
+    opStatus: Const.SUCCESS,
+    error: null
+  })),
+
+  /********************/
+  /*                  */
+  /*  DELETE CONTACT  */
+  /*                  */
+  /********************/
+
+  on(ContactsNgrxActions.deleteContact, (state) => ({
+    ...state,
+    loading: true,
+    opStatus: null,
+    error: null
+  })),
+  on(ContactsNgrxActions.deleteContactSuccess, (state, { contact }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      contacts: state.data.contacts.filter(
+        (contactItem) => contactItem.contact_id !== contact.contact_id
+      )
+    }
+  })),
+  on(ContactsNgrxActions.deleteContactUpdateClientSuccess, (state, { client }) => ({
+    ...state,
+    data: {
+      ...state.data,
+      clients: [
+        ...state.data.clients.filter((clientItem) => clientItem.client_id !== client.client_id),
+        client
+      ]
+    },
+    opStatus: Const.SUCCESS,
     error: null
   })),
 

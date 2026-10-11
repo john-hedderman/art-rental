@@ -112,14 +112,6 @@ export class ClientNgrxList implements OnInit, OnDestroy {
     this.clients$.pipe(takeUntil(this.destroy$), distinctUntilChanged()).subscribe((clients) => {
       this.rows = [...clients];
     });
-
-    // this.dataService.clients$
-    //   .pipe(takeUntil(this.destroy$), distinctUntilChanged())
-    //   .subscribe((clients) => {
-    //     if (clients) {
-    //       this.rows = [...clients];
-    //     }
-    //   });
   }
 
   ngOnDestroy(): void {

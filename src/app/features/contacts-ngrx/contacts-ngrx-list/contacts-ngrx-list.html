@@ -1,0 +1,62 @@
+<div class="d-flex flex-column h-100">
+  <app-page-header [headerData]="headerData.data"></app-page-header>
+  <div class="container-fluid gx-0 ar-flex-container overflow-y-auto">
+    <div class="row ar-page-content mx-0">
+      <ngx-datatable
+        #contactsTable
+        class="material h-100 px-0"
+        [rows]="rows"
+        [columns]="columns"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [rowHeight]="50"
+        [scrollbarV]="true"
+        (activate)="onActivate($event)"
+        [messages]="{ emptyMessage: 'No contacts' }"
+      >
+        <ngx-datatable-row-detail [rowHeight]="50">
+          <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+            @if (row.client?.name && row.phone) {
+              <div class="row-detail-container" appRowDetail>
+                <div>{{ row.client?.name }}, {{ row.phone }}</div>
+              </div>
+            }
+          </ng-template>
+        </ngx-datatable-row-detail>
+      </ngx-datatable>
+    </div>
+  </div>
+  <app-page-footer [footerData]="footerData"></app-page-footer>
+</div>
+
+<ng-template #arrowTemplate let-row="row" let-expanded="expanded">
+  <a
+    [class.bi-chevron-right]="!expanded"
+    [class.bi-chevron-down]="expanded"
+    title="Expand/Collapse Row"
+    (click)="toggleExpandRow(row)"
+    class="desktop-hidden bi"
+  ></a>
+</ng-template>
+
+<ng-template #nameTemplate let-row="row">
+  @if (row.first_name && row.last_name) {
+    {{ row.first_name }} {{ row.last_name }}
+  }
+</ng-template>
+
+<ng-template #clientNameHeaderTemplate let-column="column">
+  <span class="mobile-hidden">{{ column.name }}</span>
+</ng-template>
+
+<ng-template #clientNameTemplate let-row="row">
+  <span class="mobile-hidden">{{ row.client?.name }}</span>
+</ng-template>
+
+<ng-template #phoneHeaderTemplate let-column="column">
+  <span class="mobile-hidden">{{ column.name }}</span>
+</ng-template>
+
+<ng-template #phoneTemplate let-value="value">
+  <span class="mobile-hidden">{{ value }}</span>
+</ng-template>

@@ -6,10 +6,10 @@ import {
   ViewChild,
   ChangeDetectionStrategy
 } from '@angular/core';
+import { Router } from '@angular/router';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 
 import { IContact } from '../../../model/models';
-import { Router } from '@angular/router';
 import { RowDetail } from '../../../directives/row-detail';
 
 @Component({
@@ -43,7 +43,7 @@ export class ContactsTable implements OnInit {
       return;
     }
     if (event.cellIndex !== 0) {
-      this.router.navigate(['/contacts', event.row.contact_id]);
+      this.router.navigate(['/contacts-ngrx', event.row.contact_id]);
     }
   }
 

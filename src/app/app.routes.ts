@@ -44,6 +44,10 @@ import { ClientsNgrxPage } from './features/clients-ngrx/clients-ngrx-page';
 import { ClientNgrxList } from './features/clients-ngrx/client-ngrx-list/client-ngrx-list';
 import { ClientNgrxDetail } from './features/clients-ngrx/client-ngrx-detail/client-ngrx-detail';
 import { AddClientNgrx } from './features/clients-ngrx/add-client-ngrx/add-client-ngrx';
+import { ContactsNgrxPage } from './features/contacts-ngrx/contacts-ngrx-page';
+import { ContactsNgrxList } from './features/contacts-ngrx/contacts-ngrx-list/contacts-ngrx-list';
+import { AddContactNgrx } from './features/contacts-ngrx/add-contact-ngrx/add-contact-ngrx';
+import { ContactNgrxDetail } from './features/contacts-ngrx/contact-ngrx-detail/contact-ngrx-detail';
 
 export const routes: Routes = [
   {
@@ -280,6 +284,33 @@ export const routes: Routes = [
       {
         path: ':id/edit',
         component: AddContact
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
+    path: 'contacts-ngrx',
+    component: ContactsNgrxPage,
+    children: [
+      {
+        path: 'list',
+        component: ContactsNgrxList
+      },
+      {
+        path: 'add',
+        component: AddContactNgrx
+      },
+      {
+        path: ':id',
+        component: ContactNgrxDetail
+      },
+      {
+        path: ':id/edit',
+        component: AddContactNgrx
       },
       {
         path: '',

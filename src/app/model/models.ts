@@ -41,7 +41,7 @@ export interface IContact {
   first_name: string;
   last_name: string;
   phone: string;
-  title: string;
+  title?: string;
   email?: string;
   client_id: number;
   client?: IClient;
