@@ -1,7 +1,15 @@
-import { Component, inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
 import { Router } from '@angular/router';
-import { delay, distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
+import { distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
@@ -16,7 +24,12 @@ import { CoreDataActions } from '../../../core/+state/core.actions';
   imports: [PageHeader, NgxDatatableModule, PageFooter],
   selector: 'app-contacts-ngrx-list',
   styleUrl: './contacts-ngrx-list.scss',
-  templateUrl: './contacts-ngrx-list.html'
+  templateUrl: './contacts-ngrx-list.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: true,
+  host: {
+    class: 'd-flex flex-column h-100'
+  }
 })
 export class ContactsNgrxList implements OnInit, OnDestroy {
   @ViewChild('contactsTable') table!: DatatableComponent<IContact>;

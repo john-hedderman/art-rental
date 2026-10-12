@@ -9,14 +9,14 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { DatatableComponent, NgxDatatableModule, TableColumn } from '@swimlane/ngx-datatable';
+import { distinctUntilChanged, Observable, Subject, takeUntil } from 'rxjs';
+import { Store } from '@ngrx/store';
 
 import { PageHeader } from '../../../shared/components/page-header/page-header';
 import { FooterActions, HeaderActions } from '../../../shared/actions/action-data';
 import { IClient } from '../../../model/models';
 import { PageFooter } from '../../../shared/components/page-footer/page-footer';
 import { AddButton } from '../../../shared/buttons/add-button';
-import { distinctUntilChanged, Observable, Subject, take, takeUntil } from 'rxjs';
-import { Store } from '@ngrx/store';
 import { selectClients } from '../../../core/+state/core.selectors';
 import { CoreDataActions } from '../../../core/+state/core.actions';
 
