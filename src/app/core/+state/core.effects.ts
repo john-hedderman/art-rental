@@ -53,7 +53,7 @@ export class CoreEffects {
     enhancedData.clients = this.enhanceClientData(allData);
     enhancedData.contacts = this.enhanceContactData(allData);
     enhancedData.jobs = this.enhanceJobData(allData);
-    enhancedData.sites = sites;
+    enhancedData.sites = this.enhanceSiteData(allData);
     enhancedData.tags = tags;
     return enhancedData;
   }
@@ -116,6 +116,17 @@ export class CoreEffects {
       const siteItem = sites.find((site: ISite) => site.site_id === jobItem.site_id);
       jobItem = siteItem ? { ...jobItem, site: siteItem } : jobItem;
       return jobItem;
+    });
+  }
+
+  enhanceSiteData(allData: AppData): ISite[] {
+    const { clients, jobs, sites } = allData;
+    return sites.map((siteItem: ISite) => {
+      const clientItem = clients.find((client: IClient) => client.client_id === siteItem.client_id);
+      siteItem = clientItem ? { ...siteItem, client: clientItem } : siteItem;
+      const jobItem = jobs.find((job: IJob) => job.job_id === siteItem.job_id);
+      siteItem = jobItem ? { ...siteItem, job: jobItem } : siteItem;
+      return siteItem;
     });
   }
 

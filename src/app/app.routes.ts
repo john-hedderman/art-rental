@@ -48,6 +48,10 @@ import { ContactsNgrxPage } from './features/contacts-ngrx/contacts-ngrx-page';
 import { ContactsNgrxList } from './features/contacts-ngrx/contacts-ngrx-list/contacts-ngrx-list';
 import { AddContactNgrx } from './features/contacts-ngrx/add-contact-ngrx/add-contact-ngrx';
 import { ContactNgrxDetail } from './features/contacts-ngrx/contact-ngrx-detail/contact-ngrx-detail';
+import { SitesNgrxPage } from './features/sites-ngrx/sites-ngrx-page';
+import { SitesNgrxList } from './features/sites-ngrx/sites-ngrx-list/sites-ngrx-list';
+import { SiteNgrxDetail } from './features/sites-ngrx/site-ngrx-detail/site-ngrx-detail';
+import { AddSiteNgrx } from './features/sites-ngrx/add-site-ngrx/add-site-ngrx';
 
 export const routes: Routes = [
   {
@@ -365,6 +369,33 @@ export const routes: Routes = [
       {
         path: ':id/edit',
         component: AddSite
+      },
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
+    path: 'sites-ngrx',
+    component: SitesNgrxPage,
+    children: [
+      {
+        path: 'list',
+        component: SitesNgrxList
+      },
+      {
+        path: 'add',
+        component: AddSiteNgrx
+      },
+      {
+        path: ':id',
+        component: SiteNgrxDetail
+      },
+      {
+        path: ':id/edit',
+        component: AddSiteNgrx
       },
       {
         path: '',

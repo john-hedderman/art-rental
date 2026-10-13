@@ -1,0 +1,79 @@
+<div class="d-flex flex-column h-100">
+  <app-page-header [headerData]="headerData.data"></app-page-header>
+  <div class="container-fluid gx-0 ar-flex-container overflow-y-auto">
+    <div class="row ar-page-content mx-0">
+      <ngx-datatable
+        #sitesTable
+        class="material h-100 px-0"
+        [rows]="rows"
+        [columns]="columns"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [rowHeight]="50"
+        [scrollbarV]="true"
+        (activate)="onActivate($event)"
+        [messages]="{ emptyMessage: 'No sites' }"
+      >
+        <ngx-datatable-row-detail [rowHeight]="50">
+          <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+            <div class="row-detail-container" appRowDetail>
+              <div>
+                @if (row.address1 && row.city && row.state && row.zip_code) {
+                  {{ row.address1 }},
+                  @if (row.address2) {
+                    {{ row.address2 }},
+                  }
+                  {{ row.city }}, {{ row.state }} {{ row.zip_code }}
+                }
+              </div>
+            </div>
+          </ng-template>
+        </ngx-datatable-row-detail>
+      </ngx-datatable>
+    </div>
+  </div>
+  <app-page-footer [footerData]="footerData"></app-page-footer>
+</div>
+
+<ng-template #arrowTemplate let-row="row" let-expanded="expanded">
+  <a
+    [class.bi-chevron-right]="!expanded"
+    [class.bi-chevron-down]="expanded"
+    title="Expand/Collapse Row"
+    (click)="toggleExpandRow(row)"
+    class="desktop-hidden bi"
+  ></a>
+</ng-template>
+
+<ng-template #siteNameTemplate let-row="row">
+  @if (row.name) {
+    {{ row.name }}
+  }
+</ng-template>
+
+<ng-template #siteAddressHeaderTemplate let-column="column">
+  <span class="mobile-hidden">{{ column.name }}</span>
+</ng-template>
+
+<ng-template #siteAddressTemplate let-row="row">
+  <span class="mobile-hidden">
+    @if (row.address1 && row.city && row.state && row.zip_code) {
+      {{ row.address1 }},
+      @if (row.address2) {
+        {{ row.address2 }},
+      }
+      {{ row.city }}, {{ row.state }}
+      {{ row.zip_code }}
+    }
+  </span>
+</ng-template>
+
+<ng-template #clientNameTemplate let-row="row">
+  @if (row.client?.name) {
+    <span class="mobile-hidden">{{ row.client.name }}</span>
+  }
+</ng-template>
+
+<ng-template #clientNameHeaderTemplate let-column="column">
+  <span class="mobile-hidden">{{ column.name }}</span>
+</ng-template>

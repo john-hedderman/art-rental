@@ -43,7 +43,7 @@
   <span class="mobile-hidden">{{ column.name }}</span>
 </ng-template>
 
-<ng-template #locationTemplate let-value="value" let-row="row">
+<ng-template #locationTemplate let-row="row">
   <span class="mobile-hidden">
     @if (row.city && row.state) {
       {{ row.city }}, {{ row.state }}
